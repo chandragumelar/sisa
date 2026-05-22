@@ -1,0 +1,76 @@
+/* ============================================================
+   SISA — Global Styles
+   ============================================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  /* Prevent font size inflation on iOS */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--ink-primary);
+  background-color: var(--canvas);
+
+  /* Alternate 'l' glyph — cleaner, less ambiguous */
+  font-feature-settings: 'cv11';
+
+  /* Smooth rendering on retina */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Tabular, lining figures for all numeric content */
+.mono,
+[data-mono],
+input[type='number'] {
+  font-family: var(--font-mono);
+  font-feature-settings: 'tnum', 'lnum';
+}
+
+/* Opt-in tnum/lnum for Inter Tight numbers (non-mono contexts) */
+.num {
+  font-feature-settings: 'tnum', 'lnum';
+}
+
+/* Remove default list styles */
+ul,
+ol {
+  list-style: none;
+}
+
+/* Remove default button styles */
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+}
+
+/* Remove default anchor styles */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Prevent overscroll bounce ruining the PWA feel */
+html,
+body {
+  overscroll-behavior: none;
+}
+
+#root {
+  min-height: 100dvh;
+}

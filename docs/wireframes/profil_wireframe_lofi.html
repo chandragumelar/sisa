@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SISA — Profil (Lofi)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ============================================================
+     SISA — Profil wireframe · LOFI (grayscale skeleton)
+     Hub "kondisi keuangan lo". Tiap baris = entry ke sub-screen.
+     Token & komponen identik dengan settings_wireframe_lofi.html
+     ============================================================ */
+      :root {
+        --canvas: #edeff2;
+        --surface: #ffffff;
+        --surface-2: #e4e7eb;
+        --ink-1: #1a1d22;
+        --ink-2: #6a6f78;
+        --ink-3: #9aa0a8;
+        --hair: #e2e5ea;
+        --fill: #2c2f36;
+        --fill-bg: #eceef1;
+        --danger: #4a4d52;
+        --font-sans: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;
+        --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        -webkit-tap-highlight-color: transparent;
+      }
+      body {
+        font-family: var(--font-sans);
+        background: #d7dbe0;
+        min-height: 100vh;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 36px 16px;
+        font-feature-settings: 'tnum', 'lnum', 'cv11';
+        color: var(--ink-1);
+        -webkit-font-smoothing: antialiased;
+      }
+      .frame {
+        width: 380px;
+        background: var(--canvas);
+        border-radius: 30px;
+        padding: 14px 14px 24px;
+        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
+        position: relative;
+      }
+
+      .hdr {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 4px 2px 16px;
+      }
+      .back {
+        width: 26px;
+        height: 26px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--ink-2);
+      }
+      .back svg {
+        width: 18px;
+        height: 18px;
+      }
+      .hdr-title {
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: -0.2px;
+      }
+
+      /* identity strip (no avatar — fokus angka) */
+      .ident {
+        padding: 0 2px 18px;
+      }
+      .ident-name {
+        font-size: 18px;
+        font-weight: 600;
+        letter-spacing: -0.4px;
+      }
+      .ident-sub {
+        font-size: 11px;
+        color: var(--ink-3);
+        margin-top: 4px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .pro-badge {
+        font-size: 8.5px;
+        font-weight: 600;
+        letter-spacing: 0.6px;
+        text-transform: uppercase;
+        background: var(--ink-1);
+        color: var(--canvas);
+        padding: 2px 6px;
+        border-radius: 3px;
+        line-height: 1;
+      }
+
+      .section {
+        margin-bottom: 18px;
+      }
+      .sec-label {
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        padding: 0 2px 8px;
+      }
+      .group {
+        background: var(--surface);
+        border: 1px solid var(--hair);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      .row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 13px 13px;
+        border-bottom: 1px solid var(--hair);
+        min-height: 48px;
+      }
+      .row:last-child {
+        border-bottom: none;
+      }
+      .row-main {
+        flex: 1;
+        min-width: 0;
+      }
+      .row-label {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--ink-1);
+        letter-spacing: -0.1px;
+      }
+      .row-sub {
+        font-size: 10.5px;
+        color: var(--ink-3);
+        margin-top: 2px;
+      }
+      .row-val {
+        font-size: 12px;
+        color: var(--ink-2);
+        text-align: right;
+        white-space: nowrap;
+      }
+      .row-val.mono {
+        font-family: var(--font-mono);
+        font-weight: 500;
+        font-size: 11.5px;
+        color: var(--ink-1);
+      }
+      .chev {
+        color: var(--ink-3);
+        flex: none;
+      }
+      .chev svg {
+        width: 16px;
+        height: 16px;
+        display: block;
+      }
+
+      .pro-tag {
+        font-size: 8px;
+        font-weight: 600;
+        letter-spacing: 0.6px;
+        text-transform: uppercase;
+        color: var(--ink-2);
+        border: 1px solid var(--hair);
+        padding: 2px 5px;
+        border-radius: 3px;
+        line-height: 1;
+      }
+
+      /* indented adaptive sub-rows (detail income) */
+      .row.sub-row {
+        padding-left: 13px;
+      }
+      .row.sub-row .row-label {
+        color: var(--ink-2);
+        font-weight: 400;
+      }
+
+      .note {
+        font-size: 9.5px;
+        font-style: italic;
+        color: var(--ink-3);
+        padding: 6px 4px 0;
+      }
+
+      .danger .row-label {
+        color: var(--danger);
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="frame">
+      <!-- HEADER -->
+      <div class="hdr">
+        <div class="back">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M15 18l-6-6 6-6" />
+          </svg>
+        </div>
+        <div class="hdr-title">profil</div>
+      </div>
+
+      <!-- IDENTITY -->
+      <div class="ident">
+        <div class="ident-name">Chandra Gumelar</div>
+        <div class="ident-sub"><span class="pro-badge">Pro</span> SISA · aktif 142 hari lagi</div>
+      </div>
+
+      <!-- PROFIL KEUANGAN -->
+      <div class="section">
+        <div class="sec-label">profil keuangan</div>
+        <div class="group">
+          <div class="row">
+            <div class="row-main"><div class="row-label">tipe income</div></div>
+            <div class="row-val">Gaji bulanan tetap</div>
+            <div class="chev">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M9 6l6 6-6 6" />
+              </svg>
+            </div>
+          </div>
+          <div class="row sub-row">
+            <div class="row-main"><div class="row-label">tanggal gajian</div></div>
+            <div class="row-val mono">tiap tgl 25</div>
+            <div class="chev">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M9 6l6 6-6 6" />
+              </svg>
+            </div>
+          </div>
+          <div class="row sub-row">
+            <div class="row-main">
+              <div class="row-label">kalau jatuh di weekend</div>
+              <div class="row-sub">geser tanggal hitung jatah harian</div>
+            </div>
+            <div class="row-val">maju ke Jumat</div>
+            <div class="chev">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M9 6l6 6-6 6" />
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="note">
+          field di sini nyesuaikan tipe income · freelance = saldo minimum akhir bulan
+        </div>
+      </div>
+
+      <!-- DOMPET & MATA UANG -->
+      <div class="section">
+        <div class="sec-label">dompet & mata uang</div>
+        <div class="group">
+          <div class="row">
+            <div class="row-main">
+              <div class="row-label">dompet</div>
+              <div class="row-sub">tambah · ganti nama · sesuaikan saldo · hapus</div>
+            </div>
+            <div class="row-val mono">6 · Rp 9.7jt</div>
+            <div class="chev">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M9 6l6 6-6 6" />
+              </svg>
+            </div>
+          </div>
+          <div class="row">
+            <div class="row-main">
+              <div class="row-label">mata uang</div>
+              <div class="row-sub">strict isolation · ga ada konversi</div>
+            </div>
+            <div class="row-val mono">IDR + USD</div>
+            <div class="chev">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M9 6l6 6-6 6" />
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="note">Basic: 1 mata uang, maks 4 dompet · Pro: 2 mata uang, maks 10 dompet</div>
+      </div>
+
+      <!-- TAGIHAN -->
+      <div class="section">
+        <div class="sec-label">tagihan</div>
+        <div class="group">
+          <div class="row">
+            <div class="row-main">
+              <div class="row-label">tagihan bulanan</div>
+              <div class="row-sub">rutin + sekali bayar · tambah / edit / hapus</div>
+            </div>
+            <div class="row-val mono">7 · Rp 2.3jt</div>
+            <div class="chev">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M9 6l6 6-6 6" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GOAL TABUNGAN -->
+      <div class="section">
+        <div class="sec-label">goal tabungan</div>
+        <div class="group">
+          <div class="row">
+            <div class="row-main">
+              <div class="row-label">goal</div>
+              <div class="row-sub">tambah / edit target / hapus · urutan di home</div>
+            </div>
+            <div class="row-val mono">4 · Rp 3.2jt</div>
+            <div class="chev">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M9 6l6 6-6 6" />
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="note">reorder drag-drop tetap di home · Basic maks 4 goal · Pro unlimited</div>
+      </div>
+
+      <!-- LISENSI -->
+      <div class="section">
+        <div class="sec-label">lisensi</div>
+        <div class="group">
+          <div class="row">
+            <div class="row-main"><div class="row-label">status</div></div>
+            <div class="row-val"><span class="pro-badge">Pro</span></div>
+          </div>
+          <div class="row">
+            <div class="row-main">
+              <div class="row-label">masa aktif</div>
+              <div class="row-sub">sisa dari lisensi 6 bulan</div>
+            </div>
+            <div class="row-val mono">142 hari lagi</div>
+          </div>
+          <div class="row">
+            <div class="row-main"><div class="row-label">ganti kode lisensi</div></div>
+            <div class="chev">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M9 6l6 6-6 6" />
+              </svg>
+            </div>
+          </div>
+          <div class="row">
+            <div class="row-main">
+              <div class="row-label">perpanjang / beli</div>
+              <div class="row-sub">Clicky.id (IDR) · Gumroad (USD)</div>
+            </div>
+            <div class="chev">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M9 6l6 6-6 6" />
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="note">link toko nyusul · akun Clicky & Gumroad belum dibuat</div>
+      </div>
+    </div>
+  </body>
+</html>

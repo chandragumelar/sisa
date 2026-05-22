@@ -1,0 +1,636 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SISA — Backup Guide (Lofi)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ============================================================
+     SISA — Backup Guide wireframe · LOFI
+     3 state: (A) info card di home post-onboarding ·
+              (B) sheet guide tap "Cara backup" ·
+              (C) reminder card eskalasi hari 30/45/60+
+     Token identik onboarding/settings/profil lofi.
+     ============================================================ */
+      :root {
+        --canvas: #edeff2;
+        --surface: #ffffff;
+        --surface-2: #e4e7eb;
+        --ink-1: #1a1d22;
+        --ink-2: #6a6f78;
+        --ink-3: #9aa0a8;
+        --hair: #e2e5ea;
+        --fill: #2c2f36;
+        --fill-bg: #eceef1;
+        --danger: #4a4d52;
+        --font-sans: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;
+        --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        -webkit-tap-highlight-color: transparent;
+      }
+      body {
+        font-family: var(--font-sans);
+        background: #d7dbe0;
+        min-height: 100vh;
+        padding: 40px 24px;
+        color: var(--ink-1);
+        font-feature-settings: 'tnum', 'lnum', 'cv11';
+        -webkit-font-smoothing: antialiased;
+      }
+      .flow-title {
+        text-align: center;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+        color: var(--ink-2);
+        margin-bottom: 28px;
+      }
+      .flow-title b {
+        color: var(--ink-1);
+      }
+
+      .grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 34px 28px;
+        justify-content: center;
+        align-items: flex-start;
+      }
+      .cell {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+      }
+      .cap {
+        font-size: 10.5px;
+        font-weight: 500;
+        letter-spacing: 0.4px;
+        color: var(--ink-2);
+        font-family: var(--font-mono);
+      }
+
+      /* device frame */
+      .frame {
+        width: 300px;
+        min-height: 540px;
+        background: var(--canvas);
+        border-radius: 26px;
+        padding: 18px 16px 18px;
+        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* header bar (home stub) */
+      .hdr {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 14px;
+      }
+      .wm {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        color: var(--ink-1);
+      }
+      .set-icon {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        align-items: flex-end;
+      }
+      .set-icon i {
+        display: block;
+        height: 1.5px;
+        background: var(--ink-2);
+        position: relative;
+      }
+      .set-icon i:nth-child(1) {
+        width: 14px;
+      }
+      .set-icon i:nth-child(2) {
+        width: 14px;
+      }
+      .set-icon i:nth-child(3) {
+        width: 14px;
+      }
+      .set-icon i::after {
+        content: '';
+        position: absolute;
+        top: -1px;
+        width: 3px;
+        height: 3px;
+        border-radius: 50%;
+        background: var(--ink-2);
+      }
+      .set-icon i:nth-child(1)::after {
+        left: 3px;
+      }
+      .set-icon i:nth-child(2)::after {
+        left: 8px;
+      }
+      .set-icon i:nth-child(3)::after {
+        left: 1px;
+      }
+
+      /* home stub modules — skeleton untuk konteks */
+      .stub-block {
+        margin-bottom: 11px;
+      }
+      .stub-label {
+        font-size: 9px;
+        font-weight: 500;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        margin-bottom: 6px;
+      }
+      .stub-num {
+        font-family: var(--font-mono);
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--ink-1);
+        letter-spacing: -0.5px;
+      }
+      .stub-num.sm {
+        font-size: 13px;
+      }
+      .stub-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+      }
+      .skel {
+        height: 8px;
+        background: var(--surface-2);
+        border-radius: 3px;
+      }
+      .skel.w60 {
+        width: 60%;
+      }
+      .skel.w40 {
+        width: 40%;
+      }
+      .skel.w80 {
+        width: 80%;
+      }
+      .stub-bar {
+        height: 5px;
+        background: var(--surface-2);
+        border-radius: 3px;
+        margin-top: 5px;
+        position: relative;
+        overflow: hidden;
+      }
+      .stub-bar i {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        background: var(--fill);
+        border-radius: 3px;
+      }
+
+      /* backup info card — yang jadi fokus */
+      .bk-card {
+        background: var(--surface);
+        border: 1px solid var(--hair);
+        border-radius: 12px;
+        padding: 13px;
+        margin-bottom: 14px;
+        position: relative;
+      }
+      .bk-card.focused {
+        box-shadow: 0 0 0 2px var(--fill);
+        border-color: var(--fill);
+      }
+      .bk-head {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        margin-bottom: 7px;
+      }
+      .bk-icon {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        border: 1.5px solid var(--ink-1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--ink-1);
+        flex: none;
+      }
+      .bk-title {
+        font-size: 12.5px;
+        font-weight: 600;
+        color: var(--ink-1);
+        flex: 1;
+      }
+      .bk-close {
+        font-size: 14px;
+        color: var(--ink-3);
+        line-height: 1;
+      }
+      .bk-body {
+        font-size: 11px;
+        color: var(--ink-2);
+        line-height: 1.5;
+        margin-bottom: 11px;
+      }
+      .bk-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .bk-actions .a {
+        font-size: 11.5px;
+        font-weight: 500;
+        color: var(--ink-1);
+      }
+      .bk-actions .d {
+        font-size: 11.5px;
+        color: var(--ink-3);
+      }
+
+      /* reminder card variant — eskalasi (lebih urgent visual cue) */
+      .bk-card.escal {
+        border-color: var(--ink-2);
+      }
+      .bk-card.escal .bk-icon {
+        border-color: var(--ink-1);
+        background: var(--ink-1);
+        color: #fff;
+      }
+      .meta-line {
+        font-size: 10px;
+        color: var(--ink-3);
+        font-family: var(--font-mono);
+        margin-top: 5px;
+      }
+
+      /* bottom action stub */
+      .grow {
+        flex: 1;
+        min-height: 8px;
+      }
+      .btn-row {
+        display: flex;
+        gap: 8px;
+        margin-top: 6px;
+      }
+      .btn-stub {
+        flex: 1;
+        height: 38px;
+        border-radius: 11px;
+        background: var(--surface);
+        border: 1px solid var(--hair);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        color: var(--ink-2);
+      }
+      .btn-stub.primary {
+        background: var(--fill);
+        color: #fff;
+        border-color: var(--fill);
+      }
+
+      /* ================== SHEET (state B) ================== */
+      .sheet-shell {
+        width: 300px;
+        min-height: 540px;
+        background: #0f1216;
+        border-radius: 26px;
+        padding: 18px 0 0;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        overflow: hidden;
+      }
+      .scrim {
+        font-size: 9px;
+        color: #5a5e66;
+        text-align: center;
+        letter-spacing: 0.5px;
+        padding: 4px 0 10px;
+        font-family: var(--font-mono);
+      }
+      .sheet {
+        background: var(--canvas);
+        border-radius: 18px 18px 0 0;
+        flex: 1;
+        padding: 14px 16px 18px;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 -6px 18px rgba(0, 0, 0, 0.2);
+      }
+      .grab {
+        width: 34px;
+        height: 3.5px;
+        background: var(--surface-2);
+        border-radius: 3px;
+        margin: 0 auto 12px;
+      }
+      .sh-h {
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: -0.2px;
+        margin-bottom: 4px;
+      }
+      .sh-sub {
+        font-size: 11px;
+        color: var(--ink-3);
+        line-height: 1.5;
+        margin-bottom: 14px;
+      }
+
+      /* numbered step block */
+      .step {
+        background: var(--surface);
+        border: 1px solid var(--hair);
+        border-radius: 11px;
+        padding: 12px;
+        margin-bottom: 9px;
+        display: flex;
+        gap: 11px;
+      }
+      .step-num {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: var(--fill);
+        color: #fff;
+        font-family: var(--font-mono);
+        font-size: 11px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: none;
+        margin-top: 1px;
+      }
+      .step-body {
+        flex: 1;
+      }
+      .step-t {
+        font-size: 12.5px;
+        font-weight: 600;
+        color: var(--ink-1);
+        margin-bottom: 4px;
+      }
+      .step-b {
+        font-size: 11px;
+        color: var(--ink-2);
+        line-height: 1.5;
+      }
+      .step-b code {
+        font-family: var(--font-mono);
+        font-size: 10.5px;
+        background: var(--surface-2);
+        padding: 1px 5px;
+        border-radius: 3px;
+        color: var(--ink-1);
+      }
+      .step-b .arrow {
+        color: var(--ink-3);
+      }
+
+      /* trade-off block (last step — lebih flat) */
+      .step.flat {
+        background: transparent;
+        border: 1px dashed var(--hair);
+      }
+      .step.flat .step-num {
+        background: var(--surface-2);
+        color: var(--ink-2);
+      }
+
+      .sheet-close {
+        margin-top: auto;
+        padding-top: 10px;
+      }
+      .btn {
+        background: var(--fill);
+        color: #fff;
+        border-radius: 12px;
+        padding: 13px;
+        text-align: center;
+        font-size: 13px;
+        font-weight: 600;
+      }
+      .btn.ghost {
+        background: var(--surface);
+        color: var(--ink-1);
+        border: 1px solid var(--hair);
+      }
+
+      .note {
+        font-size: 10px;
+        font-style: italic;
+        color: var(--ink-3);
+        text-align: center;
+        max-width: 300px;
+        line-height: 1.5;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="flow-title">
+      SISA — backup guide · <b>lofi</b> · post-onboarding + reminder eskalasi
+    </div>
+
+    <div class="grid">
+      <!-- ============ STATE A · INFO CARD DI HOME (POST-ONBOARDING) ============ -->
+      <div class="cell">
+        <div class="cap">A · info card · post-onboarding</div>
+        <div class="frame">
+          <div class="hdr">
+            <div class="wm">SISA</div>
+            <div class="set-icon"><i></i><i></i><i></i></div>
+          </div>
+
+          <!-- saldo stub -->
+          <div class="stub-block">
+            <div class="stub-label">saldo total</div>
+            <div class="stub-num">Rp 8.420.000</div>
+          </div>
+
+          <!-- budget hari ini stub -->
+          <div class="stub-block">
+            <div class="stub-label">budget hari ini</div>
+            <div class="stub-num">Rp 280.000</div>
+            <div class="stub-bar"><i style="width: 55%"></i></div>
+          </div>
+
+          <!-- ↓ BACKUP INFO CARD — highlighted ↓ -->
+          <div class="bk-card focused">
+            <div class="bk-head">
+              <span class="bk-icon">i</span>
+              <span class="bk-title">Penting: backup data lo</span>
+            </div>
+            <div class="bk-body">
+              Data SISA cuma di device ini. Kalau HP ilang atau reset, data ilang. Export rutin ke
+              Drive/iCloud lo.
+            </div>
+            <div class="bk-actions">
+              <span class="a">Cara backup ›</span>
+              <span class="d">Tutup</span>
+            </div>
+          </div>
+
+          <!-- tagihan stub -->
+          <div class="stub-block">
+            <div class="stub-label">tagihan bulan ini</div>
+            <div class="skel w80" style="margin-top: 4px"></div>
+            <div class="skel w60" style="margin-top: 6px"></div>
+          </div>
+
+          <div class="grow"></div>
+          <div class="btn-row">
+            <div class="btn-stub">+ Catat</div>
+            <div class="btn-stub primary">Cek Dulu</div>
+            <div class="btn-stub">Andai</div>
+          </div>
+        </div>
+        <div class="note">muncul sekali · dismissible · tidak modal</div>
+      </div>
+
+      <!-- ============ STATE B · SHEET GUIDE ============ -->
+      <div class="cell">
+        <div class="cap">B · tap "cara backup" → sheet</div>
+        <div class="sheet-shell">
+          <div class="scrim">home tetap di belakang scrim</div>
+          <div class="sheet">
+            <div class="grab"></div>
+            <div class="sh-h">Cara backup data SISA</div>
+            <div class="sh-sub">3 hal yang perlu lo tau. Sekali baca.</div>
+
+            <div class="step">
+              <div class="step-num">1</div>
+              <div class="step-body">
+                <div class="step-t">Backup rutin</div>
+                <div class="step-b">
+                  Buka <code>Settings</code> <span class="arrow">›</span> <code>Export</code>.
+                  Simpan file ke Google Drive atau iCloud lo.
+                </div>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num">2</div>
+              <div class="step-body">
+                <div class="step-t">Pindah HP</div>
+                <div class="step-b">
+                  Di HP lama: Export, simpan file.<br />
+                  Di HP baru: install SISA <span class="arrow">›</span> onboarding
+                  <span class="arrow">›</span> Step 4 tap "Import dari backup"
+                  <span class="arrow">›</span>
+                  pilih file.
+                </div>
+              </div>
+            </div>
+
+            <div class="step flat">
+              <div class="step-num">3</div>
+              <div class="step-body">
+                <div class="step-t">Kenapa manual?</div>
+                <div class="step-b">
+                  Kita ga simpan data lo di server kita. Itu yang bikin SISA aman & murah.
+                  Trade-off: backup tanggung jawab lo.
+                </div>
+              </div>
+            </div>
+
+            <div class="sheet-close">
+              <div class="btn">Buka Settings → Export</div>
+              <div style="height: 8px"></div>
+              <div class="btn ghost">Nanti aja</div>
+            </div>
+          </div>
+        </div>
+        <div class="note">3-step · paragraph-driven · no checkbox · no animation</div>
+      </div>
+
+      <!-- ============ STATE C · REMINDER ESKALASI ============ -->
+      <div class="cell">
+        <div class="cap">C · reminder · hari 60+</div>
+        <div class="frame">
+          <div class="hdr">
+            <div class="wm">SISA</div>
+            <div class="set-icon"><i></i><i></i><i></i></div>
+          </div>
+
+          <!-- saldo stub -->
+          <div class="stub-block">
+            <div class="stub-label">saldo total</div>
+            <div class="stub-num">Rp 6.140.000</div>
+          </div>
+
+          <div class="stub-block">
+            <div class="stub-label">budget hari ini</div>
+            <div class="stub-num">Rp 215.000</div>
+            <div class="stub-bar"><i style="width: 72%"></i></div>
+          </div>
+
+          <!-- ↓ REMINDER CARD ESKALASI ↓ -->
+          <div class="bk-card escal">
+            <div class="bk-head">
+              <span class="bk-icon">!</span>
+              <span class="bk-title">Belum backup 63 hari</span>
+            </div>
+            <div class="bk-body">
+              Backup terakhir: 19 Mar 2026. Kalau HP lo kenapa-kenapa sekarang, 63 hari data hilang.
+            </div>
+            <div class="bk-actions">
+              <span class="a">Backup sekarang ›</span>
+              <span class="d">Tutup</span>
+            </div>
+            <div class="meta-line">eskalasi: 30 → 45 → 60 → 70 → 80 → 90 …</div>
+          </div>
+
+          <!-- 2 col stub -->
+          <div class="stub-block">
+            <div class="stub-row">
+              <div>
+                <div class="stub-label">minggu ini</div>
+                <div class="stub-num sm">Rp 1.4jt</div>
+              </div>
+              <div>
+                <div class="stub-label">sisa gajian</div>
+                <div class="stub-num sm">Rp 3.2jt</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grow"></div>
+          <div class="btn-row">
+            <div class="btn-stub">+ Catat</div>
+            <div class="btn-stub primary">Cek Dulu</div>
+            <div class="btn-stub">Andai</div>
+          </div>
+        </div>
+        <div class="note">
+          visual lebih tegas dari state A · tetap dismissible · interval makin pendek
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

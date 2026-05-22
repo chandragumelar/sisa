@@ -1,0 +1,608 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SISA — Forecast Detail (Pro)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ================================================================
+     SISA — Forecast Detail Sheet (Lo-Fi)
+     Sheet yang muncul saat user tap "detail" di forecast 3-bulan
+     Push sheet dari bottom, scrollable, breakdown per bulan
+     ================================================================ */
+      :root {
+        --canvas: #f4f4f4;
+        --surface: #ffffff;
+        --bar: #e0e0e0;
+        --bar-fill: #888888;
+        --ink-1: #111111;
+        --ink-2: #6b6b6b;
+        --ink-3: #a8a8a8;
+        --border: #d8d8d8;
+        --border-soft: #ececec;
+        --font-sans: 'Inter Tight', -apple-system, sans-serif;
+        --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: var(--font-sans);
+        background: #dededa;
+        color: var(--ink-1);
+        min-height: 100vh;
+        padding: 32px 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        -webkit-font-smoothing: antialiased;
+      }
+      .doc-header {
+        max-width: 380px;
+        width: 100%;
+        text-align: center;
+        color: var(--ink-2);
+      }
+      .doc-header h1 {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 4px;
+        letter-spacing: -0.3px;
+        color: var(--ink-1);
+      }
+      .doc-header p {
+        font-size: 11.5px;
+        color: var(--ink-3);
+      }
+      .frame-wrapper {
+        background: #c9c9c5;
+        padding: 18px;
+        border-radius: 32px;
+      }
+      .device-frame {
+        background: #1a1a1a;
+        padding: 6px;
+        border-radius: 36px;
+        width: 380px;
+      }
+      .screen {
+        background: var(--canvas);
+        border-radius: 30px;
+        padding: 14px 14px 0;
+        position: relative;
+        overflow: hidden;
+        height: 760px;
+      }
+
+      /* ============ BG HOME DIMMED ============ */
+      .bg-home {
+        opacity: 0.3;
+        pointer-events: none;
+      }
+      .bg-home .status-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 2px 4px 0;
+        margin-bottom: 14px;
+      }
+      .brand {
+        letter-spacing: 1.5px;
+        font-weight: 700;
+        font-size: 11px;
+        color: var(--ink-1);
+      }
+      .bg-skeleton-block {
+        background: var(--bar);
+        border-radius: 6px;
+        margin-bottom: 8px;
+      }
+
+      /* ============ DIM OVERLAY ============ */
+      .sheet-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.25);
+        pointer-events: none;
+      }
+
+      /* ============ BOTTOM SHEET ============ */
+      .sheet {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: var(--canvas);
+        border-radius: 18px 18px 0 0;
+        max-height: 90%;
+        display: flex;
+        flex-direction: column;
+      }
+      .sheet-handle {
+        width: 36px;
+        height: 4px;
+        background: var(--ink-3);
+        border-radius: 2px;
+        margin: 8px auto 6px;
+        flex-shrink: 0;
+      }
+      .sheet-head {
+        padding: 8px 18px 12px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-shrink: 0;
+      }
+      .sheet-title-grp {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .sheet-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--ink-1);
+        letter-spacing: -0.2px;
+      }
+      .sheet-sub {
+        font-size: 10.5px;
+        color: var(--ink-2);
+      }
+      .sheet-close {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: var(--bar);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        color: var(--ink-2);
+      }
+      .sheet-body {
+        padding: 14px 18px 20px;
+        overflow-y: auto;
+        flex: 1;
+      }
+
+      /* ============ HERO TREND ============ */
+      .hero-trend {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 14px;
+        margin-bottom: 14px;
+      }
+      .hero-label {
+        font-size: 10px;
+        color: var(--ink-3);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        font-weight: 500;
+        margin-bottom: 8px;
+      }
+      /* Mini bar chart trend */
+      .trend-bars {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        align-items: end;
+        height: 100px;
+        margin-bottom: 8px;
+      }
+      .trend-col {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        height: 100%;
+      }
+      .trend-bar {
+        width: 100%;
+        background: var(--ink-1);
+        border-radius: 3px 3px 0 0;
+        flex-shrink: 0;
+      }
+      .trend-bar-month {
+        font-family: var(--font-mono);
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--ink-1);
+        font-feature-settings: 'tnum';
+        letter-spacing: -0.3px;
+        text-align: center;
+      }
+      .trend-bar-label {
+        font-size: 10px;
+        color: var(--ink-3);
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+      }
+      .trend-bar-col-inner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        flex: 1;
+        justify-content: flex-end;
+      }
+      .trend-line {
+        font-size: 10.5px;
+        color: var(--ink-2);
+        text-align: center;
+        padding-top: 8px;
+        border-top: 1px dashed var(--border);
+      }
+
+      /* ============ ASSUMPTION BLOCK ============ */
+      .section-label {
+        font-size: 10px;
+        color: var(--ink-3);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        font-weight: 500;
+        margin-bottom: 6px;
+        margin-top: 4px;
+      }
+      .assumption-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 4px 13px;
+        margin-bottom: 14px;
+      }
+      .asm-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 9px 0;
+        border-bottom: 1px solid var(--border-soft);
+        font-size: 12px;
+      }
+      .asm-row:last-child {
+        border-bottom: none;
+      }
+      .asm-name {
+        color: var(--ink-2);
+      }
+      .asm-val {
+        font-family: var(--font-mono);
+        color: var(--ink-1);
+        font-weight: 500;
+        font-feature-settings: 'tnum';
+      }
+
+      /* ============ MONTH BREAKDOWN ============ */
+      .month-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 12px 13px;
+        margin-bottom: 8px;
+      }
+      .month-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: 6px;
+      }
+      .month-name {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--ink-1);
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+      }
+      .month-prediction {
+        font-family: var(--font-mono);
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--ink-1);
+        letter-spacing: -0.3px;
+        font-feature-settings: 'tnum';
+      }
+      .month-breakdown {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        margin-top: 6px;
+      }
+      .breakdown-line {
+        display: flex;
+        justify-content: space-between;
+        font-size: 10.5px;
+        color: var(--ink-2);
+      }
+      .breakdown-line .val {
+        font-family: var(--font-mono);
+        font-feature-settings: 'tnum';
+        color: var(--ink-1);
+      }
+      .breakdown-line.total {
+        border-top: 1px dashed var(--border);
+        padding-top: 6px;
+        margin-top: 4px;
+        color: var(--ink-1);
+        font-weight: 500;
+      }
+
+      /* ============ ACCURACY MICRO ============ */
+      .accuracy-meta {
+        font-size: 10.5px;
+        color: var(--ink-2);
+        text-align: center;
+        padding: 16px 0 6px;
+        border-top: 1px solid var(--border);
+        margin-top: 6px;
+      }
+      .accuracy-meta u {
+        text-decoration: underline;
+        text-underline-offset: 2px;
+      }
+
+      /* ============ LEGEND ============ */
+      .legend {
+        max-width: 380px;
+        width: 100%;
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 16px;
+        border: 1px solid #d5d5d1;
+        font-size: 11px;
+        color: var(--ink-2);
+        line-height: 1.6;
+      }
+      .legend h2 {
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: var(--ink-1);
+      }
+      .legend ul {
+        list-style: none;
+        padding-left: 14px;
+      }
+      .legend li {
+        position: relative;
+        margin-bottom: 4px;
+      }
+      .legend li:before {
+        content: '·';
+        position: absolute;
+        left: -10px;
+        color: var(--ink-3);
+      }
+      .legend b {
+        color: var(--ink-1);
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="doc-header">
+      <h1>SISA — Forecast Detail Ditap</h1>
+      <p>Sheet detail prediksi 3-bulan · trend + assumption + breakdown per bulan</p>
+    </div>
+
+    <div class="frame-wrapper">
+      <div class="device-frame">
+        <div class="screen">
+          <!-- BG HOME DIMMED -->
+          <div class="bg-home">
+            <div class="status-bar">
+              <span class="brand">SISA · Pro</span>
+              <span style="font-size: 18px; color: var(--ink-2)">☰</span>
+            </div>
+            <div
+              class="bg-skeleton-block"
+              style="height: 24px; width: 80px; margin-bottom: 10px"
+            ></div>
+            <div class="bg-skeleton-block" style="height: 38px; margin-bottom: 12px"></div>
+            <div class="bg-skeleton-block" style="height: 100px; margin-bottom: 18px"></div>
+            <div class="bg-skeleton-block" style="height: 60px; margin-bottom: 18px"></div>
+          </div>
+
+          <div class="sheet-overlay"></div>
+
+          <!-- BOTTOM SHEET -->
+          <div class="sheet">
+            <div class="sheet-handle"></div>
+
+            <div class="sheet-head">
+              <div class="sheet-title-grp">
+                <span class="sheet-title">Prediksi uang sisa akhir bulan</span>
+                <span class="sheet-sub">3 bulan ke depan · update otomatis tiap minggu</span>
+              </div>
+              <span class="sheet-close">×</span>
+            </div>
+
+            <div class="sheet-body">
+              <!-- HERO TREND BAR CHART -->
+              <div class="hero-trend">
+                <div class="hero-label">trend prediksi</div>
+                <div class="trend-bars">
+                  <div class="trend-col">
+                    <div class="trend-bar-col-inner">
+                      <span class="trend-bar-month">Rp 2.1jt</span>
+                      <div class="trend-bar" style="height: 75%"></div>
+                    </div>
+                    <span class="trend-bar-label">jun</span>
+                  </div>
+                  <div class="trend-col">
+                    <div class="trend-bar-col-inner">
+                      <span class="trend-bar-month">Rp 1.4jt</span>
+                      <div class="trend-bar" style="height: 50%"></div>
+                    </div>
+                    <span class="trend-bar-label">jul</span>
+                  </div>
+                  <div class="trend-col">
+                    <div class="trend-bar-col-inner">
+                      <span class="trend-bar-month">Rp 680rb</span>
+                      <div class="trend-bar" style="height: 24%"></div>
+                    </div>
+                    <span class="trend-bar-label">agu</span>
+                  </div>
+                </div>
+                <div class="trend-line">prediksi turun Rp 1.42jt dalam 3 bulan</div>
+              </div>
+
+              <!-- ASSUMPTION -->
+              <div class="section-label">asumsi prediksi</div>
+              <div class="assumption-card">
+                <div class="asm-row">
+                  <span class="asm-name">Income bulanan</span>
+                  <span class="asm-val">Rp 12.0jt</span>
+                </div>
+                <div class="asm-row">
+                  <span class="asm-name">Komitmen rutin</span>
+                  <span class="asm-val">± Rp 6.2jt</span>
+                </div>
+                <div class="asm-row">
+                  <span class="asm-name">Rata-rata spending</span>
+                  <span class="asm-val">± Rp 4.4jt/bln</span>
+                </div>
+                <div class="asm-row">
+                  <span class="asm-name">Goal nabung</span>
+                  <span class="asm-val">Rp 800rb/bln</span>
+                </div>
+              </div>
+
+              <!-- BREAKDOWN PER BULAN -->
+              <div class="section-label">breakdown per bulan</div>
+
+              <div class="month-card">
+                <div class="month-head">
+                  <span class="month-name">Juni</span>
+                  <span class="month-prediction">Rp 2.1jt</span>
+                </div>
+                <div class="month-breakdown">
+                  <div class="breakdown-line">
+                    <span>Saldo masuk</span><span class="val">Rp 12.5jt</span>
+                  </div>
+                  <div class="breakdown-line">
+                    <span>Komitmen</span><span class="val">−Rp 6.2jt</span>
+                  </div>
+                  <div class="breakdown-line">
+                    <span>Spending</span><span class="val">−Rp 3.4jt</span>
+                  </div>
+                  <div class="breakdown-line">
+                    <span>Nabung</span><span class="val">−Rp 800rb</span>
+                  </div>
+                  <div class="breakdown-line total">
+                    <span>Sisa akhir</span><span class="val">Rp 2.1jt</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="month-card">
+                <div class="month-head">
+                  <span class="month-name">Juli</span>
+                  <span class="month-prediction">Rp 1.4jt</span>
+                </div>
+                <div class="month-breakdown">
+                  <div class="breakdown-line">
+                    <span>Saldo masuk</span><span class="val">Rp 12.0jt</span>
+                  </div>
+                  <div class="breakdown-line">
+                    <span>Komitmen</span><span class="val">−Rp 6.2jt</span>
+                  </div>
+                  <div class="breakdown-line">
+                    <span>Spending</span><span class="val">−Rp 3.6jt</span>
+                  </div>
+                  <div class="breakdown-line">
+                    <span>Nabung</span><span class="val">−Rp 800rb</span>
+                  </div>
+                  <div class="breakdown-line total">
+                    <span>Sisa akhir</span><span class="val">Rp 1.4jt</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="month-card">
+                <div class="month-head">
+                  <span class="month-name">Agustus</span>
+                  <span class="month-prediction">Rp 680rb</span>
+                </div>
+                <div class="month-breakdown">
+                  <div class="breakdown-line">
+                    <span>Saldo masuk</span><span class="val">Rp 12.0jt</span>
+                  </div>
+                  <div class="breakdown-line">
+                    <span>Komitmen</span><span class="val">−Rp 6.5jt</span>
+                  </div>
+                  <div class="breakdown-line">
+                    <span>Spending</span><span class="val">−Rp 4.0jt</span>
+                  </div>
+                  <div class="breakdown-line">
+                    <span>Nabung</span><span class="val">−Rp 800rb</span>
+                  </div>
+                  <div class="breakdown-line total">
+                    <span>Sisa akhir</span><span class="val">Rp 680rb</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- AKURASI -->
+              <div class="accuracy-meta">
+                akurasi historis SISA: <u>81%</u> · meleset rata-rata ± Rp 180rb
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEGEND -->
+    <div class="legend">
+      <h2>Spec sheet — forecast ditap</h2>
+      <ul>
+        <li>
+          <b>Bottom sheet</b>, max height 90% (lebih tinggi dari notif sheet karena content lebih
+          panjang). Drag handle + close button.
+        </li>
+        <li>
+          <b>Hero trend</b>: 3 bar chart sederhana, angka di atas bar (mono, tabular). Bar tertinggi
+          = bulan dengan prediksi sisa terbanyak. Bukan opini "aman/ketat", cuma height
+          proporsional.
+        </li>
+        <li>
+          <b>Trend line single sentence</b> di bawah bar: "prediksi turun Rp X dalam 3 bulan" —
+          fakta, bukan opini.
+        </li>
+        <li>
+          <b>Asumsi prediksi</b>: card transparan listing income, komitmen, rata-rata spending, goal
+          nabung. Ini transparansi — user paham angka dari mana.
+        </li>
+        <li>
+          <b>Breakdown per bulan</b>: 3 card identik strukturnya, masing-masing kasih hitungan
+          "saldo - komitmen - spending - nabung = sisa akhir".
+        </li>
+        <li>
+          <b>Akurasi historis</b> di bottom: "81% · meleset rata-rata ± Rp 180rb" — calibration
+          honesty. User tau prediksi ini punya margin.
+        </li>
+        <li>
+          <b>No opini status</b>: ga ada "aman/ketat/bahaya". User dewasa, angka sudah
+          self-explanatory.
+        </li>
+        <li>
+          <b>Re-tune button absen</b> — sengaja. Asumsi auto-update dari catatan. Kalau user mau
+          ubah, ke Settings → Goal & Income Schedule.
+        </li>
+      </ul>
+    </div>
+  </body>
+</html>

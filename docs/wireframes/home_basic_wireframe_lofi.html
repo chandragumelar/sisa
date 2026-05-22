@@ -1,0 +1,939 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SISA — Home Basic Wireframe Lo-Fi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ================================================================
+     SISA — Home Basic Wireframe LO-FI (redo)
+     Grayscale skeleton · no color · no signal
+     ================================================================ */
+      :root {
+        --canvas: #f4f4f4;
+        --surface: #ffffff;
+        --bar: #e0e0e0;
+        --bar-fill: #888888;
+        --ink-1: #111111;
+        --ink-2: #6b6b6b;
+        --ink-3: #a8a8a8;
+        --border: #d8d8d8;
+        --border-soft: #ececec;
+        --font-sans: 'Inter Tight', -apple-system, sans-serif;
+        --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: var(--font-sans);
+        background: #dededa;
+        color: var(--ink-1);
+        min-height: 100vh;
+        padding: 32px 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        -webkit-font-smoothing: antialiased;
+      }
+      .doc-header {
+        max-width: 380px;
+        width: 100%;
+        text-align: center;
+        color: var(--ink-2);
+      }
+      .doc-header h1 {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 4px;
+        letter-spacing: -0.3px;
+        color: var(--ink-1);
+      }
+      .doc-header p {
+        font-size: 11.5px;
+        color: var(--ink-3);
+      }
+      .frame-wrapper {
+        background: #c9c9c5;
+        padding: 18px;
+        border-radius: 32px;
+      }
+      .device-frame {
+        background: #1a1a1a;
+        padding: 6px;
+        border-radius: 36px;
+        width: 380px;
+      }
+      .screen {
+        background: var(--canvas);
+        border-radius: 30px;
+        padding: 14px 14px 90px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* HEADER */
+      .status-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 14px;
+        padding: 2px 4px 0;
+      }
+      .brand {
+        letter-spacing: 1.5px;
+        font-weight: 700;
+        font-size: 11px;
+        color: var(--ink-1);
+      }
+      .settings-icon {
+        color: var(--ink-2);
+        display: inline-flex;
+      }
+
+      /* NOTIF */
+      .notif-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--ink-1);
+        border-radius: 10px;
+        padding: 11px 12px;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .notif-icon {
+        flex-shrink: 0;
+        color: var(--ink-1);
+        display: inline-flex;
+      }
+      .notif-body {
+        flex: 1;
+        font-size: 11.5px;
+        line-height: 1.4;
+        color: var(--ink-1);
+      }
+      .notif-body b {
+        font-weight: 600;
+      }
+      .notif-chev {
+        color: var(--ink-1);
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      /* TYPOGRAPHY */
+      .module-label {
+        font-size: 10px;
+        color: var(--ink-3);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        font-weight: 500;
+      }
+      .meta-info {
+        font-size: 10.5px;
+        color: var(--ink-3);
+      }
+
+      /* SALDO TOTAL — FIX spacing: hero-amount margin-top 4px, hero-sub margin-top 6px (napas) */
+      .hero-amount {
+        font-size: 38px;
+        font-weight: 600;
+        letter-spacing: -1.4px;
+        margin-top: 4px;
+        font-feature-settings: 'tnum', 'lnum';
+        color: var(--ink-1);
+        line-height: 1.05;
+      }
+      .hero-sub {
+        font-size: 11px;
+        color: var(--ink-3);
+        margin-top: 6px;
+        margin-bottom: 14px;
+      }
+      .wallets {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 2px 12px;
+      }
+      .wallet-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--border-soft);
+      }
+      .wallet-row:last-child {
+        border-bottom: none;
+      }
+      .wallet-name {
+        font-size: 12.5px;
+        color: var(--ink-2);
+      }
+      .wallet-amount {
+        font-family: var(--font-mono);
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--ink-1);
+        font-feature-settings: 'tnum';
+      }
+      .divider {
+        height: 1px;
+        background: var(--border);
+        margin: 18px 0;
+      }
+
+      /* BUDGET HARI INI */
+      .row-spread {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: 6px;
+      }
+      .label-with-info {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .info-dot {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 13px;
+        height: 13px;
+        border: 1px solid var(--ink-2);
+        border-radius: 50%;
+        font-size: 9px;
+        color: var(--ink-2);
+        line-height: 1;
+      }
+      .big-amount {
+        font-size: 30px;
+        font-weight: 600;
+        letter-spacing: -0.9px;
+        margin-bottom: 12px;
+        font-feature-settings: 'tnum', 'lnum';
+        color: var(--ink-1);
+        line-height: 1.05;
+      }
+      .bar-thick {
+        height: 22px;
+        background: var(--bar);
+        border-radius: 6px;
+        overflow: hidden;
+        margin-bottom: 8px;
+      }
+      .bar-thick-fill {
+        height: 100%;
+        background: var(--bar-fill);
+        border-radius: 6px 0 0 6px;
+      }
+      .bar-footer {
+        display: flex;
+        justify-content: space-between;
+        font-size: 11px;
+        color: var(--ink-2);
+      }
+      .bar-footer b {
+        font-weight: 600;
+        color: var(--ink-1);
+      }
+
+      /* 2-COL */
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-top: 16px;
+      }
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 11px 12px;
+      }
+      .card-num {
+        font-size: 19px;
+        font-weight: 600;
+        letter-spacing: -0.5px;
+        margin-top: 3px;
+        font-feature-settings: 'tnum', 'lnum';
+        color: var(--ink-1);
+        line-height: 1.1;
+      }
+      .card-sub {
+        font-size: 10px;
+        color: var(--ink-3);
+        margin-top: 4px;
+      }
+      .status-tag {
+        color: var(--ink-2);
+        font-weight: 500;
+      }
+      .card-meta-inline {
+        font-size: 9.5px;
+        color: var(--ink-2);
+        margin-top: 8px;
+        padding-top: 7px;
+        border-top: 1px dashed var(--border);
+      }
+      .card-meta-inline u {
+        text-decoration: underline;
+        text-underline-offset: 2px;
+      }
+
+      /* KOMITMEN */
+      .list-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 9px 0;
+        border-bottom: 1px solid var(--border-soft);
+        gap: 10px;
+      }
+      .list-row:last-of-type {
+        border-bottom: none;
+      }
+      .list-row-name {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        flex: 1;
+        min-width: 0;
+      }
+      .name-bold {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--ink-1);
+      }
+      .name-meta {
+        font-size: 10.5px;
+        color: var(--ink-3);
+      }
+      .name-meta-urgent {
+        font-size: 10.5px;
+        color: var(--ink-1);
+        font-weight: 500;
+      }
+      .amount-bold {
+        font-family: var(--font-mono);
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--ink-1);
+        white-space: nowrap;
+        font-feature-settings: 'tnum';
+      }
+      .chev {
+        font-size: 13px;
+        color: var(--ink-3);
+        margin-left: 6px;
+      }
+      .right-grp {
+        display: flex;
+        align-items: center;
+      }
+      .expand-link {
+        display: block;
+        font-size: 11px;
+        color: var(--ink-2);
+        padding: 10px 0 2px;
+        border-top: 1px solid var(--border-soft);
+        margin-top: 4px;
+      }
+      .expand-link b {
+        font-weight: 500;
+      }
+      .swipe-hint {
+        font-size: 9.5px;
+        color: var(--ink-3);
+        margin-top: 6px;
+        font-style: italic;
+        text-align: right;
+      }
+
+      /* GOAL */
+      .goal-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 12px;
+      }
+      .goal-row {
+        padding: 9px 0;
+        border-bottom: 1px solid var(--border-soft);
+      }
+      .goal-row:last-of-type {
+        border-bottom: none;
+        padding-bottom: 2px;
+      }
+      .goal-row:first-child {
+        padding-top: 2px;
+      }
+      .goal-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 4px;
+      }
+      .goal-head-left {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .goal-badge {
+        font-size: 8.5px;
+        text-transform: uppercase;
+        padding: 2px 6px;
+        border-radius: 3px;
+        background: var(--ink-1);
+        color: var(--canvas);
+        font-weight: 600;
+        letter-spacing: 0.6px;
+      }
+      .goal-badge.muted {
+        background: var(--ink-3);
+        color: var(--canvas);
+      }
+      .goal-name {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--ink-1);
+      }
+      .goal-amount {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        color: var(--ink-2);
+        font-feature-settings: 'tnum';
+      }
+      .goal-status {
+        font-size: 10.5px;
+        color: var(--ink-2);
+      }
+      .goal-status.waiting {
+        color: var(--ink-3);
+        font-style: italic;
+        margin-top: 2px;
+        display: block;
+      }
+      .goal-row.dim-1 {
+        opacity: 0.55;
+      }
+      .goal-row.dim-2 {
+        opacity: 0.48;
+      }
+      .goal-row.dim-3 {
+        opacity: 0.42;
+      }
+      .goal-bar-wrap {
+        position: relative;
+        height: 3px;
+        background: var(--border);
+        border-radius: 2px;
+        margin-top: 6px;
+      }
+      .goal-bar-fill {
+        height: 100%;
+        background: var(--ink-1);
+        border-radius: 2px;
+      }
+      .goal-marker {
+        position: absolute;
+        right: -2px;
+        top: -3px;
+        width: 0;
+        height: 0;
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+        border-bottom: 5px solid var(--ink-3);
+      }
+      .goal-footer-meta {
+        font-size: 9.5px;
+        color: var(--ink-3);
+        margin-top: 10px;
+        font-style: italic;
+      }
+
+      /* INSIGHT */
+      .insight-stack {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 13px 14px;
+      }
+      .insight-tag {
+        font-size: 9px;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: var(--ink-3);
+        margin-bottom: 6px;
+        font-weight: 500;
+      }
+      .insight-body {
+        font-size: 12.5px;
+        line-height: 1.5;
+        color: var(--ink-1);
+      }
+      .insight-body b {
+        font-weight: 600;
+      }
+      .insight-more {
+        display: block;
+        font-size: 10.5px;
+        color: var(--ink-2);
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px solid var(--border-soft);
+      }
+
+      /* FOOTER */
+      .footer-link-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 4px 4px;
+        font-size: 11px;
+        color: var(--ink-3);
+      }
+      .footer-link-row .left {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .footer-link-row .nom-out {
+        color: var(--ink-1);
+        font-weight: 500;
+        font-family: var(--font-mono);
+        font-feature-settings: 'tnum';
+      }
+      .footer-link-row .item-name {
+        color: var(--ink-1);
+        font-weight: 500;
+      }
+      .footer-link-row .right {
+        color: var(--ink-2);
+        text-decoration: underline;
+        text-underline-offset: 2px;
+        white-space: nowrap;
+      }
+
+      /* BOTTOM ACTION */
+      .bottom-action {
+        position: absolute;
+        bottom: 12px;
+        left: 12px;
+        right: 12px;
+        display: flex;
+        gap: 8px;
+        align-items: stretch;
+      }
+      .ba-btn {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        width: 64px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        padding: 12px 0;
+        color: var(--ink-1);
+      }
+      .ba-btn-label {
+        font-size: 10px;
+        color: var(--ink-1);
+        font-weight: 500;
+      }
+      .ba-cek {
+        flex: 1;
+        background: var(--ink-1);
+        color: #ffffff;
+        border-radius: 12px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        padding: 12px 0;
+      }
+      .ba-cek-label {
+        font-size: 17px;
+        font-weight: 600;
+        letter-spacing: -0.3px;
+      }
+      .ba-cek-sub {
+        font-size: 10px;
+        color: #bbbbbb;
+      }
+
+      /* SPEC LEGEND */
+      .legend {
+        max-width: 380px;
+        width: 100%;
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 16px;
+        border: 1px solid #d5d5d1;
+        font-size: 11px;
+        color: var(--ink-2);
+        line-height: 1.6;
+      }
+      .legend h2 {
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: var(--ink-1);
+      }
+      .legend ul {
+        list-style: none;
+        padding-left: 14px;
+      }
+      .legend li {
+        position: relative;
+        margin-bottom: 4px;
+      }
+      .legend li:before {
+        content: '·';
+        position: absolute;
+        left: -10px;
+        color: var(--ink-3);
+      }
+      .legend b {
+        color: var(--ink-1);
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="doc-header">
+      <h1>SISA — Home Basic Wireframe Lo-Fi</h1>
+      <p>Grayscale skeleton · structural reference · no color, no signal</p>
+    </div>
+
+    <div class="frame-wrapper">
+      <div class="device-frame">
+        <div class="screen">
+          <!-- HEADER -->
+          <div class="status-bar">
+            <span class="brand">SISA</span>
+            <span class="settings-icon" title="settings">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="4" y1="6" x2="20" y2="6" />
+                <line x1="4" y1="12" x2="20" y2="12" />
+                <line x1="4" y1="18" x2="20" y2="18" />
+                <circle cx="9" cy="6" r="2" fill="#F4F4F4" />
+                <circle cx="15" cy="12" r="2" fill="#F4F4F4" />
+                <circle cx="11" cy="18" r="2" fill="#F4F4F4" />
+              </svg>
+            </span>
+          </div>
+
+          <!-- NOTIF -->
+          <div class="notif-card">
+            <span class="notif-icon">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+            </span>
+            <span class="notif-body">
+              <b>2 komitmen lewat tempo</b> — Listrik (hari ini) & Hutang Budi (2 hari)
+            </span>
+            <span class="notif-chev">›</span>
+          </div>
+
+          <!-- SALDO — FIX spacing antara hero amount & subtext -->
+          <div class="module-label">saldo total</div>
+          <div class="hero-amount">Rp 4.730.000</div>
+          <div class="hero-sub">Rp 87rb terpakai kemarin</div>
+          <div class="wallets">
+            <div class="wallet-row">
+              <span class="wallet-name">BCA</span><span class="wallet-amount">Rp 2.180.000</span>
+            </div>
+            <div class="wallet-row">
+              <span class="wallet-name">Mandiri</span
+              ><span class="wallet-amount">Rp 1.420.000</span>
+            </div>
+            <div class="wallet-row">
+              <span class="wallet-name">ShopeePay</span
+              ><span class="wallet-amount">Rp 880.000</span>
+            </div>
+            <div class="wallet-row">
+              <span class="wallet-name">Cash</span><span class="wallet-amount">Rp 250.000</span>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- BUDGET HARI INI -->
+          <div class="row-spread">
+            <span class="label-with-info">
+              <span class="module-label">budget hari ini</span>
+              <span class="info-dot">i</span>
+            </span>
+            <span class="meta-info">9 hari sampai gajian (tgl 25)</span>
+          </div>
+          <div class="big-amount">Rp 178.000</div>
+          <div class="bar-thick">
+            <div class="bar-thick-fill" style="width: 32%"></div>
+          </div>
+          <div class="bar-footer">
+            <span>Rp 57rb terpakai</span>
+            <span><b>Rp 121rb</b> sisa hari ini</span>
+          </div>
+
+          <!-- 2-col -->
+          <div class="grid">
+            <div class="card">
+              <div class="module-label">budget minggu ini</div>
+              <div class="card-num">Rp 530.000</div>
+              <div class="card-sub">sampai minggu · 4 hari</div>
+            </div>
+            <div class="card">
+              <div class="module-label">sisa pas gajian</div>
+              <div class="card-num">Rp 420.000</div>
+              <div class="card-sub">prediksi · <span class="status-tag">ketat</span></div>
+              <div class="card-meta-inline">akurasi prediksi: <u>81%</u> ›</div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- KOMITMEN -->
+          <div class="row-spread">
+            <span class="module-label">komitmen bulan ini</span>
+            <span class="meta-info">± Rp 4.8jt total</span>
+          </div>
+
+          <div class="list-row">
+            <div class="list-row-name">
+              <span class="name-bold">Listrik</span>
+              <span class="name-meta-urgent">jatuh tempo hari ini · belum dibayar</span>
+            </div>
+            <div class="right-grp">
+              <span class="amount-bold">± Rp 280rb</span>
+              <span class="chev">›</span>
+            </div>
+          </div>
+
+          <div class="list-row">
+            <div class="list-row-name">
+              <span class="name-bold">Hutang ke Budi</span>
+              <span class="name-meta-urgent">lewat 2 hari · belum dibayar</span>
+            </div>
+            <div class="right-grp">
+              <span class="amount-bold">Rp 500rb</span>
+              <span class="chev">›</span>
+            </div>
+          </div>
+
+          <div class="list-row">
+            <div class="list-row-name">
+              <span class="name-bold">Spotify</span>
+              <span class="name-meta">3 hari lagi</span>
+            </div>
+            <div class="right-grp">
+              <span class="amount-bold">Rp 59rb</span>
+              <span class="chev">›</span>
+            </div>
+          </div>
+
+          <div class="list-row">
+            <div class="list-row-name">
+              <span class="name-bold">KPR</span>
+              <span class="name-meta">7 hari lagi</span>
+            </div>
+            <div class="right-grp">
+              <span class="amount-bold">± Rp 3.2jt</span>
+              <span class="chev">›</span>
+            </div>
+          </div>
+
+          <span class="expand-link">+ <b>3 komitmen lainnya</b> · iCloud, Netflix, Indihome ›</span>
+          <div class="swipe-hint">swipe kiri untuk tandai dibayar</div>
+
+          <div class="divider"></div>
+
+          <!-- GOAL -->
+          <div class="module-label" style="margin-bottom: 8px">goal tabungan</div>
+          <div class="goal-card">
+            <div class="goal-row">
+              <div class="goal-head">
+                <div class="goal-head-left">
+                  <span class="goal-badge">darurat</span>
+                  <span class="goal-name">Dana darurat</span>
+                </div>
+                <span class="goal-amount">Rp 3.2jt / Rp 15jt</span>
+              </div>
+              <div class="goal-status">menabung →</div>
+              <div class="goal-bar-wrap">
+                <div class="goal-bar-fill" style="width: 21%"></div>
+                <div class="goal-marker"></div>
+              </div>
+            </div>
+
+            <div class="goal-row dim-1">
+              <div class="goal-head">
+                <div class="goal-head-left">
+                  <span class="goal-badge muted">impian #1</span>
+                  <span class="goal-name">DP rumah</span>
+                </div>
+                <span class="goal-amount">Rp 0 / Rp 80jt</span>
+              </div>
+              <span class="goal-status waiting">menunggu darurat full</span>
+            </div>
+
+            <div class="goal-row dim-2">
+              <div class="goal-head">
+                <div class="goal-head-left">
+                  <span class="goal-badge muted">impian #2</span>
+                  <span class="goal-name">Liburan Jepang</span>
+                </div>
+                <span class="goal-amount">Rp 0 / Rp 25jt</span>
+              </div>
+              <span class="goal-status waiting">menunggu impian #1 full</span>
+            </div>
+
+            <div class="goal-row dim-3">
+              <div class="goal-head">
+                <div class="goal-head-left">
+                  <span class="goal-badge muted">impian #3</span>
+                  <span class="goal-name">Ganti laptop</span>
+                </div>
+                <span class="goal-amount">Rp 0 / Rp 30jt</span>
+              </div>
+              <span class="goal-status waiting">menunggu impian #2 full</span>
+            </div>
+
+            <div class="goal-footer-meta">basic limit · 4 goal max (1 darurat + 3 impian)</div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- INSIGHT -->
+          <div class="module-label" style="margin-bottom: 8px">insight bulan ini</div>
+          <div class="insight-stack">
+            <div class="insight-tag">pola spending</div>
+            <div class="insight-body">
+              Makanan ngambil <b>40% spending</b> lo bulan ini. Kalau mau budget naik
+              <b>Rp 20rb/hari</b>, di sini kemungkinan bisa dipotong.
+            </div>
+            <span class="insight-more"
+              >lihat 3 insight lainnya · tagihan naik, prediksi, perbandingan ›</span
+            >
+          </div>
+
+          <!-- FOOTER -->
+          <div class="footer-link-row">
+            <div class="left">
+              <span>terakhir dicatat:</span>
+              <span class="item-name">Kopi</span>
+              <span class="nom-out">−Rp 18rb</span>
+              <span>· 2 jam lalu</span>
+            </div>
+            <span class="right">semua catatan ›</span>
+          </div>
+
+          <!-- BOTTOM ACTION -->
+          <div class="bottom-action">
+            <div class="ba-btn">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              >
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+              <span class="ba-btn-label">Catat</span>
+            </div>
+
+            <div class="ba-cek">
+              <span class="ba-cek-label">Cek Dulu</span>
+              <span class="ba-cek-sub">aman ga gue beli ini?</span>
+            </div>
+
+            <div class="ba-btn">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="12" cy="18" r="2" />
+                <circle cx="6" cy="6" r="2" />
+                <circle cx="18" cy="6" r="2" />
+                <path d="M18 8v1a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V8" />
+                <line x1="12" y1="11" x2="12" y2="16" />
+              </svg>
+              <span class="ba-btn-label">Andai</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SPEC LEGEND -->
+    <div class="legend">
+      <h2>Spec lo-fi</h2>
+      <ul>
+        <li><b>Grayscale.</b> Hierarchy harus jalan dari size + weight + spacing.</li>
+        <li><b>Brand = "SISA"</b> tanpa indikator tier — Basic identitas plain.</li>
+        <li>
+          <b>Settings icon = 3 garis dengan dot asimetris</b> (copy persis dari hi-fi original).
+          Pattern operator tool, beda dari hamburger nav biasa.
+        </li>
+        <li>
+          <b>Spacing saldo:</b> hero-amount → 6px gap → "Rp 87rb terpakai kemarin" → 14px gap →
+          wallets card. Ga lagi nempel.
+        </li>
+        <li><b>4 wallet max.</b> Lebih dari ini = upgrade Pro.</li>
+        <li><b>2-col card:</b> Budget Minggu + Sisa Pas Gajian.</li>
+        <li><b>Goal: 1 Darurat + 3 Impian max.</b> Opacity decay 1.0 → 0.55 → 0.48 → 0.42.</li>
+        <li><b>Swipe hint:</b> "swipe kiri untuk tandai dibayar".</li>
+        <li>
+          <b>Notif card kondisional</b> — cuma muncul kalau ada komitmen lewat tempo / due hari ini.
+        </li>
+      </ul>
+    </div>
+  </body>
+</html>
