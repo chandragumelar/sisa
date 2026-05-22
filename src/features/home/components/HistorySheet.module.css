@@ -1,0 +1,94 @@
+.filters {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.filterChip {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1.5px solid var(--border-hair);
+  background: var(--surface-2);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: var(--font-sans);
+  flex-shrink: 0;
+}
+
+.filterChipActive {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+
+.empty {
+  font-size: 13px;
+  color: var(--ink-tertiary);
+  padding: 24px 0;
+  text-align: center;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border-hair);
+  gap: 10px;
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.rowLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.rowName {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rowMeta {
+  font-size: 10.5px;
+  color: var(--ink-tertiary);
+}
+
+.amountOut {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--signal-danger);
+  white-space: nowrap;
+  font-feature-settings: 'tnum';
+  flex-shrink: 0;
+}
+
+.amountIn {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--signal-safe);
+  white-space: nowrap;
+  font-feature-settings: 'tnum';
+  flex-shrink: 0;
+}
