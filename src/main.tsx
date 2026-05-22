@@ -1,5 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import '@/app/tokens.css'
+import '@/app/global.css'
 import { ClockProvider } from '@/app/providers/ClockProvider'
 import { App } from '@/app/App'
 

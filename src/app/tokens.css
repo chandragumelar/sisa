@@ -1,0 +1,39 @@
+/* ============================================================
+   SISA — Design Tokens (Light Mode v1)
+   Source of truth: design_system.md §1 & §2
+   Semantic naming only — never hardcode hex in components.
+   Dark mode v2: swap this file, components stay untouched.
+   ============================================================ */
+
+:root {
+  /* --- Surfaces --- */
+  --canvas: #eef1f5;
+  --surface: #ffffff;
+  --surface-2: #e4e8ee;
+
+  /* --- Ink (text) --- */
+  --ink-primary: #11141a;
+  --ink-secondary: #565c66;
+  --ink-tertiary: #939aa5;
+
+  /* --- Borders --- */
+  --border-hair: #e1e5eb;
+  --border-soft: #eaedf2;
+
+  /* --- Accent — Cobalt (interactive / brand) --- */
+  --accent: #1f4fe0;
+  --accent-hover: #1a44c2;
+  --accent-bg: #edf1fe;
+  --accent-br: #cfd9f9;
+
+  /* --- Signal — saturated, anti-pastel --- */
+  --signal-danger: #d11f1f;
+  --signal-danger-bg: #fceeee;
+  --signal-danger-br: #f4d4d4;
+  --signal-caution: #b5680a;
+  --signal-safe: #1b7a38;
+
+  /* --- Typography --- */
+  --font-sans: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+}
