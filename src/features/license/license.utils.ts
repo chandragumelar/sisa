@@ -1,6 +1,7 @@
 import type { Clock } from '@/shared/types/clock'
-import type { Tier } from '@/db/database'
+import type { LicenseRecord, Tier } from '@/db/database'
 import { PUBLIC_KEY_SPKI_B64, LICENSE_VERSION } from '@/constants/license'
+import { getLicense, saveLicense, updateLastSeenAt } from '@/db/license.repository'
 
 export interface LicensePayload {
   v: number
@@ -85,4 +86,45 @@ export async function verifyLicenseKey(rawKey: string, clock: Clock): Promise<Ve
   if (payload.exp * 1000 < clock.now()) return { status: 'expired' }
 
   return { status: 'valid', payload }
+}
+
+// ---------------------------------------------------------------------------
+// Activation & persistence
+// ---------------------------------------------------------------------------
+
+export type ActivateResult = { ok: true } | { ok: false; reason: 'invalid' | 'expired' }
+
+export async function activateLicense(rawKey: string, clock: Clock): Promise<ActivateResult> {
+  const result = await verifyLicenseKey(rawKey, clock)
+  if (result.status !== 'valid') return { ok: false, reason: result.status }
+
+  const { payload } = result
+  const nowMs = clock.now()
+  const record: LicenseRecord = {
+    id: 1,
+    rawKey,
+    tier: payload.tier,
+    version: payload.v,
+    issuedAt: payload.iat * 1000,
+    expiresAt: payload.exp * 1000,
+    buyerIdHash: payload.bid,
+    lastSeenAt: nowMs,
+    activatedAt: nowMs,
+  }
+  await saveLicense(record)
+  return { ok: true }
+}
+
+// Re-verifies the stored raw key on every app open (signature can't be faked;
+// persisted flags can). Updates lastSeenAt when signature is intact — used by
+// anti-rollback detection in story 2.5.
+export async function loadAndVerifyLicense(clock: Clock): Promise<VerifyResult | null> {
+  const record = await getLicense()
+  if (!record) return null
+
+  const result = await verifyLicenseKey(record.rawKey, clock)
+  if (result.status !== 'invalid') {
+    await updateLastSeenAt(clock.now())
+  }
+  return result
 }
