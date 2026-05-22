@@ -24,6 +24,15 @@ export function applyMigrations(db: Dexie): void {
     meta: 'key', // string primary key (e.g. 'schemaVersion', 'installId')
   })
 
-  // v2: add here when needed.
-  // db.version(2).stores({ ... }).upgrade(async (tx) => { ... })
+  // v2: savedScenarios table for Pro Andai feature
+  db.version(2).stores({
+    transactions: '++id, walletId, date, type, currency',
+    wallets: '++id, currency, order',
+    tagihan: '++id, currency, recurrenceType, isActive',
+    goals: '++id, currency, order',
+    settings: 'id',
+    license: 'id',
+    meta: 'key',
+    savedScenarios: '++id, savedAt',
+  })
 }

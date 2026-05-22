@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { Tagihan, Wallet } from '@/db/database'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
+import { hapticMedium } from '@/shared/utils/haptic'
 import { BottomSheet } from '@/shared/components/BottomSheet'
 import styles from './MarkPaidSheet.module.css'
 
@@ -35,6 +36,7 @@ export function MarkPaidSheet({ tagihan, wallets, nowMs, isOpen, onClose, onComm
 
   function handleCommit() {
     if (!walletId || amount <= 0) return
+    hapticMedium()
     onCommit(walletId, amount)
     onClose()
   }

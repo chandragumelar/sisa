@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useClock } from '@/app/providers/useClock'
-import { getSettings } from '@/db/settings.repository'
+import { getSettings, patchSettings } from '@/db/settings.repository'
+import { getLicense } from '@/db/license.repository'
 import { getAllWallets } from '@/db/wallets.repository'
 import {
   getActiveTagihan,
@@ -14,8 +15,9 @@ import {
   getTransactionsByDateRange,
   getTotalNabung,
   deleteTransactionAndRevertBalance,
+  getMonthlyIncomeSummary,
 } from '@/db/transactions.repository'
-import type { Settings, Wallet, Tagihan, Goal, Transaction } from '@/db/database'
+import type { Settings, Wallet, Tagihan, Goal, Transaction, LicenseRecord } from '@/db/database'
 import {
   calcDailyBudget,
   calcUnpaidTagihanTotal,
@@ -23,7 +25,11 @@ import {
   calcYesterdayStats,
   hasUrgentTagihan,
   calcDaysUntilPayday,
+  calcSisaPasGajian,
 } from './home.utils'
+import { calcForecast } from './forecast.utils'
+import type { ForecastMonth } from './forecast.utils'
+import { shouldShowBackupReminder, calcBackupUrgency } from './backup-reminder.utils'
 import { SaldoModule } from './components/SaldoModule'
 import { NotifCard } from './components/NotifCard'
 import { BudgetModule } from './components/BudgetModule'
@@ -35,12 +41,16 @@ import { Toast } from './components/Toast'
 import { MarkPaidSheet } from './components/MarkPaidSheet'
 import { TagihanDetailSheet, UrgentTagihanSheet } from './components/TagihanDetailSheet'
 import { HistorySheet } from './components/HistorySheet'
+import { ForecastCard } from './components/ForecastCard'
+import { ForecastDetailSheet } from './components/ForecastDetailSheet'
+import { BackupCard } from './components/BackupCard'
 import { QuickLogSheet } from '@/features/quickLog/QuickLogSheet'
 import type { QuickLogMode } from '@/features/quickLog/quickLog.utils'
 import styles from './HomePage.module.css'
 
 interface HomeData {
   settings: Settings | null
+  license: LicenseRecord | undefined
   wallets: Wallet[]
   tagihan: Tagihan[]
   goals: Goal[]
@@ -48,6 +58,7 @@ interface HomeData {
   todayTxs: Transaction[]
   yesterdayTxs: Transaction[]
   totalNabung: number
+  monthlyIncomeAvg: number
 }
 
 interface ToastState {
@@ -56,9 +67,12 @@ interface ToastState {
   onEdit?: () => void
 }
 
+const BACKUP_DISMISS_KEY = 'sisa:backupDismissedAt'
+
 function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: () => void } {
   const [data, setData] = useState<HomeData>({
     settings: null,
+    license: undefined,
     wallets: [],
     tagihan: [],
     goals: [],
@@ -66,6 +80,7 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
     todayTxs: [],
     yesterdayTxs: [],
     totalNabung: 0,
+    monthlyIncomeAvg: 0,
   })
   const [isLoading, setIsLoading] = useState(true)
   const [tick, setTick] = useState(0)
@@ -81,30 +96,35 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
 
     Promise.all([
       getSettings(),
+      getLicense(),
       getAllWallets(),
       getActiveTagihan(),
       getAllGoals(),
       getLastTransaction(),
       getTransactionsByDateRange(todayStart, tomorrowStart),
       getTransactionsByDateRange(yesterdayStart, todayStart),
-    ]).then(([settings, wallets, tagihan, goals, lastTx, todayTxs, yesterdayTxs]) => {
-      if (cancelled) return
-      const currency = settings?.primaryCurrency ?? 'IDR'
-      getTotalNabung(currency).then((totalNabung) => {
-        if (!cancelled) {
-          setData({
-            settings: settings ?? null,
-            wallets,
-            tagihan,
-            goals,
-            lastTx,
-            todayTxs,
-            yesterdayTxs,
-            totalNabung,
-          })
-          setIsLoading(false)
-        }
-      })
+    ]).then(([settings, license, wallets, tagihan, goals, lastTx, todayTxs, yesterdayTxs]) => {
+      if (cancelled || !settings) return
+      const currency = settings.primaryCurrency
+      Promise.all([getTotalNabung(currency), getMonthlyIncomeSummary(currency)]).then(
+        ([totalNabung, monthlyIncomeAvg]) => {
+          if (!cancelled) {
+            setData({
+              settings,
+              license,
+              wallets,
+              tagihan,
+              goals,
+              lastTx,
+              todayTxs,
+              yesterdayTxs,
+              totalNabung,
+              monthlyIncomeAvg,
+            })
+            setIsLoading(false)
+          }
+        },
+      )
     })
 
     return () => {
@@ -121,6 +141,7 @@ export function HomePage() {
   const nowMs = clock.now()
   const {
     settings,
+    license,
     wallets,
     tagihan,
     goals,
@@ -128,6 +149,7 @@ export function HomePage() {
     todayTxs,
     yesterdayTxs,
     totalNabung,
+    monthlyIncomeAvg,
     isLoading,
     reload,
   } = useHomeData(nowMs)
@@ -138,16 +160,44 @@ export function HomePage() {
   const [urgentSheetOpen, setUrgentSheetOpen] = useState(false)
   const [historyOpen, setHistoryOpen] = useState(false)
   const [quickLogOpen, setQuickLogOpen] = useState(false)
+  const [forecastDetailOpen, setForecastDetailOpen] = useState(false)
 
   if (isLoading || !settings) return null
 
-  const currency = settings.primaryCurrency
-  const totalSaldo = wallets.reduce((sum, w) => sum + w.balance, 0)
-  const unpaidTagihanTotal = calcUnpaidTagihanTotal(tagihan, nowMs)
+  const isPro = license?.tier === 'pro'
+  const currency = settings.activeCurrencyMode || settings.primaryCurrency
+  const totalSaldo = wallets
+    .filter((w) => w.currency === currency)
+    .reduce((sum, w) => sum + w.balance, 0)
+  const unpaidTagihanTotal = calcUnpaidTagihanTotal(
+    tagihan.filter((t) => t.currency === currency),
+    nowMs,
+  )
   const daysUntilPayday = calcDaysUntilPayday(nowMs, settings)
   const dailyBudget = calcDailyBudget(totalSaldo, unpaidTagihanTotal, 0, daysUntilPayday)
   const spentToday = calcSpentToday(todayTxs, nowMs)
   const { spent: yesterdaySpent, earned: yesterdayEarned } = calcYesterdayStats(yesterdayTxs, nowMs)
+  const sisaPasGajian = calcSisaPasGajian(
+    totalSaldo,
+    dailyBudget,
+    daysUntilPayday,
+    unpaidTagihanTotal,
+  )
+  const tagihanTotal = tagihan
+    .filter((t) => t.currency === currency)
+    .reduce((sum, t) => sum + t.nominalEstimate, 0)
+
+  const forecastMonths: ForecastMonth[] = isPro
+    ? calcForecast(sisaPasGajian, tagihanTotal, dailyBudget, monthlyIncomeAvg, settings, nowMs)
+    : []
+
+  // backup reminder (8.11)
+  const backupDismissedAt = (() => {
+    const raw = localStorage.getItem(BACKUP_DISMISS_KEY)
+    return raw ? parseInt(raw, 10) : null
+  })()
+  const showBackupCard = shouldShowBackupReminder(settings.lastExportedAt, backupDismissedAt, nowMs)
+  const backupUrgency = calcBackupUrgency(settings.lastExportedAt, nowMs)
 
   function dismissToast() {
     setToast(null)
@@ -193,35 +243,77 @@ export function HomePage() {
     reload()
   }
 
+  async function handleCurrencySwitch(cur: string) {
+    await patchSettings({ activeCurrencyMode: cur })
+    reload()
+  }
+
+  const hasDualCurrency = isPro && settings.secondaryCurrency != null
+  const currencies = hasDualCurrency ? [settings.primaryCurrency, settings.secondaryCurrency!] : []
+
   return (
     <main className={styles.page}>
-      {/* Header */}
+      {/* Header (8.8 currency, 8.9 Pro label) */}
       <div className={styles.header}>
-        <span className={styles.wordmark}>SISA</span>
-        <button
-          className={styles.settingsBtn}
-          onClick={() => navigate('/settings')}
-          aria-label="Pengaturan"
-        >
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+        <div className={styles.wordmarkRow}>
+          <span className={styles.wordmark}>SISA</span>
+          {isPro && <span className={styles.proLabel}>· pro</span>}
+        </div>
+
+        <div className={styles.headerRight}>
+          {hasDualCurrency && (
+            <div className={styles.currencySegmented}>
+              {currencies.map((cur) => (
+                <button
+                  key={cur}
+                  className={
+                    cur === currency
+                      ? `${styles.currencyBtn} ${styles.currencyBtnActive}`
+                      : styles.currencyBtn
+                  }
+                  onClick={() => handleCurrencySwitch(cur)}
+                >
+                  {cur}
+                </button>
+              ))}
+            </div>
+          )}
+          <button
+            className={styles.settingsBtn}
+            onClick={() => navigate('/settings')}
+            aria-label="Pengaturan"
           >
-            <line x1="4" y1="6" x2="20" y2="6" />
-            <line x1="4" y1="12" x2="20" y2="12" />
-            <line x1="4" y1="18" x2="20" y2="18" />
-            <circle cx="9" cy="6" r="2" fill="var(--canvas)" />
-            <circle cx="15" cy="12" r="2" fill="var(--canvas)" />
-            <circle cx="11" cy="18" r="2" fill="var(--canvas)" />
-          </svg>
-        </button>
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <line x1="4" y1="6" x2="20" y2="6" />
+              <line x1="4" y1="12" x2="20" y2="12" />
+              <line x1="4" y1="18" x2="20" y2="18" />
+              <circle cx="9" cy="6" r="2" fill="var(--canvas)" />
+              <circle cx="15" cy="12" r="2" fill="var(--canvas)" />
+              <circle cx="11" cy="18" r="2" fill="var(--canvas)" />
+            </svg>
+          </button>
+        </div>
       </div>
+
+      {/* Backup reminder (8.11) */}
+      {showBackupCard && (
+        <BackupCard
+          urgency={backupUrgency}
+          onDismiss={() => {
+            localStorage.setItem(BACKUP_DISMISS_KEY, String(nowMs))
+            reload()
+          }}
+        />
+      )}
 
       {/* Notif */}
       {hasUrgentTagihan(tagihan, nowMs) && (
@@ -230,7 +322,7 @@ export function HomePage() {
 
       {/* Saldo */}
       <SaldoModule
-        wallets={wallets}
+        wallets={wallets.filter((w) => w.currency === currency)}
         currency={currency}
         yesterdaySpent={yesterdaySpent}
         yesterdayEarned={yesterdayEarned}
@@ -248,11 +340,23 @@ export function HomePage() {
         nowMs={nowMs}
       />
 
+      {/* Pro: Forecast 3-bulan (8.4) */}
+      {isPro && forecastMonths.length > 0 && (
+        <>
+          <div className={styles.divider} />
+          <ForecastCard
+            months={forecastMonths}
+            currency={currency}
+            onDetail={() => setForecastDetailOpen(true)}
+          />
+        </>
+      )}
+
       <div className={styles.divider} />
 
       {/* Tagihan */}
       <TagihanModule
-        tagihan={tagihan}
+        tagihan={tagihan.filter((t) => t.currency === currency)}
         currency={currency}
         nowMs={nowMs}
         onPayTap={(t) => setMarkPaidTagihan(t)}
@@ -346,6 +450,17 @@ export function HomePage() {
         nowMs={nowMs}
         onCommit={handleQuickLogCommit}
       />
+
+      {isPro && forecastMonths.length > 0 && (
+        <ForecastDetailSheet
+          isOpen={forecastDetailOpen}
+          onClose={() => setForecastDetailOpen(false)}
+          months={forecastMonths}
+          currency={currency}
+          dailyBudget={dailyBudget}
+          tagihanTotal={tagihanTotal}
+        />
+      )}
     </main>
   )
 }

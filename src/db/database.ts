@@ -108,6 +108,13 @@ export interface MetaRecord {
   value: string // store as string; parse in repository as needed
 }
 
+export interface SavedScenario {
+  id?: number
+  name: string
+  items: string // JSON-serialized AndaiItem[]
+  savedAt: number // epoch ms
+}
+
 export interface BackupData {
   schemaVersion: number
   exportedAt: number
@@ -130,6 +137,7 @@ class SisaDatabase extends Dexie {
   settings!: EntityTable<Settings, 'id'>
   license!: EntityTable<LicenseRecord, 'id'>
   meta!: EntityTable<MetaRecord, 'key'>
+  savedScenarios!: EntityTable<SavedScenario, 'id'>
 
   constructor() {
     super('sisa')

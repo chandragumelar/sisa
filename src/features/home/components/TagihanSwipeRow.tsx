@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import type { Tagihan } from '@/db/database'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
 import { getTagihanUrgency } from '../home.utils'
+import { hapticLight } from '@/shared/utils/haptic'
 import styles from './TagihanSwipeRow.module.css'
 
 interface Props {
@@ -44,6 +45,7 @@ export function TagihanSwipeRow({ tagihan, nowMs, metaText, onPayTap, onRowTap }
     if (translateX < -REVEAL_WIDTH / 2) {
       setTranslateX(-REVEAL_WIDTH)
       setSnapped(true)
+      hapticLight()
     } else {
       setTranslateX(0)
       setSnapped(false)

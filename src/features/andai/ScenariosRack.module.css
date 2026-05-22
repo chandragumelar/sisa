@@ -1,0 +1,116 @@
+.rack {
+  margin-top: 24px;
+}
+
+.rackLabel {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink-tertiary);
+  text-transform: lowercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+  padding: 0 2px;
+}
+
+.rowWrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  margin-bottom: 4px;
+}
+
+.deleteReveal {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 80px;
+  background: var(--signal-danger);
+  color: #fff;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 11px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.row {
+  background: var(--surface);
+  border: 1px solid var(--border-hair);
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  cursor: pointer;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.rowSelected {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+}
+
+.rowLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.checkboxOff {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--border-hair);
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.checkboxOn {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--accent);
+  border-radius: 4px;
+  background: var(--accent);
+  flex-shrink: 0;
+  position: relative;
+}
+
+.checkboxOn::after {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 6px;
+  width: 8px;
+  height: 4px;
+  border-left: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  transform: rotate(-45deg) translateY(-2px);
+}
+
+.rowInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rowName {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink-primary);
+}
+
+.rowDate {
+  font-size: 11px;
+  color: var(--ink-tertiary);
+}
+
+.rowChev {
+  color: var(--ink-tertiary);
+  font-size: 16px;
+}

@@ -3,6 +3,7 @@ import { RouterProvider } from 'react-router-dom'
 import { router } from './router'
 import { getSettings } from '@/db/settings.repository'
 import { applyTheme } from '@/shared/utils/theme'
+import { UpdateBanner } from './UpdateBanner'
 
 export function App() {
   useEffect(() => {
@@ -11,5 +12,10 @@ export function App() {
     })
   }, [])
 
-  return <RouterProvider router={router} />
+  return (
+    <>
+      <RouterProvider router={router} />
+      <UpdateBanner />
+    </>
+  )
 }
