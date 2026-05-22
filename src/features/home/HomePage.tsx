@@ -1,14 +1,19 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useClock } from '@/app/providers/useClock'
 import { getSettings } from '@/db/settings.repository'
 import { getAllWallets } from '@/db/wallets.repository'
-import { getActiveTagihan } from '@/db/tagihan.repository'
+import {
+  getActiveTagihan,
+  commitTagihanPayment,
+  revertTagihanPayment,
+} from '@/db/tagihan.repository'
 import { getAllGoals } from '@/db/goals.repository'
 import {
   getLastTransaction,
   getTransactionsByDateRange,
   getTotalNabung,
+  deleteTransactionAndRevertBalance,
 } from '@/db/transactions.repository'
 import type { Settings, Wallet, Tagihan, Goal, Transaction } from '@/db/database'
 import {
@@ -26,6 +31,12 @@ import { TagihanModule } from './components/TagihanModule'
 import { GoalModule } from './components/GoalModule'
 import { FooterCatatan } from './components/FooterCatatan'
 import { BottomActionBar } from './components/BottomActionBar'
+import { Toast } from './components/Toast'
+import { MarkPaidSheet } from './components/MarkPaidSheet'
+import { TagihanDetailSheet, UrgentTagihanSheet } from './components/TagihanDetailSheet'
+import { HistorySheet } from './components/HistorySheet'
+import { QuickLogSheet } from '@/features/quickLog/QuickLogSheet'
+import type { QuickLogMode } from '@/features/quickLog/quickLog.utils'
 import styles from './HomePage.module.css'
 
 interface HomeData {
@@ -39,7 +50,13 @@ interface HomeData {
   totalNabung: number
 }
 
-function useHomeData(nowMs: number): HomeData & { isLoading: boolean } {
+interface ToastState {
+  message: string
+  onUndo: () => void
+  onEdit?: () => void
+}
+
+function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: () => void } {
   const [data, setData] = useState<HomeData>({
     settings: null,
     wallets: [],
@@ -51,6 +68,9 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean } {
     totalNabung: 0,
   })
   const [isLoading, setIsLoading] = useState(true)
+  const [tick, setTick] = useState(0)
+
+  const reload = useCallback(() => setTick((n) => n + 1), [])
 
   useEffect(() => {
     let cancelled = false
@@ -90,9 +110,9 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean } {
     return () => {
       cancelled = true
     }
-  }, [nowMs])
+  }, [nowMs, tick])
 
-  return { ...data, isLoading }
+  return { ...data, isLoading, reload }
 }
 
 export function HomePage() {
@@ -109,7 +129,15 @@ export function HomePage() {
     yesterdayTxs,
     totalNabung,
     isLoading,
+    reload,
   } = useHomeData(nowMs)
+
+  const [toast, setToast] = useState<ToastState | null>(null)
+  const [markPaidTagihan, setMarkPaidTagihan] = useState<Tagihan | null>(null)
+  const [detailTagihan, setDetailTagihan] = useState<Tagihan | null>(null)
+  const [urgentSheetOpen, setUrgentSheetOpen] = useState(false)
+  const [historyOpen, setHistoryOpen] = useState(false)
+  const [quickLogOpen, setQuickLogOpen] = useState(false)
 
   if (isLoading || !settings) return null
 
@@ -121,9 +149,53 @@ export function HomePage() {
   const spentToday = calcSpentToday(todayTxs, nowMs)
   const { spent: yesterdaySpent, earned: yesterdayEarned } = calcYesterdayStats(yesterdayTxs, nowMs)
 
+  function dismissToast() {
+    setToast(null)
+  }
+
+  async function handleTagihanPay(t: Tagihan, walletId: number, amount: number) {
+    setMarkPaidTagihan(null)
+    try {
+      const result = await commitTagihanPayment(t.id!, walletId, amount, t.currency, nowMs)
+      reload()
+      setToast({
+        message: `${t.name} ditandai dibayar`,
+        onUndo: async () => {
+          await revertTagihanPayment(result)
+          reload()
+          dismissToast()
+        },
+        onEdit: () => setMarkPaidTagihan(t),
+      })
+    } catch {
+      // TODO: error toast
+    }
+  }
+
+  async function handleQuickLogCommit(txId: number, mode: QuickLogMode) {
+    reload()
+    setToast({
+      message:
+        mode === 'nabung'
+          ? 'Nabung dicatat'
+          : mode === 'masuk'
+            ? 'Pemasukan dicatat'
+            : 'Pengeluaran dicatat',
+      onUndo: async () => {
+        await deleteTransactionAndRevertBalance(txId)
+        reload()
+        dismissToast()
+      },
+    })
+  }
+
+  function handleGoalReorder(_newGoals: Goal[]) {
+    reload()
+  }
+
   return (
     <main className={styles.page}>
-      {/* Header 4.1 */}
+      {/* Header */}
       <div className={styles.header}>
         <span className={styles.wordmark}>SISA</span>
         <button
@@ -151,12 +223,12 @@ export function HomePage() {
         </button>
       </div>
 
-      {/* Notif 4.6 */}
+      {/* Notif */}
       {hasUrgentTagihan(tagihan, nowMs) && (
-        <NotifCard tagihan={tagihan} nowMs={nowMs} onClick={() => {}} />
+        <NotifCard tagihan={tagihan} nowMs={nowMs} onClick={() => setUrgentSheetOpen(true)} />
       )}
 
-      {/* Saldo 4.2 */}
+      {/* Saldo */}
       <SaldoModule
         wallets={wallets}
         currency={currency}
@@ -166,7 +238,7 @@ export function HomePage() {
 
       <div className={styles.divider} />
 
-      {/* Budget 4.3 + 4.4 */}
+      {/* Budget */}
       <BudgetModule
         dailyBudget={dailyBudget}
         spentToday={spentToday}
@@ -178,29 +250,101 @@ export function HomePage() {
 
       <div className={styles.divider} />
 
-      {/* Tagihan 4.5 */}
-      <TagihanModule tagihan={tagihan} currency={currency} nowMs={nowMs} />
+      {/* Tagihan */}
+      <TagihanModule
+        tagihan={tagihan}
+        currency={currency}
+        nowMs={nowMs}
+        onPayTap={(t) => setMarkPaidTagihan(t)}
+        onRowTap={(t) => setDetailTagihan(t)}
+      />
 
       <div className={styles.divider} />
 
-      {/* Goal 4.7 */}
-      <GoalModule goals={goals} totalNabung={totalNabung} currency={currency} />
+      {/* Goal */}
+      <GoalModule
+        goals={goals}
+        totalNabung={totalNabung}
+        currency={currency}
+        onReorder={handleGoalReorder}
+      />
 
       <div className={styles.divider} />
 
-      {/* Footer 4.8 */}
+      {/* Footer */}
       <FooterCatatan
         lastTransaction={lastTx}
         currency={currency}
-        onShowHistory={() => {}}
+        onShowHistory={() => setHistoryOpen(true)}
         nowMs={nowMs}
       />
 
-      {/* Bottom action 4.9 */}
+      {/* Bottom action */}
       <BottomActionBar
-        onCatat={() => {}}
+        onCatat={() => setQuickLogOpen(true)}
         onCekDulu={() => navigate('/cek-dulu')}
         onAndai={() => navigate('/andai')}
+      />
+
+      {/* Toast */}
+      {toast && (
+        <Toast
+          message={toast.message}
+          onUndo={toast.onUndo}
+          onEdit={toast.onEdit}
+          onDismiss={dismissToast}
+        />
+      )}
+
+      {/* Sheets */}
+      {markPaidTagihan && (
+        <MarkPaidSheet
+          tagihan={markPaidTagihan}
+          wallets={wallets}
+          nowMs={nowMs}
+          isOpen={!!markPaidTagihan}
+          onClose={() => setMarkPaidTagihan(null)}
+          onCommit={(walletId, amount) => handleTagihanPay(markPaidTagihan, walletId, amount)}
+        />
+      )}
+
+      {detailTagihan && (
+        <TagihanDetailSheet
+          tagihan={detailTagihan}
+          nowMs={nowMs}
+          isOpen={!!detailTagihan}
+          onClose={() => setDetailTagihan(null)}
+          onPay={(t) => {
+            setDetailTagihan(null)
+            setMarkPaidTagihan(t)
+          }}
+        />
+      )}
+
+      <UrgentTagihanSheet
+        tagihan={tagihan}
+        nowMs={nowMs}
+        isOpen={urgentSheetOpen}
+        onClose={() => setUrgentSheetOpen(false)}
+        onPay={(t) => setMarkPaidTagihan(t)}
+      />
+
+      <HistorySheet
+        isOpen={historyOpen}
+        onClose={() => setHistoryOpen(false)}
+        wallets={wallets}
+        currency={currency}
+        nowMs={nowMs}
+      />
+
+      <QuickLogSheet
+        isOpen={quickLogOpen}
+        onClose={() => setQuickLogOpen(false)}
+        wallets={wallets}
+        currency={currency}
+        totalNabung={totalNabung}
+        nowMs={nowMs}
+        onCommit={handleQuickLogCommit}
       />
     </main>
   )

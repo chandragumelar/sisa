@@ -1,12 +1,15 @@
 import type { Tagihan } from '@/db/database'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
 import { rankTagihan, getTagihanUrgency } from '../home.utils'
+import { TagihanSwipeRow } from './TagihanSwipeRow'
 import styles from './TagihanModule.module.css'
 
 interface Props {
   tagihan: Tagihan[]
   currency: string
   nowMs: number
+  onPayTap: (tagihan: Tagihan) => void
+  onRowTap: (tagihan: Tagihan) => void
 }
 
 const MAX_VISIBLE = 4
@@ -30,7 +33,7 @@ function metaText(t: Tagihan, nowMs: number): { text: string; urgent: boolean } 
   }
 }
 
-export function TagihanModule({ tagihan, currency, nowMs }: Props) {
+export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap }: Props) {
   const active = tagihan.filter((t) => t.isActive)
   const ranked = rankTagihan(active, nowMs)
   const visible = ranked.slice(0, MAX_VISIBLE)
@@ -51,24 +54,16 @@ export function TagihanModule({ tagihan, currency, nowMs }: Props) {
         <div className={styles.empty}>Belum ada komitmen — tambah di Pengaturan.</div>
       ) : (
         <>
-          {visible.map((t) => {
-            const { text, urgent } = metaText(t, nowMs)
-            return (
-              <div key={t.id} className={styles.row}>
-                <div className={styles.rowLeft}>
-                  <span className={styles.rowName}>{t.name}</span>
-                  <span className={urgent ? styles.rowMetaUrgent : styles.rowMeta}>{text}</span>
-                </div>
-                <div className={styles.rowRight}>
-                  <span className={styles.rowAmount}>
-                    {t.nominalType === 'variabel' ? '± ' : ''}
-                    {formatCurrency(t.nominalEstimate, t.currency)}
-                  </span>
-                  <span className={styles.chev}>›</span>
-                </div>
-              </div>
-            )
-          })}
+          {visible.map((t) => (
+            <TagihanSwipeRow
+              key={t.id}
+              tagihan={t}
+              nowMs={nowMs}
+              metaText={metaText(t, nowMs)}
+              onPayTap={() => onPayTap(t)}
+              onRowTap={() => onRowTap(t)}
+            />
+          ))}
 
           {hidden.length > 0 && (
             <button className={styles.expandLink}>

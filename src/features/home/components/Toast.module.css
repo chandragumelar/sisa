@@ -1,0 +1,63 @@
+.toast {
+  position: fixed;
+  bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+  left: 14px;
+  right: 14px;
+  max-width: calc(390px - 28px);
+  margin: 0 auto;
+  background: #11141a;
+  color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  z-index: 90;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.progressBar {
+  height: 3px;
+  background: var(--accent);
+  transition: width 0.1s linear;
+}
+
+.body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px 12px;
+  gap: 8px;
+}
+
+.message {
+  font-size: 13px;
+  flex: 1;
+  line-height: 1.3;
+}
+
+.actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.editBtn {
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: #ffffff;
+  font-size: 12px;
+  font-family: var(--font-sans);
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.undoBtn {
+  background: rgba(255, 255, 255, 0.25);
+  border: none;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}

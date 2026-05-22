@@ -8,3 +8,9 @@ export async function getAllGoals(): Promise<Goal[]> {
 export async function addGoal(goal: Omit<Goal, 'id'>): Promise<void> {
   await db.goals.add(goal)
 }
+
+export async function updateGoalsOrder(orderedIds: number[]): Promise<void> {
+  await db.transaction('rw', db.goals, async () => {
+    await Promise.all(orderedIds.map((id, index) => db.goals.update(id, { order: index })))
+  })
+}
