@@ -96,7 +96,7 @@ export async function verifyLicenseKey(rawKey: string, clock: Clock): Promise<Ve
 // Activation & persistence
 // ---------------------------------------------------------------------------
 
-export type ActivateResult = { ok: true } | { ok: false; reason: 'invalid' | 'expired' }
+export type ActivateResult = { ok: true; tier: Tier } | { ok: false; reason: 'invalid' | 'expired' }
 
 export async function activateLicense(rawKey: string, clock: Clock): Promise<ActivateResult> {
   const result = await verifyLicenseKey(rawKey, clock)
@@ -116,7 +116,7 @@ export async function activateLicense(rawKey: string, clock: Clock): Promise<Act
     activatedAt: nowMs,
   }
   await saveLicense(record)
-  return { ok: true }
+  return { ok: true, tier: payload.tier }
 }
 
 // Re-verifies the stored raw key (signature can't be faked; persisted flags
