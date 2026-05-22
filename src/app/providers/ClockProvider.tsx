@@ -1,8 +1,7 @@
-import { createContext, useContext, type ReactNode } from 'react'
+import { type ReactNode } from 'react'
 import type { Clock } from '@/shared/types/clock'
 import { SystemClock } from '@/shared/utils/clock'
-
-const ClockContext = createContext<Clock>(SystemClock)
+import { ClockContext } from './ClockContext'
 
 interface ClockProviderProps {
   clock?: Clock
@@ -11,8 +10,4 @@ interface ClockProviderProps {
 
 export function ClockProvider({ clock = SystemClock, children }: ClockProviderProps) {
   return <ClockContext.Provider value={clock}>{children}</ClockContext.Provider>
-}
-
-export function useClock(): Clock {
-  return useContext(ClockContext)
 }
