@@ -1,0 +1,12 @@
+.creed {
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.55;
+  letter-spacing: -0.3px;
+  color: var(--ink-primary);
+}
+
+.question {
+  color: var(--ink-secondary);
+  font-style: italic;
+}

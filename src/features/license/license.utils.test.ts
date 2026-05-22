@@ -159,10 +159,11 @@ describe('verifyLicenseKey', () => {
 // activateLicense
 // ---------------------------------------------------------------------------
 describe('activateLicense', () => {
-  it('returns ok and persists correct record for valid key', async () => {
+  it('returns ok with tier and persists correct record for valid key', async () => {
     const key = await makeKey({ tier: 'pro' })
     const result = await activateLicense(key, clock)
     expect(result.ok).toBe(true)
+    if (result.ok) expect(result.tier).toBe('pro')
     expect(vi.mocked(saveLicense)).toHaveBeenCalledWith(
       expect.objectContaining({
         id: 1,
