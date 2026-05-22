@@ -56,6 +56,17 @@ export async function commitTagihanPayment(
   return { txId, prevBalance, walletId, amount, tagihanId }
 }
 
+export async function updateTagihan(
+  id: number,
+  partial: Partial<Omit<Tagihan, 'id'>>,
+): Promise<void> {
+  await db.tagihan.update(id, partial)
+}
+
+export async function deleteTagihan(id: number): Promise<void> {
+  await db.tagihan.delete(id)
+}
+
 export async function revertTagihanPayment(result: TagihanPaymentResult): Promise<void> {
   await db.transaction('rw', [db.transactions, db.wallets, db.tagihan], async () => {
     await db.transactions.delete(result.txId)

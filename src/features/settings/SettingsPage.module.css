@@ -1,0 +1,329 @@
+.page {
+  min-height: 100dvh;
+  background: var(--canvas);
+  padding: 0 0 40px;
+  max-width: 390px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 16px 8px;
+}
+
+.backBtn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  color: var(--ink-secondary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  flex: none;
+}
+
+.title {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  color: var(--ink-primary);
+}
+
+/* Profile card */
+.profileCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border-hair);
+  border-radius: 12px;
+  margin: 8px 16px 20px;
+  padding: 13px;
+  cursor: pointer;
+  text-align: left;
+  width: calc(100% - 32px);
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  background: var(--surface-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-tertiary);
+  flex: none;
+}
+
+.avatar svg {
+  width: 20px;
+  height: 20px;
+}
+
+.profileText {
+  flex: 1;
+  min-width: 0;
+}
+
+.profileName {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  color: var(--ink-primary);
+}
+
+.profileSub {
+  font-size: 11px;
+  color: var(--ink-tertiary);
+  margin-top: 2px;
+}
+
+.chevron {
+  width: 16px;
+  height: 16px;
+  color: var(--ink-tertiary);
+  flex: none;
+}
+
+/* Sections */
+.sectionLabel {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--ink-tertiary);
+  padding: 0 20px 6px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border-hair);
+  border-radius: 12px;
+  margin: 0 16px 20px;
+  overflow: hidden;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+}
+
+.rowLabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-primary);
+  flex: 1;
+}
+
+.rowSub {
+  font-size: 11px;
+  color: var(--ink-tertiary);
+  margin-top: 2px;
+}
+
+.rowNote {
+  font-size: 11px;
+  font-style: italic;
+  color: var(--ink-tertiary);
+  padding: 0 14px 10px;
+}
+
+.actionRow {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  padding: 12px 14px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.actionRow:active {
+  background: var(--surface-2);
+}
+
+.dangerRow .rowLabel {
+  color: var(--signal-danger);
+}
+
+.linkRow {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 14px;
+  text-decoration: none;
+}
+
+.divider {
+  height: 1px;
+  background: var(--border-hair);
+  margin: 0 14px;
+}
+
+/* Segmented control */
+.segmented {
+  display: flex;
+  background: var(--surface-2);
+  border-radius: 8px;
+  padding: 2px;
+  gap: 2px;
+}
+
+.seg {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink-secondary);
+  padding: 5px 9px;
+  border-radius: 6px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.segActive {
+  background: var(--surface);
+  color: var(--ink-primary);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+/* Select */
+.select {
+  font-size: 12px;
+  color: var(--ink-secondary);
+  font-family: var(--font-sans);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 0;
+  appearance: none;
+}
+
+/* Hidden file input */
+.hiddenInput {
+  display: none;
+}
+
+/* Sheets */
+.sheetBody {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-bottom: 8px;
+}
+
+.previewGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.previewItem {
+  background: var(--surface-2);
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.previewVal {
+  font-size: 20px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--ink-primary);
+}
+
+.previewKey {
+  font-size: 11px;
+  color: var(--ink-tertiary);
+}
+
+.sheetWarning {
+  font-size: 12px;
+  color: var(--ink-secondary);
+  padding: 4px 0;
+  line-height: 1.5;
+}
+
+.errorText {
+  font-size: 13px;
+  color: var(--signal-danger);
+  line-height: 1.5;
+}
+
+.deletePrompt {
+  font-size: 13px;
+  color: var(--ink-secondary);
+  line-height: 1.5;
+}
+
+.deleteInput {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 600;
+  border: 1.5px solid var(--border-hair);
+  border-radius: 8px;
+  padding: 10px 12px;
+  width: 100%;
+  letter-spacing: 2px;
+  background: var(--surface);
+}
+
+.deleteInput:focus {
+  outline: none;
+  border-color: var(--signal-danger);
+}
+
+.primaryBtn {
+  background: var(--accent);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 0;
+  width: 100%;
+  cursor: pointer;
+}
+
+.dangerBtn {
+  background: var(--signal-danger);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 0;
+  width: 100%;
+  cursor: pointer;
+}
+
+.dangerBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.ghostBtn {
+  background: none;
+  color: var(--ink-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 0;
+  width: 100%;
+  cursor: pointer;
+}
