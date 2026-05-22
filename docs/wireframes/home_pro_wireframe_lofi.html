@@ -1,0 +1,1151 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SISA — Home Pro Wireframe Lo-Fi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ================================================================
+     SISA — Home Pro Wireframe LO-FI
+     Grayscale skeleton · Pro tier · 2 currency aktif
+     Diferensiasi struktural dari Basic:
+       · brand "SISA · Pro" (eksplisit lowercase)
+       · segmented currency IDR / USD
+       · 6 wallet (sampai 10 max)
+       · forecast 3-bulan full-width (sisa pas gajian tetap ada)
+       · goal 5 stack
+       · insight Pro (decision history)
+       · refleksi link
+       · phantom subscription notif
+     ================================================================ */
+      :root {
+        --canvas: #f4f4f4;
+        --surface: #ffffff;
+        --bar: #e0e0e0;
+        --bar-fill: #888888;
+        --ink-1: #111111;
+        --ink-2: #6b6b6b;
+        --ink-3: #a8a8a8;
+        --border: #d8d8d8;
+        --border-soft: #ececec;
+        --highlight: #dadada;
+        --font-sans: 'Inter Tight', -apple-system, sans-serif;
+        --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: var(--font-sans);
+        background: #dededa;
+        color: var(--ink-1);
+        min-height: 100vh;
+        padding: 32px 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        -webkit-font-smoothing: antialiased;
+      }
+      .doc-header {
+        max-width: 380px;
+        width: 100%;
+        text-align: center;
+        color: var(--ink-2);
+      }
+      .doc-header h1 {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 4px;
+        letter-spacing: -0.3px;
+        color: var(--ink-1);
+      }
+      .doc-header p {
+        font-size: 11.5px;
+        color: var(--ink-3);
+      }
+      .frame-wrapper {
+        background: #c9c9c5;
+        padding: 18px;
+        border-radius: 32px;
+      }
+      .device-frame {
+        background: #1a1a1a;
+        padding: 6px;
+        border-radius: 36px;
+        width: 380px;
+      }
+      .screen {
+        background: var(--canvas);
+        border-radius: 30px;
+        padding: 14px 14px 90px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* ============ HEADER ============ */
+      .status-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 2px 4px 0;
+      }
+      .brand-group {
+        display: inline-flex;
+        align-items: baseline;
+        gap: 5px;
+      }
+      .brand {
+        letter-spacing: 1.5px;
+        font-weight: 700;
+        font-size: 11px;
+        color: var(--ink-1);
+      }
+      .brand-sep {
+        font-size: 10px;
+        color: var(--ink-3);
+        line-height: 1;
+      }
+      .brand-tier {
+        font-size: 10px;
+        font-weight: 500;
+        color: var(--ink-2);
+        letter-spacing: 0.2px;
+      }
+      .settings-icon {
+        color: var(--ink-2);
+        display: inline-flex;
+      }
+
+      /* ============ SEGMENTED CURRENCY ============ */
+      .currency-row {
+        display: flex;
+        padding: 10px 4px 14px;
+      }
+      .seg {
+        display: inline-flex;
+        background: var(--bar);
+        border-radius: 7px;
+        padding: 2px;
+        gap: 2px;
+      }
+      .seg-item {
+        font-size: 10.5px;
+        padding: 4px 12px;
+        border-radius: 5px;
+        color: var(--ink-2);
+        font-weight: 500;
+        letter-spacing: 0.3px;
+        font-family: var(--font-mono);
+        font-feature-settings: 'tnum';
+      }
+      .seg-item.active {
+        background: var(--surface);
+        color: var(--ink-1);
+      }
+
+      /* ============ NOTIF (Pro: phantom sub) ============ */
+      .notif-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--ink-1);
+        border-radius: 10px;
+        padding: 11px 12px;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .notif-icon {
+        flex-shrink: 0;
+        color: var(--ink-1);
+        display: inline-flex;
+      }
+      .notif-body {
+        flex: 1;
+        font-size: 11.5px;
+        line-height: 1.4;
+        color: var(--ink-1);
+      }
+      .notif-body b {
+        font-weight: 600;
+      }
+      .notif-chev {
+        color: var(--ink-1);
+        font-size: 14px;
+        font-weight: 500;
+        flex-shrink: 0;
+      }
+
+      /* ============ TYPOGRAPHY ============ */
+      .module-label {
+        font-size: 10px;
+        color: var(--ink-3);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        font-weight: 500;
+      }
+      .meta-info {
+        font-size: 10.5px;
+        color: var(--ink-3);
+      }
+
+      /* ============ SALDO ============ */
+      .hero-amount {
+        font-size: 38px;
+        font-weight: 600;
+        letter-spacing: -1.4px;
+        margin-top: 4px;
+        font-feature-settings: 'tnum', 'lnum';
+        color: var(--ink-1);
+        line-height: 1.05;
+      }
+      .hero-sub {
+        font-size: 11px;
+        color: var(--ink-3);
+        margin-top: 6px;
+        margin-bottom: 14px;
+      }
+      .wallets {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 2px 12px;
+      }
+      .wallet-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--border-soft);
+      }
+      .wallet-row:last-child {
+        border-bottom: none;
+      }
+      .wallet-name {
+        font-size: 12.5px;
+        color: var(--ink-2);
+      }
+      .wallet-amount {
+        font-family: var(--font-mono);
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--ink-1);
+        font-feature-settings: 'tnum';
+      }
+      .divider {
+        height: 1px;
+        background: var(--border);
+        margin: 18px 0;
+      }
+
+      /* ============ BUDGET HARI INI ============ */
+      .row-spread {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: 6px;
+      }
+      .label-with-info {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .info-dot {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 13px;
+        height: 13px;
+        border: 1px solid var(--ink-2);
+        border-radius: 50%;
+        font-size: 9px;
+        color: var(--ink-2);
+        line-height: 1;
+      }
+      .big-amount {
+        font-size: 30px;
+        font-weight: 600;
+        letter-spacing: -0.9px;
+        margin-bottom: 12px;
+        font-feature-settings: 'tnum', 'lnum';
+        color: var(--ink-1);
+        line-height: 1.05;
+      }
+      .bar-thick {
+        height: 22px;
+        background: var(--bar);
+        border-radius: 6px;
+        overflow: hidden;
+        margin-bottom: 8px;
+      }
+      .bar-thick-fill {
+        height: 100%;
+        background: var(--bar-fill);
+        border-radius: 6px 0 0 6px;
+      }
+      .bar-footer {
+        display: flex;
+        justify-content: space-between;
+        font-size: 11px;
+        color: var(--ink-2);
+      }
+      .bar-footer b {
+        font-weight: 600;
+        color: var(--ink-1);
+      }
+
+      /* ============ 2-COL: Budget Minggu + Sisa Pas Gajian ============ */
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-top: 16px;
+      }
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 11px 12px;
+      }
+      .card-num {
+        font-size: 19px;
+        font-weight: 600;
+        letter-spacing: -0.5px;
+        margin-top: 3px;
+        font-feature-settings: 'tnum', 'lnum';
+        color: var(--ink-1);
+        line-height: 1.1;
+      }
+      .card-sub {
+        font-size: 10px;
+        color: var(--ink-3);
+        margin-top: 4px;
+      }
+      .status-tag {
+        color: var(--ink-2);
+        font-weight: 500;
+      }
+      .card-meta-inline {
+        font-size: 9.5px;
+        color: var(--ink-2);
+        margin-top: 8px;
+        padding-top: 7px;
+        border-top: 1px dashed var(--border);
+      }
+      .card-meta-inline u {
+        text-decoration: underline;
+        text-underline-offset: 2px;
+      }
+
+      /* ============ FORECAST 3-BULAN (Pro, full-width) ============ */
+      .forecast-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 12px 13px;
+        margin-top: 8px;
+      }
+      .forecast-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: 12px;
+      }
+      .forecast-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+      }
+      .forecast-cell {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
+      .forecast-cell-label {
+        font-size: 9px;
+        color: var(--ink-3);
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        font-weight: 500;
+      }
+      .forecast-cell-num {
+        font-family: var(--font-mono);
+        font-size: 15px;
+        font-weight: 500;
+        color: var(--ink-1);
+        font-feature-settings: 'tnum';
+        letter-spacing: -0.3px;
+      }
+      .forecast-footer {
+        font-size: 9.5px;
+        color: var(--ink-2);
+        margin-top: 12px;
+        padding-top: 9px;
+        border-top: 1px dashed var(--border);
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+      }
+      .forecast-footer u {
+        text-decoration: underline;
+        text-underline-offset: 2px;
+      }
+
+      /* ============ KOMITMEN ============ */
+      .list-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 9px 0;
+        border-bottom: 1px solid var(--border-soft);
+        gap: 10px;
+      }
+      .list-row:last-of-type {
+        border-bottom: none;
+      }
+      .list-row-name {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        flex: 1;
+        min-width: 0;
+      }
+      .name-bold {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--ink-1);
+      }
+      .name-meta {
+        font-size: 10.5px;
+        color: var(--ink-3);
+      }
+      .name-meta-urgent {
+        font-size: 10.5px;
+        color: var(--ink-1);
+        font-weight: 500;
+      }
+      .amount-bold {
+        font-family: var(--font-mono);
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--ink-1);
+        white-space: nowrap;
+        font-feature-settings: 'tnum';
+      }
+      .chev {
+        font-size: 13px;
+        color: var(--ink-3);
+        margin-left: 6px;
+      }
+      .right-grp {
+        display: flex;
+        align-items: center;
+      }
+      .expand-link {
+        display: block;
+        font-size: 11px;
+        color: var(--ink-2);
+        padding: 10px 0 2px;
+        border-top: 1px solid var(--border-soft);
+        margin-top: 4px;
+      }
+      .expand-link b {
+        font-weight: 500;
+      }
+      .swipe-hint {
+        font-size: 9.5px;
+        color: var(--ink-3);
+        margin-top: 6px;
+        font-style: italic;
+        text-align: right;
+      }
+
+      /* ============ GOAL — 5 STACK ============ */
+      .goal-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 12px;
+      }
+      .goal-row {
+        padding: 9px 0;
+        border-bottom: 1px solid var(--border-soft);
+      }
+      .goal-row:last-of-type {
+        border-bottom: none;
+        padding-bottom: 2px;
+      }
+      .goal-row:first-child {
+        padding-top: 2px;
+      }
+      .goal-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 4px;
+      }
+      .goal-head-left {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .goal-badge {
+        font-size: 8.5px;
+        text-transform: uppercase;
+        padding: 2px 6px;
+        border-radius: 3px;
+        background: var(--ink-1);
+        color: var(--canvas);
+        font-weight: 600;
+        letter-spacing: 0.6px;
+      }
+      .goal-badge.muted {
+        background: var(--ink-3);
+        color: var(--canvas);
+      }
+      .goal-name {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--ink-1);
+      }
+      .goal-amount {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        color: var(--ink-2);
+        font-feature-settings: 'tnum';
+      }
+      .goal-status {
+        font-size: 10.5px;
+        color: var(--ink-2);
+      }
+      .goal-status.waiting {
+        color: var(--ink-3);
+        font-style: italic;
+        margin-top: 2px;
+        display: block;
+      }
+      .goal-row.dim-1 {
+        opacity: 0.58;
+      }
+      .goal-row.dim-2 {
+        opacity: 0.5;
+      }
+      .goal-row.dim-3 {
+        opacity: 0.42;
+      }
+      .goal-row.dim-4 {
+        opacity: 0.36;
+      }
+      .goal-bar-wrap {
+        position: relative;
+        height: 3px;
+        background: var(--border);
+        border-radius: 2px;
+        margin-top: 6px;
+      }
+      .goal-bar-fill {
+        height: 100%;
+        background: var(--ink-1);
+        border-radius: 2px;
+      }
+      .goal-marker {
+        position: absolute;
+        right: -2px;
+        top: -3px;
+        width: 0;
+        height: 0;
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+        border-bottom: 5px solid var(--ink-3);
+      }
+      .goal-footer-meta {
+        font-size: 9.5px;
+        color: var(--ink-3);
+        margin-top: 10px;
+        font-style: italic;
+      }
+
+      /* ============ INSIGHT (Pro: Decision History) ============ */
+      .insight-stack {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 13px 14px;
+      }
+      .insight-tag {
+        font-size: 9px;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: var(--ink-3);
+        margin-bottom: 6px;
+        font-weight: 500;
+      }
+      .insight-body {
+        font-size: 12.5px;
+        line-height: 1.5;
+        color: var(--ink-1);
+      }
+      .insight-body b {
+        font-weight: 600;
+      }
+      .insight-more {
+        display: block;
+        font-size: 10.5px;
+        color: var(--ink-2);
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px solid var(--border-soft);
+      }
+
+      /* ============ REFLEKSI LINK (Pro entry point) ============ */
+      .refleksi-link {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 11px 13px;
+        margin-top: 10px;
+        background: var(--surface);
+        border: 1px dashed var(--border);
+        border-radius: 8px;
+        font-size: 11px;
+        color: var(--ink-1);
+      }
+      .refleksi-link .label {
+        font-weight: 500;
+      }
+      .refleksi-link .arrow {
+        font-size: 13px;
+        color: var(--ink-2);
+      }
+
+      /* ============ FOOTER CATATAN ============ */
+      .footer-link-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 4px 4px;
+        font-size: 11px;
+        color: var(--ink-3);
+      }
+      .footer-link-row .left {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .footer-link-row .nom-out {
+        color: var(--ink-1);
+        font-weight: 500;
+        font-family: var(--font-mono);
+        font-feature-settings: 'tnum';
+      }
+      .footer-link-row .item-name {
+        color: var(--ink-1);
+        font-weight: 500;
+      }
+      .footer-link-row .right {
+        color: var(--ink-2);
+        text-decoration: underline;
+        text-underline-offset: 2px;
+        white-space: nowrap;
+      }
+
+      /* ============ BOTTOM ACTION ============ */
+      .bottom-action {
+        position: absolute;
+        bottom: 12px;
+        left: 12px;
+        right: 12px;
+        display: flex;
+        gap: 8px;
+        align-items: stretch;
+      }
+      .ba-btn {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        width: 64px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        padding: 12px 0;
+        color: var(--ink-1);
+      }
+      .ba-btn-label {
+        font-size: 10px;
+        color: var(--ink-1);
+        font-weight: 500;
+      }
+      .ba-cek {
+        flex: 1;
+        background: var(--ink-1);
+        color: #ffffff;
+        border-radius: 12px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        padding: 12px 0;
+      }
+      .ba-cek-label {
+        font-size: 17px;
+        font-weight: 600;
+        letter-spacing: -0.3px;
+      }
+      .ba-cek-sub {
+        font-size: 10px;
+        color: #bbbbbb;
+      }
+
+      /* ============ SPEC LEGEND ============ */
+      .legend {
+        max-width: 380px;
+        width: 100%;
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 16px;
+        border: 1px solid #d5d5d1;
+        font-size: 11px;
+        color: var(--ink-2);
+        line-height: 1.6;
+      }
+      .legend h2 {
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: var(--ink-1);
+      }
+      .legend ul {
+        list-style: none;
+        padding-left: 14px;
+      }
+      .legend li {
+        position: relative;
+        margin-bottom: 4px;
+      }
+      .legend li:before {
+        content: '+';
+        position: absolute;
+        left: -12px;
+        color: var(--ink-1);
+        font-weight: 600;
+      }
+      .legend b {
+        color: var(--ink-1);
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="doc-header">
+      <h1>SISA — Home Pro Wireframe Lo-Fi</h1>
+      <p>Grayscale skeleton · Pro tier · 2 currency aktif (IDR mode)</p>
+    </div>
+
+    <div class="frame-wrapper">
+      <div class="device-frame">
+        <div class="screen">
+          <!-- HEADER: brand eksplisit "SISA · Pro" -->
+          <div class="status-bar">
+            <span class="brand-group">
+              <span class="brand">SISA</span>
+              <span class="brand-sep">·</span>
+              <span class="brand-tier">Pro</span>
+            </span>
+            <span class="settings-icon">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="4" y1="6" x2="20" y2="6" />
+                <line x1="4" y1="12" x2="20" y2="12" />
+                <line x1="4" y1="18" x2="20" y2="18" />
+                <circle cx="9" cy="6" r="2" fill="#F4F4F4" />
+                <circle cx="15" cy="12" r="2" fill="#F4F4F4" />
+                <circle cx="11" cy="18" r="2" fill="#F4F4F4" />
+              </svg>
+            </span>
+          </div>
+
+          <!-- SEGMENTED CURRENCY -->
+          <div class="currency-row">
+            <div class="seg">
+              <span class="seg-item active">IDR</span>
+              <span class="seg-item">USD</span>
+            </div>
+          </div>
+
+          <!-- NOTIF: Phantom Subscription -->
+          <div class="notif-card">
+            <span class="notif-icon">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M12 8v4l3 2" />
+                <circle cx="12" cy="12" r="10" />
+              </svg>
+            </span>
+            <span class="notif-body">
+              <b>2 subscription nyangkut</b> — Netflix (45 hari), iCloud (38 hari). Masih pakai?
+            </span>
+            <span class="notif-chev">›</span>
+          </div>
+
+          <!-- SALDO — 6 wallet -->
+          <div class="module-label">saldo total</div>
+          <div class="hero-amount">Rp 12.480.000</div>
+          <div class="hero-sub">Rp 142rb terpakai kemarin</div>
+          <div class="wallets">
+            <div class="wallet-row">
+              <span class="wallet-name">BCA</span><span class="wallet-amount">Rp 5.420.000</span>
+            </div>
+            <div class="wallet-row">
+              <span class="wallet-name">Mandiri</span
+              ><span class="wallet-amount">Rp 2.380.000</span>
+            </div>
+            <div class="wallet-row">
+              <span class="wallet-name">Jenius</span><span class="wallet-amount">Rp 1.850.000</span>
+            </div>
+            <div class="wallet-row">
+              <span class="wallet-name">ShopeePay</span
+              ><span class="wallet-amount">Rp 1.620.000</span>
+            </div>
+            <div class="wallet-row">
+              <span class="wallet-name">GoPay</span><span class="wallet-amount">Rp 780.000</span>
+            </div>
+            <div class="wallet-row">
+              <span class="wallet-name">Cash</span><span class="wallet-amount">Rp 430.000</span>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- BUDGET HARI INI -->
+          <div class="row-spread">
+            <span class="label-with-info">
+              <span class="module-label">budget hari ini</span>
+              <span class="info-dot">i</span>
+            </span>
+            <span class="meta-info">9 hari sampai gajian (tgl 25)</span>
+          </div>
+          <div class="big-amount">Rp 412.000</div>
+          <div class="bar-thick">
+            <div class="bar-thick-fill" style="width: 28%"></div>
+          </div>
+          <div class="bar-footer">
+            <span>Rp 115rb terpakai</span>
+            <span><b>Rp 297rb</b> sisa hari ini</span>
+          </div>
+
+          <!-- 2-COL: Budget Minggu + Sisa Pas Gajian (sama struktur dengan Basic) -->
+          <div class="grid">
+            <div class="card">
+              <div class="module-label">budget minggu ini</div>
+              <div class="card-num">Rp 1.380.000</div>
+              <div class="card-sub">sampai minggu · 4 hari</div>
+            </div>
+            <div class="card">
+              <div class="module-label">sisa pas gajian</div>
+              <div class="card-num">Rp 1.240.000</div>
+              <div class="card-sub">prediksi · <span class="status-tag">aman</span></div>
+              <div class="card-meta-inline">akurasi prediksi: <u>81%</u> ›</div>
+            </div>
+          </div>
+
+          <!-- FORECAST (Pro exclusive, full-width) -->
+          <div class="forecast-card">
+            <div class="forecast-head">
+              <span class="module-label">prediksi uang sisa akhir bulan</span>
+            </div>
+            <div class="forecast-row">
+              <div class="forecast-cell">
+                <span class="forecast-cell-label">jun</span>
+                <span class="forecast-cell-num">Rp 2.1jt</span>
+              </div>
+              <div class="forecast-cell">
+                <span class="forecast-cell-label">jul</span>
+                <span class="forecast-cell-num">Rp 1.4jt</span>
+              </div>
+              <div class="forecast-cell">
+                <span class="forecast-cell-label">agu</span>
+                <span class="forecast-cell-num">Rp 680rb</span>
+              </div>
+            </div>
+            <div class="forecast-footer">
+              <span><u>detail ›</u></span>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- KOMITMEN -->
+          <div class="row-spread">
+            <span class="module-label">komitmen bulan ini</span>
+            <span class="meta-info">± Rp 6.2jt total</span>
+          </div>
+
+          <div class="list-row">
+            <div class="list-row-name">
+              <span class="name-bold">Listrik</span>
+              <span class="name-meta-urgent">jatuh tempo hari ini · belum dibayar</span>
+            </div>
+            <div class="right-grp">
+              <span class="amount-bold">± Rp 340rb</span>
+              <span class="chev">›</span>
+            </div>
+          </div>
+
+          <div class="list-row">
+            <div class="list-row-name">
+              <span class="name-bold">KPR</span>
+              <span class="name-meta">2 hari lagi</span>
+            </div>
+            <div class="right-grp">
+              <span class="amount-bold">± Rp 4.8jt</span>
+              <span class="chev">›</span>
+            </div>
+          </div>
+
+          <div class="list-row">
+            <div class="list-row-name">
+              <span class="name-bold">Spotify Family</span>
+              <span class="name-meta">5 hari lagi</span>
+            </div>
+            <div class="right-grp">
+              <span class="amount-bold">Rp 79rb</span>
+              <span class="chev">›</span>
+            </div>
+          </div>
+
+          <div class="list-row">
+            <div class="list-row-name">
+              <span class="name-bold">Indihome</span>
+              <span class="name-meta">9 hari lagi</span>
+            </div>
+            <div class="right-grp">
+              <span class="amount-bold">± Rp 425rb</span>
+              <span class="chev">›</span>
+            </div>
+          </div>
+
+          <span class="expand-link"
+            >+ <b>4 komitmen lainnya</b> · Netflix, iCloud, BPJS, Asuransi ›</span
+          >
+          <div class="swipe-hint">swipe kiri untuk tandai dibayar</div>
+
+          <div class="divider"></div>
+
+          <!-- GOAL — 5 stack -->
+          <div class="module-label" style="margin-bottom: 8px">goal tabungan</div>
+          <div class="goal-card">
+            <div class="goal-row">
+              <div class="goal-head">
+                <div class="goal-head-left">
+                  <span class="goal-badge">darurat</span>
+                  <span class="goal-name">Dana darurat</span>
+                </div>
+                <span class="goal-amount">Rp 8.5jt / Rp 25jt</span>
+              </div>
+              <div class="goal-status">menabung →</div>
+              <div class="goal-bar-wrap">
+                <div class="goal-bar-fill" style="width: 34%"></div>
+                <div class="goal-marker"></div>
+              </div>
+            </div>
+
+            <div class="goal-row dim-1">
+              <div class="goal-head">
+                <div class="goal-head-left">
+                  <span class="goal-badge muted">impian #1</span>
+                  <span class="goal-name">DP rumah</span>
+                </div>
+                <span class="goal-amount">Rp 0 / Rp 120jt</span>
+              </div>
+              <span class="goal-status waiting">menunggu darurat full</span>
+            </div>
+
+            <div class="goal-row dim-2">
+              <div class="goal-head">
+                <div class="goal-head-left">
+                  <span class="goal-badge muted">impian #2</span>
+                  <span class="goal-name">Liburan Jepang</span>
+                </div>
+                <span class="goal-amount">Rp 0 / Rp 35jt</span>
+              </div>
+              <span class="goal-status waiting">menunggu impian #1 full</span>
+            </div>
+
+            <div class="goal-row dim-3">
+              <div class="goal-head">
+                <div class="goal-head-left">
+                  <span class="goal-badge muted">impian #3</span>
+                  <span class="goal-name">Ganti laptop</span>
+                </div>
+                <span class="goal-amount">Rp 0 / Rp 35jt</span>
+              </div>
+              <span class="goal-status waiting">menunggu impian #2 full</span>
+            </div>
+
+            <div class="goal-row dim-4">
+              <div class="goal-head">
+                <div class="goal-head-left">
+                  <span class="goal-badge muted">impian #4</span>
+                  <span class="goal-name">Dana pernikahan</span>
+                </div>
+                <span class="goal-amount">Rp 0 / Rp 80jt</span>
+              </div>
+              <span class="goal-status waiting">menunggu impian #3 full</span>
+            </div>
+
+            <div class="goal-footer-meta">5 dari unlimited · drag untuk reorder</div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- INSIGHT: Decision History -->
+          <div class="module-label" style="margin-bottom: 8px">insight bulan ini</div>
+          <div class="insight-stack">
+            <div class="insight-tag">decision history</div>
+            <div class="insight-body">
+              Bulan ini lo Cek Dulu <b>31 kali</b> · <b>23 aman</b>, <b>8 ketat</b>. Dari 8 yang
+              ketat: <b>5 lo lanjut</b>, 3 lo batal. Lo cenderung override SISA pas weekend.
+            </div>
+            <span class="insight-more"
+              >lihat 5 insight lainnya · accuracy, lifestyle drift, income stability ›</span
+            >
+          </div>
+
+          <!-- REFLEKSI LINK -->
+          <div class="refleksi-link">
+            <span class="label">lihat refleksi bulan ini</span>
+            <span class="arrow">›</span>
+          </div>
+
+          <!-- FOOTER 1-LINE -->
+          <div class="footer-link-row">
+            <div class="left">
+              <span>terakhir dicatat:</span>
+              <span class="item-name">Bensin</span>
+              <span class="nom-out">−Rp 50rb</span>
+              <span>· 1 jam lalu</span>
+            </div>
+            <span class="right">semua catatan ›</span>
+          </div>
+
+          <!-- BOTTOM ACTION -->
+          <div class="bottom-action">
+            <div class="ba-btn">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              >
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+              <span class="ba-btn-label">Catat</span>
+            </div>
+
+            <div class="ba-cek">
+              <span class="ba-cek-label">Cek Dulu</span>
+              <span class="ba-cek-sub">aman ga gue beli ini?</span>
+            </div>
+
+            <div class="ba-btn">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="12" cy="18" r="2" />
+                <circle cx="6" cy="6" r="2" />
+                <circle cx="18" cy="6" r="2" />
+                <path d="M18 8v1a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V8" />
+                <line x1="12" y1="11" x2="12" y2="16" />
+              </svg>
+              <span class="ba-btn-label">Andai</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SPEC LEGEND -->
+    <div class="legend">
+      <h2>Spec Pro lo-fi — diferensiasi dari Basic</h2>
+      <ul>
+        <li>
+          <b>Brand "SISA · Pro"</b> — eksplisit lowercase, titik separator. Bukan badge loud, bukan
+          dot subtle. Identitas tier kelihatan tapi ga screaming.
+        </li>
+        <li>
+          <b>Segmented IDR · USD</b> di bawah brand, kiri-aligned. Tap segmen lain = swap konteks
+          total (literally dua app paralel). User Basic ga lihat row ini.
+        </li>
+        <li>
+          <b>Notif Pro-exclusive</b>: Phantom Subscription. Subscription yang udah lewat 1 bulan ga
+          dipake. Tipe insight predictive, beda dari Basic yang reaktif.
+        </li>
+        <li><b>6 wallet</b> visible (sampai 10 max di Pro). Saldo aggregate naik proporsional.</li>
+        <li>
+          <b>2-col Budget Minggu + Sisa Pas Gajian</b> tetap ada — Pro ga ngapus fungsi Basic.
+        </li>
+        <li>
+          <b>Forecast full-width</b> di bawah 2-col. Title: "prediksi uang sisa akhir bulan". 3
+          bulan ditampilin polos — user paham angka tanpa label opini "aman/ketat".
+        </li>
+        <li>
+          <b>Goal stack sampai 5 row</b> (vs 4 di Basic). Opacity decay diperpanjang. Footer
+          berubah: "5 dari unlimited · drag untuk reorder".
+        </li>
+        <li>
+          <b>Insight "decision history"</b> menggantikan rotasi default Basic. Body soal frekuensi &
+          pola Cek Dulu, bukan kategorisasi spending.
+        </li>
+        <li>
+          <b>Refleksi link</b> dashed border di bawah insight = entry point ke deep Insight Pro
+          sheet (6 insight: Decision History, Accuracy, Lifestyle Drift, Phantom Sub, Income
+          Stability, Goal Velocity).
+        </li>
+        <li>
+          <b>Bottom action identik</b> Basic — tombol Andai polos. Tag Pro masuk di dalam fitur
+          Andai (saat user coba save scenario), bukan di entry point.
+        </li>
+      </ul>
+    </div>
+  </body>
+</html>

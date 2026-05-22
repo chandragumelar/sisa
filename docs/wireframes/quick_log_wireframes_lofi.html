@@ -1,0 +1,1513 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SISA — Quick Log Sheet Wireframes Lo-Fi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ================================================================
+     SISA — Quick Log Sheet Wireframes LO-FI
+     4 frames:
+       1. Home (Pro) — state "tap Catat" (button pressed)
+       2. Bottom sheet — mode KELUAR (default)
+       3. Bottom sheet — mode MASUK
+       4. Bottom sheet — mode NABUNG
+     ================================================================ */
+      :root {
+        --canvas: #f4f4f4;
+        --surface: #ffffff;
+        --bar: #e0e0e0;
+        --bar-fill: #888888;
+        --ink-1: #111111;
+        --ink-2: #6b6b6b;
+        --ink-3: #a8a8a8;
+        --border: #d8d8d8;
+        --border-soft: #ececec;
+        --highlight: #dadada;
+        --font-sans: 'Inter Tight', -apple-system, sans-serif;
+        --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: var(--font-sans);
+        background: #dededa;
+        color: var(--ink-1);
+        min-height: 100vh;
+        padding: 32px 16px 48px;
+        -webkit-font-smoothing: antialiased;
+      }
+      .page-header {
+        max-width: 1700px;
+        margin: 0 auto 24px;
+        text-align: center;
+        color: var(--ink-2);
+      }
+      .page-header h1 {
+        font-size: 17px;
+        font-weight: 600;
+        margin-bottom: 4px;
+        letter-spacing: -0.3px;
+        color: var(--ink-1);
+      }
+      .page-header p {
+        font-size: 11.5px;
+        color: var(--ink-3);
+      }
+
+      .frames-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 24px;
+        justify-content: center;
+        align-items: flex-start;
+      }
+
+      .frame-col {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+      }
+      .frame-caption {
+        font-size: 11px;
+        color: var(--ink-2);
+        text-align: center;
+        max-width: 380px;
+      }
+      .frame-caption .num {
+        display: inline-block;
+        width: 18px;
+        height: 18px;
+        line-height: 18px;
+        border-radius: 50%;
+        background: var(--ink-1);
+        color: #fff;
+        font-size: 10px;
+        font-weight: 600;
+        margin-right: 6px;
+        font-family: var(--font-mono);
+      }
+      .frame-caption b {
+        color: var(--ink-1);
+        font-weight: 600;
+      }
+
+      .frame-wrapper {
+        background: #c9c9c5;
+        padding: 18px;
+        border-radius: 32px;
+      }
+      .device-frame {
+        background: #1a1a1a;
+        padding: 6px;
+        border-radius: 36px;
+        width: 380px;
+      }
+      .screen {
+        background: var(--canvas);
+        border-radius: 30px;
+        position: relative;
+        overflow: hidden;
+        height: 820px;
+      }
+      .screen-scroll {
+        padding: 14px 14px 0;
+        height: 100%;
+        overflow: hidden;
+        position: relative;
+      }
+
+      /* ================== SHARED — HOME (kept compact) ================== */
+      .status-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 2px 4px 0;
+      }
+      .brand-group {
+        display: inline-flex;
+        align-items: baseline;
+        gap: 5px;
+      }
+      .brand {
+        letter-spacing: 1.5px;
+        font-weight: 700;
+        font-size: 11px;
+        color: var(--ink-1);
+      }
+      .brand-sep {
+        font-size: 10px;
+        color: var(--ink-3);
+        line-height: 1;
+      }
+      .brand-tier {
+        font-size: 10px;
+        font-weight: 500;
+        color: var(--ink-2);
+        letter-spacing: 0.2px;
+      }
+      .settings-icon {
+        color: var(--ink-2);
+        display: inline-flex;
+      }
+
+      .currency-row {
+        display: flex;
+        padding: 10px 4px 14px;
+      }
+      .seg {
+        display: inline-flex;
+        background: var(--bar);
+        border-radius: 7px;
+        padding: 2px;
+        gap: 2px;
+      }
+      .seg-item {
+        font-size: 10.5px;
+        padding: 4px 12px;
+        border-radius: 5px;
+        color: var(--ink-2);
+        font-weight: 500;
+        letter-spacing: 0.3px;
+        font-family: var(--font-mono);
+        font-feature-settings: 'tnum';
+      }
+      .seg-item.active {
+        background: var(--surface);
+        color: var(--ink-1);
+      }
+
+      .module-label {
+        font-size: 10px;
+        color: var(--ink-3);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        font-weight: 500;
+      }
+      .meta-info {
+        font-size: 10.5px;
+        color: var(--ink-3);
+      }
+
+      .hero-amount {
+        font-size: 38px;
+        font-weight: 600;
+        letter-spacing: -1.4px;
+        margin-top: 4px;
+        font-feature-settings: 'tnum', 'lnum';
+        color: var(--ink-1);
+        line-height: 1.05;
+      }
+      .hero-sub {
+        font-size: 11px;
+        color: var(--ink-3);
+        margin-top: 6px;
+        margin-bottom: 14px;
+      }
+      .wallets {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 2px 12px;
+      }
+      .wallet-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--border-soft);
+      }
+      .wallet-row:last-child {
+        border-bottom: none;
+      }
+      .wallet-name {
+        font-size: 12.5px;
+        color: var(--ink-2);
+      }
+      .wallet-amount {
+        font-family: var(--font-mono);
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--ink-1);
+        font-feature-settings: 'tnum';
+      }
+      .divider {
+        height: 1px;
+        background: var(--border);
+        margin: 18px 0;
+      }
+
+      .row-spread {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: 6px;
+      }
+      .big-amount {
+        font-size: 30px;
+        font-weight: 600;
+        letter-spacing: -0.9px;
+        margin-bottom: 12px;
+        font-feature-settings: 'tnum', 'lnum';
+        color: var(--ink-1);
+        line-height: 1.05;
+      }
+      .bar-thick {
+        height: 22px;
+        background: var(--bar);
+        border-radius: 6px;
+        overflow: hidden;
+        margin-bottom: 8px;
+      }
+      .bar-thick-fill {
+        height: 100%;
+        background: var(--bar-fill);
+        border-radius: 6px 0 0 6px;
+      }
+      .bar-footer {
+        display: flex;
+        justify-content: space-between;
+        font-size: 11px;
+        color: var(--ink-2);
+      }
+      .bar-footer b {
+        font-weight: 600;
+        color: var(--ink-1);
+      }
+
+      /* ============ BOTTOM ACTION ============ */
+      .bottom-action {
+        position: absolute;
+        bottom: 12px;
+        left: 12px;
+        right: 12px;
+        display: flex;
+        gap: 8px;
+        align-items: stretch;
+        z-index: 30;
+      }
+      .ba-btn {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        width: 64px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        padding: 12px 0;
+        color: var(--ink-1);
+      }
+      .ba-btn-label {
+        font-size: 10px;
+        color: var(--ink-1);
+        font-weight: 500;
+      }
+      .ba-btn.pressed {
+        background: var(--ink-1);
+        color: #ffffff;
+        border-color: var(--ink-1);
+      }
+      .ba-btn.pressed .ba-btn-label {
+        color: #ffffff;
+      }
+      .ba-cek {
+        flex: 1;
+        background: var(--ink-1);
+        color: #ffffff;
+        border-radius: 12px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        padding: 12px 0;
+      }
+      .ba-cek-label {
+        font-size: 17px;
+        font-weight: 600;
+        letter-spacing: -0.3px;
+      }
+      .ba-cek-sub {
+        font-size: 10px;
+        color: #bbbbbb;
+      }
+
+      /* Tap hint overlay for frame 1 */
+      .tap-hint {
+        position: absolute;
+        bottom: 78px;
+        left: 22px;
+        background: var(--ink-1);
+        color: #fff;
+        font-size: 10px;
+        padding: 5px 9px;
+        border-radius: 6px;
+        font-weight: 500;
+        z-index: 40;
+        letter-spacing: 0.2px;
+      }
+      .tap-hint::after {
+        content: '';
+        position: absolute;
+        bottom: -4px;
+        left: 18px;
+        width: 8px;
+        height: 8px;
+        background: var(--ink-1);
+        transform: rotate(45deg);
+      }
+
+      /* ====== compact home content for frames 2-4 (dimmed behind sheet) ====== */
+      .home-bg {
+        position: absolute;
+        inset: 0;
+        padding: 14px 14px 90px;
+        overflow: hidden;
+      }
+      .home-bg .module-label,
+      .home-bg .hero-amount,
+      .home-bg .hero-sub,
+      .home-bg .wallet-name,
+      .home-bg .wallet-amount,
+      .home-bg .big-amount,
+      .home-bg .bar-footer {
+        /* keep inherited */
+      }
+      .scrim {
+        position: absolute;
+        inset: 0;
+        background: rgba(17, 17, 17, 0.42);
+        z-index: 10;
+      }
+
+      /* ================== BOTTOM SHEET ================== */
+      .sheet {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--canvas);
+        border-radius: 22px 22px 0 0;
+        z-index: 20;
+        padding: 8px 16px 18px;
+        box-shadow: 0 -2px 0 rgba(0, 0, 0, 0.04);
+        max-height: 92%;
+        display: flex;
+        flex-direction: column;
+      }
+      .sheet-handle {
+        width: 38px;
+        height: 4px;
+        background: var(--ink-3);
+        border-radius: 3px;
+        margin: 0 auto 12px;
+        opacity: 0.55;
+      }
+      .sheet-title-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 14px;
+        padding: 0 2px;
+      }
+      .sheet-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--ink-1);
+        letter-spacing: -0.1px;
+      }
+      .sheet-close {
+        font-size: 18px;
+        color: var(--ink-2);
+        line-height: 1;
+      }
+
+      /* Toggle 3-segmen (keluar / masuk / nabung) */
+      .mode-toggle {
+        display: flex;
+        background: var(--bar);
+        border-radius: 8px;
+        padding: 2px;
+        gap: 2px;
+        margin-bottom: 18px;
+      }
+      .mode-item {
+        flex: 1;
+        text-align: center;
+        font-size: 11.5px;
+        padding: 7px 0;
+        border-radius: 6px;
+        color: var(--ink-2);
+        font-weight: 500;
+        letter-spacing: 0.2px;
+      }
+      .mode-item.active {
+        background: var(--surface);
+        color: var(--ink-1);
+        font-weight: 600;
+        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
+      }
+
+      /* Wallet picker chips */
+      .field-label {
+        font-size: 9.5px;
+        color: var(--ink-3);
+        text-transform: uppercase;
+        letter-spacing: 0.7px;
+        font-weight: 500;
+        margin-bottom: 7px;
+        display: block;
+      }
+      .wallet-chips {
+        display: flex;
+        gap: 6px;
+        overflow-x: auto;
+        padding-bottom: 4px;
+        margin-bottom: 16px;
+      }
+      .wallet-chips::-webkit-scrollbar {
+        display: none;
+      }
+      .wchip {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 7px 10px;
+        min-width: 96px;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .wchip.active {
+        border-color: var(--ink-1);
+        border-width: 1.5px;
+        background: var(--surface);
+      }
+      .wchip-name {
+        font-size: 11px;
+        color: var(--ink-1);
+        font-weight: 500;
+      }
+      .wchip-amt {
+        font-family: var(--font-mono);
+        font-size: 9.5px;
+        color: var(--ink-3);
+        font-feature-settings: 'tnum';
+      }
+      .wchip.active .wchip-amt {
+        color: var(--ink-2);
+      }
+      .wchip.add {
+        min-width: 44px;
+        align-items: center;
+        justify-content: center;
+        color: var(--ink-2);
+        font-size: 14px;
+        font-weight: 500;
+        border-style: dashed;
+      }
+
+      /* Nominal hero (input) */
+      .nominal-block {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 14px 16px 16px;
+        margin-bottom: 16px;
+      }
+      .nominal-currency {
+        font-size: 11px;
+        color: var(--ink-3);
+        font-weight: 500;
+        letter-spacing: 0.4px;
+        margin-bottom: 4px;
+        display: block;
+        font-family: var(--font-mono);
+      }
+      .nominal-input {
+        font-size: 34px;
+        font-weight: 600;
+        color: var(--ink-1);
+        font-family: var(--font-mono);
+        font-feature-settings: 'tnum', 'lnum';
+        letter-spacing: -0.5px;
+        line-height: 1.1;
+        display: flex;
+        align-items: baseline;
+        gap: 2px;
+      }
+      .nominal-input .cursor {
+        display: inline-block;
+        width: 2px;
+        height: 28px;
+        background: var(--ink-1);
+        margin-left: 2px;
+        animation: blink 1.05s steps(2) infinite;
+        transform: translateY(3px);
+      }
+      .nominal-input .ph {
+        color: var(--ink-3);
+        font-weight: 500;
+      }
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+
+      /* Optional fields (label, date, note, etc) */
+      .field-row {
+        margin-bottom: 14px;
+      }
+      .chips-scroll {
+        display: flex;
+        gap: 6px;
+        overflow-x: auto;
+        padding-bottom: 2px;
+      }
+      .chips-scroll::-webkit-scrollbar {
+        display: none;
+      }
+      .chip {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 5px 11px;
+        font-size: 11px;
+        color: var(--ink-2);
+        flex-shrink: 0;
+      }
+      .chip.active {
+        background: var(--ink-1);
+        color: #fff;
+        border-color: var(--ink-1);
+      }
+      .chip-add {
+        border-style: dashed;
+        color: var(--ink-3);
+      }
+
+      /* Toggle "dari tabungan" */
+      .toggle-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 11px 13px;
+        margin-bottom: 14px;
+      }
+      .toggle-row-left {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .toggle-row-label {
+        font-size: 12px;
+        color: var(--ink-1);
+        font-weight: 500;
+      }
+      .toggle-row-sub {
+        font-size: 10px;
+        color: var(--ink-3);
+      }
+      .switch {
+        width: 32px;
+        height: 18px;
+        background: var(--bar);
+        border-radius: 10px;
+        position: relative;
+        flex-shrink: 0;
+      }
+      .switch::after {
+        content: '';
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 14px;
+        height: 14px;
+        background: #fff;
+        border-radius: 50%;
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
+      }
+      .switch.on {
+        background: var(--ink-1);
+      }
+      .switch.on::after {
+        left: 16px;
+      }
+
+      /* Radio options for NABUNG mode */
+      .radio-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 12px 13px;
+        margin-bottom: 8px;
+        display: flex;
+        gap: 11px;
+        align-items: flex-start;
+      }
+      .radio-card.active {
+        border-color: var(--ink-1);
+        border-width: 1.5px;
+      }
+      .radio-circle {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        border: 1.5px solid var(--ink-2);
+        flex-shrink: 0;
+        margin-top: 1px;
+        position: relative;
+      }
+      .radio-card.active .radio-circle {
+        border-color: var(--ink-1);
+      }
+      .radio-card.active .radio-circle::after {
+        content: '';
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        right: 2px;
+        bottom: 2px;
+        background: var(--ink-1);
+        border-radius: 50%;
+      }
+      .radio-body {
+        flex: 1;
+      }
+      .radio-title {
+        font-size: 12.5px;
+        color: var(--ink-1);
+        font-weight: 500;
+        margin-bottom: 3px;
+      }
+      .radio-sub {
+        font-size: 10.5px;
+        color: var(--ink-2);
+        line-height: 1.4;
+      }
+
+      /* Submit button (Catat) */
+      .submit-btn {
+        background: var(--ink-1);
+        color: #fff;
+        border-radius: 12px;
+        padding: 14px 0;
+        text-align: center;
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: -0.1px;
+        margin-top: auto;
+      }
+      .submit-btn.disabled {
+        background: var(--bar);
+        color: var(--ink-3);
+      }
+
+      /* Numpad ghost (visual hint that keyboard would appear) */
+      .keypad-hint {
+        margin-top: 12px;
+        padding: 8px 0;
+        text-align: center;
+        font-size: 9.5px;
+        color: var(--ink-3);
+        font-style: italic;
+        border-top: 1px dashed var(--border);
+      }
+
+      /* Date pills (nabung & masuk inline date) */
+      .date-pills {
+        display: flex;
+        gap: 6px;
+      }
+      .date-pill {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 6px 11px;
+        font-size: 11px;
+        color: var(--ink-2);
+      }
+      .date-pill.active {
+        background: var(--ink-1);
+        color: #fff;
+        border-color: var(--ink-1);
+        font-weight: 500;
+      }
+      .date-pill .arrow {
+        color: var(--ink-3);
+        font-size: 10px;
+        margin-left: 3px;
+      }
+
+      /* Note expander */
+      .note-expander {
+        background: var(--surface);
+        border: 1px dashed var(--border);
+        border-radius: 10px;
+        padding: 9px 12px;
+        font-size: 11px;
+        color: var(--ink-2);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .note-expander .plus {
+        color: var(--ink-3);
+        font-size: 13px;
+      }
+
+      /* Info hint (paradigma celengan ayam, etc.) */
+      .info-hint {
+        font-size: 10px;
+        color: var(--ink-3);
+        line-height: 1.45;
+        padding: 8px 11px;
+        background: var(--surface);
+        border-radius: 8px;
+        border-left: 2px solid var(--ink-3);
+        margin-bottom: 14px;
+        font-style: italic;
+      }
+      .info-hint b {
+        font-weight: 600;
+        color: var(--ink-2);
+        font-style: normal;
+      }
+
+      /* ================== SPEC LEGEND ================== */
+      .legend {
+        max-width: 800px;
+        margin: 40px auto 0;
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 18px 20px;
+        border: 1px solid #d5d5d1;
+        font-size: 11.5px;
+        color: var(--ink-2);
+        line-height: 1.6;
+      }
+      .legend h2 {
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: var(--ink-1);
+      }
+      .legend h3 {
+        font-size: 12px;
+        font-weight: 600;
+        margin: 14px 0 6px;
+        color: var(--ink-1);
+      }
+      .legend ul {
+        list-style: none;
+        padding-left: 14px;
+      }
+      .legend li {
+        position: relative;
+        margin-bottom: 4px;
+      }
+      .legend li:before {
+        content: '+';
+        position: absolute;
+        left: -12px;
+        color: var(--ink-1);
+        font-weight: 600;
+      }
+      .legend b {
+        color: var(--ink-1);
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-header">
+      <h1>SISA — Quick Log Sheet · Wireframes Lo-Fi</h1>
+      <p>4 frames: Home (tap Catat) → Bottom sheet 3 mode (keluar · masuk · nabung)</p>
+    </div>
+
+    <div class="frames-row">
+      <!-- ============================================================
+       FRAME 1 — HOME (Pro), state: tombol Catat ditap
+       ============================================================ -->
+      <div class="frame-col">
+        <div class="frame-wrapper">
+          <div class="device-frame">
+            <div class="screen">
+              <div class="screen-scroll" style="padding-bottom: 90px">
+                <!-- HEADER -->
+                <div class="status-bar">
+                  <span class="brand-group">
+                    <span class="brand">SISA</span>
+                    <span class="brand-sep">·</span>
+                    <span class="brand-tier">Pro</span>
+                  </span>
+                  <span class="settings-icon">
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <line x1="4" y1="6" x2="20" y2="6" />
+                      <line x1="4" y1="12" x2="20" y2="12" />
+                      <line x1="4" y1="18" x2="20" y2="18" />
+                      <circle cx="9" cy="6" r="2" fill="#F4F4F4" />
+                      <circle cx="15" cy="12" r="2" fill="#F4F4F4" />
+                      <circle cx="11" cy="18" r="2" fill="#F4F4F4" />
+                    </svg>
+                  </span>
+                </div>
+
+                <div class="currency-row">
+                  <div class="seg">
+                    <span class="seg-item active">IDR</span>
+                    <span class="seg-item">USD</span>
+                  </div>
+                </div>
+
+                <!-- SALDO ringkas -->
+                <div class="module-label">saldo total</div>
+                <div class="hero-amount">Rp 12.480.000</div>
+                <div class="hero-sub">Rp 142rb terpakai kemarin</div>
+                <div class="wallets">
+                  <div class="wallet-row">
+                    <span class="wallet-name">BCA</span
+                    ><span class="wallet-amount">Rp 5.420.000</span>
+                  </div>
+                  <div class="wallet-row">
+                    <span class="wallet-name">Mandiri</span
+                    ><span class="wallet-amount">Rp 2.380.000</span>
+                  </div>
+                  <div class="wallet-row">
+                    <span class="wallet-name">Jenius</span
+                    ><span class="wallet-amount">Rp 1.850.000</span>
+                  </div>
+                  <div class="wallet-row">
+                    <span class="wallet-name">ShopeePay</span
+                    ><span class="wallet-amount">Rp 1.620.000</span>
+                  </div>
+                  <div class="wallet-row">
+                    <span class="wallet-name">GoPay</span
+                    ><span class="wallet-amount">Rp 780.000</span>
+                  </div>
+                  <div class="wallet-row">
+                    <span class="wallet-name">Cash</span
+                    ><span class="wallet-amount">Rp 430.000</span>
+                  </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- BUDGET HARI INI -->
+                <div class="row-spread">
+                  <span class="module-label">budget hari ini</span>
+                  <span class="meta-info">9 hari sampai gajian</span>
+                </div>
+                <div class="big-amount">Rp 412.000</div>
+                <div class="bar-thick">
+                  <div class="bar-thick-fill" style="width: 28%"></div>
+                </div>
+                <div class="bar-footer">
+                  <span>Rp 115rb terpakai</span>
+                  <span><b>Rp 297rb</b> sisa hari ini</span>
+                </div>
+              </div>
+
+              <!-- TAP HINT -->
+              <div class="tap-hint">tap Catat ↓</div>
+
+              <!-- BOTTOM ACTION — state: Catat pressed -->
+              <div class="bottom-action">
+                <div class="ba-btn pressed">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                  >
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                  <span class="ba-btn-label">Catat</span>
+                </div>
+                <div class="ba-cek">
+                  <span class="ba-cek-label">Cek Dulu</span>
+                  <span class="ba-cek-sub">aman ga gue beli ini?</span>
+                </div>
+                <div class="ba-btn">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <circle cx="12" cy="18" r="2" />
+                    <circle cx="6" cy="6" r="2" />
+                    <circle cx="18" cy="6" r="2" />
+                    <path d="M18 8v1a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V8" />
+                    <line x1="12" y1="11" x2="12" y2="16" />
+                  </svg>
+                  <span class="ba-btn-label">Andai</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="frame-caption">
+          <span class="num">1</span>
+          <b>Home</b> — state: tombol <b>Catat</b> ditap (pressed). Trigger Quick Log Sheet muncul
+          dari bawah.
+        </div>
+      </div>
+
+      <!-- ============================================================
+       FRAME 2 — SHEET · MODE KELUAR (default)
+       ============================================================ -->
+      <div class="frame-col">
+        <div class="frame-wrapper">
+          <div class="device-frame">
+            <div class="screen">
+              <!-- Background home (dimmed) -->
+              <div class="home-bg">
+                <div class="status-bar">
+                  <span class="brand-group">
+                    <span class="brand">SISA</span>
+                    <span class="brand-sep">·</span>
+                    <span class="brand-tier">Pro</span>
+                  </span>
+                  <span class="settings-icon">
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <line x1="4" y1="6" x2="20" y2="6" />
+                      <line x1="4" y1="12" x2="20" y2="12" />
+                      <line x1="4" y1="18" x2="20" y2="18" />
+                    </svg>
+                  </span>
+                </div>
+                <div class="currency-row">
+                  <div class="seg">
+                    <span class="seg-item active">IDR</span><span class="seg-item">USD</span>
+                  </div>
+                </div>
+                <div class="module-label">saldo total</div>
+                <div class="hero-amount">Rp 12.480.000</div>
+                <div class="hero-sub">Rp 142rb terpakai kemarin</div>
+                <div class="wallets">
+                  <div class="wallet-row">
+                    <span class="wallet-name">BCA</span
+                    ><span class="wallet-amount">Rp 5.420.000</span>
+                  </div>
+                  <div class="wallet-row">
+                    <span class="wallet-name">Mandiri</span
+                    ><span class="wallet-amount">Rp 2.380.000</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Scrim -->
+              <div class="scrim"></div>
+
+              <!-- BOTTOM SHEET — MODE KELUAR -->
+              <div class="sheet">
+                <div class="sheet-handle"></div>
+
+                <div class="sheet-title-row">
+                  <span class="sheet-title">Catat transaksi</span>
+                  <span class="sheet-close">×</span>
+                </div>
+
+                <!-- 3-segment toggle: keluar (active) -->
+                <div class="mode-toggle">
+                  <span class="mode-item active">keluar</span>
+                  <span class="mode-item">masuk</span>
+                  <span class="mode-item">nabung</span>
+                </div>
+
+                <!-- Wallet picker -->
+                <span class="field-label">dari dompet</span>
+                <div class="wallet-chips">
+                  <div class="wchip active">
+                    <span class="wchip-name">BCA</span>
+                    <span class="wchip-amt">Rp 5.420.000</span>
+                  </div>
+                  <div class="wchip">
+                    <span class="wchip-name">Mandiri</span>
+                    <span class="wchip-amt">Rp 2.380.000</span>
+                  </div>
+                  <div class="wchip">
+                    <span class="wchip-name">Jenius</span>
+                    <span class="wchip-amt">Rp 1.850.000</span>
+                  </div>
+                  <div class="wchip">
+                    <span class="wchip-name">GoPay</span>
+                    <span class="wchip-amt">Rp 780.000</span>
+                  </div>
+                  <div class="wchip">
+                    <span class="wchip-name">Cash</span>
+                    <span class="wchip-amt">Rp 430.000</span>
+                  </div>
+                </div>
+
+                <!-- Nominal hero -->
+                <div class="nominal-block">
+                  <span class="nominal-currency">IDR · keluar</span>
+                  <div class="nominal-input">
+                    <span>Rp</span><span class="ph">0</span><span class="cursor"></span>
+                  </div>
+                </div>
+
+                <!-- Label chip scroll -->
+                <div class="field-row">
+                  <span class="field-label">label · opsional</span>
+                  <div class="chips-scroll">
+                    <span class="chip">makan</span>
+                    <span class="chip">transport</span>
+                    <span class="chip">belanja</span>
+                    <span class="chip">jajan</span>
+                    <span class="chip">bensin</span>
+                    <span class="chip chip-add">+ baru</span>
+                  </div>
+                </div>
+
+                <!-- Toggle dari tabungan -->
+                <div class="toggle-row">
+                  <div class="toggle-row-left">
+                    <span class="toggle-row-label">dari tabungan</span>
+                    <span class="toggle-row-sub">tarik dari total tabungan, bukan operasional</span>
+                  </div>
+                  <div class="switch"></div>
+                </div>
+
+                <!-- Tanggal -->
+                <div class="field-row">
+                  <span class="field-label">tanggal</span>
+                  <div class="date-pills">
+                    <span class="date-pill active">hari ini</span>
+                    <span class="date-pill">kemarin</span>
+                    <span class="date-pill">pilih <span class="arrow">›</span></span>
+                  </div>
+                </div>
+
+                <!-- Catatan collapsed -->
+                <div class="field-row">
+                  <div class="note-expander">
+                    <span>+ tambah catatan</span>
+                    <span class="plus">›</span>
+                  </div>
+                </div>
+
+                <!-- Submit -->
+                <div class="submit-btn disabled">Catat</div>
+
+                <div class="keypad-hint">numpad muncul saat field nominal aktif</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="frame-caption">
+          <span class="num">2</span>
+          <b>Mode keluar</b> — default. Wallet picker (BCA aktif) → nominal kosong → label opsional
+          → toggle "dari tabungan" → tanggal.
+        </div>
+      </div>
+
+      <!-- ============================================================
+       FRAME 3 — SHEET · MODE MASUK
+       ============================================================ -->
+      <div class="frame-col">
+        <div class="frame-wrapper">
+          <div class="device-frame">
+            <div class="screen">
+              <div class="home-bg">
+                <div class="status-bar">
+                  <span class="brand-group">
+                    <span class="brand">SISA</span>
+                    <span class="brand-sep">·</span>
+                    <span class="brand-tier">Pro</span>
+                  </span>
+                  <span class="settings-icon">
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <line x1="4" y1="6" x2="20" y2="6" />
+                      <line x1="4" y1="12" x2="20" y2="12" />
+                      <line x1="4" y1="18" x2="20" y2="18" />
+                    </svg>
+                  </span>
+                </div>
+                <div class="currency-row">
+                  <div class="seg">
+                    <span class="seg-item active">IDR</span><span class="seg-item">USD</span>
+                  </div>
+                </div>
+                <div class="module-label">saldo total</div>
+                <div class="hero-amount">Rp 12.480.000</div>
+                <div class="hero-sub">Rp 142rb terpakai kemarin</div>
+                <div class="wallets">
+                  <div class="wallet-row">
+                    <span class="wallet-name">BCA</span
+                    ><span class="wallet-amount">Rp 5.420.000</span>
+                  </div>
+                  <div class="wallet-row">
+                    <span class="wallet-name">Mandiri</span
+                    ><span class="wallet-amount">Rp 2.380.000</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="scrim"></div>
+
+              <!-- BOTTOM SHEET — MODE MASUK -->
+              <div class="sheet">
+                <div class="sheet-handle"></div>
+
+                <div class="sheet-title-row">
+                  <span class="sheet-title">Catat transaksi</span>
+                  <span class="sheet-close">×</span>
+                </div>
+
+                <div class="mode-toggle">
+                  <span class="mode-item">keluar</span>
+                  <span class="mode-item active">masuk</span>
+                  <span class="mode-item">nabung</span>
+                </div>
+
+                <span class="field-label">ke dompet</span>
+                <div class="wallet-chips">
+                  <div class="wchip active">
+                    <span class="wchip-name">BCA</span>
+                    <span class="wchip-amt">Rp 5.420.000</span>
+                  </div>
+                  <div class="wchip">
+                    <span class="wchip-name">Mandiri</span>
+                    <span class="wchip-amt">Rp 2.380.000</span>
+                  </div>
+                  <div class="wchip">
+                    <span class="wchip-name">Jenius</span>
+                    <span class="wchip-amt">Rp 1.850.000</span>
+                  </div>
+                  <div class="wchip">
+                    <span class="wchip-name">GoPay</span>
+                    <span class="wchip-amt">Rp 780.000</span>
+                  </div>
+                  <div class="wchip">
+                    <span class="wchip-name">Cash</span>
+                    <span class="wchip-amt">Rp 430.000</span>
+                  </div>
+                </div>
+
+                <div class="nominal-block">
+                  <span class="nominal-currency">IDR · masuk</span>
+                  <div class="nominal-input">
+                    <span>Rp</span><span class="ph">0</span><span class="cursor"></span>
+                  </div>
+                </div>
+
+                <div class="field-row">
+                  <span class="field-label">label · opsional</span>
+                  <div class="chips-scroll">
+                    <span class="chip">gaji</span>
+                    <span class="chip">freelance</span>
+                    <span class="chip">transfer masuk</span>
+                    <span class="chip">bonus</span>
+                    <span class="chip">refund</span>
+                    <span class="chip chip-add">+ baru</span>
+                  </div>
+                </div>
+
+                <div class="field-row">
+                  <span class="field-label">tanggal</span>
+                  <div class="date-pills">
+                    <span class="date-pill active">hari ini</span>
+                    <span class="date-pill">kemarin</span>
+                    <span class="date-pill">pilih <span class="arrow">›</span></span>
+                  </div>
+                </div>
+
+                <div class="field-row">
+                  <div class="note-expander">
+                    <span>+ tambah catatan</span>
+                    <span class="plus">›</span>
+                  </div>
+                </div>
+
+                <div class="submit-btn disabled">Catat</div>
+
+                <div class="keypad-hint">numpad muncul saat field nominal aktif</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="frame-caption">
+          <span class="num">3</span>
+          <b>Mode masuk</b> — income/transfer. Field "dari tabungan" hilang. Label kontekstual:
+          gaji, freelance, dst.
+        </div>
+      </div>
+
+      <!-- ============================================================
+       FRAME 4 — SHEET · MODE NABUNG
+       ============================================================ -->
+      <div class="frame-col">
+        <div class="frame-wrapper">
+          <div class="device-frame">
+            <div class="screen">
+              <div class="home-bg">
+                <div class="status-bar">
+                  <span class="brand-group">
+                    <span class="brand">SISA</span>
+                    <span class="brand-sep">·</span>
+                    <span class="brand-tier">Pro</span>
+                  </span>
+                  <span class="settings-icon">
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <line x1="4" y1="6" x2="20" y2="6" />
+                      <line x1="4" y1="12" x2="20" y2="12" />
+                      <line x1="4" y1="18" x2="20" y2="18" />
+                    </svg>
+                  </span>
+                </div>
+                <div class="currency-row">
+                  <div class="seg">
+                    <span class="seg-item active">IDR</span><span class="seg-item">USD</span>
+                  </div>
+                </div>
+                <div class="module-label">saldo total</div>
+                <div class="hero-amount">Rp 12.480.000</div>
+                <div class="hero-sub">Rp 142rb terpakai kemarin</div>
+                <div class="wallets">
+                  <div class="wallet-row">
+                    <span class="wallet-name">BCA</span
+                    ><span class="wallet-amount">Rp 5.420.000</span>
+                  </div>
+                  <div class="wallet-row">
+                    <span class="wallet-name">Mandiri</span
+                    ><span class="wallet-amount">Rp 2.380.000</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="scrim"></div>
+
+              <!-- BOTTOM SHEET — MODE NABUNG -->
+              <div class="sheet">
+                <div class="sheet-handle"></div>
+
+                <div class="sheet-title-row">
+                  <span class="sheet-title">Catat transaksi</span>
+                  <span class="sheet-close">×</span>
+                </div>
+
+                <div class="mode-toggle">
+                  <span class="mode-item">keluar</span>
+                  <span class="mode-item">masuk</span>
+                  <span class="mode-item active">nabung</span>
+                </div>
+
+                <span class="field-label">dari dompet</span>
+                <div class="wallet-chips">
+                  <div class="wchip active">
+                    <span class="wchip-name">BCA</span>
+                    <span class="wchip-amt">Rp 5.420.000</span>
+                  </div>
+                  <div class="wchip">
+                    <span class="wchip-name">Mandiri</span>
+                    <span class="wchip-amt">Rp 2.380.000</span>
+                  </div>
+                  <div class="wchip">
+                    <span class="wchip-name">Jenius</span>
+                    <span class="wchip-amt">Rp 1.850.000</span>
+                  </div>
+                  <div class="wchip">
+                    <span class="wchip-name">GoPay</span>
+                    <span class="wchip-amt">Rp 780.000</span>
+                  </div>
+                </div>
+
+                <div class="nominal-block">
+                  <span class="nominal-currency">IDR · nabung</span>
+                  <div class="nominal-input">
+                    <span>Rp</span><span class="ph">0</span><span class="cursor"></span>
+                  </div>
+                </div>
+
+                <!-- Info hint: paradigma celengan ayam -->
+                <div class="info-hint">
+                  <b>otomatis masuk goal teratas</b> — Dana darurat. Luber ke bawah sesuai urutan
+                  goal.
+                </div>
+
+                <!-- Tujuan duit: radio 2 skenario -->
+                <span class="field-label">tujuan duitnya</span>
+                <div class="radio-card active" style="margin-top: 7px">
+                  <div class="radio-circle"></div>
+                  <div class="radio-body">
+                    <div class="radio-title">Tetap di dompet ini, dikunci buat goal</div>
+                    <div class="radio-sub">
+                      Saldo total tetap. Muncul angka "terkunci goal" di BCA. Budget hari ini
+                      terpotong otomatis.
+                    </div>
+                  </div>
+                </div>
+                <div class="radio-card">
+                  <div class="radio-circle"></div>
+                  <div class="radio-body">
+                    <div class="radio-title">Pindah ke dompet nabung</div>
+                    <div class="radio-sub">
+                      Pilih dompet tujuan. Kalau di luar app, saldo total turun beneran.
+                    </div>
+                  </div>
+                </div>
+
+                <div class="field-row" style="margin-top: 14px">
+                  <span class="field-label">tanggal</span>
+                  <div class="date-pills">
+                    <span class="date-pill active">hari ini</span>
+                    <span class="date-pill">kemarin</span>
+                    <span class="date-pill">pilih <span class="arrow">›</span></span>
+                  </div>
+                </div>
+
+                <div class="submit-btn disabled">Catat</div>
+
+                <div class="keypad-hint">tidak ada step pilih goal · celengan ayam paradigm</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="frame-caption">
+          <span class="num">4</span>
+          <b>Mode nabung</b> — 2 skenario tujuan duit (earmark vs pindah dompet).
+          <b>Tidak ada step pilih goal</b> — otomatis ke goal teratas.
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================
+     SPEC LEGEND
+     ============================================================ -->
+    <div class="legend">
+      <h2>Spec — Quick Log Sheet (PRD §3.4.11)</h2>
+
+      <h3>Pattern bottom sheet (semua mode)</h3>
+      <ul>
+        <li>
+          <b>Bentuk:</b> bottom sheet, bukan push penuh. Drag handle di atas, tap area dim =
+          dismiss.
+        </li>
+        <li>
+          <b>Prinsip:</b> nominal > wallet > sisanya opsional. Idealnya 2 aksi inti: pilih/terima
+          wallet default → ketik nominal → tap Catat.
+        </li>
+        <li>
+          <b>Toggle 3 segmen</b> di atas: <code>keluar / masuk / nabung</code>. Default
+          <b>keluar</b>. Toggle ubah field di bawahnya — tiap mode beda isi.
+        </li>
+        <li>
+          <b>Wallet picker selalu paling atas</b> (di bawah toggle), karena wallet menentukan
+          currency symbol di nominal. Default = wallet terakhir dipakai.
+        </li>
+        <li>
+          <b>Nominal hero:</b> angka besar, prefix currency mengikuti wallet terpilih. Numpad
+          auto-focus.
+        </li>
+        <li>
+          <b>Tombol Catat</b> disabled sampai nominal terisi (state di wireframe = belum input).
+        </li>
+      </ul>
+
+      <h3>Diferensiasi per mode</h3>
+      <ul>
+        <li>
+          <b>Keluar</b> — label opsional · <b>toggle "dari tabungan"</b> (off default, mekanisme
+          tarik tabungan) · tanggal · catatan.
+        </li>
+        <li>
+          <b>Masuk</b> — label kontekstual (gaji, freelance, transfer masuk, bonus) · tanggal ·
+          catatan. <b>Tidak ada</b> toggle dari tabungan.
+        </li>
+        <li>
+          <b>Nabung</b> — <b>2 skenario radio</b>: (A) earmark di dompet sumber (saldo total tetap,
+          muncul "terkunci goal") vs (B) pindah ke dompet nabung lain · tanggal.
+          <b>Tidak ada step pilih goal</b> — paradigma celengan ayam, otomatis ke goal teratas,
+          luber ke bawah.
+        </li>
+      </ul>
+
+      <h3>Kenapa nabung jadi segmen sendiri</h3>
+      <ul>
+        <li>Secara mental tidak bisa dipaksa masuk "keluar" atau "masuk" — membingungkan user.</li>
+        <li>Tarik tabungan = mode keluar + toggle "dari tabungan" (bukan flow terpisah).</li>
+        <li>
+          Satu cabang logika tunggal: tarik > total tabungan → app tanya sisanya dari mana
+          (conversational).
+        </li>
+      </ul>
+
+      <h3>Toast confirmation (post-Catat, semua mode)</h3>
+      <ul>
+        <li>
+          Hitam, di atas bottom action, countdown 5 detik auto-dismiss, tombol <b>Ubah</b> +
+          <b>Batal</b>.
+        </li>
+        <li>Mode nabung: <code>"✓ Nabung Rp X · masuk [nama goal teratas] · barusan"</code></li>
+        <li>
+          <b>Batal = revert atomik:</b> transaksi terhapus + total tabungan dikembalikan + goal
+          dihitung ulang. Tidak ada revert setengah.
+        </li>
+      </ul>
+    </div>
+  </body>
+</html>

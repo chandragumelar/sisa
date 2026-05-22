@@ -1,9 +1,6 @@
-import styles from './App.module.css'
+import { RouterProvider } from 'react-router-dom'
+import { router } from './router'
 
 export function App() {
-  return (
-    <div className={styles.root}>
-      <h1 className={styles.title}>SISA</h1>
-    </div>
-  )
+  return <RouterProvider router={router} />
 }

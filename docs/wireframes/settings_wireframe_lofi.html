@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SISA — Settings (Lofi)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ============================================================
+     SISA — Settings wireframe · LOFI (grayscale skeleton)
+     Struktur & spacing faithful ke design_system.md.
+     Warna sengaja di-grayscale: accent/danger jadi gray tones.
+     ============================================================ */
+      :root {
+        /* grayscale lofi palette */
+        --canvas: #edeff2;
+        --surface: #ffffff;
+        --surface-2: #e4e7eb;
+        --ink-1: #1a1d22;
+        --ink-2: #6a6f78;
+        --ink-3: #9aa0a8;
+        --hair: #e2e5ea;
+        --fill: #2c2f36; /* pengganti accent (cobalt) di lofi */
+        --fill-bg: #eceef1;
+        --danger: #4a4d52; /* pengganti merah di lofi: outline + dark ink */
+        --font-sans: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;
+        --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        -webkit-tap-highlight-color: transparent;
+      }
+      body {
+        font-family: var(--font-sans);
+        background: #d7dbe0;
+        min-height: 100vh;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 36px 16px;
+        font-feature-settings: 'tnum', 'lnum', 'cv11';
+        color: var(--ink-1);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* device frame */
+      .frame {
+        width: 380px;
+        background: var(--canvas);
+        border-radius: 30px;
+        padding: 14px 14px 24px;
+        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
+        position: relative;
+      }
+
+      /* header: back + title */
+      .hdr {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 4px 2px 14px;
+      }
+      .back {
+        width: 26px;
+        height: 26px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--ink-2);
+      }
+      .back svg {
+        width: 18px;
+        height: 18px;
+      }
+      .hdr-title {
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: -0.2px;
+        color: var(--ink-1);
+      }
+
+      /* ---- profile entry card ---- */
+      .profile {
+        background: var(--surface);
+        border: 1px solid var(--hair);
+        border-radius: 12px;
+        padding: 13px 13px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+      .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 11px;
+        flex: none;
+        background: var(--surface-2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--ink-3);
+      }
+      .avatar svg {
+        width: 20px;
+        height: 20px;
+      }
+      .pf-text {
+        flex: 1;
+        min-width: 0;
+      }
+      .pf-name {
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: -0.2px;
+        color: var(--ink-1);
+      }
+      .pf-sub {
+        font-size: 11px;
+        color: var(--ink-3);
+        margin-top: 3px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .pro-badge {
+        font-size: 8.5px;
+        font-weight: 600;
+        letter-spacing: 0.6px;
+        text-transform: uppercase;
+        background: var(--ink-1);
+        color: var(--canvas);
+        padding: 2px 6px;
+        border-radius: 3px;
+        line-height: 1;
+      }
+      .chev {
+        color: var(--ink-3);
+        flex: none;
+      }
+      .chev svg {
+        width: 16px;
+        height: 16px;
+        display: block;
+      }
+
+      /* ---- section ---- */
+      .section {
+        margin-bottom: 18px;
+      }
+      .sec-label {
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        padding: 0 2px 8px;
+      }
+      .group {
+        background: var(--surface);
+        border: 1px solid var(--hair);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      .row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 13px 13px;
+        border-bottom: 1px solid var(--hair);
+        min-height: 48px;
+      }
+      .row:last-child {
+        border-bottom: none;
+      }
+      .row-label {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--ink-1);
+        letter-spacing: -0.1px;
+      }
+      .row-main {
+        flex: 1;
+        min-width: 0;
+      }
+      .row-sub {
+        font-size: 10.5px;
+        color: var(--ink-3);
+        margin-top: 2px;
+      }
+      .row-val {
+        font-size: 12px;
+        color: var(--ink-2);
+      }
+      .row-val.mono {
+        font-family: var(--font-mono);
+        font-weight: 500;
+        font-size: 11.5px;
+        color: var(--ink-1);
+      }
+
+      /* segmented control (tema) */
+      .seg {
+        display: flex;
+        background: var(--surface-2);
+        border-radius: 8px;
+        padding: 2px;
+        gap: 2px;
+      }
+      .seg span {
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--ink-2);
+        padding: 5px 9px;
+        border-radius: 6px;
+        line-height: 1;
+        white-space: nowrap;
+      }
+      .seg span.on {
+        background: var(--surface);
+        color: var(--ink-1);
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+      }
+
+      /* toggle */
+      .toggle {
+        width: 36px;
+        height: 21px;
+        border-radius: 11px;
+        background: var(--surface-2);
+        position: relative;
+        flex: none;
+        border: 1px solid var(--hair);
+      }
+      .toggle::after {
+        content: '';
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        background: #fff;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+      }
+      .toggle.on {
+        background: var(--fill);
+        border-color: var(--fill);
+      }
+      .toggle.on::after {
+        left: auto;
+        right: 2px;
+      }
+
+      .pro-tag {
+        font-size: 8px;
+        font-weight: 600;
+        letter-spacing: 0.6px;
+        text-transform: uppercase;
+        color: var(--ink-2);
+        border: 1px solid var(--hair);
+        padding: 2px 5px;
+        border-radius: 3px;
+        line-height: 1;
+      }
+
+      /* danger row */
+      .row.danger .row-label {
+        color: var(--danger);
+        font-weight: 600;
+      }
+      .row.danger {
+        background: #fafafb;
+      }
+
+      /* version footer */
+      .ver {
+        text-align: center;
+        font-size: 10.5px;
+        color: var(--ink-3);
+        padding: 8px 0 0;
+        font-family: var(--font-mono);
+      }
+
+      /* contact inline value */
+      .handle {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        color: var(--ink-2);
+      }
+
+      /* tiny note */
+      .note {
+        font-size: 9.5px;
+        font-style: italic;
+        color: var(--ink-3);
+        padding: 6px 4px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="frame">
+      <!-- HEADER -->
+      <div class="hdr">
+        <div class="back">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M15 18l-6-6 6-6" />
+          </svg>
+        </div>
+        <div class="hdr-title">setelan</div>
+      </div>
+
+      <!-- PROFILE ENTRY (tap → screen profil) -->
+      <div class="profile">
+        <div class="avatar">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="8" r="4" />
+            <path d="M5 20a7 7 0 0 1 14 0" />
+          </svg>
+        </div>
+        <div class="pf-text">
+          <div class="pf-name">Chandra Gumelar</div>
+          <div class="pf-sub"><span class="pro-badge">Pro</span> aktif · 142 hari lagi</div>
+        </div>
+        <div class="chev">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M9 6l6 6-6 6" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- TAMPILAN -->
+      <div class="section">
+        <div class="sec-label">tampilan</div>
+        <div class="group">
+          <div class="row">
+            <div class="row-main"><div class="row-label">tema</div></div>
+            <div class="seg">
+              <span class="on">terang</span>
+              <span>gelap</span>
+              <span>sistem</span>
+            </div>
+          </div>
+          <div class="row">
+            <div class="row-main"><div class="row-label">bahasa</div></div>
+            <div class="row-val">Indonesia</div>
+            <div class="chev">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M9 6l6 6-6 6" />
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="note">tema "sistem" ngikut OS, bukan jam · gelap = v2</div>
+      </div>
+
+      <!-- DATA & BACKUP -->
+      <div class="section">
+        <div class="sec-label">data & backup</div>
+        <div class="group">
+          <div class="row">
+            <div class="row-main">
+              <div class="row-label">export backup</div>
+              <div class="row-sub">file lengkap buat pindah / restore</div>
+            </div>
+            <div class="row-val mono">.json</div>
+            <div class="chev">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M9 6l6 6-6 6" />
+              </svg>
+            </div>
+          </div>
+          <div class="row">
+            <div class="row-main">
+              <div class="row-label">export transaksi</div>
+              <div class="row-sub">buat dibuka di spreadsheet</div>
+            </div>
+            <div class="row-val mono">.csv</div>
+            <div class="chev">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M9 6l6 6-6 6" />
+              </svg>
+            </div>
+          </div>
+          <div class="row">
+            <div class="row-main">
+              <div class="row-label">auto-export akhir bulan</div>
+              <div class="row-sub">ingetin + 1-tap pas buka app</div>
+            </div>
+            <span class="pro-tag">Pro</span>
+            <div class="toggle"></div>
+          </div>
+          <div class="row">
+            <div class="row-main">
+              <div class="row-label">import dari backup</div>
+              <div class="row-sub">restore dari file .json</div>
+            </div>
+            <div class="chev">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M9 6l6 6-6 6" />
+              </svg>
+            </div>
+          </div>
+          <div class="row danger">
+            <div class="row-main"><div class="row-label">hapus semua data</div></div>
+            <div class="chev">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M9 6l6 6-6 6" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TENTANG -->
+      <div class="section">
+        <div class="sec-label">tentang</div>
+        <div class="group">
+          <div class="row">
+            <div class="row-main"><div class="row-label">cara backup data</div></div>
+            <div class="chev">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M9 6l6 6-6 6" />
+              </svg>
+            </div>
+          </div>
+          <div class="row">
+            <div class="row-main"><div class="row-label">FAQ</div></div>
+            <div class="chev">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M9 6l6 6-6 6" />
+              </svg>
+            </div>
+          </div>
+          <div class="row">
+            <div class="row-main"><div class="row-label">kebijakan privasi</div></div>
+            <div class="chev">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M9 6l6 6-6 6" />
+              </svg>
+            </div>
+          </div>
+          <div class="row">
+            <div class="row-main">
+              <div class="row-label">kontak & feedback</div>
+              <div class="row-sub">DM aja kalau ada masukan</div>
+            </div>
+            <div class="handle">@win32_icang</div>
+            <div class="chev">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M9 6l6 6-6 6" />
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="ver">SISA · v0.1.0</div>
+      </div>
+    </div>
+  </body>
+</html>
