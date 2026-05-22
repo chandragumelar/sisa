@@ -1,6 +1,8 @@
 import { createBrowserRouter } from 'react-router-dom'
 import { HomePage } from '@/features/home/HomePage'
 import { OnboardingPage } from '@/features/onboarding/OnboardingPage'
+import { CekDuluPage } from '@/features/cekDulu/CekDuluPage'
+import { AndaiPage } from '@/features/andai/AndaiPage'
 import { RequireOnboarding, RequireSetupPending } from './guards'
 
 export const router = createBrowserRouter([
@@ -18,6 +20,22 @@ export const router = createBrowserRouter([
       <RequireSetupPending>
         <OnboardingPage />
       </RequireSetupPending>
+    ),
+  },
+  {
+    path: '/cek-dulu',
+    element: (
+      <RequireOnboarding>
+        <CekDuluPage />
+      </RequireOnboarding>
+    ),
+  },
+  {
+    path: '/andai',
+    element: (
+      <RequireOnboarding>
+        <AndaiPage />
+      </RequireOnboarding>
     ),
   },
 ])

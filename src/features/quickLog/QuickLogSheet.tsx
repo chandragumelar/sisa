@@ -20,6 +20,8 @@ interface Props {
   totalNabung: number
   nowMs: number
   onCommit: (txId: number, mode: QuickLogMode) => void
+  initialAmount?: number
+  initialMode?: QuickLogMode
 }
 
 export function QuickLogSheet({
@@ -30,10 +32,12 @@ export function QuickLogSheet({
   totalNabung,
   nowMs,
   onCommit,
+  initialAmount,
+  initialMode,
 }: Props) {
-  const [mode, setMode] = useState<QuickLogMode>('keluar')
+  const [mode, setMode] = useState<QuickLogMode>(initialMode ?? 'keluar')
   const [walletId, setWalletId] = useState<number>(wallets[0]?.id ?? 0)
-  const [amountStr, setAmountStr] = useState('')
+  const [amountStr, setAmountStr] = useState(initialAmount ? String(initialAmount) : '')
   const [label, setLabel] = useState('')
   const [isFromSavings, setIsFromSavings] = useState(false)
   const [nabungMode, setNabungMode] = useState<NabungMode>('earmark')
