@@ -1,6 +1,10 @@
 import type { Clock } from '@/shared/types/clock'
 import type { LicenseRecord, LicenseStatus, Tier } from '@/db/database'
-import { PUBLIC_KEY_SPKI_B64, LICENSE_VERSION } from '@/constants/license'
+import {
+  PUBLIC_KEY_SPKI_B64,
+  LICENSE_VERSION,
+  LICENSE_ROLLBACK_TOLERANCE_MS,
+} from '@/constants/license'
 import { getLicense, saveLicense, updateLastSeenAt } from '@/db/license.repository'
 
 export interface LicensePayload {
@@ -115,9 +119,9 @@ export async function activateLicense(rawKey: string, clock: Clock): Promise<Act
   return { ok: true }
 }
 
-// Re-verifies the stored raw key on every app open (signature can't be faked;
-// persisted flags can). Updates lastSeenAt when signature is intact — used by
-// anti-rollback detection in story 2.5.
+// Re-verifies the stored raw key (signature can't be faked; persisted flags
+// can). Updates lastSeenAt when signature is intact. Use for one-off checks;
+// for full app-open status use determineLicenseStatus.
 export async function loadAndVerifyLicense(clock: Clock): Promise<VerifyResult | null> {
   const record = await getLicense()
   if (!record) return null
@@ -133,11 +137,20 @@ export async function loadAndVerifyLicense(clock: Clock): Promise<VerifyResult |
 // Status detection
 // ---------------------------------------------------------------------------
 
-// Maps the full license lifecycle to a single LicenseStatus enum value.
-// Story 2.5 will inject the anti-rollback check before the loadAndVerify call.
+// Maps the full license lifecycle to a single LicenseStatus value.
+// Reads the record directly (not via loadAndVerifyLicense) so the rollback
+// check can inspect lastSeenAt before updateLastSeenAt runs.
 export async function determineLicenseStatus(clock: Clock): Promise<LicenseStatus> {
-  const result = await loadAndVerifyLicense(clock)
-  if (result === null) return 'unactivated'
+  const record = await getLicense()
+  if (!record) return 'unactivated'
+
+  // Anti-rollback: stored lastSeenAt ahead of now by more than tolerance means
+  // the system clock was wound back after the last app open.
+  if (record.lastSeenAt > clock.now() + LICENSE_ROLLBACK_TOLERANCE_MS) return 'tampered'
+
+  const result = await verifyLicenseKey(record.rawKey, clock)
+  if (result.status !== 'invalid') await updateLastSeenAt(clock.now())
+
   if (result.status === 'valid') return 'active'
   return result.status // 'expired' | 'invalid'
 }
