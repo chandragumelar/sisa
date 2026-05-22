@@ -108,6 +108,16 @@ export interface MetaRecord {
   value: string // store as string; parse in repository as needed
 }
 
+export interface BackupData {
+  schemaVersion: number
+  exportedAt: number
+  settings: Settings
+  wallets: Wallet[]
+  tagihan: Tagihan[]
+  goals: Goal[]
+  transactions: Transaction[]
+}
+
 // ---------------------------------------------------------------------------
 // Database class
 // ---------------------------------------------------------------------------

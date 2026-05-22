@@ -20,3 +20,15 @@ export async function updateWalletBalance(id: number, delta: number): Promise<vo
 export async function getWallet(id: number): Promise<Wallet | undefined> {
   return db.wallets.get(id)
 }
+
+export async function renameWallet(id: number, name: string): Promise<void> {
+  await db.wallets.update(id, { name })
+}
+
+export async function deleteWallet(id: number): Promise<void> {
+  await db.wallets.delete(id)
+}
+
+export async function setWalletBalance(id: number, newBalance: number): Promise<void> {
+  await db.wallets.update(id, { balance: newBalance })
+}

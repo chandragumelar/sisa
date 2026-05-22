@@ -1,0 +1,518 @@
+.page {
+  min-height: 100dvh;
+  background: var(--canvas);
+  padding: 0 0 40px;
+  max-width: 390px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 16px 8px;
+}
+
+.backBtn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  color: var(--ink-secondary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  flex: none;
+}
+
+.title {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  color: var(--ink-primary);
+}
+
+/* User card */
+.userCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border-hair);
+  border-radius: 12px;
+  margin: 8px 16px 16px;
+  padding: 14px;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  background: var(--surface-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-tertiary);
+  flex: none;
+}
+
+.avatar svg {
+  width: 20px;
+  height: 20px;
+}
+
+.userName {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  color: var(--ink-primary);
+}
+
+.userSub {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--ink-tertiary);
+  margin-top: 3px;
+}
+
+.tierBadge {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid var(--accent-br);
+  background: var(--accent-bg);
+  padding: 2px 5px;
+  border-radius: 4px;
+  line-height: 1;
+}
+
+.tierPro {
+  color: var(--accent);
+}
+
+/* Nav rows */
+.sectionLabel {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--ink-tertiary);
+  padding: 0 20px 4px;
+  margin-top: 8px;
+}
+
+.navRow {
+  display: flex;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--border-hair);
+  border-radius: 10px;
+  margin: 0 16px 8px;
+  padding: 12px 14px;
+  width: calc(100% - 32px);
+  text-align: left;
+  cursor: pointer;
+  gap: 12px;
+}
+
+.navBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.navLabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-primary);
+  display: block;
+}
+
+.navSub {
+  font-size: 11px;
+  color: var(--ink-tertiary);
+  display: block;
+  margin-top: 2px;
+}
+
+.chevron {
+  width: 16px;
+  height: 16px;
+  color: var(--ink-tertiary);
+  flex: none;
+}
+
+/* Sheet form internals (shared across all profil sheets) */
+.sheetForm {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-bottom: 8px;
+}
+
+.fieldLabel {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: var(--ink-secondary);
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.fieldInput {
+  font-size: 14px;
+  font-family: var(--font-sans);
+  border: 1.5px solid var(--border-hair);
+  border-radius: 8px;
+  padding: 10px 12px;
+  width: 100%;
+  background: var(--surface);
+  color: var(--ink-primary);
+}
+
+.fieldInput:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.fieldNote {
+  font-size: 11px;
+  color: var(--ink-tertiary);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+/* Segmented */
+.segmented {
+  display: flex;
+  background: var(--surface-2);
+  border-radius: 8px;
+  padding: 2px;
+  gap: 2px;
+}
+
+.seg {
+  flex: 1;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink-secondary);
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.segActive {
+  background: var(--surface);
+  color: var(--ink-primary);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+/* Amount row */
+.amountRow {
+  display: flex;
+  align-items: center;
+  border: 1.5px solid var(--border-hair);
+  border-radius: 8px;
+  padding: 8px 12px;
+  gap: 6px;
+  background: var(--surface);
+}
+
+.prefix {
+  font-size: 13px;
+  color: var(--ink-tertiary);
+  flex: none;
+}
+
+.amountInput {
+  flex: 1;
+  font-size: 18px;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  border: none;
+  background: none;
+  color: var(--ink-primary);
+  min-width: 0;
+}
+
+.amountInput:focus {
+  outline: none;
+}
+
+/* List rows in sheets */
+.listRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface-2);
+  border-radius: 8px;
+  padding: 10px 12px;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+}
+
+.listLabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-primary);
+  flex: 1;
+}
+
+.listVal {
+  font-size: 12px;
+  font-family: var(--font-mono);
+  color: var(--ink-secondary);
+}
+
+/* Item rows with delete */
+.itemRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.itemBody {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1;
+  background: var(--surface-2);
+  border-radius: 8px;
+  padding: 10px 12px;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  min-width: 0;
+}
+
+.deleteBtn {
+  font-size: 12px;
+  color: var(--ink-tertiary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 6px;
+}
+
+.inlineConfirm {
+  display: flex;
+  gap: 4px;
+}
+
+/* Balance / diff display */
+.balanceDisplay {
+  font-size: 22px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--ink-primary);
+  padding: 8px 0 4px;
+}
+
+.diffLabel {
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font-mono);
+}
+
+.diffPos {
+  color: var(--signal-safe);
+}
+
+.diffNeg {
+  color: var(--signal-danger);
+}
+
+/* Inline name edit */
+.inlineRow {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.inlineRow .fieldInput {
+  flex: 1;
+}
+
+.inlineBtn {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+  background: none;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  padding: 8px 0;
+}
+
+/* Option buttons */
+.optionList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.optionBtn {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-primary);
+  background: var(--surface-2);
+  border: 1.5px solid transparent;
+  border-radius: 8px;
+  padding: 10px 12px;
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+}
+
+.optionBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.optionBtnActive {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+
+/* Confirm row */
+.confirmRow {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 0 0;
+}
+
+.confirmText {
+  font-size: 13px;
+  color: var(--ink-secondary);
+}
+
+/* License card */
+.licenseCard {
+  background: var(--surface-2);
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.licenseRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.licenseKey {
+  font-size: 12px;
+  color: var(--ink-secondary);
+}
+
+.licenseVal {
+  font-size: 12px;
+  font-family: var(--font-mono);
+  color: var(--ink-primary);
+}
+
+.errorMsg {
+  font-size: 12px;
+  color: var(--signal-danger);
+}
+
+.successMsg {
+  font-size: 12px;
+  color: var(--signal-safe);
+}
+
+.buyLink {
+  font-size: 13px;
+  color: var(--accent);
+  text-decoration: none;
+  padding: 8px 0;
+  display: block;
+}
+
+/* Empty state */
+.emptyNote {
+  font-size: 13px;
+  color: var(--ink-tertiary);
+  text-align: center;
+  padding: 12px 0;
+}
+
+/* Secondary / ghost action buttons */
+.primaryBtn {
+  background: var(--accent);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 0;
+  width: 100%;
+  cursor: pointer;
+  margin-top: 4px;
+}
+
+.primaryBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.secondaryBtn {
+  background: var(--accent-bg);
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid var(--accent-br);
+  border-radius: 8px;
+  padding: 10px 0;
+  width: 100%;
+  cursor: pointer;
+}
+
+.dangerBtn {
+  background: var(--signal-danger);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 14px;
+  cursor: pointer;
+}
+
+.dangerGhostBtn {
+  background: none;
+  color: var(--signal-danger);
+  font-size: 13px;
+  font-weight: 500;
+  border: none;
+  padding: 8px 0;
+  cursor: pointer;
+  text-align: left;
+}
+
+.ghostBtn {
+  background: none;
+  color: var(--ink-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 0;
+  width: 100%;
+  cursor: pointer;
+}

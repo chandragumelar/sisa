@@ -14,3 +14,11 @@ export async function updateGoalsOrder(orderedIds: number[]): Promise<void> {
     await Promise.all(orderedIds.map((id, index) => db.goals.update(id, { order: index })))
   })
 }
+
+export async function updateGoal(id: number, partial: Partial<Omit<Goal, 'id'>>): Promise<void> {
+  await db.goals.update(id, partial)
+}
+
+export async function deleteGoal(id: number): Promise<void> {
+  await db.goals.delete(id)
+}
