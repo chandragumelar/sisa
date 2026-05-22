@@ -1,0 +1,29 @@
+# Build outputs
+dist/
+dist-ssr/
+
+# Dependencies
+node_modules/
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+scripts/private-key.*
+licenses.log
+
+# TypeScript build cache
+*.tsbuildinfo
+
+# Vite
+.vite/
+
+# macOS
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
+
+# Test coverage
+coverage/
