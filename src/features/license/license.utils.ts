@@ -1,5 +1,5 @@
 import type { Clock } from '@/shared/types/clock'
-import type { LicenseRecord, Tier } from '@/db/database'
+import type { LicenseRecord, LicenseStatus, Tier } from '@/db/database'
 import { PUBLIC_KEY_SPKI_B64, LICENSE_VERSION } from '@/constants/license'
 import { getLicense, saveLicense, updateLastSeenAt } from '@/db/license.repository'
 
@@ -127,4 +127,17 @@ export async function loadAndVerifyLicense(clock: Clock): Promise<VerifyResult |
     await updateLastSeenAt(clock.now())
   }
   return result
+}
+
+// ---------------------------------------------------------------------------
+// Status detection
+// ---------------------------------------------------------------------------
+
+// Maps the full license lifecycle to a single LicenseStatus enum value.
+// Story 2.5 will inject the anti-rollback check before the loadAndVerify call.
+export async function determineLicenseStatus(clock: Clock): Promise<LicenseStatus> {
+  const result = await loadAndVerifyLicense(clock)
+  if (result === null) return 'unactivated'
+  if (result.status === 'valid') return 'active'
+  return result.status // 'expired' | 'invalid'
 }
