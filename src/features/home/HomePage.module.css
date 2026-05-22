@@ -1,108 +1,37 @@
 .page {
   min-height: 100dvh;
   background: var(--canvas);
-  padding: 0 0 calc(80px + env(safe-area-inset-bottom, 0px));
-  display: flex;
-  flex-direction: column;
+  padding: 14px 14px calc(90px + env(safe-area-inset-bottom, 0px));
   max-width: 390px;
   margin: 0 auto;
 }
 
 .header {
-  padding: 20px 20px 12px;
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  padding: 2px 4px 0;
 }
 
 .wordmark {
-  font-size: 18px;
-  font-weight: 800;
-  letter-spacing: -0.5px;
-  color: var(--ink-primary);
-}
-
-.body {
-  flex: 1;
-  padding: 0 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.totalCard {
-  background: var(--surface);
-  border-radius: 16px;
-  padding: 20px;
-}
-
-.totalLabel {
   font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.6px;
-  text-transform: uppercase;
-  color: var(--ink-tertiary);
-  margin-bottom: 6px;
-}
-
-.totalAmount {
-  font-size: 28px;
   font-weight: 700;
-  letter-spacing: -1px;
+  letter-spacing: 1.5px;
   color: var(--ink-primary);
-  font-family: var(--font-mono);
 }
 
-.totalCurrency {
-  font-size: 13px;
-  font-weight: 500;
+.settingsBtn {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
   color: var(--ink-secondary);
-  margin-left: 4px;
+  display: inline-flex;
 }
 
-.sectionLabel {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.6px;
-  text-transform: uppercase;
-  color: var(--ink-tertiary);
-  padding: 4px 0 2px;
-}
-
-.walletList {
-  background: var(--surface);
-  border-radius: 16px;
-  overflow: hidden;
-}
-
-.walletRow {
-  display: flex;
-  align-items: center;
-  padding: 14px 16px;
-  border-bottom: 1px solid var(--border-soft);
-}
-
-.walletRow:last-child {
-  border-bottom: none;
-}
-
-.walletName {
-  flex: 1;
-  font-size: 14px;
-  color: var(--ink-primary);
-}
-
-.walletBalance {
-  font-size: 14px;
-  font-weight: 600;
-  font-family: var(--font-mono);
-  color: var(--ink-primary);
-  letter-spacing: -0.3px;
-}
-
-.empty {
-  padding: 32px 16px;
-  text-align: center;
-  font-size: 13px;
-  color: var(--ink-tertiary);
+.divider {
+  height: 1px;
+  background: var(--border-hair);
+  margin: 18px 0;
 }

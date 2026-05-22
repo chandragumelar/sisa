@@ -1,0 +1,44 @@
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0 4px;
+  font-size: 11px;
+  color: var(--ink-tertiary);
+  gap: 8px;
+}
+
+.left {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  flex-wrap: wrap;
+  flex: 1;
+  min-width: 0;
+}
+
+.itemName {
+  font-weight: 500;
+  color: var(--ink-primary);
+}
+
+.amount {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  color: var(--signal-danger);
+  font-feature-settings: 'tnum';
+}
+
+.link {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-color: var(--accent-br);
+  text-underline-offset: 2px;
+  white-space: nowrap;
+  background: none;
+  border: none;
+  font-size: 11px;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  padding: 0;
+}

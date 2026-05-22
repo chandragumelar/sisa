@@ -1,0 +1,118 @@
+.label {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--ink-tertiary);
+  margin-bottom: 8px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border-hair);
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.row {
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border-hair);
+}
+
+.row:first-child {
+  padding-top: 2px;
+}
+
+.row:last-child {
+  border-bottom: none;
+  padding-bottom: 2px;
+}
+
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.headLeft {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.badge {
+  font-size: 8.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: var(--ink-primary);
+  color: var(--canvas);
+}
+
+.name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-primary);
+}
+
+.amount {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-secondary);
+  font-feature-settings: 'tnum';
+}
+
+.status {
+  font-size: 10.5px;
+  color: var(--ink-secondary);
+}
+
+.statusWaiting {
+  font-size: 10.5px;
+  color: var(--ink-tertiary);
+  font-style: italic;
+  display: block;
+  margin-top: 2px;
+}
+
+/* Bar only rendered for aktif and tercapai */
+.barWrap {
+  position: relative;
+  height: 3px;
+  background: var(--border-hair);
+  border-radius: 2px;
+  margin-top: 6px;
+}
+
+.barFill {
+  height: 100%;
+  background: var(--ink-primary);
+  border-radius: 2px;
+}
+
+.barMarker {
+  position: absolute;
+  right: -2px;
+  top: -3px;
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-bottom: 5px solid var(--ink-tertiary);
+}
+
+.footerMeta {
+  font-size: 9.5px;
+  color: var(--ink-tertiary);
+  font-style: italic;
+  margin-top: 10px;
+}
+
+.empty {
+  font-size: 13px;
+  color: var(--ink-tertiary);
+  padding: 4px 0;
+}
