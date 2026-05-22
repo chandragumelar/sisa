@@ -1,0 +1,64 @@
+.bar {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 390px;
+  padding: 8px 12px calc(8px + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+  background: var(--canvas);
+  border-top: 1px solid var(--border-hair);
+}
+
+.sideBtn {
+  width: 64px;
+  flex-shrink: 0;
+  background: var(--surface);
+  border: 1px solid var(--border-hair);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 12px 0;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  color: var(--ink-primary);
+}
+
+.sideLabel {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--ink-primary);
+}
+
+.cekBtn {
+  flex: 1;
+  background: var(--accent);
+  border: none;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 12px 0;
+  cursor: pointer;
+  font-family: var(--font-sans);
+}
+
+.cekLabel {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  color: #ffffff;
+}
+
+.cekSub {
+  font-size: 10px;
+  color: #c5d0f7;
+}

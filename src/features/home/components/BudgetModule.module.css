@@ -1,0 +1,135 @@
+.rowSpread {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+
+.labelGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.label {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--ink-tertiary);
+}
+
+.infoDot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 13px;
+  height: 13px;
+  border: 1px solid var(--ink-secondary);
+  border-radius: 50%;
+  font-size: 9px;
+  color: var(--ink-secondary);
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.meta {
+  font-size: 10.5px;
+  color: var(--ink-tertiary);
+}
+
+.bigAmount {
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: -0.9px;
+  margin-bottom: 12px;
+  font-feature-settings: 'tnum', 'lnum';
+  color: var(--ink-primary);
+  line-height: 1.05;
+  font-family: var(--font-sans);
+}
+
+.barWrap {
+  height: 22px;
+  background: var(--surface-2);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.barFill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 6px 0 0 6px;
+  transition: width 0.3s ease;
+}
+
+.barFooter {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--ink-secondary);
+}
+
+.barFooterRight {
+  font-weight: 600;
+  color: var(--ink-primary);
+}
+
+/* 2-col grid */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border-hair);
+  border-radius: 10px;
+  padding: 11px 12px;
+}
+
+.cardLabel {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--ink-tertiary);
+}
+
+.cardNum {
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  margin-top: 3px;
+  font-feature-settings: 'tnum', 'lnum';
+  color: var(--ink-primary);
+  line-height: 1.1;
+  font-family: var(--font-sans);
+}
+
+.cardSub {
+  font-size: 10px;
+  color: var(--ink-tertiary);
+  margin-top: 4px;
+}
+
+.statusAman {
+  color: var(--signal-safe);
+  font-weight: 500;
+}
+
+.statusKetat {
+  color: var(--signal-caution);
+  font-weight: 500;
+}
+
+.cardMeta {
+  font-size: 9.5px;
+  color: var(--ink-secondary);
+  margin-top: 8px;
+  padding-top: 7px;
+  border-top: 1px dashed var(--border-hair);
+}
