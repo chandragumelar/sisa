@@ -391,3 +391,109 @@
   opacity: 0.4;
   cursor: not-allowed;
 }
+
+/* ── Pro actions row ── */
+.proActions {
+  flex: 1;
+  display: flex;
+  gap: 8px;
+}
+
+.saveBtnDisabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.compareBtn {
+  flex: 0 0 auto;
+  padding: 0 14px;
+  height: 50px;
+  border-radius: 13px;
+  background: var(--surface);
+  border: 1px solid var(--border-hair);
+  color: var(--ink-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  font-family: var(--font-sans);
+  cursor: pointer;
+}
+
+.compareBtnActive {
+  background: var(--accent-bg);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.compareBar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: calc(74px + env(safe-area-inset-bottom, 0px));
+  padding: 8px 14px;
+  max-width: 390px;
+  margin: 0 auto;
+}
+
+.compareBarBtn {
+  width: 100%;
+  padding: 12px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  cursor: pointer;
+}
+
+/* ── 8.7 Andai forecast block ── */
+.andaiForecast {
+  background: var(--surface);
+  border: 1px solid var(--border-hair);
+  border-radius: 10px;
+  padding: 12px 13px;
+  margin-top: 8px;
+}
+
+.andaiForecastLabel {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: var(--ink-tertiary);
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.andaiForecastCols {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.andaiForecastCol {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.andaiForecastMonth {
+  font-size: 10px;
+  color: var(--ink-tertiary);
+}
+
+.andaiForecastAmt {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-primary);
+  letter-spacing: -0.02em;
+}
+
+.andaiForecastAmtNeg {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--signal-danger);
+  letter-spacing: -0.02em;
+}

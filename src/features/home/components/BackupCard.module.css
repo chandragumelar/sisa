@@ -8,6 +8,11 @@
   align-items: flex-start;
 }
 
+.cardHigh {
+  background: var(--signal-danger-bg);
+  border-color: var(--signal-danger-br);
+}
+
 .icon {
   font-size: 18px;
   flex-shrink: 0;

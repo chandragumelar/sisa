@@ -2,6 +2,7 @@ import { useState } from 'react'
 import styles from './BackupCard.module.css'
 
 interface Props {
+  urgency?: 'normal' | 'high'
   onDismiss: () => void
 }
 
@@ -41,15 +42,17 @@ function BackupGuideSheet({ onClose }: { onClose: () => void }) {
   )
 }
 
-export function BackupCard({ onDismiss }: Props) {
+export function BackupCard({ urgency = 'normal', onDismiss }: Props) {
   const [guideOpen, setGuideOpen] = useState(false)
 
   return (
     <>
-      <div className={styles.card}>
+      <div className={urgency === 'high' ? `${styles.card} ${styles.cardHigh}` : styles.card}>
         <span className={styles.icon}>💾</span>
         <div className={styles.body}>
-          <div className={styles.title}>Backup data lo</div>
+          <div className={styles.title}>
+            {urgency === 'high' ? 'Sudah lama gak backup!' : 'Backup data lo'}
+          </div>
           <div className={styles.desc}>
             Data SISA tersimpan di HP ini. Kalau ganti HP tanpa backup, data hilang.
           </div>
