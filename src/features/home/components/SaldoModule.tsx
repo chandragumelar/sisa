@@ -1,11 +1,14 @@
 import { useState } from 'react'
 import type { Wallet } from '@/db/database'
+import { calcSisa } from '@/shared/utils/sisa.utils'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
 import styles from './SaldoModule.module.css'
 
 interface Props {
   wallets: Wallet[]
   currency: string
+  unpaidTagihanTotal: number
+  totalNabung: number
   yesterdaySpent: number
   yesterdayEarned: number
   onWalletTap?: (wallet: Wallet) => void
@@ -16,6 +19,8 @@ const MAX_WALLETS_BASIC = 4
 export function SaldoModule({
   wallets,
   currency,
+  unpaidTagihanTotal,
+  totalNabung,
   yesterdaySpent,
   yesterdayEarned,
   onWalletTap,
@@ -23,7 +28,9 @@ export function SaldoModule({
   const [expanded, setExpanded] = useState(true)
 
   const total = wallets.reduce((sum, w) => sum + w.balance, 0)
+  const sisa = calcSisa(total, unpaidTagihanTotal, totalNabung)
   const visible = wallets.slice(0, MAX_WALLETS_BASIC)
+  const hasDeductions = unpaidTagihanTotal > 0 || totalNabung > 0
 
   let heroSub = ''
   if (yesterdaySpent > 0) {
@@ -34,14 +41,14 @@ export function SaldoModule({
 
   return (
     <>
-      <div className={styles.label}>saldo total</div>
+      <div className={styles.label}>sisa bulan ini</div>
       <button
         className={styles.heroAmountBtn}
         onClick={() => setExpanded((e) => !e)}
         aria-expanded={expanded}
         aria-label="Tap untuk lihat detail dompet"
       >
-        <span className={styles.heroAmount}>{formatCurrency(total, currency)}</span>
+        <span className={styles.heroAmount}>{formatCurrency(sisa, currency)}</span>
         <svg
           className={`${styles.chevron} ${expanded ? styles.chevronUp : ''}`}
           width="14"
@@ -74,6 +81,32 @@ export function SaldoModule({
                 <span className={styles.walletAmount}>{formatCurrency(w.balance, w.currency)}</span>
               </button>
             ))
+          )}
+
+          {hasDeductions && (
+            <>
+              <div className={styles.summaryDivider} />
+              {unpaidTagihanTotal > 0 && (
+                <div className={styles.summaryRow}>
+                  <span className={styles.summaryLabel}>tagihan</span>
+                  <span className={styles.summaryAmountNeg}>
+                    -{formatCurrency(unpaidTagihanTotal, currency)}
+                  </span>
+                </div>
+              )}
+              {totalNabung > 0 && (
+                <div className={styles.summaryRow}>
+                  <span className={styles.summaryLabel}>tabungan</span>
+                  <span className={styles.summaryAmountNeg}>
+                    -{formatCurrency(totalNabung, currency)}
+                  </span>
+                </div>
+              )}
+              <div className={`${styles.summaryRow} ${styles.sisaRow}`}>
+                <span className={styles.sisaLabel}>sisa</span>
+                <span className={styles.sisaAmount}>{formatCurrency(sisa, currency)}</span>
+              </div>
+            </>
           )}
         </div>
       )}

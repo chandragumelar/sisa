@@ -1,7 +1,9 @@
 // Row visibility thresholds (AC 6.3):
 //   Row 1 (jatah harian)      — always
 //   Row 2 (sisa gajian)       — nominal > dailyBudget (exceeds one day's allocation)
-//   Row 3 (tabungan kepotong) — nominal > availableOp (exceeds full operational budget)
+//   Row 3 (tabungan kepotong) — nominal > availableOp (exceeds full sisa)
+
+import { calcSisa } from '@/shared/utils/sisa.utils'
 
 export interface CekDuluInput {
   nominal: number
@@ -19,7 +21,7 @@ export interface CekDuluResult {
 
   // Row 2 — sisa pas gajian (appears when nominal > dailyBudget)
   showSisaRow: boolean
-  // "sisa" here = total available operational budget, not the calcSisaPasGajian formula
+  // "sisa" here = total sisa, not the calcSisaPasGajian formula
   sisaBefore: number
   sisaAfter: number
 
@@ -33,7 +35,7 @@ export interface CekDuluResult {
 export function calcCekDulu(input: CekDuluInput): CekDuluResult {
   const { nominal, totalSaldo, unpaidTagihanTotal, daysUntilPayday, totalNabung } = input
 
-  const availableOp = Math.max(0, totalSaldo - unpaidTagihanTotal)
+  const availableOp = Math.max(0, calcSisa(totalSaldo, unpaidTagihanTotal, totalNabung))
   const dailyBudget = daysUntilPayday > 0 && availableOp > 0 ? availableOp / daysUntilPayday : 0
 
   const afterAvailableOp = availableOp - nominal

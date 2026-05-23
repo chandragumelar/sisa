@@ -342,11 +342,12 @@ Muncul di bawah header wordmark, hanya untuk user Pro dengan 2 currency aktif.
 
 User Basic single-currency tidak melihat segmented control sama sekali — row ini collapse.
 
-#### 3.4.3 Saldo Total + Wallet List
+#### 3.4.3 Sisa Bulan Ini + Wallet List
 
-- **Saldo total** = angka 38px, hero ranking #1. Margin-top 4px dari label. Hero-sub margin-top 6px (napas antar elemen).
+- **Sisa bulan ini** = angka 38px, hero ranking #1. `sisa = saldo − tagihan belum dibayar − total tabungan`. Ini adalah uang yang benar-benar bebas dipakai untuk operasional.
 - **Subtitle**: "Rp [X] terpakai kemarin" atau "Rp [X] masuk kemarin"
 - **Wallet list** = card surface dengan border-hair. 1 baris per wallet, label kiri + nominal kanan (JetBrains Mono, tnum). Auto-expanded.
+- **Summary breakdown** (di bawah wallet list, hanya muncul kalau ada tagihan/tabungan): baris "tagihan" (−), baris "tabungan" (−), baris "sisa" (bold) — menunjukkan dari mana angka hero berasal.
 - **Basic: max 4 wallet. Pro: max 10 wallet.**
 
 **Sesuaikan Saldo (edit saldo wallet):**
@@ -514,13 +515,8 @@ Field setelah 3 elemen inti **berbeda per mode:**
 
 **Mode MASUK:** 4. **Label** (opsional: gaji, freelance, transfer masuk...). 5. **Tanggal** (default hari ini). 6. **Catatan** (opsional, collapsed). 7. Tombol **Catat** → saldo wallet naik + masuk log (tag income).
 
-**Mode NABUNG:** 4. **Tujuan duit** (skenario A vs B):
-
-- ○ **Tetap di dompet ini, dikunci buat goal** (earmark) — saldo total **tidak berubah**, tapi muncul angka "terkunci goal" di dompet itu. User tetap sadar sebagian saldonya bukan uang operasional. Budget hari ini otomatis terpotong (formula sudah `saldo − tagihan − target tabungan ÷ hari`).
-- ○ **Pindah ke dompet nabung** → muncul **droplist wallet tujuan** (minus wallet sumber). Kalau dompet tujuan di-track app = transfer (saldo total tetap). Kalau "di luar app" = saldo total turun beneran.
-
-5. **Tanggal** (default hari ini).
-6. Tombol **Catat** → **total tabungan naik**, otomatis mengalir ke goal teratas (luber ke bawah sesuai 3.4.8). **TIDAK ADA step pilih goal** (paradigma celengan ayam).
+**Mode NABUNG:** 4. **Tanggal** (default hari ini).
+5. Tombol **Catat** → **total tabungan naik**, otomatis mengalir ke goal teratas (luber ke bawah sesuai 3.4.8). **TIDAK ADA step pilih goal** (paradigma celengan ayam). Saldo wallet turun (uang keluar ke tabungan).
 
 **Tarik tabungan — logika "dari tabungan" (mode keluar):**
 
@@ -566,6 +562,8 @@ Baris hanya muncul jika nominal menyentuh layer tersebut. Bertambahnya baris ada
 Baris 3 punya visual inset gelap (heavy) — momen sadar paling telak bahwa ini barang yang kegadai impian, tanpa app bilang "jangan beli".
 
 **Meta kecil (bukan keputusan):** "dihitung dari saldo total · 6 wallet · Rp 9.7jt" — ditampilkan kecil di bawah comparison, bukan hero.
+
+**Basis hitung Cek Dulu:** `availableOp = sisa bulan ini = saldo − tagihan − tabungan`. Row 1 (jatah harian) = `availableOp ÷ hari`. Row 3 (tabungan kepotong) muncul saat nominal > `availableOp` — bukan saat nominal > saldo.
 
 **2 niat user, satu canvas:**
 
@@ -696,7 +694,8 @@ Akses via header "Skenario tersimpan" atau setelah simpan. Isi:
 | Quick Log: **wallet dipilih sebelum nominal**                                          | Wallet menentukan currency symbol. Default = wallet terakhir dipakai (lebih sering benar)                                                                                              |
 | Quick Log: "kategori" → **"label"**                                                    | Lebih ringan, tidak formal, sesuai vibe anti-tracker. Opsional, tidak memaksa                                                                                                          |
 | **Nabung tidak ada step pilih goal**                                                   | Celengan ayam. Duit otomatis ke goal teratas. User pilih prioritas via drag-drop di home, bukan per-transaksi                                                                          |
-| Nabung: **earmark (skenario B) vs pindah dompet (skenario A)** dalam 1 flow            | Satu pertanyaan "duitnya ke mana" cover dua model. Earmark = saldo total tetap, tapi user sadar ada porsi terkunci                                                                     |
+| Nabung: **earmark dihapus** (v0.9) — satu flow: nabung = saldo turun                   | Earmark bikin user bingung ("saldo kok tidak berkurang?"). Sisa paradigm sudah handle: sisa = saldo − tagihan − nabung. User lihat angka sisa, bukan perlu track earmark terpisah      |
+| **Hero = sisa bulan ini** (bukan saldo total) — v0.9                                   | Saldo total bukan angka yang actionable. Sisa = yang bisa beneran dipakai. Formula: `sisa = saldo − tagihan belum dibayar − total tabungan`. Single source of truth: `calcSisa()`    |
 | Tarik tabungan = **mode keluar + toggle "dari tabungan"**                              | Tidak perlu flow terpisah. Satu cabang logika: kalau tarik > tabungan, tanya sisanya dari mana                                                                                         |
 | Tarik > tabungan = **tanya dulu** (bukan auto)                                         | User sadar duit kesedot dari mana. Konsisten dengan pola Sesuaikan Saldo                                                                                                               |
 | Operasional mepet = **user inisiatif** centang "dari tabungan", app tidak proaktif     | App tidak menghakimi keadaan user. Tidak nyolek saat user lagi sempit                                                                                                                  |

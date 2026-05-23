@@ -180,7 +180,7 @@ export function HomePage() {
     nowMs,
   )
   const daysUntilPayday = calcDaysUntilPayday(nowMs, settings)
-  const dailyBudget = calcDailyBudget(totalSaldo, unpaidTagihanTotal, 0, daysUntilPayday)
+  const dailyBudget = calcDailyBudget(totalSaldo, unpaidTagihanTotal, totalNabung, daysUntilPayday)
   const spentToday = calcSpentToday(todayTxs, nowMs)
   const { spent: yesterdaySpent, earned: yesterdayEarned } = calcYesterdayStats(yesterdayTxs, nowMs)
   const sisaPasGajian = calcSisaPasGajian(
@@ -330,6 +330,8 @@ export function HomePage() {
       <SaldoModule
         wallets={wallets.filter((w) => w.currency === currency)}
         currency={currency}
+        unpaidTagihanTotal={unpaidTagihanTotal}
+        totalNabung={totalNabung}
         yesterdaySpent={yesterdaySpent}
         yesterdayEarned={yesterdayEarned}
         onWalletTap={(w) => setEditWallet(w)}

@@ -93,3 +93,48 @@
   padding: 12px 0;
   text-align: center;
 }
+
+.summaryDivider {
+  height: 1px;
+  background: var(--border-hair);
+  margin: 2px 0;
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+}
+
+.summaryLabel {
+  font-size: 11.5px;
+  color: var(--ink-tertiary);
+}
+
+.summaryAmountNeg {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--ink-tertiary);
+  font-feature-settings: 'tnum';
+}
+
+.sisaRow {
+  border-top: 1px solid var(--border-hair);
+  margin-top: 2px;
+  padding-top: 7px;
+}
+
+.sisaLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-primary);
+}
+
+.sisaAmount {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-primary);
+  font-feature-settings: 'tnum';
+}

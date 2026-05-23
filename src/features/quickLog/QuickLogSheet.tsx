@@ -2,13 +2,7 @@ import { useState } from 'react'
 import type { Wallet } from '@/db/database'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
 import { BottomSheet } from '@/shared/components/BottomSheet'
-import {
-  buildTransaction,
-  LABELS_KELUAR,
-  LABELS_MASUK,
-  type NabungMode,
-  type QuickLogMode,
-} from './quickLog.utils'
+import { buildTransaction, LABELS_KELUAR, LABELS_MASUK, type QuickLogMode } from './quickLog.utils'
 import { addTransactionAndUpdateBalance } from '@/db/transactions.repository'
 import styles from './QuickLogSheet.module.css'
 
@@ -40,7 +34,6 @@ export function QuickLogSheet({
   const [amountStr, setAmountStr] = useState(initialAmount ? String(initialAmount) : '')
   const [label, setLabel] = useState('')
   const [isFromSavings, setIsFromSavings] = useState(false)
-  const [nabungMode, setNabungMode] = useState<NabungMode>('earmark')
   const [dateMs, setDateMs] = useState(nowMs)
   const [noteExpanded, setNoteExpanded] = useState(false)
   const [note, setNote] = useState('')
@@ -91,7 +84,6 @@ export function QuickLogSheet({
         dateMs,
         currency,
         isFromSavings: mode === 'keluar' ? isFromSavings : false,
-        nabungMode: mode === 'nabung' ? nabungMode : undefined,
       })
       const txId = await addTransactionAndUpdateBalance(tx)
       onCommit(txId, mode)
@@ -195,28 +187,6 @@ export function QuickLogSheet({
           >
             <span className={styles.toggleThumb} />
           </button>
-        </div>
-      )}
-
-      {/* Nabung mode radio (nabung only) */}
-      {mode === 'nabung' && (
-        <div className={styles.nabungModes}>
-          {(['earmark', 'pindah'] as NabungMode[]).map((m) => (
-            <button
-              key={m}
-              className={`${styles.nabungModeBtn} ${nabungMode === m ? styles.nabungModeBtnActive : ''}`}
-              onClick={() => setNabungMode(m)}
-            >
-              <span className={styles.nabungModeLabel}>
-                {m === 'earmark' ? 'Earmark' : 'Pindah dompet'}
-              </span>
-              <span className={styles.nabungModeSub}>
-                {m === 'earmark'
-                  ? 'Uang tetap di dompet, dicatat untuk goal'
-                  : 'Uang keluar dari dompet'}
-              </span>
-            </button>
-          ))}
         </div>
       )}
 

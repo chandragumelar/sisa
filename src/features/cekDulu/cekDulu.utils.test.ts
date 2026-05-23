@@ -2,11 +2,11 @@ import { describe, it, expect } from 'vitest'
 import { calcCekDulu } from './cekDulu.utils'
 import type { CekDuluInput } from './cekDulu.utils'
 
-// Self-consistent baseline:
-//   totalSaldo=5jt, unpaidTagihan=1jt → availableOp=4jt
-//   daysUntilPayday=20 → dailyBudget = 4jt/20 = 200rb
-//   Row 2 (showSisaRow) threshold: nominal > 200rb
-//   Row 3 (showTabunganRow) threshold: nominal > 4jt
+// Self-consistent baseline (sisa paradigm):
+//   totalSaldo=5jt, unpaidTagihan=1jt, totalNabung=3jt → availableOp=1jt
+//   daysUntilPayday=20 → dailyBudget = 1jt/20 = 50rb
+//   Row 2 (showSisaRow) threshold: nominal > 50rb
+//   Row 3 (showTabunganRow) threshold: nominal > 1jt
 const BASE: CekDuluInput = {
   nominal: 0,
   totalSaldo: 5_000_000,
@@ -22,9 +22,9 @@ describe('calcCekDulu — nominal 0', () => {
     expect(r.dailyDelta).toBe(0)
   })
 
-  it('dailyBefore computed correctly', () => {
+  it('dailyBefore computed from sisa (saldo − tagihan − nabung)', () => {
     const r = calcCekDulu({ ...BASE, nominal: 0 })
-    expect(r.dailyBefore).toBe(200_000) // 4jt / 20
+    expect(r.dailyBefore).toBe(50_000) // 1jt / 20
   })
 
   it('no row 2 or row 3', () => {
@@ -41,7 +41,7 @@ describe('calcCekDulu — nominal 0', () => {
 })
 
 describe('calcCekDulu — nominal < daily budget (small purchase)', () => {
-  const input = { ...BASE, nominal: 50_000 } // 50rb < 200rb daily
+  const input = { ...BASE, nominal: 25_000 } // 25rb < 50rb daily
 
   it('daily after is lower but positive', () => {
     const r = calcCekDulu(input)
@@ -63,8 +63,8 @@ describe('calcCekDulu — nominal < daily budget (small purchase)', () => {
 })
 
 describe('calcCekDulu — nominal > daily budget but < availableOp (row 2 only)', () => {
-  // 200rb < nominal < 4jt → row 2 but not row 3
-  const input = { ...BASE, nominal: 1_000_000 }
+  // 50rb < nominal < 1jt → row 2 but not row 3
+  const input = { ...BASE, nominal: 200_000 }
 
   it('shows row 2 (sisa gajian)', () => {
     const r = calcCekDulu(input)
@@ -85,13 +85,13 @@ describe('calcCekDulu — nominal > daily budget but < availableOp (row 2 only)'
 
   it('sisa after = availableOp - nominal', () => {
     const r = calcCekDulu(input)
-    expect(r.sisaAfter).toBe(3_000_000) // 4jt - 1jt
+    expect(r.sisaAfter).toBe(800_000) // 1jt - 200rb
   })
 })
 
 describe('calcCekDulu — nominal > availableOp (rows 2 + 3, tabungan dipped)', () => {
-  // 5jt > 4jt (availableOp) → both rows show
-  const input = { ...BASE, nominal: 5_000_000 }
+  // 2jt > 1jt (availableOp) → both rows show
+  const input = { ...BASE, nominal: 2_000_000 }
 
   it('shows both row 2 and row 3', () => {
     const r = calcCekDulu(input)
@@ -106,7 +106,7 @@ describe('calcCekDulu — nominal > availableOp (rows 2 + 3, tabungan dipped)', 
 
   it('nabung drawn = nominal - availableOp', () => {
     const r = calcCekDulu(input)
-    expect(r.nabungDrawn).toBe(1_000_000) // 5jt - 4jt
+    expect(r.nabungDrawn).toBe(1_000_000) // 2jt - 1jt
     expect(r.nabungAfter).toBe(2_000_000) // 3jt - 1jt
   })
 
@@ -147,13 +147,27 @@ describe('calcCekDulu — edge: daysUntilPayday = 0', () => {
 
 describe('calcCekDulu — boundary: nominal exactly equals availableOp', () => {
   it('row 3 not shown (threshold is strict >)', () => {
-    const r = calcCekDulu({ ...BASE, nominal: 4_000_000 }) // exactly availableOp
+    const r = calcCekDulu({ ...BASE, nominal: 1_000_000 }) // exactly availableOp
     expect(r.showTabunganRow).toBe(false)
     expect(r.nabungDrawn).toBe(0)
   })
 
   it('row 2 shown (nominal > dailyBudget)', () => {
-    const r = calcCekDulu({ ...BASE, nominal: 4_000_000 })
+    const r = calcCekDulu({ ...BASE, nominal: 1_000_000 })
     expect(r.showSisaRow).toBe(true)
+  })
+})
+
+describe('calcCekDulu — edge: no tagihan and no nabung → sisa equals saldo', () => {
+  it('availableOp equals saldo, daily reflects full saldo', () => {
+    const r = calcCekDulu({
+      ...BASE,
+      unpaidTagihanTotal: 0,
+      totalNabung: 0,
+      nominal: 0,
+    })
+    expect(r.dailyBefore).toBe(250_000) // 5jt / 20
+    expect(r.showSisaRow).toBe(false)
+    expect(r.showTabunganRow).toBe(false)
   })
 })

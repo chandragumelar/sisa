@@ -84,6 +84,7 @@ export function ProfilTagihanSheet({ isOpen, onClose, tagihan, currency, nowMs, 
     }
     await onUpdate()
     setStep('list')
+    if (editId === null) onClose()
   }
 
   async function handleDelete(id: number) {

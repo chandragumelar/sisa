@@ -63,21 +63,19 @@ describe('buildMasuk', () => {
 })
 
 describe('buildNabung', () => {
-  it('earmark: positive amount, isEarmark true', () => {
-    const tx = buildNabung({ ...BASE, mode: 'nabung', nabungMode: 'earmark' })
+  it('positive amount, type nabung', () => {
+    const tx = buildNabung({ ...BASE, mode: 'nabung' })
     expect(tx.amount).toBe(50000)
     expect(tx.type).toBe('nabung')
-    expect(tx.isEarmark).toBe(true)
   })
 
-  it('pindah: positive amount, isEarmark false', () => {
-    const tx = buildNabung({ ...BASE, mode: 'nabung', nabungMode: 'pindah' })
-    expect(tx.amount).toBe(50000)
+  it('isEarmark is always false', () => {
+    const tx = buildNabung({ ...BASE, mode: 'nabung' })
     expect(tx.isEarmark).toBe(false)
   })
 
   it('isFromSavings is always false', () => {
-    const tx = buildNabung({ ...BASE, mode: 'nabung', nabungMode: 'earmark' })
+    const tx = buildNabung({ ...BASE, mode: 'nabung' })
     expect(tx.isFromSavings).toBe(false)
   })
 })
@@ -96,9 +94,9 @@ describe('buildTransaction', () => {
   })
 
   it('routes nabung correctly', () => {
-    const tx = buildTransaction({ ...BASE, mode: 'nabung', nabungMode: 'earmark' })
+    const tx = buildTransaction({ ...BASE, mode: 'nabung' })
     expect(tx.type).toBe('nabung')
-    expect(tx.isEarmark).toBe(true)
+    expect(tx.isEarmark).toBe(false)
   })
 
   it('preserves walletId and currency', () => {
