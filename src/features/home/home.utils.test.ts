@@ -124,6 +124,20 @@ describe('calcDaysUntilPayday', () => {
     )
     expect(days).toBe(2)
   })
+
+  it('boundary — incomeDay=31 in leap-year February clamps to Feb 29', () => {
+    // 2024 is a leap year → Feb has 29 days
+    const febNow = new Date('2024-02-10T12:00:00Z').getTime()
+    // today(10) <= incomeDay(31) → payday = Math.min(31, 29) = Feb 29 → 19 days
+    expect(calcDaysUntilPayday(febNow, makeSettings({ incomeDay: 31 }))).toBe(19)
+  })
+
+  it('boundary — incomeDay=31 in non-leap February clamps to Feb 28', () => {
+    // 2025 is not a leap year → Feb has 28 days
+    const febNow = new Date('2025-02-10T12:00:00Z').getTime()
+    // today(10) <= incomeDay(31) → payday = Math.min(31, 28) = Feb 28 → 18 days
+    expect(calcDaysUntilPayday(febNow, makeSettings({ incomeDay: 31 }))).toBe(18)
+  })
 })
 
 // ─── calcDailyBudget ──────────────────────────────────────────────────────────

@@ -97,6 +97,7 @@ export function OnboardingPage() {
       {step === 'wallet' && (
         <Step4dWallet
           primaryCurrency={data.primaryCurrency ?? 'IDR'}
+          language={data.language}
           wallets={data.wallets}
           onChange={(wallets) => setData((d) => ({ ...d, wallets }))}
           onNext={() => advance()}

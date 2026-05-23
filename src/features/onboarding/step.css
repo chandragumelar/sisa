@@ -141,6 +141,7 @@
   flex: 1;
 }
 .ob-option-sub {
+  display: block;
   font-size: 10.5px;
   color: var(--ink-tertiary);
   margin-top: 2px;
@@ -272,6 +273,29 @@
   color: var(--signal-danger);
   margin-top: 6px;
   line-height: 1.4;
+}
+
+/* First child in prefixed-input row has no prefix → restore left padding */
+.ob-input-row > .ob-input-bare:first-child {
+  padding-left: 12px;
+}
+
+/* Small inline remove button (✕) — not a full-width ghost CTA */
+.ob-remove-btn {
+  flex-shrink: 0;
+  background: none;
+  border: 1px solid var(--border-hair);
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 12px;
+  color: var(--ink-tertiary);
+  cursor: pointer;
+  line-height: 1;
+  font-family: var(--font-sans);
+}
+.ob-remove-btn:hover {
+  color: var(--signal-danger);
+  border-color: var(--signal-danger-br);
 }
 
 /* Dashed "add another" button */

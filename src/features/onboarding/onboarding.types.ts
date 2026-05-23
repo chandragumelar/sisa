@@ -11,6 +11,7 @@ export type OnboardingStep =
   | 'currency2'
 
 export interface WalletInput {
+  id: string
   name: string
   balance: string
 }
@@ -33,6 +34,6 @@ export const INITIAL_ACCUMULATED: OnboardingAccumulated = {
   incomeDay: null,
   freelanceMinBalance: '',
   primaryCurrency: null,
-  wallets: [{ name: '', balance: '' }],
+  wallets: [{ id: crypto.randomUUID(), name: '', balance: '' }],
   secondaryCurrency: null,
 }

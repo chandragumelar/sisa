@@ -1,27 +1,38 @@
+import type { Language } from '@/db/database'
 import type { WalletInput } from '../onboarding.types'
 
 interface Props {
   primaryCurrency: string
+  language: Language | null
   wallets: WalletInput[]
   onChange: (wallets: WalletInput[]) => void
   onNext: () => void
 }
 
-export function Step4dWallet({ primaryCurrency, wallets, onChange, onNext }: Props) {
-  function updateWallet(index: number, field: keyof WalletInput, value: string) {
-    const next = wallets.map((w, i) => (i === index ? { ...w, [field]: value } : w))
-    onChange(next)
+export function Step4dWallet({ primaryCurrency, language, wallets, onChange, onNext }: Props) {
+  function updateWalletName(id: string, name: string) {
+    onChange(wallets.map((w) => (w.id === id ? { ...w, name } : w)))
+  }
+
+  function updateWalletBalance(id: string, balance: string) {
+    onChange(wallets.map((w) => (w.id === id ? { ...w, balance } : w)))
   }
 
   function addWallet() {
-    onChange([...wallets, { name: '', balance: '' }])
+    onChange([...wallets, { id: crypto.randomUUID(), name: '', balance: '' }])
   }
 
-  function removeWallet(index: number) {
-    onChange(wallets.filter((_, i) => i !== index))
+  function removeWallet(id: string) {
+    onChange(wallets.filter((w) => w.id !== id))
   }
 
   const canProceed = wallets.length > 0 && wallets[0].name.trim() !== ''
+
+  const firstPlaceholder =
+    language === 'en'
+      ? 'Wallet name (e.g. Standard Chartered, Wise)'
+      : 'Nama dompet (cth: BCA, GoPay)'
+  const otherPlaceholder = language === 'en' ? 'Wallet name' : 'Nama dompet'
 
   return (
     <>
@@ -31,21 +42,21 @@ export function Step4dWallet({ primaryCurrency, wallets, onChange, onNext }: Pro
       </p>
 
       {wallets.map((wallet, i) => (
-        <div key={i} className="ob-field">
+        <div key={wallet.id} className="ob-field">
           {i > 0 && <div className="ob-field-label">Dompet {i + 1}</div>}
           <div className="ob-input-row">
             <input
               className="ob-input ob-input-bare"
               type="text"
-              placeholder={i === 0 ? 'Nama dompet (cth: BCA, GoPay)' : 'Nama dompet'}
+              placeholder={i === 0 ? firstPlaceholder : otherPlaceholder}
               value={wallet.name}
-              onChange={(e) => updateWallet(i, 'name', e.target.value)}
+              onChange={(e) => updateWalletName(wallet.id, e.target.value)}
               autoComplete="off"
             />
             {i > 0 && (
               <button
-                className="ob-ghost-btn"
-                onClick={() => removeWallet(i)}
+                className="ob-remove-btn"
+                onClick={() => removeWallet(wallet.id)}
                 aria-label="Hapus dompet"
               >
                 ✕
@@ -61,7 +72,7 @@ export function Step4dWallet({ primaryCurrency, wallets, onChange, onNext }: Pro
               placeholder="Saldo sekarang (opsional)"
               min={0}
               value={wallet.balance}
-              onChange={(e) => updateWallet(i, 'balance', e.target.value)}
+              onChange={(e) => updateWalletBalance(wallet.id, e.target.value)}
             />
           </div>
         </div>
