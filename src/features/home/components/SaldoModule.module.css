@@ -57,10 +57,21 @@
   align-items: center;
   padding: 8px 0;
   border-bottom: 1px solid var(--border-hair);
+  background: none;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  width: 100%;
+  cursor: pointer;
+  font-family: var(--font-sans);
 }
 
 .walletRow:last-child {
   border-bottom: none;
+}
+
+.walletRow:disabled {
+  cursor: default;
 }
 
 .walletName {

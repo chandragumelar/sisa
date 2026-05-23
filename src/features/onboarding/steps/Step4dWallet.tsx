@@ -1,4 +1,5 @@
 import type { Language } from '@/db/database'
+import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
 import type { WalletInput } from '../onboarding.types'
 
 interface Props {
@@ -14,7 +15,8 @@ export function Step4dWallet({ primaryCurrency, language, wallets, onChange, onN
     onChange(wallets.map((w) => (w.id === id ? { ...w, name } : w)))
   }
 
-  function updateWalletBalance(id: string, balance: string) {
+  function updateWalletBalance(id: string, display: string) {
+    const balance = parseNominalRaw(display)
     onChange(wallets.map((w) => (w.id === id ? { ...w, balance } : w)))
   }
 
@@ -67,11 +69,10 @@ export function Step4dWallet({ primaryCurrency, language, wallets, onChange, onN
             <span className="ob-input-prefix">{primaryCurrency}</span>
             <input
               className="ob-input ob-input-bare"
-              type="number"
+              type="text"
               inputMode="numeric"
               placeholder="Saldo sekarang (opsional)"
-              min={0}
-              value={wallet.balance}
+              value={formatNominalDisplay(wallet.balance)}
               onChange={(e) => updateWalletBalance(wallet.id, e.target.value)}
             />
           </div>

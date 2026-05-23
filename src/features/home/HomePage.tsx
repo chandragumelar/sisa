@@ -44,6 +44,9 @@ import { HistorySheet } from './components/HistorySheet'
 import { ForecastCard } from './components/ForecastCard'
 import { ForecastDetailSheet } from './components/ForecastDetailSheet'
 import { BackupCard } from './components/BackupCard'
+import { WalletEditSheet } from '@/features/wallet/WalletEditSheet'
+import { ProfilTagihanSheet } from '@/features/profil/ProfilTagihanSheet'
+import { ProfilGoalSheet } from '@/features/profil/ProfilGoalSheet'
 import { QuickLogSheet } from '@/features/quickLog/QuickLogSheet'
 import type { QuickLogMode } from '@/features/quickLog/quickLog.utils'
 import styles from './HomePage.module.css'
@@ -161,6 +164,9 @@ export function HomePage() {
   const [historyOpen, setHistoryOpen] = useState(false)
   const [quickLogOpen, setQuickLogOpen] = useState(false)
   const [forecastDetailOpen, setForecastDetailOpen] = useState(false)
+  const [editWallet, setEditWallet] = useState<Wallet | null>(null)
+  const [tagihanSheetOpen, setTagihanSheetOpen] = useState(false)
+  const [goalSheetOpen, setGoalSheetOpen] = useState(false)
 
   if (isLoading || !settings) return null
 
@@ -326,6 +332,7 @@ export function HomePage() {
         currency={currency}
         yesterdaySpent={yesterdaySpent}
         yesterdayEarned={yesterdayEarned}
+        onWalletTap={(w) => setEditWallet(w)}
       />
 
       <div className={styles.divider} />
@@ -338,6 +345,7 @@ export function HomePage() {
         unpaidTagihanTotal={unpaidTagihanTotal}
         totalSaldo={totalSaldo}
         nowMs={nowMs}
+        hasTagihan={tagihan.length > 0}
       />
 
       {/* Pro: Forecast 3-bulan (8.4) */}
@@ -361,6 +369,7 @@ export function HomePage() {
         nowMs={nowMs}
         onPayTap={(t) => setMarkPaidTagihan(t)}
         onRowTap={(t) => setDetailTagihan(t)}
+        onAddTap={() => setTagihanSheetOpen(true)}
       />
 
       <div className={styles.divider} />
@@ -371,6 +380,7 @@ export function HomePage() {
         totalNabung={totalNabung}
         currency={currency}
         onReorder={handleGoalReorder}
+        onAddTap={() => setGoalSheetOpen(true)}
       />
 
       <div className={styles.divider} />
@@ -439,6 +449,42 @@ export function HomePage() {
         wallets={wallets}
         currency={currency}
         nowMs={nowMs}
+      />
+
+      {editWallet && (
+        <WalletEditSheet
+          wallet={editWallet}
+          wallets={wallets}
+          currency={currency}
+          nowMs={nowMs}
+          isOpen={!!editWallet}
+          onClose={() => setEditWallet(null)}
+          onUpdate={async () => {
+            reload()
+          }}
+        />
+      )}
+
+      <ProfilTagihanSheet
+        isOpen={tagihanSheetOpen}
+        onClose={() => setTagihanSheetOpen(false)}
+        tagihan={tagihan}
+        currency={currency}
+        nowMs={nowMs}
+        onUpdate={async () => {
+          reload()
+        }}
+      />
+
+      <ProfilGoalSheet
+        isOpen={goalSheetOpen}
+        onClose={() => setGoalSheetOpen(false)}
+        goals={goals}
+        currency={currency}
+        nowMs={nowMs}
+        onUpdate={async () => {
+          reload()
+        }}
       />
 
       <QuickLogSheet

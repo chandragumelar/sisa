@@ -1,14 +1,8 @@
-.rowSpread {
+.labelRow {
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 6px;
-}
-
-.labelGroup {
-  display: inline-flex;
   align-items: center;
   gap: 5px;
+  margin-bottom: 6px;
 }
 
 .label {
@@ -31,22 +25,26 @@
   color: var(--ink-secondary);
   line-height: 1;
   flex-shrink: 0;
-}
-
-.meta {
-  font-size: 10.5px;
-  color: var(--ink-tertiary);
+  background: none;
+  cursor: pointer;
+  padding: 0;
 }
 
 .bigAmount {
   font-size: 30px;
   font-weight: 600;
   letter-spacing: -0.9px;
-  margin-bottom: 12px;
+  margin-bottom: 4px;
   font-feature-settings: 'tnum', 'lnum';
   color: var(--ink-primary);
   line-height: 1.05;
   font-family: var(--font-sans);
+}
+
+.descLine {
+  font-size: 11px;
+  color: var(--ink-tertiary);
+  margin-bottom: 12px;
 }
 
 .barWrap {
@@ -54,6 +52,7 @@
   background: var(--surface-2);
   border-radius: 6px;
   overflow: hidden;
+  margin-top: 16px;
   margin-bottom: 8px;
 }
 
@@ -81,7 +80,6 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
-  margin-top: 16px;
 }
 
 .card {
@@ -110,6 +108,14 @@
   font-family: var(--font-sans);
 }
 
+.cardNumEmpty {
+  font-size: 19px;
+  font-weight: 600;
+  margin-top: 3px;
+  color: var(--ink-tertiary);
+  line-height: 1.1;
+}
+
 .cardSub {
   font-size: 10px;
   color: var(--ink-tertiary);
@@ -126,10 +132,23 @@
   font-weight: 500;
 }
 
-.cardMeta {
-  font-size: 9.5px;
-  color: var(--ink-secondary);
-  margin-top: 8px;
-  padding-top: 7px;
-  border-top: 1px dashed var(--border-hair);
+/* Info sheet content */
+.infoContent {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-bottom: 8px;
+}
+
+.infoContent p {
+  font-size: 13px;
+  color: var(--ink-primary);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.infoNote {
+  font-size: 12px;
+  color: var(--ink-tertiary);
+  font-style: italic;
 }
