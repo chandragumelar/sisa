@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState } from 'react'
 import { ALL_CURRENCIES, getPopularCurrencies, type Currency } from '@/constants/currencies'
 import styles from './CurrencyPickerSheet.module.css'
 
@@ -14,11 +14,6 @@ export function CurrencyPickerSheet({
   excludeCode,
 }: CurrencyPickerSheetProps) {
   const [query, setQuery] = useState('')
-  const inputRef = useRef<HTMLInputElement>(null)
-
-  useEffect(() => {
-    inputRef.current?.focus()
-  }, [])
 
   const lowerQuery = query.toLowerCase()
   const isSearching = query.trim().length > 0
@@ -58,7 +53,6 @@ export function CurrencyPickerSheet({
             <path d="M21 21l-4-4" />
           </svg>
           <input
-            ref={inputRef}
             className={styles.searchInput}
             type="search"
             placeholder="pilih mata uang…"

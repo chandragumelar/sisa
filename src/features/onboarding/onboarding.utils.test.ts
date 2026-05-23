@@ -146,8 +146,8 @@ describe('parseWalletBalance', () => {
 describe('buildWalletRecords', () => {
   const NOW = 1_700_000_000_000
   const inputs: WalletInput[] = [
-    { name: 'BCA', balance: '2000000' },
-    { name: 'GoPay', balance: '50000' },
+    { id: '1', name: 'BCA', balance: '2000000' },
+    { id: '2', name: 'GoPay', balance: '50000' },
   ]
 
   it('maps inputs to Wallet records correctly', () => {
@@ -170,12 +170,12 @@ describe('buildWalletRecords', () => {
   })
 
   it('trims wallet names', () => {
-    const result = buildWalletRecords([{ name: '  BNI  ', balance: '0' }], 'IDR', NOW)
+    const result = buildWalletRecords([{ id: '1', name: '  BNI  ', balance: '0' }], 'IDR', NOW)
     expect(result[0].name).toBe('BNI')
   })
 
   it('empty balance string → balance 0', () => {
-    const result = buildWalletRecords([{ name: 'Cash', balance: '' }], 'IDR', NOW)
+    const result = buildWalletRecords([{ id: '1', name: 'Cash', balance: '' }], 'IDR', NOW)
     expect(result[0].balance).toBe(0)
   })
 
@@ -185,9 +185,9 @@ describe('buildWalletRecords', () => {
 
   it('preserves order index', () => {
     const threeWallets: WalletInput[] = [
-      { name: 'A', balance: '0' },
-      { name: 'B', balance: '0' },
-      { name: 'C', balance: '0' },
+      { id: '1', name: 'A', balance: '0' },
+      { id: '2', name: 'B', balance: '0' },
+      { id: '3', name: 'C', balance: '0' },
     ]
     const records = buildWalletRecords(threeWallets, 'USD', NOW)
     expect(records.map((r) => r.order)).toEqual([0, 1, 2])

@@ -6,6 +6,7 @@ import { getLicense } from '@/db/license.repository'
 import { getRecentTransactions } from '@/db/transactions.repository'
 import { exportAllData, importAllData, clearAllData } from '@/db/backup.repository'
 import { applyTheme } from '@/shared/utils/theme'
+import { applyLanguage } from '@/shared/utils/language'
 import type { Settings, LicenseRecord, Theme, Language } from '@/db/database'
 import { BottomSheet } from '@/shared/components/BottomSheet'
 import {
@@ -58,6 +59,7 @@ export function SettingsPage() {
 
   async function handleLanguageChange(language: Language) {
     await patchSettings({ language })
+    applyLanguage(language)
     setData((prev) => prev && { ...prev, settings: { ...prev.settings, language } })
   }
 

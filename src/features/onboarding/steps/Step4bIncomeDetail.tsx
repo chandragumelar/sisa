@@ -6,7 +6,7 @@ interface Props {
   onNext: (data: { incomeDay: number | null; freelanceMinBalance: string }) => void
 }
 
-const DAY_OPTIONS = Array.from({ length: 28 }, (_, i) => i + 1)
+const DAY_OPTIONS = Array.from({ length: 31 }, (_, i) => i + 1)
 
 export function Step4bIncomeDetail({ incomeType, onNext }: Props) {
   const [incomeDay, setIncomeDay] = useState<number | null>(null)
