@@ -15,6 +15,15 @@ interface Props {
 }
 
 const MAX_WALLETS_BASIC = 4
+const SALDO_EXPANDED_KEY = 'sisa:saldoExpanded'
+
+function getExpandedPref(): boolean {
+  try {
+    return localStorage.getItem(SALDO_EXPANDED_KEY) !== 'false'
+  } catch {
+    return true
+  }
+}
 
 export function SaldoModule({
   wallets,
@@ -25,12 +34,11 @@ export function SaldoModule({
   yesterdayEarned,
   onWalletTap,
 }: Props) {
-  const [expanded, setExpanded] = useState(true)
+  const [expanded, setExpanded] = useState(getExpandedPref)
 
   const total = wallets.reduce((sum, w) => sum + w.balance, 0)
   const sisa = calcSisa(total, unpaidTagihanTotal, totalNabung)
   const visible = wallets.slice(0, MAX_WALLETS_BASIC)
-  const hasDeductions = unpaidTagihanTotal > 0 || totalNabung > 0
 
   let heroSub = ''
   if (yesterdaySpent > 0) {
@@ -39,12 +47,20 @@ export function SaldoModule({
     heroSub = `${formatCurrency(yesterdayEarned, currency)} masuk kemarin`
   }
 
+  function handleToggle() {
+    setExpanded((e) => {
+      const next = !e
+      localStorage.setItem(SALDO_EXPANDED_KEY, String(next))
+      return next
+    })
+  }
+
   return (
     <>
       <div className={styles.label}>sisa bulan ini</div>
       <button
         className={styles.heroAmountBtn}
-        onClick={() => setExpanded((e) => !e)}
+        onClick={handleToggle}
         aria-expanded={expanded}
         aria-label="Tap untuk lihat detail dompet"
       >
@@ -83,31 +99,28 @@ export function SaldoModule({
             ))
           )}
 
-          {hasDeductions && (
-            <>
-              <div className={styles.summaryDivider} />
-              {unpaidTagihanTotal > 0 && (
-                <div className={styles.summaryRow}>
-                  <span className={styles.summaryLabel}>tagihan</span>
-                  <span className={styles.summaryAmountNeg}>
-                    -{formatCurrency(unpaidTagihanTotal, currency)}
-                  </span>
-                </div>
-              )}
-              {totalNabung > 0 && (
-                <div className={styles.summaryRow}>
-                  <span className={styles.summaryLabel}>tabungan</span>
-                  <span className={styles.summaryAmountNeg}>
-                    -{formatCurrency(totalNabung, currency)}
-                  </span>
-                </div>
-              )}
-              <div className={`${styles.summaryRow} ${styles.sisaRow}`}>
-                <span className={styles.sisaLabel}>sisa</span>
-                <span className={styles.sisaAmount}>{formatCurrency(sisa, currency)}</span>
-              </div>
-            </>
-          )}
+          <div className={styles.summaryDivider} />
+          <div className={`${styles.summaryRow} ${styles.totalRow}`}>
+            <span className={styles.totalLabel}>Total saldo</span>
+            <span className={styles.totalAmount}>{formatCurrency(total, currency)}</span>
+          </div>
+
+          <div className={styles.summaryRow}>
+            <span className={styles.summaryLabel}>− Tagihan bulan ini</span>
+            <span className={styles.summaryAmountNeg}>
+              {formatCurrency(unpaidTagihanTotal, currency)}
+            </span>
+          </div>
+          <div className={styles.summaryRow}>
+            <span className={styles.summaryLabel}>− Tabungan</span>
+            <span className={styles.summaryAmountNeg}>{formatCurrency(totalNabung, currency)}</span>
+          </div>
+
+          <div className={styles.sisaDivider} />
+          <div className={`${styles.summaryRow} ${styles.sisaRow}`}>
+            <span className={styles.sisaLabel}>= Sisa bulan ini</span>
+            <span className={styles.sisaAmount}>{formatCurrency(sisa, currency)}</span>
+          </div>
         </div>
       )}
     </>

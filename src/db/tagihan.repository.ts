@@ -2,7 +2,7 @@ import { db } from './database'
 import type { Tagihan } from './database'
 
 export async function getActiveTagihan(): Promise<Tagihan[]> {
-  return db.tagihan.where('isActive').equals(1).sortBy('dueDay')
+  return db.tagihan.filter((t) => !!t.isActive).sortBy('dueDay')
 }
 
 export async function addTagihan(tagihan: Omit<Tagihan, 'id'>): Promise<void> {

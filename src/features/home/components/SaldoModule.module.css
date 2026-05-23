@@ -66,7 +66,7 @@
   font-family: var(--font-sans);
 }
 
-.walletRow:last-child {
+.walletRow:last-of-type {
   border-bottom: none;
 }
 
@@ -119,22 +119,44 @@
   font-feature-settings: 'tnum';
 }
 
+.totalRow {
+  padding: 6px 0;
+}
+
+.totalLabel {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink-primary);
+}
+
+.totalAmount {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink-primary);
+  font-feature-settings: 'tnum';
+}
+
+.sisaDivider {
+  height: 1.5px;
+  background: var(--accent-br);
+  margin: 2px 0;
+}
+
 .sisaRow {
-  border-top: 1px solid var(--border-hair);
-  margin-top: 2px;
-  padding-top: 7px;
+  padding: 7px 0 2px;
 }
 
 .sisaLabel {
   font-size: 12px;
   font-weight: 600;
-  color: var(--ink-primary);
+  color: var(--accent);
 }
 
 .sisaAmount {
   font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 600;
-  color: var(--ink-primary);
+  color: var(--accent);
   font-feature-settings: 'tnum';
 }
