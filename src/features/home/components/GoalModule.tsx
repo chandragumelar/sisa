@@ -10,11 +10,12 @@ interface Props {
   totalNabung: number
   currency: string
   onReorder: (newGoals: Goal[]) => void
+  onAddTap?: () => void
 }
 
 const LONG_PRESS_MS = 300
 
-export function GoalModule({ goals, totalNabung, currency, onReorder }: Props) {
+export function GoalModule({ goals, totalNabung, currency, onReorder, onAddTap }: Props) {
   const [dragging, setDragging] = useState(false)
   const [dragIndex, setDragIndex] = useState<number | null>(null)
   const [overIndex, setOverIndex] = useState<number | null>(null)
@@ -81,7 +82,15 @@ export function GoalModule({ goals, totalNabung, currency, onReorder }: Props) {
     return (
       <>
         <div className={styles.label}>goal tabungan</div>
-        <div className={styles.empty}>Belum ada goal — tambah di Pengaturan.</div>
+        <div className={styles.emptyBlock}>
+          <p className={styles.emptyText}>
+            Tentukan target nabung — emergency fund, liburan, gadget — supaya lo tau lagi nabung
+            buat apa.
+          </p>
+          <button className={styles.addBtn} onClick={onAddTap}>
+            + Tambah goal
+          </button>
+        </div>
       </>
     )
   }

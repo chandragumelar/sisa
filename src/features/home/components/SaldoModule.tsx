@@ -8,17 +8,22 @@ interface Props {
   currency: string
   yesterdaySpent: number
   yesterdayEarned: number
+  onWalletTap?: (wallet: Wallet) => void
 }
 
 const MAX_WALLETS_BASIC = 4
 
-export function SaldoModule({ wallets, currency, yesterdaySpent, yesterdayEarned }: Props) {
-  const [expanded, setExpanded] = useState(false)
+export function SaldoModule({
+  wallets,
+  currency,
+  yesterdaySpent,
+  yesterdayEarned,
+  onWalletTap,
+}: Props) {
+  const [expanded, setExpanded] = useState(true)
 
   const total = wallets.reduce((sum, w) => sum + w.balance, 0)
-  const visible = expanded
-    ? wallets.slice(0, MAX_WALLETS_BASIC)
-    : wallets.slice(0, MAX_WALLETS_BASIC)
+  const visible = wallets.slice(0, MAX_WALLETS_BASIC)
 
   let heroSub = ''
   if (yesterdaySpent > 0) {
@@ -59,10 +64,15 @@ export function SaldoModule({ wallets, currency, yesterdaySpent, yesterdayEarned
             <div className={styles.empty}>Belum ada dompet</div>
           ) : (
             visible.map((w) => (
-              <div key={w.id} className={styles.walletRow}>
+              <button
+                key={w.id}
+                className={styles.walletRow}
+                onClick={() => onWalletTap?.(w)}
+                disabled={!onWalletTap}
+              >
                 <span className={styles.walletName}>{w.name}</span>
                 <span className={styles.walletAmount}>{formatCurrency(w.balance, w.currency)}</span>
-              </div>
+              </button>
             ))
           )}
         </div>

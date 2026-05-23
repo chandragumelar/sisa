@@ -126,3 +126,30 @@
   color: var(--ink-tertiary);
   padding: 4px 0;
 }
+
+.emptyBlock {
+  padding: 4px 0 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.emptyText {
+  font-size: 12.5px;
+  color: var(--ink-tertiary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.addBtn {
+  align-self: flex-start;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-bg);
+  border: 1px solid var(--accent-br);
+  border-radius: 8px;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-family: var(--font-sans);
+}

@@ -10,6 +10,7 @@ interface Props {
   nowMs: number
   onPayTap: (tagihan: Tagihan) => void
   onRowTap: (tagihan: Tagihan) => void
+  onAddTap?: () => void
 }
 
 const MAX_VISIBLE = 4
@@ -33,7 +34,7 @@ function metaText(t: Tagihan, nowMs: number): { text: string; urgent: boolean } 
   }
 }
 
-export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap }: Props) {
+export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap, onAddTap }: Props) {
   const active = tagihan.filter((t) => t.isActive)
   const ranked = rankTagihan(active, nowMs)
   const visible = ranked.slice(0, MAX_VISIBLE)
@@ -44,14 +45,22 @@ export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap }: 
   return (
     <>
       <div className={styles.header}>
-        <span className={styles.label}>komitmen bulan ini</span>
+        <span className={styles.label}>tagihan bulan ini</span>
         {active.length > 0 && (
           <span className={styles.totalMeta}>± {formatCurrency(total, currency)}</span>
         )}
       </div>
 
       {active.length === 0 ? (
-        <div className={styles.empty}>Belum ada komitmen — tambah di Pengaturan.</div>
+        <div className={styles.emptyBlock}>
+          <p className={styles.emptyText}>
+            Catat tagihan rutin — listrik, internet, streaming — biar budget lo akurat dan gak
+            kecolongan.
+          </p>
+          <button className={styles.addBtn} onClick={onAddTap}>
+            + Tambah tagihan
+          </button>
+        </div>
       ) : (
         <>
           {visible.map((t) => (
@@ -67,7 +76,7 @@ export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap }: 
 
           {hidden.length > 0 && (
             <button className={styles.expandLink}>
-              + <strong>{hidden.length} komitmen lainnya</strong> ·{' '}
+              + <strong>{hidden.length} tagihan lainnya</strong> ·{' '}
               {hidden.map((t) => t.name).join(', ')} ›
             </button>
           )}
