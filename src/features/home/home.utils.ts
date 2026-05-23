@@ -71,10 +71,10 @@ export function getPaydayDate(nowMs: number, settings: Settings): Date {
 export function calcDailyBudget(
   totalSaldo: number,
   unpaidTagihanTotal: number,
-  reservedSavings: number,
+  totalNabung: number,
   daysUntilPayday: number,
 ): number {
-  const available = totalSaldo - unpaidTagihanTotal - reservedSavings
+  const available = totalSaldo - unpaidTagihanTotal - totalNabung
   if (available <= 0 || daysUntilPayday <= 0) return 0
   return available / daysUntilPayday
 }

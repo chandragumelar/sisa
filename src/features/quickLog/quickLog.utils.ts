@@ -1,7 +1,6 @@
 import type { Transaction } from '@/db/database'
 
 export type QuickLogMode = 'keluar' | 'masuk' | 'nabung'
-export type NabungMode = 'earmark' | 'pindah'
 
 export const LABELS_KELUAR = ['makan', 'transport', 'belanja', 'tagihan', 'lainnya']
 export const LABELS_MASUK = ['gaji', 'freelance', 'bonus', 'lainnya']
@@ -15,7 +14,6 @@ export interface QuickLogInput {
   dateMs: number
   currency: string
   isFromSavings: boolean
-  nabungMode?: NabungMode
 }
 
 export function buildKeluar(input: QuickLogInput): Omit<Transaction, 'id'> {
@@ -49,7 +47,6 @@ export function buildMasuk(input: QuickLogInput): Omit<Transaction, 'id'> {
 }
 
 export function buildNabung(input: QuickLogInput): Omit<Transaction, 'id'> {
-  const isEarmark = input.nabungMode === 'earmark'
   return {
     walletId: input.walletId,
     amount: Math.abs(input.amount),
@@ -59,7 +56,7 @@ export function buildNabung(input: QuickLogInput): Omit<Transaction, 'id'> {
     note: input.note || undefined,
     date: input.dateMs,
     isFromSavings: false,
-    isEarmark,
+    isEarmark: false,
     createdAt: Date.now(),
   }
 }

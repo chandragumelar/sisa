@@ -112,15 +112,15 @@ export function BudgetModule({
       <BottomSheet isOpen={infoOpen} onClose={() => setInfoOpen(false)} title="Cara hitung budget">
         <div className={styles.infoContent}>
           <p>
-            <strong>Budget harian</strong> = (Saldo total − Tagihan belum dibayar) ÷ Hari sampai
-            gajian
+            <strong>Budget harian</strong> = (Saldo − Tagihan − Tabungan) ÷ Hari sampai gajian
           </p>
           <p>
-            <strong>Sisa pas gajian</strong> = Saldo total − (Budget harian × Hari sampai gajian) −
+            <strong>Sisa pas gajian</strong> = Saldo − (Budget harian × Hari sampai gajian) −
             Tagihan belum dibayar
           </p>
           <p className={styles.infoNote}>
-            Tagihan perlu diisi biar prediksi akurat. Saldo dihitung dari semua dompet aktif.
+            Tagihan dan target tabungan dikurangi dulu sebelum dibagi ke hari. Saldo dihitung dari
+            semua dompet aktif.
           </p>
         </div>
       </BottomSheet>

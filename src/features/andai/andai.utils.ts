@@ -86,8 +86,8 @@ export function buildAndaiBaseline(
   nowMs: number,
 ): AndaiBaseline {
   const daysUntilPayday = calcDaysUntilPayday(nowMs, settings)
-  const dailyBudget = calcDailyBudget(totalSaldo, unpaidTagihanTotal, 0, daysUntilPayday)
-  const availableOp = Math.max(0, totalSaldo - unpaidTagihanTotal)
+  const dailyBudget = calcDailyBudget(totalSaldo, unpaidTagihanTotal, totalNabung, daysUntilPayday)
+  const availableOp = Math.max(0, totalSaldo - unpaidTagihanTotal - totalNabung)
   const sisaPasGajian = availableOp - dailyBudget * daysUntilPayday
   return {
     totalSaldo,

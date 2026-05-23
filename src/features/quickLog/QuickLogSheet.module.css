@@ -175,43 +175,6 @@
   transform: translateX(18px);
 }
 
-.nabungModes {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 14px;
-}
-
-.nabungModeBtn {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 10px 14px;
-  background: var(--surface-2);
-  border: 1.5px solid var(--border-hair);
-  border-radius: 10px;
-  cursor: pointer;
-  font-family: var(--font-sans);
-  text-align: left;
-}
-
-.nabungModeBtnActive {
-  border-color: var(--accent);
-  background: var(--accent-bg);
-}
-
-.nabungModeLabel {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--ink-primary);
-}
-
-.nabungModeSub {
-  font-size: 11px;
-  color: var(--ink-tertiary);
-  margin-top: 2px;
-}
-
 .datePills {
   display: flex;
   gap: 8px;
