@@ -117,7 +117,7 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
       getTransactionsByDateRange(yesterdayStart, todayStart),
     ]).then(([settings, wallets, tagihan, goals, lastTx, todayTxs, yesterdayTxs]) => {
       if (cancelled || !settings) return
-      const currency = settings.primaryCurrency
+      const currency = settings.activeCurrencyMode || settings.primaryCurrency
       Promise.all([
         getTotalNabung(currency),
         getMonthlyIncomeSummary(currency),
@@ -280,10 +280,12 @@ export function HomePage() {
   }
 
   async function handleDeleteGoal(id: number) {
-    const goalStatuses = calcGoalStatuses(goals, totalNabung)
+    const currencyGoals = goals.filter((g) => g.currency === currency)
+    const currencyWallets = wallets.filter((w) => w.currency === currency)
+    const goalStatuses = calcGoalStatuses(currencyGoals, totalNabung)
     const gs = goalStatuses.find((s) => s.goal.id === id)
-    if (gs && gs.saved > 0 && wallets.length > 0) {
-      await addNabungDeduction(gs.saved, currency, wallets[0].id!, nowMs)
+    if (gs && gs.saved > 0 && currencyWallets.length > 0) {
+      await addNabungDeduction(gs.saved, currency, currencyWallets[0].id!, nowMs)
     }
     await deleteGoal(id)
     reload()
@@ -365,8 +367,15 @@ export function HomePage() {
       )}
 
       {/* Notif */}
-      {hasUrgentTagihan(tagihan, nowMs) && (
-        <NotifCard tagihan={tagihan} nowMs={nowMs} onClick={() => setUrgentSheetOpen(true)} />
+      {hasUrgentTagihan(
+        tagihan.filter((t) => t.currency === currency),
+        nowMs,
+      ) && (
+        <NotifCard
+          tagihan={tagihan.filter((t) => t.currency === currency)}
+          nowMs={nowMs}
+          onClick={() => setUrgentSheetOpen(true)}
+        />
       )}
 
       {/* Saldo */}
@@ -424,7 +433,7 @@ export function HomePage() {
 
       {/* Goal */}
       <GoalModule
-        goals={goals}
+        goals={goals.filter((g) => g.currency === currency)}
         totalNabung={totalNabung}
         currency={currency}
         onReorder={handleGoalReorder}
@@ -493,7 +502,7 @@ export function HomePage() {
       )}
 
       <UrgentTagihanSheet
-        tagihan={tagihan}
+        tagihan={tagihan.filter((t) => t.currency === currency)}
         nowMs={nowMs}
         isOpen={urgentSheetOpen}
         onClose={() => setUrgentSheetOpen(false)}
@@ -554,7 +563,7 @@ export function HomePage() {
       <ProfilGoalSheet
         isOpen={goalSheetOpen}
         onClose={() => setGoalSheetOpen(false)}
-        goals={goals}
+        goals={goals.filter((g) => g.currency === currency)}
         currency={currency}
         nowMs={nowMs}
         onUpdate={async () => {

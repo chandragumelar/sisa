@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useClock } from '@/app/providers/useClock'
 import { getSettings, patchSettings } from '@/db/settings.repository'
 import { getLicense } from '@/db/license.repository'
+import { hasCurrencyData } from '@/db/wallets.repository'
 import { getRecentTransactions } from '@/db/transactions.repository'
 import { exportAllData, importAllData, clearAllData } from '@/db/backup.repository'
 import { applyTheme } from '@/shared/utils/theme'
@@ -40,6 +41,7 @@ export function SettingsPage() {
   const [importError, setImportError] = useState<string | null>(null)
   const [deleteStep, setDeleteStep] = useState<'idle' | 'confirm' | 'type'>('idle')
   const [deleteInput, setDeleteInput] = useState('')
+  const [currencyRemoveBlocked, setCurrencyRemoveBlocked] = useState(false)
 
   const loadData = useCallback(async () => {
     const [settings, license] = await Promise.all([getSettings(), getLicense()])
@@ -66,7 +68,18 @@ export function SettingsPage() {
   }
 
   async function handleSecondaryCurrencyChange(value: string) {
-    const secondaryCurrency = value === '' || value === settings.primaryCurrency ? null : value
+    const isRemoving = value === '' || value === settings.primaryCurrency
+    if (isRemoving && settings.secondaryCurrency) {
+      const inUse = await hasCurrencyData(settings.secondaryCurrency)
+      if (inUse) {
+        setCurrencyRemoveBlocked(true)
+        return
+      }
+      if (settings.activeCurrencyMode === settings.secondaryCurrency) {
+        await patchSettings({ activeCurrencyMode: settings.primaryCurrency })
+      }
+    }
+    const secondaryCurrency = isRemoving ? null : value
     await patchSettings({ secondaryCurrency })
     setData((prev) => prev && { ...prev, settings: { ...prev.settings, secondaryCurrency } })
   }
@@ -341,6 +354,22 @@ export function SettingsPage() {
             </button>
           </div>
         )}
+      </BottomSheet>
+
+      {/* Currency remove blocked sheet */}
+      <BottomSheet
+        isOpen={currencyRemoveBlocked}
+        onClose={() => setCurrencyRemoveBlocked(false)}
+        title="Mata uang masih dipakai"
+      >
+        <div className={styles.sheetBody}>
+          <div className={styles.sheetWarning}>
+            Hapus dulu semua dompet, tagihan, dan goal dalam mata uang ini sebelum menonaktifkannya.
+          </div>
+          <button className={styles.ghostBtn} onClick={() => setCurrencyRemoveBlocked(false)}>
+            Oke
+          </button>
+        </div>
       </BottomSheet>
 
       {/* Import error sheet */}
