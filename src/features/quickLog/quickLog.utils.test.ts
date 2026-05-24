@@ -69,9 +69,15 @@ describe('buildNabung', () => {
     expect(tx.type).toBe('nabung')
   })
 
-  it('isEarmark is always false', () => {
+  it('isEarmark is always true', () => {
     const tx = buildNabung({ ...BASE, mode: 'nabung' })
-    expect(tx.isEarmark).toBe(false)
+    expect(tx.isEarmark).toBe(true)
+  })
+
+  it('never mutates wallet saldo — isEarmark always true', () => {
+    const tx = buildNabung({ ...BASE, mode: 'nabung' })
+    expect(tx.amount).toBe(50000)
+    expect(tx.isEarmark).toBe(true)
   })
 
   it('isFromSavings is always false', () => {
@@ -96,7 +102,7 @@ describe('buildTransaction', () => {
   it('routes nabung correctly', () => {
     const tx = buildTransaction({ ...BASE, mode: 'nabung' })
     expect(tx.type).toBe('nabung')
-    expect(tx.isEarmark).toBe(false)
+    expect(tx.isEarmark).toBe(true)
   })
 
   it('preserves walletId and currency', () => {

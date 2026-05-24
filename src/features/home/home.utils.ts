@@ -16,7 +16,7 @@ export function calcDaysUntilPayday(nowMs: number, settings: Settings): number {
   const incomeDay = settings.incomeDay ?? 25
 
   let payday: Date
-  if (today <= incomeDay) {
+  if (today < incomeDay) {
     const lastDay = new Date(year, month + 1, 0).getDate()
     payday = new Date(year, month, Math.min(incomeDay, lastDay))
   } else {
@@ -54,7 +54,7 @@ export function getPaydayDate(nowMs: number, settings: Settings): Date {
     return new Date(year, month + 1, 0) // last day of month
   }
 
-  if (today <= incomeDay) {
+  if (today < incomeDay) {
     const lastDay = new Date(year, month + 1, 0).getDate()
     return new Date(year, month, Math.min(incomeDay, lastDay))
   }
@@ -80,12 +80,16 @@ export function calcDailyBudget(
 }
 
 export function getDaysUntilEndOfWeek(nowMs: number): number {
-  const dow = new Date(nowMs).getDay() // 0=Sun
-  return dow === 0 ? 7 : 7 - dow
+  const dow = new Date(nowMs).getDay() // 0=Sun; week = Mon–Sun
+  return dow === 0 ? 1 : 8 - dow
 }
 
-export function calcWeeklyBudget(dailyBudget: number, daysUntilWeekEnd: number): number {
-  return dailyBudget * daysUntilWeekEnd
+export function calcWeeklyBudget(
+  dailyBudget: number,
+  daysUntilWeekEnd: number,
+  daysUntilPayday: number,
+): number {
+  return dailyBudget * Math.min(daysUntilWeekEnd, daysUntilPayday)
 }
 
 export function calcSisaPasGajian(
