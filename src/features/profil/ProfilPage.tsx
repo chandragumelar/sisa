@@ -7,7 +7,7 @@ import { getActiveTagihan } from '@/db/tagihan.repository'
 import { getAllGoals } from '@/db/goals.repository'
 import { getLicense } from '@/db/license.repository'
 import { getTotalNabung } from '@/db/transactions.repository'
-import { calcUnpaidTagihanTotal } from '@/features/home/home.utils'
+import { calcUnpaidTagihanTotal } from '@/features/home/tagihan.utils'
 import type { Settings, Wallet, Tagihan, Goal, LicenseRecord } from '@/db/database'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
 import { ProfilIncomeSheet } from './ProfilIncomeSheet'
@@ -144,6 +144,7 @@ export function ProfilPage() {
         currency={currency}
         nowMs={nowMs}
         onUpdate={loadData}
+        showAdd={false}
       />
       <ProfilTagihanSheet
         isOpen={activeSheet === 'tagihan'}
@@ -152,6 +153,7 @@ export function ProfilPage() {
         currency={currency}
         nowMs={nowMs}
         onUpdate={loadData}
+        showAdd={false}
       />
       <ProfilGoalSheet
         isOpen={activeSheet === 'goals'}
@@ -160,6 +162,7 @@ export function ProfilPage() {
         currency={currency}
         nowMs={nowMs}
         onUpdate={loadData}
+        showAdd={false}
       />
       <ProfilLicenseSheet
         isOpen={activeSheet === 'license'}

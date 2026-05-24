@@ -12,11 +12,20 @@ interface Props {
   currency: string
   nowMs: number
   onUpdate: () => Promise<void>
+  showAdd?: boolean
 }
 
 type Step = 'list' | 'form'
 
-export function ProfilGoalSheet({ isOpen, onClose, goals, currency, nowMs, onUpdate }: Props) {
+export function ProfilGoalSheet({
+  isOpen,
+  onClose,
+  goals,
+  currency,
+  nowMs,
+  onUpdate,
+  showAdd = true,
+}: Props) {
   const [step, setStep] = useState<Step>('list')
   const [editId, setEditId] = useState<number | null>(null)
   const [name, setName] = useState('')
@@ -97,9 +106,11 @@ export function ProfilGoalSheet({ isOpen, onClose, goals, currency, nowMs, onUpd
             </div>
           ))}
           <div className={styles.fieldNote}>Urutan goal diatur di Home lewat drag-drop.</div>
-          <button className={styles.ghostBtn} onClick={openAdd}>
-            + Tambah goal
-          </button>
+          {showAdd && (
+            <button className={styles.ghostBtn} onClick={openAdd}>
+              + Tambah goal
+            </button>
+          )}
         </div>
       )}
 

@@ -164,6 +164,9 @@ export function GoalModule({ goals, totalNabung, currency, onReorder, onAddTap }
           </div>
         )}
       </div>
+      <button className={styles.addBtn} onClick={onAddTap}>
+        + Tambah goal
+      </button>
     </>
   )
 }

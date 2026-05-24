@@ -125,3 +125,27 @@
   opacity: 0.4;
   cursor: not-allowed;
 }
+
+.dateSelectedNote {
+  font-size: 11px;
+  color: var(--ink-tertiary);
+  margin-top: 4px;
+}
+
+.dateInput {
+  margin-top: 8px;
+  width: 100%;
+  padding: 6px 10px;
+  background: var(--surface-2);
+  border: 1.5px solid var(--border-hair);
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--ink-secondary);
+  font-family: var(--font-sans);
+  box-sizing: border-box;
+  outline: none;
+}
+
+.dateInput:focus {
+  border-color: var(--accent);
+}

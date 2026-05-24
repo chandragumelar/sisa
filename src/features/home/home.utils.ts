@@ -1,4 +1,4 @@
-import type { Settings, Tagihan, Goal, Transaction } from '@/db/database'
+import type { Settings, Goal, Transaction } from '@/db/database'
 
 // ─── Payday ──────────────────────────────────────────────────────────────────
 
@@ -120,56 +120,6 @@ export function calcYesterdayStats(
     .reduce((sum, t) => sum + Math.abs(t.amount), 0)
   const earned = yesterday.filter((t) => t.type === 'masuk').reduce((sum, t) => sum + t.amount, 0)
   return { spent, earned }
-}
-
-// ─── Tagihan ─────────────────────────────────────────────────────────────────
-
-export type TagihanUrgency = 'lewat-tempo' | 'hari-ini' | 'dalam-7-hari' | 'normal'
-
-export function isTagihanPaidThisPeriod(tagihan: Tagihan, nowMs: number): boolean {
-  if (tagihan.lastPaidAt === null) return false
-  const paid = new Date(tagihan.lastPaidAt)
-  const now = new Date(nowMs)
-  return paid.getMonth() === now.getMonth() && paid.getFullYear() === now.getFullYear()
-}
-
-export function getTagihanUrgency(tagihan: Tagihan, nowMs: number): TagihanUrgency {
-  if (isTagihanPaidThisPeriod(tagihan, nowMs)) return 'normal'
-  const today = new Date(nowMs).getDate()
-  const due = tagihan.dueDay
-  if (today > due) return 'lewat-tempo'
-  if (today === due) return 'hari-ini'
-  if (due - today <= 7) return 'dalam-7-hari'
-  return 'normal'
-}
-
-const URGENCY_ORDER: Record<TagihanUrgency, number> = {
-  'lewat-tempo': 0,
-  'hari-ini': 1,
-  'dalam-7-hari': 2,
-  normal: 3,
-}
-
-export function rankTagihan(tagihan: Tagihan[], nowMs: number): Tagihan[] {
-  return [...tagihan].sort((a, b) => {
-    const ua = URGENCY_ORDER[getTagihanUrgency(a, nowMs)]
-    const ub = URGENCY_ORDER[getTagihanUrgency(b, nowMs)]
-    if (ua !== ub) return ua - ub
-    return a.dueDay - b.dueDay
-  })
-}
-
-export function calcUnpaidTagihanTotal(tagihan: Tagihan[], nowMs: number): number {
-  return tagihan
-    .filter((t) => t.isActive && !isTagihanPaidThisPeriod(t, nowMs))
-    .reduce((sum, t) => sum + t.nominalEstimate, 0)
-}
-
-export function hasUrgentTagihan(tagihan: Tagihan[], nowMs: number): boolean {
-  return tagihan.some((t) => {
-    const u = getTagihanUrgency(t, nowMs)
-    return u === 'lewat-tempo' || u === 'hari-ini'
-  })
 }
 
 // ─── Goals ───────────────────────────────────────────────────────────────────

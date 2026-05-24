@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { renameWallet, deleteWallet, setWalletBalance, addWallet } from '@/db/wallets.repository'
 import { addTransactionAndUpdateBalance } from '@/db/transactions.repository'
 import type { Wallet } from '@/db/database'
@@ -13,12 +13,23 @@ interface Props {
   currency: string
   nowMs: number
   onUpdate: () => Promise<void>
+  initialStep?: Step
+  showAdd?: boolean
 }
 
 type Step = 'list' | 'detail' | 'sesuaikan' | 'sesuaikan-transfer' | 'add'
 
-export function ProfilWalletsSheet({ isOpen, onClose, wallets, currency, nowMs, onUpdate }: Props) {
-  const [step, setStep] = useState<Step>('list')
+export function ProfilWalletsSheet({
+  isOpen,
+  onClose,
+  wallets,
+  currency,
+  nowMs,
+  onUpdate,
+  initialStep,
+  showAdd = true,
+}: Props) {
+  const [step, setStep] = useState<Step>(initialStep ?? 'list')
   const [selected, setSelected] = useState<Wallet | null>(null)
   const [nameInput, setNameInput] = useState('')
   const [actualBalanceStr, setActualBalanceStr] = useState('')
@@ -28,12 +39,16 @@ export function ProfilWalletsSheet({ isOpen, onClose, wallets, currency, nowMs, 
   const [deleteConfirm, setDeleteConfirm] = useState(false)
 
   function reset() {
-    setStep('list')
+    setStep(initialStep ?? 'list')
     setSelected(null)
     setNameInput('')
     setActualBalanceStr('')
     setDeleteConfirm(false)
   }
+
+  useEffect(() => {
+    if (isOpen) setStep(initialStep ?? 'list')
+  }, [isOpen, initialStep])
 
   function openDetail(w: Wallet) {
     setSelected(w)
@@ -150,9 +165,11 @@ export function ProfilWalletsSheet({ isOpen, onClose, wallets, currency, nowMs, 
               <span className={styles.listVal}>{formatCurrency(w.balance, currency)}</span>
             </button>
           ))}
-          <button className={styles.ghostBtn} onClick={() => setStep('add')}>
-            + Tambah dompet
-          </button>
+          {showAdd && (
+            <button className={styles.ghostBtn} onClick={() => setStep('add')}>
+              + Tambah dompet
+            </button>
+          )}
         </div>
       )}
 

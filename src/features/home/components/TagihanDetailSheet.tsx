@@ -1,7 +1,7 @@
 import type { Tagihan } from '@/db/database'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
 import { BottomSheet } from '@/shared/components/BottomSheet'
-import { getTagihanUrgency, rankTagihan } from '../home.utils'
+import { getTagihanUrgency, rankTagihan } from '../tagihan.utils'
 import styles from './TagihanDetailSheet.module.css'
 
 interface SingleProps {
