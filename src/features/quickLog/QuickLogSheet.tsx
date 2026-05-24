@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import type { Wallet } from '@/db/database'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
+import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
 import { BottomSheet } from '@/shared/components/BottomSheet'
 import { buildTransaction, LABELS_KELUAR, LABELS_MASUK, type QuickLogMode } from './quickLog.utils'
-import { addTransactionAndUpdateBalance } from '@/db/transactions.repository'
+import { addTransactionAndUpdateBalance, replaceTransaction } from '@/db/transactions.repository'
 import styles from './QuickLogSheet.module.css'
 
 interface Props {
@@ -16,6 +17,16 @@ interface Props {
   onCommit: (txId: number, mode: QuickLogMode) => void
   initialAmount?: number
   initialMode?: QuickLogMode
+  editTxId?: number
+  initialWalletId?: number
+  initialLabel?: string
+  initialNote?: string
+  initialDateMs?: number
+}
+
+function msToDateStr(ms: number): string {
+  const d = new Date(ms)
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 }
 
 export function QuickLogSheet({
@@ -28,19 +39,26 @@ export function QuickLogSheet({
   onCommit,
   initialAmount,
   initialMode,
+  editTxId,
+  initialWalletId,
+  initialLabel,
+  initialNote,
+  initialDateMs,
 }: Props) {
   const [mode, setMode] = useState<QuickLogMode>(initialMode ?? 'keluar')
-  const [walletId, setWalletId] = useState<number>(wallets[0]?.id ?? 0)
-  const [amountStr, setAmountStr] = useState(initialAmount ? String(initialAmount) : '')
-  const [label, setLabel] = useState('')
+  const [walletId, setWalletId] = useState<number>(initialWalletId ?? wallets[0]?.id ?? 0)
+  const [amountStr, setAmountStr] = useState(
+    initialAmount ? formatNominalDisplay(String(initialAmount)) : '',
+  )
+  const [label, setLabel] = useState(initialLabel ?? '')
   const [isFromSavings, setIsFromSavings] = useState(false)
-  const [dateMs, setDateMs] = useState(nowMs)
-  const [noteExpanded, setNoteExpanded] = useState(false)
-  const [note, setNote] = useState('')
+  const [dateMs, setDateMs] = useState(initialDateMs ?? nowMs)
+  const [noteExpanded, setNoteExpanded] = useState(!!initialNote)
+  const [note, setNote] = useState(initialNote ?? '')
   const [submitting, setSubmitting] = useState(false)
   const [savingsWarning, setSavingsWarning] = useState(false)
 
-  const amount = parseInt(amountStr.replace(/\D/g, ''), 10) || 0
+  const amount = parseInt(parseNominalRaw(amountStr), 10) || 0
   const labels = mode === 'masuk' ? LABELS_MASUK : LABELS_KELUAR
 
   const todayStart = (() => {
@@ -50,11 +68,14 @@ export function QuickLogSheet({
   const yesterdayStart = todayStart - 86_400_000
   const isToday = dateMs >= todayStart
   const isYesterday = dateMs >= yesterdayStart && dateMs < todayStart
+  const isCustomDate = !isToday && !isYesterday
+  const todayStr = msToDateStr(todayStart)
+  const dateStr = msToDateStr(dateMs)
 
   function handleAmountInput(val: string) {
-    const digits = val.replace(/\D/g, '')
-    setAmountStr(digits)
-    if (isFromSavings && parseInt(digits, 10) > totalNabung) {
+    const raw = parseNominalRaw(val)
+    setAmountStr(formatNominalDisplay(raw))
+    if (isFromSavings && parseInt(raw, 10) > totalNabung) {
       setSavingsWarning(true)
     } else {
       setSavingsWarning(false)
@@ -64,11 +85,13 @@ export function QuickLogSheet({
   function handleFromSavingsToggle() {
     const next = !isFromSavings
     setIsFromSavings(next)
-    if (next && amount > totalNabung) {
-      setSavingsWarning(true)
-    } else {
-      setSavingsWarning(false)
-    }
+    setSavingsWarning(next && amount > totalNabung)
+  }
+
+  function handleDateInput(val: string) {
+    if (!val) return
+    const [y, m, d] = val.split('-').map(Number)
+    setDateMs(new Date(y, m - 1, d, 12, 0, 0).getTime())
   }
 
   async function handleSubmit() {
@@ -85,9 +108,14 @@ export function QuickLogSheet({
         currency,
         isFromSavings: mode === 'keluar' ? isFromSavings : false,
       })
-      const txId = await addTransactionAndUpdateBalance(tx)
+      let txId: number
+      if (editTxId !== undefined) {
+        txId = await replaceTransaction(editTxId, tx)
+      } else {
+        txId = await addTransactionAndUpdateBalance(tx)
+      }
       onCommit(txId, mode)
-      resetForm()
+      if (!editTxId) resetForm()
       onClose()
     } catch {
       // TODO: show error toast
@@ -146,7 +174,7 @@ export function QuickLogSheet({
         <span className={styles.nominalPrefix}>Rp</span>
         <input
           className={styles.nominalInput}
-          type="number"
+          type="text"
           inputMode="numeric"
           placeholder="0"
           value={amountStr}
@@ -155,7 +183,7 @@ export function QuickLogSheet({
         />
       </div>
 
-      {/* Savings warning (5.9) */}
+      {/* Savings warning */}
       {savingsWarning && (
         <div className={styles.savingsWarning}>
           Tabungan kamu cuma {formatCurrency(totalNabung, currency)} — mau pakai semua tabungan?
@@ -190,7 +218,7 @@ export function QuickLogSheet({
         </div>
       )}
 
-      {/* Date pills */}
+      {/* Date pills + calendar input */}
       <div className={styles.datePills}>
         <button
           className={`${styles.datePill} ${isToday ? styles.datePillActive : ''}`}
@@ -204,6 +232,14 @@ export function QuickLogSheet({
         >
           Kemarin
         </button>
+        <input
+          type="date"
+          className={`${styles.datePill} ${styles.dateInput} ${isCustomDate ? styles.datePillActive : ''}`}
+          max={todayStr}
+          value={isCustomDate ? dateStr : ''}
+          onChange={(e) => handleDateInput(e.target.value)}
+          aria-label="Pilih tanggal lain"
+        />
       </div>
 
       {/* Note expander */}
@@ -227,7 +263,7 @@ export function QuickLogSheet({
         onClick={handleSubmit}
         disabled={!amount || !walletId || submitting}
       >
-        {submitting ? 'Menyimpan...' : 'Catat'}
+        {submitting ? 'Menyimpan...' : editTxId !== undefined ? 'Simpan' : 'Catat'}
       </button>
     </BottomSheet>
   )

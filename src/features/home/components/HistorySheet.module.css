@@ -92,3 +92,64 @@
   font-feature-settings: 'tnum';
   flex-shrink: 0;
 }
+
+.rowNote {
+  font-size: 10.5px;
+  color: var(--ink-tertiary);
+  font-style: italic;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rowActions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.actionBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--ink-tertiary);
+  font-size: 13px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  font-family: var(--font-sans);
+}
+
+.actionBtn:hover {
+  background: var(--surface-2);
+  color: var(--ink-secondary);
+}
+
+.confirmRow {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.confirmDanger {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--signal-danger);
+  background: none;
+  border: 1px solid var(--signal-danger);
+  border-radius: 6px;
+  padding: 3px 8px;
+  cursor: pointer;
+  font-family: var(--font-sans);
+}
+
+.confirmCancel {
+  font-size: 11px;
+  color: var(--ink-tertiary);
+  background: none;
+  border: 1px solid var(--border-hair);
+  border-radius: 6px;
+  padding: 3px 8px;
+  cursor: pointer;
+  font-family: var(--font-sans);
+}

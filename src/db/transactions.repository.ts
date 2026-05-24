@@ -76,6 +76,34 @@ export async function addNabungDeduction(
   })
 }
 
+export async function replaceTransaction(
+  txId: number,
+  newTx: Omit<Transaction, 'id'>,
+): Promise<number> {
+  let newId = 0
+  await db.transaction('rw', [db.transactions, db.wallets], async () => {
+    const old = await db.transactions.get(txId)
+    if (!old) throw new Error('Transaksi tidak ditemukan')
+
+    const oldWallet = await db.wallets.get(old.walletId)
+    if (oldWallet) {
+      const oldDelta = old.isEarmark ? 0 : old.amount
+      await db.wallets.update(old.walletId, { balance: oldWallet.balance - oldDelta })
+    }
+
+    await db.transactions.delete(txId)
+
+    const id = await db.transactions.add(newTx)
+    newId = id as number
+
+    const newWallet = await db.wallets.get(newTx.walletId)
+    if (!newWallet) throw new Error('Wallet tidak ditemukan')
+    const newDelta = newTx.isEarmark ? 0 : newTx.amount
+    await db.wallets.update(newTx.walletId, { balance: newWallet.balance + newDelta })
+  })
+  return newId
+}
+
 export async function getRecentTransactions(limit = 100): Promise<Transaction[]> {
   return db.transactions.orderBy('date').reverse().limit(limit).toArray()
 }
