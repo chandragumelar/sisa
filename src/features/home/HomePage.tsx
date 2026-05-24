@@ -8,14 +8,16 @@ import {
   getActiveTagihan,
   commitTagihanPayment,
   revertTagihanPayment,
+  deleteTagihan,
 } from '@/db/tagihan.repository'
-import { getAllGoals } from '@/db/goals.repository'
+import { getAllGoals, deleteGoal } from '@/db/goals.repository'
 import {
   getLastTransaction,
   getTransactionsByDateRange,
   getTotalNabung,
   deleteTransactionAndRevertBalance,
   getMonthlyIncomeSummary,
+  addNabungDeduction,
 } from '@/db/transactions.repository'
 import type { Settings, Wallet, Tagihan, Goal, Transaction, LicenseRecord } from '@/db/database'
 import {
@@ -24,6 +26,7 @@ import {
   calcYesterdayStats,
   calcDaysUntilPayday,
   calcSisaPasGajian,
+  calcGoalStatuses,
 } from './home.utils'
 import { calcUnpaidTagihanTotal, hasUrgentTagihan } from './tagihan.utils'
 import { calcForecast } from './forecast.utils'
@@ -160,6 +163,7 @@ export function HomePage() {
   const [toast, setToast] = useState<ToastState | null>(null)
   const [markPaidTagihan, setMarkPaidTagihan] = useState<Tagihan | null>(null)
   const [detailTagihan, setDetailTagihan] = useState<Tagihan | null>(null)
+  const [editTagihan, setEditTagihan] = useState<Tagihan | null>(null)
   const [urgentSheetOpen, setUrgentSheetOpen] = useState(false)
   const [historyOpen, setHistoryOpen] = useState(false)
   const [quickLogOpen, setQuickLogOpen] = useState(false)
@@ -244,6 +248,21 @@ export function HomePage() {
         dismissToast()
       },
     })
+  }
+
+  async function handleDeleteTagihan(t: Tagihan) {
+    await deleteTagihan(t.id!)
+    reload()
+  }
+
+  async function handleDeleteGoal(id: number) {
+    const goalStatuses = calcGoalStatuses(goals, totalNabung)
+    const gs = goalStatuses.find((s) => s.goal.id === id)
+    if (gs && gs.saved > 0 && wallets.length > 0) {
+      await addNabungDeduction(gs.saved, currency, wallets[0].id!, nowMs)
+    }
+    await deleteGoal(id)
+    reload()
   }
 
   function handleGoalReorder(_newGoals: Goal[]) {
@@ -385,6 +404,7 @@ export function HomePage() {
         currency={currency}
         onReorder={handleGoalReorder}
         onAddTap={() => setGoalSheetOpen(true)}
+        onGoalTap={() => setGoalSheetOpen(true)}
       />
 
       <div className={styles.divider} />
@@ -438,6 +458,12 @@ export function HomePage() {
             setDetailTagihan(null)
             setMarkPaidTagihan(t)
           }}
+          onEdit={(t) => {
+            setDetailTagihan(null)
+            setEditTagihan(t)
+            setTagihanSheetOpen(true)
+          }}
+          onDelete={handleDeleteTagihan}
         />
       )}
 
@@ -485,13 +511,17 @@ export function HomePage() {
 
       <ProfilTagihanSheet
         isOpen={tagihanSheetOpen}
-        onClose={() => setTagihanSheetOpen(false)}
+        onClose={() => {
+          setTagihanSheetOpen(false)
+          setEditTagihan(null)
+        }}
         tagihan={tagihan}
         currency={currency}
         nowMs={nowMs}
         onUpdate={async () => {
           reload()
         }}
+        initialEditTagihan={editTagihan}
       />
 
       <ProfilGoalSheet
@@ -503,6 +533,7 @@ export function HomePage() {
         onUpdate={async () => {
           reload()
         }}
+        onDeleteGoal={handleDeleteGoal}
       />
 
       <QuickLogSheet

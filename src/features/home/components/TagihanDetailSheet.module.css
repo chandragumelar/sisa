@@ -44,6 +44,68 @@
   cursor: pointer;
 }
 
+.editBtn {
+  width: 100%;
+  padding: 11px;
+  background: var(--surface-2);
+  color: var(--ink-primary);
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  margin-top: 6px;
+}
+
+.deleteBtn {
+  width: 100%;
+  padding: 11px;
+  background: none;
+  color: var(--signal-danger);
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: var(--font-sans);
+  cursor: pointer;
+}
+
+.dangerBtn {
+  background: var(--signal-danger);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 14px;
+  cursor: pointer;
+}
+
+.ghostBtn {
+  background: none;
+  color: var(--ink-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 0;
+  width: 100%;
+  cursor: pointer;
+}
+
+.confirmRow {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 0 0;
+}
+
+.confirmText {
+  font-size: 13px;
+  color: var(--ink-secondary);
+}
+
 .urgentRow {
   display: flex;
   justify-content: space-between;

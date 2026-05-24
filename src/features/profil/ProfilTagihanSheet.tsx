@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { addTagihan, updateTagihan, deleteTagihan } from '@/db/tagihan.repository'
 import type { Tagihan, NominalType, RecurrenceType } from '@/db/database'
 import { BottomSheet } from '@/shared/components/BottomSheet'
@@ -13,6 +13,7 @@ interface Props {
   nowMs: number
   onUpdate: () => Promise<void>
   showAdd?: boolean
+  initialEditTagihan?: Tagihan | null
 }
 
 interface FormState {
@@ -41,11 +42,27 @@ export function ProfilTagihanSheet({
   nowMs,
   onUpdate,
   showAdd = true,
+  initialEditTagihan,
 }: Props) {
   const [step, setStep] = useState<Step>('list')
   const [editId, setEditId] = useState<number | null>(null)
   const [form, setForm] = useState<FormState>(EMPTY_FORM)
   const [deleteId, setDeleteId] = useState<number | null>(null)
+
+  useEffect(() => {
+    if (!isOpen) return
+    if (initialEditTagihan) {
+      setEditId(initialEditTagihan.id!)
+      setForm({
+        name: initialEditTagihan.name,
+        nominalType: initialEditTagihan.nominalType,
+        nominalEstimate: String(initialEditTagihan.nominalEstimate),
+        dueDay: String(initialEditTagihan.dueDay),
+        recurrenceType: initialEditTagihan.recurrenceType,
+      })
+      setStep('form')
+    }
+  }, [isOpen, initialEditTagihan])
 
   function openAdd() {
     setEditId(null)

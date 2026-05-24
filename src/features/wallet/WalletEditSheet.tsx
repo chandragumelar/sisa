@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { Wallet } from '@/db/database'
-import { renameWallet, setWalletBalance } from '@/db/wallets.repository'
+import { renameWallet, setWalletBalance, deleteWallet } from '@/db/wallets.repository'
 import { addTransactionAndUpdateBalance } from '@/db/transactions.repository'
 import { BottomSheet } from '@/shared/components/BottomSheet'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
@@ -32,6 +32,7 @@ export function WalletEditSheet({
   const [nameInput, setNameInput] = useState(wallet.name)
   const [actualBalanceDisplay, setActualBalanceDisplay] = useState('')
   const [transferTargetId, setTransferTargetId] = useState<number | null>(null)
+  const [deleteConfirm, setDeleteConfirm] = useState(false)
 
   const actualRaw = parseNominalRaw(actualBalanceDisplay)
   const actual = actualRaw ? parseInt(actualRaw, 10) : NaN
@@ -41,7 +42,14 @@ export function WalletEditSheet({
     setStep('detail')
     setNameInput(wallet.name)
     setActualBalanceDisplay('')
+    setDeleteConfirm(false)
     onClose()
+  }
+
+  async function handleDelete() {
+    await deleteWallet(wallet.id!)
+    await onUpdate()
+    handleClose()
   }
 
   async function handleRename() {
@@ -137,6 +145,21 @@ export function WalletEditSheet({
           <button className={styles.secondaryBtn} onClick={() => setStep('sesuaikan')}>
             Sesuaikan saldo
           </button>
+          {!deleteConfirm ? (
+            <button className={styles.dangerGhostBtn} onClick={() => setDeleteConfirm(true)}>
+              Hapus dompet
+            </button>
+          ) : (
+            <div className={styles.confirmRow}>
+              <span className={styles.confirmText}>Yakin hapus {wallet.name}?</span>
+              <button className={styles.dangerBtn} onClick={handleDelete}>
+                Hapus
+              </button>
+              <button className={styles.ghostBtn} onClick={() => setDeleteConfirm(false)}>
+                Batal
+              </button>
+            </div>
+          )}
         </div>
       )}
 

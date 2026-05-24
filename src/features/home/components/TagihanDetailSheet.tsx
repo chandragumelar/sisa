@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { Tagihan } from '@/db/database'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
 import { BottomSheet } from '@/shared/components/BottomSheet'
@@ -10,14 +11,30 @@ interface SingleProps {
   isOpen: boolean
   onClose: () => void
   onPay: (tagihan: Tagihan) => void
+  onEdit?: (tagihan: Tagihan) => void
+  onDelete?: (tagihan: Tagihan) => void
 }
 
-export function TagihanDetailSheet({ tagihan, nowMs, isOpen, onClose, onPay }: SingleProps) {
+export function TagihanDetailSheet({
+  tagihan,
+  nowMs,
+  isOpen,
+  onClose,
+  onPay,
+  onEdit,
+  onDelete,
+}: SingleProps) {
+  const [deleteConfirm, setDeleteConfirm] = useState(false)
   const urgency = getTagihanUrgency(tagihan, nowMs)
   const isPaid = tagihan.lastPaidAt !== null
 
+  function handleClose() {
+    setDeleteConfirm(false)
+    onClose()
+  }
+
   return (
-    <BottomSheet isOpen={isOpen} onClose={onClose} title={tagihan.name}>
+    <BottomSheet isOpen={isOpen} onClose={handleClose} title={tagihan.name}>
       <div className={styles.detail}>
         <div className={styles.row}>
           <span className={styles.rowLabel}>Nominal</span>
@@ -63,11 +80,47 @@ export function TagihanDetailSheet({ tagihan, nowMs, isOpen, onClose, onPay }: S
           className={styles.payBtn}
           onClick={() => {
             onPay(tagihan)
-            onClose()
+            handleClose()
           }}
         >
           Tandai Dibayar
         </button>
+      )}
+
+      {onEdit && (
+        <button
+          className={styles.editBtn}
+          onClick={() => {
+            onEdit(tagihan)
+            handleClose()
+          }}
+        >
+          Edit
+        </button>
+      )}
+
+      {onDelete && !deleteConfirm && (
+        <button className={styles.deleteBtn} onClick={() => setDeleteConfirm(true)}>
+          Hapus
+        </button>
+      )}
+
+      {onDelete && deleteConfirm && (
+        <div className={styles.confirmRow}>
+          <span className={styles.confirmText}>Yakin hapus {tagihan.name}?</span>
+          <button
+            className={styles.dangerBtn}
+            onClick={() => {
+              onDelete(tagihan)
+              handleClose()
+            }}
+          >
+            Hapus
+          </button>
+          <button className={styles.ghostBtn} onClick={() => setDeleteConfirm(false)}>
+            Batal
+          </button>
+        </div>
       )}
     </BottomSheet>
   )

@@ -11,16 +11,25 @@ interface Props {
   currency: string
   onReorder: (newGoals: Goal[]) => void
   onAddTap?: () => void
+  onGoalTap?: (goal: Goal) => void
 }
 
 const LONG_PRESS_MS = 300
 
-export function GoalModule({ goals, totalNabung, currency, onReorder, onAddTap }: Props) {
+export function GoalModule({
+  goals,
+  totalNabung,
+  currency,
+  onReorder,
+  onAddTap,
+  onGoalTap,
+}: Props) {
   const [dragging, setDragging] = useState(false)
   const [dragIndex, setDragIndex] = useState<number | null>(null)
   const [overIndex, setOverIndex] = useState<number | null>(null)
   const [localGoals, setLocalGoals] = useState<Goal[]>(goals)
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const pressedIndexRef = useRef<number | null>(null)
   const dragStartY = useRef(0)
   const itemHeight = useRef(0)
 
@@ -30,6 +39,7 @@ export function GoalModule({ goals, totalNabung, currency, onReorder, onAddTap }
   }
 
   function startLongPress(index: number, e: React.PointerEvent) {
+    pressedIndexRef.current = index
     const el = e.currentTarget as HTMLElement
     itemHeight.current = el.getBoundingClientRect().height
     dragStartY.current = e.clientY
@@ -57,8 +67,14 @@ export function GoalModule({ goals, totalNabung, currency, onReorder, onAddTap }
   }
 
   function handlePointerUp() {
+    const wasTap = !dragging
+    const tappedIndex = pressedIndexRef.current
+    pressedIndexRef.current = null
     cancelLongPress()
     if (!dragging || dragIndex === null || overIndex === null) {
+      if (wasTap && tappedIndex !== null) {
+        onGoalTap?.(localGoals[tappedIndex])
+      }
       setDragging(false)
       setDragIndex(null)
       setOverIndex(null)

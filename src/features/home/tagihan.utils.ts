@@ -4,6 +4,7 @@ export type TagihanUrgency = 'lewat-tempo' | 'hari-ini' | 'dalam-7-hari' | 'norm
 
 export function isTagihanPaidThisPeriod(tagihan: Tagihan, nowMs: number): boolean {
   if (tagihan.lastPaidAt === null) return false
+  if (tagihan.recurrenceType === 'sekali') return true
   const paid = new Date(tagihan.lastPaidAt)
   const now = new Date(nowMs)
   return paid.getMonth() === now.getMonth() && paid.getFullYear() === now.getFullYear()

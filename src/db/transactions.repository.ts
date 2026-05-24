@@ -56,6 +56,26 @@ export async function deleteTransactionAndRevertBalance(txId: number): Promise<v
   })
 }
 
+export async function addNabungDeduction(
+  amount: number,
+  currency: string,
+  walletId: number,
+  nowMs: number,
+): Promise<void> {
+  if (amount <= 0) return
+  await db.transactions.add({
+    walletId,
+    amount: -amount,
+    type: 'nabung',
+    currency,
+    label: 'koreksi goal',
+    date: nowMs,
+    isFromSavings: false,
+    isEarmark: true,
+    createdAt: nowMs,
+  })
+}
+
 export async function getRecentTransactions(limit = 100): Promise<Transaction[]> {
   return db.transactions.orderBy('date').reverse().limit(limit).toArray()
 }
