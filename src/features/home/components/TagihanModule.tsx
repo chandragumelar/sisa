@@ -1,6 +1,6 @@
 import type { Tagihan } from '@/db/database'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
-import { rankTagihan, getTagihanUrgency } from '../home.utils'
+import { rankTagihan, formatTagihanMeta } from '../tagihan.utils'
 import { TagihanSwipeRow } from './TagihanSwipeRow'
 import styles from './TagihanModule.module.css'
 
@@ -14,25 +14,6 @@ interface Props {
 }
 
 const MAX_VISIBLE = 4
-
-function metaText(t: Tagihan, nowMs: number): { text: string; urgent: boolean } {
-  const urgency = getTagihanUrgency(t, nowMs)
-  const today = new Date(nowMs).getDate()
-  switch (urgency) {
-    case 'lewat-tempo': {
-      const overdue = today - t.dueDay
-      return { text: `lewat ${overdue} hari · belum dibayar`, urgent: true }
-    }
-    case 'hari-ini':
-      return { text: 'jatuh tempo hari ini · belum dibayar', urgent: true }
-    case 'dalam-7-hari': {
-      const daysLeft = t.dueDay - today
-      return { text: `${daysLeft} hari lagi`, urgent: false }
-    }
-    default:
-      return { text: `tgl ${t.dueDay}`, urgent: false }
-  }
-}
 
 export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap, onAddTap }: Props) {
   const active = tagihan.filter((t) => t.isActive)
@@ -68,7 +49,7 @@ export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap, on
               key={t.id}
               tagihan={t}
               nowMs={nowMs}
-              metaText={metaText(t, nowMs)}
+              metaText={formatTagihanMeta(t, nowMs)}
               onPayTap={() => onPayTap(t)}
               onRowTap={() => onRowTap(t)}
             />
@@ -82,6 +63,9 @@ export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap, on
           )}
 
           <div className={styles.swipeHint}>geser kiri untuk tandai dibayar</div>
+          <button className={styles.addBtn} onClick={onAddTap}>
+            + Tambah tagihan
+          </button>
         </>
       )}
     </>

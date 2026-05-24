@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import type { Settings, Tagihan, Goal, Transaction } from '@/db/database'
+import type { Settings, Goal, Transaction } from '@/db/database'
 import {
   calcDaysUntilPayday,
   calcDailyBudget,
@@ -8,11 +8,6 @@ import {
   calcSisaPasGajian,
   calcSpentToday,
   calcYesterdayStats,
-  isTagihanPaidThisPeriod,
-  getTagihanUrgency,
-  rankTagihan,
-  calcUnpaidTagihanTotal,
-  hasUrgentTagihan,
   calcGoalStatuses,
 } from './home.utils'
 
@@ -35,23 +30,6 @@ function makeSettings(overrides: Partial<Settings> = {}): Settings {
     weekendBehavior: null,
     onboardingCompleted: true,
     lastExportedAt: null,
-    ...overrides,
-  }
-}
-
-function makeTagihan(overrides: Partial<Tagihan> = {}): Tagihan {
-  return {
-    id: 1,
-    name: 'Tagihan Test',
-    nominalType: 'tetap',
-    nominalEstimate: 100_000,
-    dueDay: 15,
-    recurrenceType: 'rutin',
-    currency: 'IDR',
-    isActive: true,
-    lastPaidAt: null,
-    lastPaidAmount: null,
-    createdAt: NOW_MS,
     ...overrides,
   }
 }
@@ -250,113 +228,6 @@ describe('calcYesterdayStats', () => {
 
   it('empty → both 0', () => {
     expect(calcYesterdayStats([], NOW_MS)).toEqual({ spent: 0, earned: 0 })
-  })
-})
-
-// ─── Tagihan utils ────────────────────────────────────────────────────────────
-
-describe('isTagihanPaidThisPeriod', () => {
-  it('null lastPaidAt → not paid', () => {
-    expect(isTagihanPaidThisPeriod(makeTagihan(), NOW_MS)).toBe(false)
-  })
-
-  it('paid this month → paid', () => {
-    const paidAt = new Date('2024-01-05T10:00:00Z').getTime()
-    expect(isTagihanPaidThisPeriod(makeTagihan({ lastPaidAt: paidAt }), NOW_MS)).toBe(true)
-  })
-
-  it('paid last month → not paid', () => {
-    const paidAt = new Date('2023-12-25T10:00:00Z').getTime()
-    expect(isTagihanPaidThisPeriod(makeTagihan({ lastPaidAt: paidAt }), NOW_MS)).toBe(false)
-  })
-})
-
-describe('getTagihanUrgency', () => {
-  // NOW = Jan 10
-
-  it('dueDay in past, unpaid → lewat-tempo', () => {
-    expect(getTagihanUrgency(makeTagihan({ dueDay: 5 }), NOW_MS)).toBe('lewat-tempo')
-  })
-
-  it('dueDay today, unpaid → hari-ini', () => {
-    expect(getTagihanUrgency(makeTagihan({ dueDay: 10 }), NOW_MS)).toBe('hari-ini')
-  })
-
-  it('dueDay in 7 days → dalam-7-hari', () => {
-    expect(getTagihanUrgency(makeTagihan({ dueDay: 17 }), NOW_MS)).toBe('dalam-7-hari')
-  })
-
-  it('dueDay in 7 days exactly (boundary) → dalam-7-hari', () => {
-    expect(getTagihanUrgency(makeTagihan({ dueDay: 17 }), NOW_MS)).toBe('dalam-7-hari')
-  })
-
-  it('dueDay in 8 days → normal', () => {
-    expect(getTagihanUrgency(makeTagihan({ dueDay: 18 }), NOW_MS)).toBe('normal')
-  })
-
-  it('paid this month → normal regardless of dueDay', () => {
-    const paidAt = new Date('2024-01-05T10:00:00Z').getTime()
-    expect(getTagihanUrgency(makeTagihan({ dueDay: 5, lastPaidAt: paidAt }), NOW_MS)).toBe('normal')
-  })
-})
-
-describe('rankTagihan', () => {
-  it('sorts by urgency: lewat-tempo → hari-ini → dalam-7-hari → normal', () => {
-    const tagihan = [
-      makeTagihan({ id: 4, dueDay: 20 }), // normal
-      makeTagihan({ id: 3, dueDay: 17 }), // dalam-7-hari
-      makeTagihan({ id: 1, dueDay: 5 }), // lewat-tempo
-      makeTagihan({ id: 2, dueDay: 10 }), // hari-ini
-    ]
-    const ranked = rankTagihan(tagihan, NOW_MS)
-    expect(ranked.map((t) => t.id)).toEqual([1, 2, 3, 4])
-  })
-
-  it('empty list → empty', () => {
-    expect(rankTagihan([], NOW_MS)).toEqual([])
-  })
-})
-
-describe('calcUnpaidTagihanTotal', () => {
-  it('sums unpaid active tagihan estimates', () => {
-    const tagihan = [
-      makeTagihan({ id: 1, dueDay: 5, nominalEstimate: 100_000 }), // lewat-tempo
-      makeTagihan({ id: 2, dueDay: 15, nominalEstimate: 200_000 }), // dalam-7-hari
-      makeTagihan({
-        id: 3,
-        dueDay: 20,
-        nominalEstimate: 300_000,
-        lastPaidAt: new Date('2024-01-02').getTime(),
-      }), // paid
-    ]
-    expect(calcUnpaidTagihanTotal(tagihan, NOW_MS)).toBe(300_000)
-  })
-
-  it('all paid → 0', () => {
-    const paid = new Date('2024-01-02').getTime()
-    expect(calcUnpaidTagihanTotal([makeTagihan({ lastPaidAt: paid })], NOW_MS)).toBe(0)
-  })
-
-  it('empty → 0', () => {
-    expect(calcUnpaidTagihanTotal([], NOW_MS)).toBe(0)
-  })
-})
-
-describe('hasUrgentTagihan', () => {
-  it('lewat-tempo → urgent', () => {
-    expect(hasUrgentTagihan([makeTagihan({ dueDay: 5 })], NOW_MS)).toBe(true)
-  })
-
-  it('hari-ini → urgent', () => {
-    expect(hasUrgentTagihan([makeTagihan({ dueDay: 10 })], NOW_MS)).toBe(true)
-  })
-
-  it('dalam-7-hari only → not urgent', () => {
-    expect(hasUrgentTagihan([makeTagihan({ dueDay: 17 })], NOW_MS)).toBe(false)
-  })
-
-  it('empty → false', () => {
-    expect(hasUrgentTagihan([], NOW_MS)).toBe(false)
   })
 })
 

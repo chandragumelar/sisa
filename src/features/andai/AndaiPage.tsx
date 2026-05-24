@@ -13,7 +13,7 @@ import {
   MAX_SAVED_SCENARIOS,
 } from '@/db/scenarios.repository'
 import type { SavedScenario } from '@/db/database'
-import { calcUnpaidTagihanTotal } from '@/features/home/home.utils'
+import { calcUnpaidTagihanTotal } from '@/features/home/tagihan.utils'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
 import { calcAndai, buildAndaiBaseline } from './andai.utils'
 import type { AndaiBaseline, AndaiItem, AndaiKind } from './andai.utils'

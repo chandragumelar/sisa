@@ -20,13 +20,12 @@ import {
 import type { Settings, Wallet, Tagihan, Goal, Transaction, LicenseRecord } from '@/db/database'
 import {
   calcDailyBudget,
-  calcUnpaidTagihanTotal,
   calcSpentToday,
   calcYesterdayStats,
-  hasUrgentTagihan,
   calcDaysUntilPayday,
   calcSisaPasGajian,
 } from './home.utils'
+import { calcUnpaidTagihanTotal, hasUrgentTagihan } from './tagihan.utils'
 import { calcForecast } from './forecast.utils'
 import type { ForecastMonth } from './forecast.utils'
 import { shouldShowBackupReminder, calcBackupUrgency } from './backup-reminder.utils'
@@ -47,6 +46,7 @@ import { BackupCard } from './components/BackupCard'
 import { WalletEditSheet } from '@/features/wallet/WalletEditSheet'
 import { ProfilTagihanSheet } from '@/features/profil/ProfilTagihanSheet'
 import { ProfilGoalSheet } from '@/features/profil/ProfilGoalSheet'
+import { ProfilWalletsSheet } from '@/features/profil/ProfilWalletsSheet'
 import { QuickLogSheet } from '@/features/quickLog/QuickLogSheet'
 import type { QuickLogMode } from '@/features/quickLog/quickLog.utils'
 import styles from './HomePage.module.css'
@@ -167,6 +167,7 @@ export function HomePage() {
   const [editWallet, setEditWallet] = useState<Wallet | null>(null)
   const [tagihanSheetOpen, setTagihanSheetOpen] = useState(false)
   const [goalSheetOpen, setGoalSheetOpen] = useState(false)
+  const [walletSheetOpen, setWalletSheetOpen] = useState(false)
 
   if (isLoading || !settings) return null
 
@@ -209,10 +210,10 @@ export function HomePage() {
     setToast(null)
   }
 
-  async function handleTagihanPay(t: Tagihan, walletId: number, amount: number) {
+  async function handleTagihanPay(t: Tagihan, walletId: number, amount: number, dateMs: number) {
     setMarkPaidTagihan(null)
     try {
-      const result = await commitTagihanPayment(t.id!, walletId, amount, t.currency, nowMs)
+      const result = await commitTagihanPayment(t.id!, walletId, amount, t.currency, dateMs)
       reload()
       setToast({
         message: `${t.name} ditandai dibayar`,
@@ -335,6 +336,7 @@ export function HomePage() {
         yesterdaySpent={yesterdaySpent}
         yesterdayEarned={yesterdayEarned}
         onWalletTap={(w) => setEditWallet(w)}
+        onAddWalletTap={() => setWalletSheetOpen(true)}
       />
 
       <div className={styles.divider} />
@@ -420,7 +422,9 @@ export function HomePage() {
           nowMs={nowMs}
           isOpen={!!markPaidTagihan}
           onClose={() => setMarkPaidTagihan(null)}
-          onCommit={(walletId, amount) => handleTagihanPay(markPaidTagihan, walletId, amount)}
+          onCommit={(walletId, amount, dateMs) =>
+            handleTagihanPay(markPaidTagihan, walletId, amount, dateMs)
+          }
         />
       )}
 
@@ -466,6 +470,18 @@ export function HomePage() {
           }}
         />
       )}
+
+      <ProfilWalletsSheet
+        isOpen={walletSheetOpen}
+        onClose={() => setWalletSheetOpen(false)}
+        wallets={wallets}
+        currency={currency}
+        nowMs={nowMs}
+        initialStep="add"
+        onUpdate={async () => {
+          reload()
+        }}
+      />
 
       <ProfilTagihanSheet
         isOpen={tagihanSheetOpen}

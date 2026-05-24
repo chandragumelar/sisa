@@ -12,6 +12,7 @@ interface Props {
   currency: string
   nowMs: number
   onUpdate: () => Promise<void>
+  showAdd?: boolean
 }
 
 interface FormState {
@@ -32,7 +33,15 @@ const EMPTY_FORM: FormState = {
 
 type Step = 'list' | 'form'
 
-export function ProfilTagihanSheet({ isOpen, onClose, tagihan, currency, nowMs, onUpdate }: Props) {
+export function ProfilTagihanSheet({
+  isOpen,
+  onClose,
+  tagihan,
+  currency,
+  nowMs,
+  onUpdate,
+  showAdd = true,
+}: Props) {
   const [step, setStep] = useState<Step>('list')
   const [editId, setEditId] = useState<number | null>(null)
   const [form, setForm] = useState<FormState>(EMPTY_FORM)
@@ -132,9 +141,11 @@ export function ProfilTagihanSheet({ isOpen, onClose, tagihan, currency, nowMs, 
               )}
             </div>
           ))}
-          <button className={styles.ghostBtn} onClick={openAdd}>
-            + Tambah tagihan
-          </button>
+          {showAdd && (
+            <button className={styles.ghostBtn} onClick={openAdd}>
+              + Tambah tagihan
+            </button>
+          )}
         </div>
       )}
 

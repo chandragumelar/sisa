@@ -1,5 +1,5 @@
 import type { Tagihan } from '@/db/database'
-import { getTagihanUrgency } from '../home.utils'
+import { getTagihanUrgency } from '../tagihan.utils'
 import styles from './NotifCard.module.css'
 
 interface Props {

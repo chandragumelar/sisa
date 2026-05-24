@@ -12,6 +12,7 @@ interface Props {
   yesterdaySpent: number
   yesterdayEarned: number
   onWalletTap?: (wallet: Wallet) => void
+  onAddWalletTap?: () => void
 }
 
 const MAX_WALLETS_BASIC = 4
@@ -33,6 +34,7 @@ export function SaldoModule({
   yesterdaySpent,
   yesterdayEarned,
   onWalletTap,
+  onAddWalletTap,
 }: Props) {
   const [expanded, setExpanded] = useState(getExpandedPref)
 
@@ -121,6 +123,9 @@ export function SaldoModule({
             <span className={styles.sisaLabel}>= Sisa bulan ini</span>
             <span className={styles.sisaAmount}>{formatCurrency(sisa, currency)}</span>
           </div>
+          <button className={styles.addBtn} onClick={onAddWalletTap}>
+            + Tambah dompet
+          </button>
         </div>
       )}
     </>

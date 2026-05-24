@@ -160,3 +160,17 @@
   color: var(--accent);
   font-feature-settings: 'tnum';
 }
+
+.addBtn {
+  width: 100%;
+  margin-top: 8px;
+  padding: 8px 0;
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  text-align: center;
+}

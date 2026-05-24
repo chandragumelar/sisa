@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import type { Tagihan } from '@/db/database'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
-import { getTagihanUrgency } from '../home.utils'
+import { getTagihanUrgency } from '../tagihan.utils'
 import { hapticLight } from '@/shared/utils/haptic'
 import styles from './TagihanSwipeRow.module.css'
 
