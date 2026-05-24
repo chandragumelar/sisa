@@ -15,6 +15,7 @@ interface Props {
   dailyBudget: number
   spentToday: number
   settings: Settings
+  currency: string
   unpaidTagihanTotal: number
   totalSaldo: number
   nowMs: number
@@ -30,13 +31,12 @@ export function BudgetModule({
   dailyBudget,
   spentToday,
   settings,
+  currency,
   unpaidTagihanTotal,
   totalSaldo,
   nowMs,
 }: Props) {
   const [infoOpen, setInfoOpen] = useState(false)
-
-  const currency = settings.primaryCurrency
   const daysUntilPayday = calcDaysUntilPayday(nowMs, settings)
   const paydayDate = getPaydayDate(nowMs, settings)
   const daysUntilWeekEnd = getDaysUntilEndOfWeek(nowMs)

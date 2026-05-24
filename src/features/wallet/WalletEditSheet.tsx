@@ -3,7 +3,7 @@ import type { Wallet } from '@/db/database'
 import { renameWallet, setWalletBalance, deleteWallet } from '@/db/wallets.repository'
 import { addTransactionAndUpdateBalance } from '@/db/transactions.repository'
 import { BottomSheet } from '@/shared/components/BottomSheet'
-import { formatCurrency } from '@/shared/utils/formatCurrency'
+import { formatCurrency, getCurrencySymbol } from '@/shared/utils/formatCurrency'
 import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
 import styles from './WalletEditSheet.module.css'
 
@@ -167,7 +167,7 @@ export function WalletEditSheet({
         <div className={styles.form}>
           <div className={styles.fieldLabel}>saldo aktual sekarang</div>
           <div className={styles.amountRow}>
-            <span className={styles.prefix}>Rp</span>
+            <span className={styles.prefix}>{getCurrencySymbol(currency)}</span>
             <input
               className={styles.amountInput}
               type="text"

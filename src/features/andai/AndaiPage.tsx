@@ -4,7 +4,11 @@ import { useClock } from '@/app/providers/useClock'
 import { getSettings } from '@/db/settings.repository'
 import { getAllWallets } from '@/db/wallets.repository'
 import { getActiveTagihan } from '@/db/tagihan.repository'
-import { getTotalNabung, getMonthlyIncomeSummary } from '@/db/transactions.repository'
+import {
+  getTotalNabung,
+  getMonthlyIncomeSummary,
+  getMonthlyExpenseSummary,
+} from '@/db/transactions.repository'
 import {
   getSavedScenarios,
   saveScenario,
@@ -13,7 +17,7 @@ import {
 } from '@/db/scenarios.repository'
 import type { SavedScenario } from '@/db/database'
 import { calcUnpaidTagihanTotal } from '@/features/home/tagihan.utils'
-import { formatCurrency } from '@/shared/utils/formatCurrency'
+import { formatCurrency, getCurrencySymbol } from '@/shared/utils/formatCurrency'
 import { calcAndai, buildAndaiBaseline } from './andai.utils'
 import type { AndaiBaseline, AndaiItem, AndaiKind } from './andai.utils'
 import { calcForecast, type ForecastMonth } from '@/features/home/forecast.utils'
@@ -61,13 +65,16 @@ export function AndaiPage() {
           setCurrency(s.primaryCurrency)
 
           const tagihanTotalForForecast = tagihan.reduce((sum, t) => sum + t.nominalEstimate, 0)
-          getMonthlyIncomeSummary(s.primaryCurrency).then((incomeAvg) => {
+          Promise.all([
+            getMonthlyIncomeSummary(s.primaryCurrency),
+            getMonthlyExpenseSummary(s.primaryCurrency),
+          ]).then(([incomeAvg, spendingAvg]) => {
             if (cancelled) return
             setForecastMonths(
               calcForecast(
                 bl.sisaPasGajian,
                 tagihanTotalForForecast,
-                bl.dailyBudget,
+                spendingAvg,
                 incomeAvg,
                 s,
                 nowMs,
@@ -341,7 +348,7 @@ export function AndaiPage() {
             {addSheet === 'target-nabung' ? 'Target per bulan' : 'Nominal'}
           </div>
           <div className={styles.addAmountRow}>
-            <span className={styles.addAmountPrefix}>Rp</span>
+            <span className={styles.addAmountPrefix}>{getCurrencySymbol(currency)}</span>
             <input
               className={styles.addAmountInput}
               type="number"

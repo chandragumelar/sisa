@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { addGoal, updateGoal, deleteGoal } from '@/db/goals.repository'
 import type { Goal } from '@/db/database'
 import { BottomSheet } from '@/shared/components/BottomSheet'
-import { formatCurrency } from '@/shared/utils/formatCurrency'
+import { formatCurrency, getCurrencySymbol } from '@/shared/utils/formatCurrency'
 import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
 import styles from './ProfilPage.module.css'
 
@@ -133,7 +133,7 @@ export function ProfilGoalSheet({
           />
           <div className={styles.fieldLabel}>target nominal</div>
           <div className={styles.amountRow}>
-            <span className={styles.prefix}>Rp</span>
+            <span className={styles.prefix}>{getCurrencySymbol(currency)}</span>
             <input
               className={styles.amountInput}
               type="text"

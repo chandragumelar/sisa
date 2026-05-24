@@ -8,7 +8,7 @@ import { getTotalNabung } from '@/db/transactions.repository'
 import type { Settings, Wallet } from '@/db/database'
 import { calcDaysUntilPayday } from '@/features/home/home.utils'
 import { calcUnpaidTagihanTotal } from '@/features/home/tagihan.utils'
-import { formatCurrency } from '@/shared/utils/formatCurrency'
+import { formatCurrency, getCurrencySymbol } from '@/shared/utils/formatCurrency'
 import { calcCekDulu } from './cekDulu.utils'
 import { QuickLogSheet } from '@/features/quickLog/QuickLogSheet'
 import styles from './CekDuluPage.module.css'
@@ -89,7 +89,7 @@ export function CekDuluPage() {
       <div className={styles.nominalBlock}>
         <div className={styles.nominalLabel}>harga barang</div>
         <div className={styles.nominalRow}>
-          <span className={styles.nominalPrefix}>Rp</span>
+          <span className={styles.nominalPrefix}>{getCurrencySymbol(currency)}</span>
           <input
             className={styles.nominalInput}
             type="number"

@@ -10,14 +10,15 @@ export interface ForecastMonth {
  *
  * Formula:
  *   month[0] = sisaPasGajian (current cycle end-projection)
- *   month[n] = month[n-1] + monthlyIncome - tagihanTotal - dailyBudget × daysInMonth(n)
+ *   month[n] = month[n-1] + monthlyIncomeAvg - tagihanTotal - monthlySpendingAvg
  *
- * monthlyIncome is derived from past transactions; 0 if no history.
+ * monthlySpendingAvg: historical 3-month average of keluar transactions.
+ * Using this (not dailyBudget × days) avoids blowing up when daysUntilPayday is 1.
  */
 export function calcForecast(
   sisaPasGajian: number,
   tagihanTotal: number,
-  dailyBudget: number,
+  monthlySpendingAvg: number,
   monthlyIncomeAvg: number,
   settings: Settings,
   nowMs: number,
@@ -31,15 +32,10 @@ export function calcForecast(
   // month 0: current projection to end of this payday cycle
   months.push({ label: shortMonth(now), sisa: sisaPasGajian })
 
+  const monthlySurplus = monthlyIncomeAvg - tagihanTotal - monthlySpendingAvg
   let prevSisa = sisaPasGajian
   for (let i = 1; i <= 2; i++) {
     const futureDate = new Date(now.getFullYear(), now.getMonth() + i, 1)
-    const daysInFutureMonth = new Date(
-      futureDate.getFullYear(),
-      futureDate.getMonth() + 1,
-      0,
-    ).getDate()
-    const monthlySurplus = monthlyIncomeAvg - tagihanTotal - dailyBudget * daysInFutureMonth
     prevSisa = prevSisa + monthlySurplus
     months.push({ label: shortMonth(futureDate), sisa: prevSisa })
   }
