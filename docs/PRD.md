@@ -409,6 +409,10 @@ Card full-width di bawah 2-col. **Hanya tampil di Pro.**
 
 Tidak ada tag "rutin/sekali" di UI — redundant.
 
+**Aturan reset status paid:**
+- **Rutin:** status "dibayar" reset otomatis di awal setiap bulan kalender. Dibaca dari `lastPaidAt` vs bulan kalender `nowMs` saat app dibuka — tidak ada timer atau cron.
+- **Sekali:** sekali ditandai dibayar, statusnya tetap selamanya (tidak pernah reset).
+
 **Ranking urgency (top 4 yang ditampilkan):**
 
 1. Lewat jatuh tempo & belum dibayar

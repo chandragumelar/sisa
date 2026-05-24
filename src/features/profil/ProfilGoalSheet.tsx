@@ -13,6 +13,7 @@ interface Props {
   nowMs: number
   onUpdate: () => Promise<void>
   showAdd?: boolean
+  onDeleteGoal?: (id: number) => Promise<void>
 }
 
 type Step = 'list' | 'form'
@@ -25,6 +26,7 @@ export function ProfilGoalSheet({
   nowMs,
   onUpdate,
   showAdd = true,
+  onDeleteGoal,
 }: Props) {
   const [step, setStep] = useState<Step>('list')
   const [editId, setEditId] = useState<number | null>(null)
@@ -65,7 +67,11 @@ export function ProfilGoalSheet({
   }
 
   async function handleDelete(id: number) {
-    await deleteGoal(id)
+    if (onDeleteGoal) {
+      await onDeleteGoal(id)
+    } else {
+      await deleteGoal(id)
+    }
     setDeleteId(null)
     await onUpdate()
   }

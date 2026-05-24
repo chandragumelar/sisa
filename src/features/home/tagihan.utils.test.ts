@@ -51,6 +51,36 @@ describe('isTagihanPaidThisPeriod', () => {
     const paidAt = new Date('2025-12-25T10:00:00Z').getTime()
     expect(isTagihanPaidThisPeriod(makeTagihan({ lastPaidAt: paidAt }), NOW_MS)).toBe(false)
   })
+
+  it('rutin Dec→Jan: paid in Dec, nowMs in Jan → not paid', () => {
+    const paidAt = new Date('2025-12-20T12:00:00Z').getTime()
+    const janMs = new Date('2026-01-01T12:00:00Z').getTime()
+    expect(isTagihanPaidThisPeriod(makeTagihan({ lastPaidAt: paidAt }), janMs)).toBe(false)
+  })
+
+  it('sekali: stays paid in a later month', () => {
+    const paidAt = new Date('2025-11-01T12:00:00Z').getTime()
+    expect(
+      isTagihanPaidThisPeriod(
+        makeTagihan({ recurrenceType: 'sekali', lastPaidAt: paidAt }),
+        NOW_MS,
+      ),
+    ).toBe(true)
+  })
+
+  it('sekali: paid Dec stays paid in Jan (Dec→Jan rollover)', () => {
+    const paidAt = new Date('2025-12-20T12:00:00Z').getTime()
+    const janMs = new Date('2026-01-10T12:00:00Z').getTime()
+    expect(
+      isTagihanPaidThisPeriod(makeTagihan({ recurrenceType: 'sekali', lastPaidAt: paidAt }), janMs),
+    ).toBe(true)
+  })
+
+  it('sekali: null lastPaidAt → not paid even for sekali', () => {
+    expect(
+      isTagihanPaidThisPeriod(makeTagihan({ recurrenceType: 'sekali', lastPaidAt: null }), NOW_MS),
+    ).toBe(false)
+  })
 })
 
 // ─── calcNextDueDate ─────────────────────────────────────────────────────────
