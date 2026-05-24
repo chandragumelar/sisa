@@ -17,6 +17,7 @@ import {
   getTotalNabung,
   deleteTransactionAndRevertBalance,
   getMonthlyIncomeSummary,
+  getMonthlyFlows,
   addNabungDeduction,
 } from '@/db/transactions.repository'
 import type { Settings, Wallet, Tagihan, Goal, Transaction, LicenseRecord } from '@/db/database'
@@ -68,6 +69,8 @@ interface HomeData {
   yesterdayTxs: Transaction[]
   totalNabung: number
   monthlyIncomeAvg: number
+  monthlyIncome: number
+  monthlyExpense: number
 }
 
 interface ToastState {
@@ -90,6 +93,8 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
     yesterdayTxs: [],
     totalNabung: 0,
     monthlyIncomeAvg: 0,
+    monthlyIncome: 0,
+    monthlyExpense: 0,
   })
   const [isLoading, setIsLoading] = useState(true)
   const [tick, setTick] = useState(0)
@@ -102,6 +107,8 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
     const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
     const yesterdayStart = todayStart - 86_400_000
     const tomorrowStart = todayStart + 86_400_000
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).getTime()
+    const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 1).getTime()
 
     Promise.all([
       getSettings(),
@@ -115,8 +122,12 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
     ]).then(([settings, license, wallets, tagihan, goals, lastTx, todayTxs, yesterdayTxs]) => {
       if (cancelled || !settings) return
       const currency = settings.primaryCurrency
-      Promise.all([getTotalNabung(currency), getMonthlyIncomeSummary(currency)]).then(
-        ([totalNabung, monthlyIncomeAvg]) => {
+      Promise.all([
+        getTotalNabung(currency),
+        getMonthlyIncomeSummary(currency),
+        getMonthlyFlows(currency, monthStart, monthEnd),
+      ]).then(
+        ([totalNabung, monthlyIncomeAvg, { income: monthlyIncome, expense: monthlyExpense }]) => {
           if (!cancelled) {
             setData({
               settings,
@@ -129,6 +140,8 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
               yesterdayTxs,
               totalNabung,
               monthlyIncomeAvg,
+              monthlyIncome,
+              monthlyExpense,
             })
             setIsLoading(false)
           }
@@ -159,6 +172,8 @@ export function HomePage() {
     yesterdayTxs,
     totalNabung,
     monthlyIncomeAvg,
+    monthlyIncome,
+    monthlyExpense,
     isLoading,
     reload,
   } = useHomeData(nowMs)
@@ -358,6 +373,8 @@ export function HomePage() {
         totalNabung={totalNabung}
         yesterdaySpent={yesterdaySpent}
         yesterdayEarned={yesterdayEarned}
+        monthlyIncome={monthlyIncome}
+        monthlyExpense={monthlyExpense}
         onWalletTap={(w) => setEditWallet(w)}
         onAddWalletTap={() => setWalletSheetOpen(true)}
       />
@@ -372,7 +389,6 @@ export function HomePage() {
         unpaidTagihanTotal={unpaidTagihanTotal}
         totalSaldo={totalSaldo}
         nowMs={nowMs}
-        hasTagihan={tagihan.length > 0}
       />
 
       {/* Pro: Forecast 3-bulan (8.4) */}
@@ -579,7 +595,7 @@ export function HomePage() {
         onClose={() => setGoalUpsellOpen(false)}
         title="Goal tabungan · Pro"
       >
-        <GoalUpsellContent onNavigate={() => navigate('/profil')} />
+        <GoalUpsellContent onNavigate={() => navigate('/settings')} />
       </BottomSheet>
     </main>
   )

@@ -11,6 +11,8 @@ interface Props {
   totalNabung: number
   yesterdaySpent: number
   yesterdayEarned: number
+  monthlyIncome: number
+  monthlyExpense: number
   onWalletTap?: (wallet: Wallet) => void
   onAddWalletTap?: () => void
 }
@@ -33,6 +35,8 @@ export function SaldoModule({
   totalNabung,
   yesterdaySpent,
   yesterdayEarned,
+  monthlyIncome,
+  monthlyExpense,
   onWalletTap,
   onAddWalletTap,
 }: Props) {
@@ -123,6 +127,29 @@ export function SaldoModule({
             <span className={styles.sisaLabel}>= Sisa bulan ini</span>
             <span className={styles.sisaAmount}>{formatCurrency(sisa, currency)}</span>
           </div>
+
+          {(monthlyIncome > 0 || monthlyExpense > 0) && (
+            <>
+              <div className={styles.contextDivider} />
+              {monthlyIncome > 0 && (
+                <div className={styles.summaryRow}>
+                  <span className={styles.contextLabel}>Pemasukan bulan ini</span>
+                  <span className={styles.contextAmountIn}>
+                    +{formatCurrency(monthlyIncome, currency)}
+                  </span>
+                </div>
+              )}
+              {monthlyExpense > 0 && (
+                <div className={styles.summaryRow}>
+                  <span className={styles.contextLabel}>Pengeluaran bulan ini</span>
+                  <span className={styles.contextAmountOut}>
+                    −{formatCurrency(monthlyExpense, currency)}
+                  </span>
+                </div>
+              )}
+            </>
+          )}
+
           <button className={styles.addBtn} onClick={onAddWalletTap}>
             + Tambah dompet
           </button>

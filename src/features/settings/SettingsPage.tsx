@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useClock } from '@/app/providers/useClock'
 import { getSettings, patchSettings } from '@/db/settings.repository'
@@ -9,6 +9,8 @@ import { applyTheme } from '@/shared/utils/theme'
 import { applyLanguage } from '@/shared/utils/language'
 import type { Settings, LicenseRecord, Theme, Language } from '@/db/database'
 import { BottomSheet } from '@/shared/components/BottomSheet'
+import { ProfilIncomeSheet } from '@/features/profil/ProfilIncomeSheet'
+import { ProfilLicenseSheet } from '@/features/profil/ProfilLicenseSheet'
 import {
   buildBackupJSON,
   buildTransactionsCSV,
@@ -29,6 +31,7 @@ export function SettingsPage() {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [data, setData] = useState<PageData | null>(null)
+  const [activeSheet, setActiveSheet] = useState<'income' | 'license' | null>(null)
   const [importPreview, setImportPreview] = useState<{
     preview: ImportPreview
     json: string
@@ -37,16 +40,14 @@ export function SettingsPage() {
   const [deleteStep, setDeleteStep] = useState<'idle' | 'confirm' | 'type'>('idle')
   const [deleteInput, setDeleteInput] = useState('')
 
-  useEffect(() => {
-    let cancelled = false
-    Promise.all([getSettings(), getLicense()]).then(([settings, license]) => {
-      if (cancelled || !settings) return
-      setData({ settings, license })
-    })
-    return () => {
-      cancelled = true
-    }
+  const loadData = useCallback(async () => {
+    const [settings, license] = await Promise.all([getSettings(), getLicense()])
+    if (settings) setData({ settings, license })
   }, [])
+
+  useEffect(() => {
+    loadData()
+  }, [loadData])
 
   if (!data) return null
   const { settings, license } = data
@@ -64,17 +65,17 @@ export function SettingsPage() {
   }
 
   async function handleExportJSON() {
-    const data = await exportAllData(clock.now())
-    const json = buildBackupJSON(data)
-    const date = new Date(clock.now()).toISOString().split('T')[0]
+    const exportData = await exportAllData(nowMs)
+    const json = buildBackupJSON(exportData)
+    const date = new Date(nowMs).toISOString().split('T')[0]
     downloadFile(`sisa-backup-${date}.json`, json, 'application/json')
-    await patchSettings({ lastExportedAt: clock.now() })
+    await patchSettings({ lastExportedAt: nowMs })
   }
 
   async function handleExportCSV() {
     const txs = await getRecentTransactions(10_000)
     const csv = buildTransactionsCSV(txs)
-    const date = new Date(clock.now()).toISOString().split('T')[0]
+    const date = new Date(nowMs).toISOString().split('T')[0]
     downloadFile(`sisa-transaksi-${date}.csv`, csv, 'text/csv')
   }
 
@@ -110,10 +111,16 @@ export function SettingsPage() {
     navigate('/onboarding')
   }
 
+  const nowMs = clock.now()
   const tierLabel = license?.tier === 'pro' ? 'Pro' : 'Basic'
-  const daysLeft = license
-    ? Math.max(0, Math.ceil((license.expiresAt - clock.now()) / 86_400_000))
-    : 0
+  const daysLeft = license ? Math.max(0, Math.ceil((license.expiresAt - nowMs) / 86_400_000)) : 0
+  const expiresDate = license
+    ? new Date(license.expiresAt).toLocaleDateString('id-ID', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      })
+    : null
 
   return (
     <div className={styles.page}>
@@ -125,7 +132,7 @@ export function SettingsPage() {
       </div>
 
       {/* Profile card */}
-      <button className={styles.profileCard} onClick={() => navigate('/profil')}>
+      <button className={styles.profileCard} onClick={() => setActiveSheet('license')}>
         <div className={styles.avatar}>
           <svg
             viewBox="0 0 24 24"
@@ -142,7 +149,7 @@ export function SettingsPage() {
         <div className={styles.profileText}>
           <div className={styles.profileName}>SISA · {tierLabel}</div>
           <div className={styles.profileSub}>
-            {tierLabel} aktif · {daysLeft} hari lagi
+            {expiresDate ? `Aktif sampai ${expiresDate} · ${daysLeft} hari lagi` : 'Belum aktif'}
           </div>
         </div>
         <svg
@@ -155,6 +162,22 @@ export function SettingsPage() {
           <path d="M9 18l6-6-6-6" />
         </svg>
       </button>
+
+      {/* Profil */}
+      <div className={styles.sectionLabel}>profil</div>
+      <div className={styles.card}>
+        <button className={styles.actionRow} onClick={() => setActiveSheet('income')}>
+          <span className={styles.rowLabel}>pemasukan</span>
+          <span className={styles.rowSub}>jenis & tanggal gajian</span>
+        </button>
+        <div className={styles.divider} />
+        <button className={styles.actionRow} onClick={() => setActiveSheet('license')}>
+          <span className={styles.rowLabel}>lisensi</span>
+          <span className={styles.rowSub}>
+            {tierLabel} · {daysLeft} hari lagi
+          </span>
+        </button>
+      </div>
 
       {/* Tampilan */}
       <div className={styles.sectionLabel}>tampilan</div>
@@ -224,9 +247,14 @@ export function SettingsPage() {
         </button>
       </div>
 
-      {/* Panduan */}
-      <div className={styles.sectionLabel}>panduan</div>
+      {/* Tentang */}
+      <div className={styles.sectionLabel}>tentang</div>
       <div className={styles.card}>
+        <div className={styles.row}>
+          <span className={styles.rowLabel}>dibuat oleh</span>
+          <span className={styles.rowSub}>Chandra Gumelar</span>
+        </div>
+        <div className={styles.divider} />
         <a
           className={styles.linkRow}
           href="https://twitter.com/win32_icang"
@@ -237,6 +265,24 @@ export function SettingsPage() {
           <span className={styles.rowSub}>@win32_icang</span>
         </a>
       </div>
+
+      {/* Profil sheets */}
+      {data && (
+        <ProfilIncomeSheet
+          isOpen={activeSheet === 'income'}
+          onClose={() => setActiveSheet(null)}
+          settings={data.settings}
+          nowMs={nowMs}
+          onUpdate={loadData}
+        />
+      )}
+      <ProfilLicenseSheet
+        isOpen={activeSheet === 'license'}
+        onClose={() => setActiveSheet(null)}
+        license={data?.license}
+        nowMs={nowMs}
+        onUpdate={loadData}
+      />
 
       {/* Import preview sheet */}
       <BottomSheet

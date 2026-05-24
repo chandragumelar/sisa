@@ -120,3 +120,18 @@ export async function getMonthlyIncomeSummary(currency: string, monthCount = 3):
   const total = rows.reduce((sum, t) => sum + t.amount, 0)
   return total / monthCount
 }
+
+export async function getMonthlyFlows(
+  currency: string,
+  monthStartMs: number,
+  monthEndMs: number,
+): Promise<{ income: number; expense: number }> {
+  const txs = await db.transactions
+    .where('date')
+    .between(monthStartMs, monthEndMs, true, false)
+    .filter((t) => t.currency === currency && !t.isEarmark)
+    .toArray()
+  const income = txs.filter((t) => t.type === 'masuk').reduce((s, t) => s + t.amount, 0)
+  const expense = txs.filter((t) => t.type === 'keluar').reduce((s, t) => s + Math.abs(t.amount), 0)
+  return { income, expense }
+}

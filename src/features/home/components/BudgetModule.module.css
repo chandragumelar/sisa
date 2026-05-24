@@ -52,7 +52,6 @@
   background: var(--surface-2);
   border-radius: 6px;
   overflow: hidden;
-  margin-top: 16px;
   margin-bottom: 8px;
 }
 
@@ -80,6 +79,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
+  margin-top: 12px;
 }
 
 .card {
@@ -129,6 +129,11 @@
 
 .statusKetat {
   color: var(--signal-caution);
+  font-weight: 500;
+}
+
+.statusBerat {
+  color: var(--signal-danger);
   font-weight: 500;
 }
 

@@ -2,10 +2,10 @@ import { useState } from 'react'
 import type { Settings } from '@/db/database'
 import { BottomSheet } from '@/shared/components/BottomSheet'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
+import { TAGIHAN_BURDEN_LOW, TAGIHAN_BURDEN_HIGH } from '@/constants/budget'
 import {
   calcDaysUntilPayday,
   calcWeeklyBudget,
-  calcSisaPasGajian,
   getDaysUntilEndOfWeek,
   getPaydayDate,
 } from '../home.utils'
@@ -18,7 +18,12 @@ interface Props {
   unpaidTagihanTotal: number
   totalSaldo: number
   nowMs: number
-  hasTagihan: boolean
+}
+
+function getBurdenVerdict(pct: number): { label: string; className: string } {
+  if (pct < TAGIHAN_BURDEN_LOW) return { label: 'masih sehat', className: styles.statusAman }
+  if (pct < TAGIHAN_BURDEN_HIGH) return { label: 'lumayan', className: styles.statusKetat }
+  return { label: 'berat', className: styles.statusBerat }
 }
 
 export function BudgetModule({
@@ -28,7 +33,6 @@ export function BudgetModule({
   unpaidTagihanTotal,
   totalSaldo,
   nowMs,
-  hasTagihan,
 }: Props) {
   const [infoOpen, setInfoOpen] = useState(false)
 
@@ -37,17 +41,12 @@ export function BudgetModule({
   const paydayDate = getPaydayDate(nowMs, settings)
   const daysUntilWeekEnd = getDaysUntilEndOfWeek(nowMs)
   const weeklyBudget = calcWeeklyBudget(dailyBudget, daysUntilWeekEnd, daysUntilPayday)
-  const sisaPasGajian = calcSisaPasGajian(
-    totalSaldo,
-    dailyBudget,
-    daysUntilPayday,
-    unpaidTagihanTotal,
-  )
 
   const sisaHariIni = Math.max(0, dailyBudget - spentToday)
   const fillPct = dailyBudget > 0 ? Math.min(100, (spentToday / dailyBudget) * 100) : 0
-  const isKetat = sisaPasGajian < 0
-  const canPredictSisa = hasTagihan
+
+  const burdenPct = totalSaldo > 0 ? (unpaidTagihanTotal / totalSaldo) * 100 : null
+  const burden = burdenPct !== null ? getBurdenVerdict(burdenPct) : null
 
   return (
     <>
@@ -68,36 +67,6 @@ export function BudgetModule({
         jatah harian untuk {daysUntilPayday} hari sampai gajian tgl {paydayDate.getDate()}
       </div>
 
-      <div className={styles.grid}>
-        <div className={styles.card}>
-          <div className={styles.cardLabel}>budget minggu ini</div>
-          <div className={styles.cardNum}>{formatCurrency(weeklyBudget, currency)}</div>
-          <div className={styles.cardSub}>sampai minggu · {daysUntilWeekEnd} hari</div>
-        </div>
-
-        <div className={styles.card}>
-          <div className={styles.cardLabel}>sisa pas gajian</div>
-          {canPredictSisa ? (
-            <>
-              <div className={styles.cardNum}>
-                {formatCurrency(Math.abs(sisaPasGajian), currency)}
-              </div>
-              <div className={styles.cardSub}>
-                prediksi ·{' '}
-                <span className={isKetat ? styles.statusKetat : styles.statusAman}>
-                  {isKetat ? 'ketat' : 'aman'}
-                </span>
-              </div>
-            </>
-          ) : (
-            <>
-              <div className={styles.cardNumEmpty}>—</div>
-              <div className={styles.cardSub}>isi tagihan dulu</div>
-            </>
-          )}
-        </div>
-      </div>
-
       <div className={styles.barWrap}>
         <div className={styles.barFill} style={{ width: `${fillPct}%` }} />
       </div>
@@ -109,14 +78,38 @@ export function BudgetModule({
         </span>
       </div>
 
+      <div className={styles.grid}>
+        <div className={styles.card}>
+          <div className={styles.cardLabel}>budget minggu ini</div>
+          <div className={styles.cardNum}>{formatCurrency(weeklyBudget, currency)}</div>
+          <div className={styles.cardSub}>sampai minggu · {daysUntilWeekEnd} hari</div>
+        </div>
+
+        <div className={styles.card}>
+          <div className={styles.cardLabel}>tagihan vs uangmu</div>
+          {burden !== null ? (
+            <>
+              <div className={styles.cardNum}>{Math.round(burdenPct!)}%</div>
+              <div className={styles.cardSub}>
+                <span className={burden.className}>{burden.label}</span>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className={styles.cardNumEmpty}>—</div>
+              <div className={styles.cardSub}>saldo kosong</div>
+            </>
+          )}
+        </div>
+      </div>
+
       <BottomSheet isOpen={infoOpen} onClose={() => setInfoOpen(false)} title="Cara hitung budget">
         <div className={styles.infoContent}>
           <p>
             <strong>Budget harian</strong> = (Saldo − Tagihan − Tabungan) ÷ Hari sampai gajian
           </p>
           <p>
-            <strong>Sisa pas gajian</strong> = Saldo − (Budget harian × Hari sampai gajian) −
-            Tagihan belum dibayar
+            <strong>Tagihan vs uangmu</strong> = Tagihan belum dibayar ÷ Total saldo × 100%
           </p>
           <p className={styles.infoNote}>
             Tagihan dan target tabungan dikurangi dulu sebelum dibagi ke hari. Saldo dihitung dari

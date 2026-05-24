@@ -4,7 +4,6 @@ import { OnboardingPage } from '@/features/onboarding/OnboardingPage'
 import { CekDuluPage } from '@/features/cekDulu/CekDuluPage'
 import { AndaiPage } from '@/features/andai/AndaiPage'
 import { SettingsPage } from '@/features/settings/SettingsPage'
-import { ProfilPage } from '@/features/profil/ProfilPage'
 import { RequireOnboarding, RequireSetupPending } from './guards'
 
 export const router = createBrowserRouter([
@@ -45,14 +44,6 @@ export const router = createBrowserRouter([
     element: (
       <RequireOnboarding>
         <SettingsPage />
-      </RequireOnboarding>
-    ),
-  },
-  {
-    path: '/profil',
-    element: (
-      <RequireOnboarding>
-        <ProfilPage />
       </RequireOnboarding>
     ),
   },
