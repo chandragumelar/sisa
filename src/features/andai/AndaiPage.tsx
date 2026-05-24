@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useClock } from '@/app/providers/useClock'
 import { getSettings } from '@/db/settings.repository'
-import { getLicense } from '@/db/license.repository'
 import { getAllWallets } from '@/db/wallets.repository'
 import { getActiveTagihan } from '@/db/tagihan.repository'
 import { getTotalNabung, getMonthlyIncomeSummary } from '@/db/transactions.repository'
@@ -33,7 +32,6 @@ export function AndaiPage() {
 
   const [baseline, setBaseline] = useState<AndaiBaseline | null>(null)
   const [currency, setCurrency] = useState('IDR')
-  const [isPro, setIsPro] = useState(false)
   const [items, setItems] = useState<AndaiItem[]>([])
   const [addSheet, setAddSheet] = useState<AddKind | null>(null)
   const [addDesc, setAddDesc] = useState('')
@@ -51,38 +49,34 @@ export function AndaiPage() {
 
   useEffect(() => {
     let cancelled = false
-    Promise.all([getSettings(), getLicense(), getAllWallets(), getActiveTagihan()]).then(
-      ([s, license, wallets, tagihan]) => {
+    Promise.all([getSettings(), getAllWallets(), getActiveTagihan()]).then(
+      ([s, wallets, tagihan]) => {
         if (cancelled || !s) return
         const totalSaldo = wallets.reduce((sum, w) => sum + w.balance, 0)
         const unpaidTagihanTotal = calcUnpaidTagihanTotal(tagihan, nowMs)
-        const proTier = license?.tier === 'pro'
-        setIsPro(proTier)
         getTotalNabung(s.primaryCurrency).then((totalNabung) => {
           if (cancelled) return
           const bl = buildAndaiBaseline(totalSaldo, unpaidTagihanTotal, totalNabung, s, nowMs)
           setBaseline(bl)
           setCurrency(s.primaryCurrency)
 
-          if (proTier) {
-            const tagihanTotalForForecast = tagihan.reduce((sum, t) => sum + t.nominalEstimate, 0)
-            getMonthlyIncomeSummary(s.primaryCurrency).then((incomeAvg) => {
-              if (cancelled) return
-              setForecastMonths(
-                calcForecast(
-                  bl.sisaPasGajian,
-                  tagihanTotalForForecast,
-                  bl.dailyBudget,
-                  incomeAvg,
-                  s,
-                  nowMs,
-                ),
-              )
-            })
-            getSavedScenarios().then((rows) => {
-              if (!cancelled) setSavedScenarios(rows)
-            })
-          }
+          const tagihanTotalForForecast = tagihan.reduce((sum, t) => sum + t.nominalEstimate, 0)
+          getMonthlyIncomeSummary(s.primaryCurrency).then((incomeAvg) => {
+            if (cancelled) return
+            setForecastMonths(
+              calcForecast(
+                bl.sisaPasGajian,
+                tagihanTotalForForecast,
+                bl.dailyBudget,
+                incomeAvg,
+                s,
+                nowMs,
+              ),
+            )
+          })
+          getSavedScenarios().then((rows) => {
+            if (!cancelled) setSavedScenarios(rows)
+          })
         })
       },
     )
@@ -160,7 +154,7 @@ export function AndaiPage() {
         ])
       : null
 
-  const canSave = isPro && items.length > 0 && savedScenarios.length < MAX_SAVED_SCENARIOS
+  const canSave = items.length > 0 && savedScenarios.length < MAX_SAVED_SCENARIOS
 
   return (
     <div className={styles.page}>
@@ -253,8 +247,7 @@ export function AndaiPage() {
             />
           </div>
 
-          {/* 8.7 Pro: Forecast 3-bulan di Andai */}
-          {isPro && forecastMonths.length > 0 && (
+          {forecastMonths.length > 0 && (
             <div className={styles.andaiForecast}>
               <div className={styles.andaiForecastLabel}>proyeksi 3 bulan ke depan</div>
               <div className={styles.andaiForecastCols}>
@@ -287,36 +280,27 @@ export function AndaiPage() {
           Reset
         </button>
 
-        {isPro ? (
-          <div className={styles.proActions}>
-            <button
-              className={canSave ? styles.saveBtn : `${styles.saveBtn} ${styles.saveBtnDisabled}`}
-              onClick={() => canSave && setSaveSheetOpen(true)}
-            >
-              Simpan
-            </button>
-            {savedScenarios.length >= 2 && (
-              <button
-                className={
-                  compareMode
-                    ? `${styles.compareBtn} ${styles.compareBtnActive}`
-                    : styles.compareBtn
-                }
-                onClick={() => {
-                  setCompareMode((prev) => !prev)
-                  setCompareIds([])
-                }}
-              >
-                Banding
-              </button>
-            )}
-          </div>
-        ) : (
-          <button className={styles.saveBtn} onClick={() => {}}>
-            <span className={styles.saveBtnLabel}>Simpan skenario</span>
-            <span className={styles.proTag}>Pro</span>
+        <div className={styles.proActions}>
+          <button
+            className={canSave ? styles.saveBtn : `${styles.saveBtn} ${styles.saveBtnDisabled}`}
+            onClick={() => canSave && setSaveSheetOpen(true)}
+          >
+            Simpan
           </button>
-        )}
+          {savedScenarios.length >= 2 && (
+            <button
+              className={
+                compareMode ? `${styles.compareBtn} ${styles.compareBtnActive}` : styles.compareBtn
+              }
+              onClick={() => {
+                setCompareMode((prev) => !prev)
+                setCompareIds([])
+              }}
+            >
+              Banding
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Compare action bar */}
@@ -328,17 +312,14 @@ export function AndaiPage() {
         </div>
       )}
 
-      {/* Scenarios rack (Pro) */}
-      {isPro && (
-        <ScenariosRack
-          scenarios={savedScenarios}
-          selectedIds={compareIds}
-          compareMode={compareMode}
-          onOpen={handleOpenScenario}
-          onDelete={handleDeleteScenario}
-          onToggleCompare={handleToggleCompare}
-        />
-      )}
+      <ScenariosRack
+        scenarios={savedScenarios}
+        selectedIds={compareIds}
+        compareMode={compareMode}
+        onOpen={handleOpenScenario}
+        onDelete={handleDeleteScenario}
+        onToggleCompare={handleToggleCompare}
+      />
 
       {/* Add item sheet */}
       <BottomSheet

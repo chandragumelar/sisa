@@ -24,8 +24,6 @@ import {
   getNextStep,
   parseWalletBalance,
 } from './onboarding.utils'
-import type { Tier } from '@/db/database'
-
 export function OnboardingPage() {
   const navigate = useNavigate()
   const clock = useClock()
@@ -35,7 +33,7 @@ export function OnboardingPage() {
   function advance(patch: Partial<OnboardingAccumulated> = {}) {
     const next = { ...data, ...patch }
     setData(next)
-    const nextStep = getNextStep(step, next.incomeType, next.tier)
+    const nextStep = getNextStep(step, next.incomeType)
     if (nextStep === 'done') {
       void handleComplete(next)
     } else {
@@ -76,9 +74,7 @@ export function OnboardingPage() {
   return (
     <OnboardingShell step={step}>
       {step === 'language' && <Step1Language onNext={(lang) => advance({ language: lang })} />}
-      {step === 'license' && (
-        <Step2License onNext={({ tier }: { tier: Tier }) => advance({ tier })} />
-      )}
+      {step === 'license' && <Step2License onNext={() => advance()} />}
       {step === 'mentalModel' && <Step3MentalModel onNext={() => advance()} />}
       {step === 'incomeType' && (
         <Step4aIncomeType onNext={(incomeType) => advance({ incomeType })} />

@@ -33,7 +33,6 @@ export function ProfilLicenseSheet({ isOpen, onClose, license, nowMs, onUpdate }
     }
   }
 
-  const tier = license?.tier === 'pro' ? 'Pro' : 'Basic'
   const daysLeft = license ? Math.max(0, Math.ceil((license.expiresAt - nowMs) / 86_400_000)) : 0
   const expiresDate = license
     ? new Date(license.expiresAt).toLocaleDateString('id-ID', {
@@ -50,11 +49,7 @@ export function ProfilLicenseSheet({ isOpen, onClose, license, nowMs, onUpdate }
           <div className={styles.licenseCard}>
             <div className={styles.licenseRow}>
               <span className={styles.licenseKey}>status</span>
-              <span
-                className={`${styles.tierBadge} ${license.tier === 'pro' ? styles.tierPro : ''}`}
-              >
-                {tier}
-              </span>
+              <span className={styles.tierBadge}>aktif</span>
             </div>
             <div className={styles.licenseRow}>
               <span className={styles.licenseKey}>masa aktif</span>

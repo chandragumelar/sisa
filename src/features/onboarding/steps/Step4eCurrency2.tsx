@@ -20,7 +20,7 @@ export function Step4eCurrency2({ primaryCurrencyCode, onNext }: Props) {
     <>
       <h1 className="ob-heading">Mata uang kedua</h1>
       <p className="ob-subheading">
-        Karena lo Pro, lo bisa pantau dua mata uang sekaligus. Bisa diatur ulang nanti.
+        Lo bisa pantau dua mata uang sekaligus. Bisa diatur ulang nanti.
       </p>
 
       <div className="ob-field">

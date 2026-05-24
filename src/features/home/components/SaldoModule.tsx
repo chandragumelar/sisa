@@ -17,7 +17,6 @@ interface Props {
   onAddWalletTap?: () => void
 }
 
-const MAX_WALLETS_BASIC = 4
 const SALDO_EXPANDED_KEY = 'sisa:saldoExpanded'
 
 function getExpandedPref(): boolean {
@@ -44,7 +43,7 @@ export function SaldoModule({
 
   const total = wallets.reduce((sum, w) => sum + w.balance, 0)
   const sisa = calcSisa(total, unpaidTagihanTotal, totalNabung)
-  const visible = wallets.slice(0, MAX_WALLETS_BASIC)
+  const visible = wallets
 
   let heroSub = ''
   if (yesterdaySpent > 0) {

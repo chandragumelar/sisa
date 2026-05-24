@@ -8,6 +8,7 @@ import { exportAllData, importAllData, clearAllData } from '@/db/backup.reposito
 import { applyTheme } from '@/shared/utils/theme'
 import { applyLanguage } from '@/shared/utils/language'
 import type { Settings, LicenseRecord, Theme, Language } from '@/db/database'
+import { ALL_CURRENCIES } from '@/constants/currencies'
 import { BottomSheet } from '@/shared/components/BottomSheet'
 import { ProfilIncomeSheet } from '@/features/profil/ProfilIncomeSheet'
 import { ProfilLicenseSheet } from '@/features/profil/ProfilLicenseSheet'
@@ -64,6 +65,12 @@ export function SettingsPage() {
     setData((prev) => prev && { ...prev, settings: { ...prev.settings, language } })
   }
 
+  async function handleSecondaryCurrencyChange(value: string) {
+    const secondaryCurrency = value === '' || value === settings.primaryCurrency ? null : value
+    await patchSettings({ secondaryCurrency })
+    setData((prev) => prev && { ...prev, settings: { ...prev.settings, secondaryCurrency } })
+  }
+
   async function handleExportJSON() {
     const exportData = await exportAllData(nowMs)
     const json = buildBackupJSON(exportData)
@@ -112,7 +119,6 @@ export function SettingsPage() {
   }
 
   const nowMs = clock.now()
-  const tierLabel = license?.tier === 'pro' ? 'Pro' : 'Basic'
   const daysLeft = license ? Math.max(0, Math.ceil((license.expiresAt - nowMs) / 86_400_000)) : 0
   const expiresDate = license
     ? new Date(license.expiresAt).toLocaleDateString('id-ID', {
@@ -147,7 +153,7 @@ export function SettingsPage() {
           </svg>
         </div>
         <div className={styles.profileText}>
-          <div className={styles.profileName}>SISA · {tierLabel}</div>
+          <div className={styles.profileName}>SISA</div>
           <div className={styles.profileSub}>
             {expiresDate ? `Aktif sampai ${expiresDate} · ${daysLeft} hari lagi` : 'Belum aktif'}
           </div>
@@ -173,9 +179,7 @@ export function SettingsPage() {
         <div className={styles.divider} />
         <button className={styles.actionRow} onClick={() => setActiveSheet('license')}>
           <span className={styles.rowLabel}>lisensi</span>
-          <span className={styles.rowSub}>
-            {tierLabel} · {daysLeft} hari lagi
-          </span>
+          <span className={styles.rowSub}>{daysLeft} hari lagi</span>
         </button>
       </div>
 
@@ -209,6 +213,22 @@ export function SettingsPage() {
           >
             <option value="id">Indonesia</option>
             <option value="en">English</option>
+          </select>
+        </div>
+        <div className={styles.divider} />
+        <div className={styles.row}>
+          <span className={styles.rowLabel}>mata uang kedua</span>
+          <select
+            className={styles.select}
+            value={settings.secondaryCurrency ?? ''}
+            onChange={(e) => handleSecondaryCurrencyChange(e.target.value)}
+          >
+            <option value="">tidak ada</option>
+            {ALL_CURRENCIES.filter((c) => c.code !== settings.primaryCurrency).map((c) => (
+              <option key={c.code} value={c.code}>
+                {c.code}
+              </option>
+            ))}
           </select>
         </div>
       </div>

@@ -1,10 +1,9 @@
 import { useState } from 'react'
-import type { Tier } from '@/db/database'
 import { activateLicense } from '@/features/license/license.utils'
 import { useClock } from '@/app/providers/useClock'
 
 interface Props {
-  onNext: (data: { tier: Tier }) => void
+  onNext: () => void
 }
 
 export function Step2License({ onNext }: Props) {
@@ -28,7 +27,7 @@ export function Step2License({ onNext }: Props) {
         )
         return
       }
-      onNext({ tier: result.tier })
+      onNext()
     } catch (err) {
       console.error('[Step2License] gagal aktivasi', { error: err })
       setError('terjadi kesalahan, coba lagi')

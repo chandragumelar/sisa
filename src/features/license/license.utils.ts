@@ -1,5 +1,5 @@
 import type { Clock } from '@/shared/types/clock'
-import type { LicenseRecord, LicenseStatus, Tier } from '@/db/database'
+import type { LicenseRecord, LicenseStatus } from '@/db/database'
 import {
   PUBLIC_KEY_SPKI_B64,
   LICENSE_VERSION,
@@ -9,7 +9,6 @@ import { getLicense, saveLicense, updateLastSeenAt } from '@/db/license.reposito
 
 export interface LicensePayload {
   v: number
-  tier: Tier
   iat: number // epoch seconds
   exp: number // epoch seconds
   bid: string // 8-char SHA-256 prefix of buyer email
@@ -37,11 +36,9 @@ function parsePayload(segment: string): LicensePayload | null {
     const obj = JSON.parse(json) as Record<string, unknown>
     if (
       typeof obj['v'] !== 'number' ||
-      typeof obj['tier'] !== 'string' ||
       typeof obj['iat'] !== 'number' ||
       typeof obj['exp'] !== 'number' ||
-      typeof obj['bid'] !== 'string' ||
-      (obj['tier'] !== 'basic' && obj['tier'] !== 'pro')
+      typeof obj['bid'] !== 'string'
     )
       return null
     return obj as unknown as LicensePayload
@@ -96,7 +93,7 @@ export async function verifyLicenseKey(rawKey: string, clock: Clock): Promise<Ve
 // Activation & persistence
 // ---------------------------------------------------------------------------
 
-export type ActivateResult = { ok: true; tier: Tier } | { ok: false; reason: 'invalid' | 'expired' }
+export type ActivateResult = { ok: true } | { ok: false; reason: 'invalid' | 'expired' }
 
 export async function activateLicense(rawKey: string, clock: Clock): Promise<ActivateResult> {
   const result = await verifyLicenseKey(rawKey, clock)
@@ -107,7 +104,6 @@ export async function activateLicense(rawKey: string, clock: Clock): Promise<Act
   const record: LicenseRecord = {
     id: 1,
     rawKey,
-    tier: payload.tier,
     version: payload.v,
     issuedAt: payload.iat * 1000,
     expiresAt: payload.exp * 1000,
@@ -116,7 +112,7 @@ export async function activateLicense(rawKey: string, clock: Clock): Promise<Act
     activatedAt: nowMs,
   }
   await saveLicense(record)
-  return { ok: true, tier: payload.tier }
+  return { ok: true }
 }
 
 // Re-verifies the stored raw key (signature can't be faked; persisted flags
