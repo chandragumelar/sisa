@@ -56,7 +56,7 @@ export function buildNabung(input: QuickLogInput): Omit<Transaction, 'id'> {
     note: input.note || undefined,
     date: input.dateMs,
     isFromSavings: false,
-    isEarmark: false,
+    isEarmark: true,
     createdAt: Date.now(),
   }
 }

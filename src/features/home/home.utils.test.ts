@@ -67,8 +67,14 @@ describe('calcDaysUntilPayday', () => {
     expect(calcDaysUntilPayday(NOW_MS, makeSettings({ incomeDay: 5 }))).toBe(26)
   })
 
-  it('tetap — payday is today → returns 1 (not 0)', () => {
-    expect(calcDaysUntilPayday(NOW_MS, makeSettings({ incomeDay: 10 }))).toBe(1)
+  it('tetap — payday is today → rolls to next month', () => {
+    // Jan 10, incomeDay=10 → today IS payday → next cycle is Feb 10 → 31 days
+    expect(calcDaysUntilPayday(NOW_MS, makeSettings({ incomeDay: 10 }))).toBe(31)
+  })
+
+  it('tetap — one day before payday', () => {
+    const dayBefore = new Date('2024-01-09T12:00:00Z').getTime() // Jan 9
+    expect(calcDaysUntilPayday(dayBefore, makeSettings({ incomeDay: 10 }))).toBe(1)
   })
 
   it('freelance — returns remaining days in month', () => {
@@ -81,26 +87,25 @@ describe('calcDaysUntilPayday', () => {
     expect(calcDaysUntilPayday(NOW_MS, makeSettings({ incomeType: 'mix', incomeDay: 25 }))).toBe(15)
   })
 
-  // Sat 2024-01-20, incomeDay=20 → payday IS today (Saturday)
-  it('weekend — maju-jumat shifts Saturday to Friday (yesterday)', () => {
-    const satNow = new Date('2024-01-20T12:00:00Z').getTime() // Saturday Jan 20
-    // payday would be Jan 20 (today) but it's Saturday → maju-jumat → Jan 19 (Friday)
-    // Jan 19 was yesterday → diff = -1 → clamped to 1
+  // Thu 2024-01-18, incomeDay=20 → payday is Jan 20 (Saturday)
+  it('weekend — maju-jumat shifts Saturday payday to Friday', () => {
+    const thuNow = new Date('2024-01-18T12:00:00Z').getTime() // Thursday Jan 18
+    // payday = Jan 20 (Sat) → maju-jumat → Jan 19 (Fri) → 1 day away
     const days = calcDaysUntilPayday(
-      satNow,
+      thuNow,
       makeSettings({ incomeDay: 20, weekendBehavior: 'maju-jumat' }),
     )
     expect(days).toBe(1)
   })
 
-  it('weekend — mundur-senin shifts Saturday to Monday (2 days ahead)', () => {
-    const satNow = new Date('2024-01-20T12:00:00Z').getTime() // Saturday Jan 20
-    // payday is Jan 20 (Saturday) → mundur-senin → Jan 22 (Monday) → 2 days
+  it('weekend — mundur-senin shifts Saturday payday to Monday', () => {
+    const thuNow = new Date('2024-01-18T12:00:00Z').getTime() // Thursday Jan 18
+    // payday = Jan 20 (Sat) → mundur-senin → Jan 22 (Mon) → 4 days away
     const days = calcDaysUntilPayday(
-      satNow,
+      thuNow,
       makeSettings({ incomeDay: 20, weekendBehavior: 'mundur-senin' }),
     )
-    expect(days).toBe(2)
+    expect(days).toBe(4)
   })
 
   it('boundary — incomeDay=31 in leap-year February clamps to Feb 29', () => {
@@ -147,30 +152,40 @@ describe('calcDailyBudget', () => {
 // ─── getDaysUntilEndOfWeek ────────────────────────────────────────────────────
 
 describe('getDaysUntilEndOfWeek', () => {
-  it('Wednesday → 4 days until Sunday', () => {
-    expect(getDaysUntilEndOfWeek(NOW_MS)).toBe(4) // Jan 10 = Wednesday
+  // Week = Mon–Sun inclusive; returns days from today through Sunday inclusive
+  it('Wednesday → 5 days (Wed–Sun)', () => {
+    expect(getDaysUntilEndOfWeek(NOW_MS)).toBe(5) // Jan 10 = Wednesday
   })
 
-  it('Sunday → 7 (next full week)', () => {
+  it('Sunday → 1 (today is the last day of the week)', () => {
     const sun = new Date('2024-01-07T12:00:00Z').getTime() // Sunday
-    expect(getDaysUntilEndOfWeek(sun)).toBe(7)
+    expect(getDaysUntilEndOfWeek(sun)).toBe(1)
   })
 
-  it('Saturday → 1', () => {
+  it('Saturday → 2 (Sat + Sun)', () => {
     const sat = new Date('2024-01-13T12:00:00Z').getTime()
-    expect(getDaysUntilEndOfWeek(sat)).toBe(1)
+    expect(getDaysUntilEndOfWeek(sat)).toBe(2)
+  })
+
+  it('Monday → 7 (full Mon–Sun week)', () => {
+    const mon = new Date('2024-01-08T12:00:00Z').getTime() // Monday Jan 8
+    expect(getDaysUntilEndOfWeek(mon)).toBe(7)
   })
 })
 
 // ─── calcWeeklyBudget ─────────────────────────────────────────────────────────
 
 describe('calcWeeklyBudget', () => {
-  it('dailyBudget × daysUntilWeekEnd', () => {
-    expect(calcWeeklyBudget(200_000, 4)).toBe(800_000)
+  it('uncapped — weekEnd days < daysUntilPayday', () => {
+    expect(calcWeeklyBudget(200_000, 4, 10)).toBe(800_000) // min(4,10)=4
+  })
+
+  it('capped by payday — payday sooner than end of week', () => {
+    expect(calcWeeklyBudget(200_000, 5, 2)).toBe(400_000) // min(5,2)=2
   })
 
   it('dailyBudget 0 → 0', () => {
-    expect(calcWeeklyBudget(0, 4)).toBe(0)
+    expect(calcWeeklyBudget(0, 4, 10)).toBe(0)
   })
 })
 

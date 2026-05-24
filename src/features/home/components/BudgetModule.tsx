@@ -36,7 +36,7 @@ export function BudgetModule({
   const daysUntilPayday = calcDaysUntilPayday(nowMs, settings)
   const paydayDate = getPaydayDate(nowMs, settings)
   const daysUntilWeekEnd = getDaysUntilEndOfWeek(nowMs)
-  const weeklyBudget = calcWeeklyBudget(dailyBudget, daysUntilWeekEnd)
+  const weeklyBudget = calcWeeklyBudget(dailyBudget, daysUntilWeekEnd, daysUntilPayday)
   const sisaPasGajian = calcSisaPasGajian(
     totalSaldo,
     dailyBudget,
