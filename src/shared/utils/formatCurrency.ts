@@ -10,3 +10,16 @@ export function formatCurrency(amount: number, currency: string): string {
     return `${currency} ${Math.round(amount).toLocaleString()}`
   }
 }
+
+export function getCurrencySymbol(currency: string): string {
+  try {
+    const parts = new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency,
+      minimumFractionDigits: 0,
+    }).formatToParts(0)
+    return parts.find((p) => p.type === 'currency')?.value ?? currency
+  } catch {
+    return currency
+  }
+}

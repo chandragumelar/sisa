@@ -16,6 +16,7 @@ import {
   getTotalNabung,
   deleteTransactionAndRevertBalance,
   getMonthlyIncomeSummary,
+  getMonthlyExpenseSummary,
   getMonthlyFlows,
   addNabungDeduction,
 } from '@/db/transactions.repository'
@@ -64,6 +65,7 @@ interface HomeData {
   yesterdayTxs: Transaction[]
   totalNabung: number
   monthlyIncomeAvg: number
+  monthlySpendingAvg: number
   monthlyIncome: number
   monthlyExpense: number
 }
@@ -87,6 +89,7 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
     yesterdayTxs: [],
     totalNabung: 0,
     monthlyIncomeAvg: 0,
+    monthlySpendingAvg: 0,
     monthlyIncome: 0,
     monthlyExpense: 0,
   })
@@ -118,9 +121,15 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
       Promise.all([
         getTotalNabung(currency),
         getMonthlyIncomeSummary(currency),
+        getMonthlyExpenseSummary(currency),
         getMonthlyFlows(currency, monthStart, monthEnd),
       ]).then(
-        ([totalNabung, monthlyIncomeAvg, { income: monthlyIncome, expense: monthlyExpense }]) => {
+        ([
+          totalNabung,
+          monthlyIncomeAvg,
+          monthlySpendingAvg,
+          { income: monthlyIncome, expense: monthlyExpense },
+        ]) => {
           if (!cancelled) {
             setData({
               settings,
@@ -132,6 +141,7 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
               yesterdayTxs,
               totalNabung,
               monthlyIncomeAvg,
+              monthlySpendingAvg,
               monthlyIncome,
               monthlyExpense,
             })
@@ -163,6 +173,7 @@ export function HomePage() {
     yesterdayTxs,
     totalNabung,
     monthlyIncomeAvg,
+    monthlySpendingAvg,
     monthlyIncome,
     monthlyExpense,
     isLoading,
@@ -209,7 +220,7 @@ export function HomePage() {
   const forecastMonths: ForecastMonth[] = calcForecast(
     sisaPasGajian,
     tagihanTotal,
-    dailyBudget,
+    monthlySpendingAvg,
     monthlyIncomeAvg,
     settings,
     nowMs,
@@ -379,6 +390,7 @@ export function HomePage() {
         dailyBudget={dailyBudget}
         spentToday={spentToday}
         settings={settings}
+        currency={currency}
         unpaidTagihanTotal={unpaidTagihanTotal}
         totalSaldo={totalSaldo}
         nowMs={nowMs}

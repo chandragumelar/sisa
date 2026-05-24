@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { Wallet } from '@/db/database'
-import { formatCurrency } from '@/shared/utils/formatCurrency'
+import { formatCurrency, getCurrencySymbol } from '@/shared/utils/formatCurrency'
 import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
 import { BottomSheet } from '@/shared/components/BottomSheet'
 import { buildTransaction, type QuickLogMode } from './quickLog.utils'
@@ -167,7 +167,7 @@ export function QuickLogSheet({
 
       {/* Nominal */}
       <div className={styles.nominalWrap}>
-        <span className={styles.nominalPrefix}>Rp</span>
+        <span className={styles.nominalPrefix}>{getCurrencySymbol(currency)}</span>
         <input
           className={styles.nominalInput}
           type="text"

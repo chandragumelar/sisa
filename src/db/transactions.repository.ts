@@ -121,6 +121,19 @@ export async function getMonthlyIncomeSummary(currency: string, monthCount = 3):
   return total / monthCount
 }
 
+export async function getMonthlyExpenseSummary(currency: string, monthCount = 3): Promise<number> {
+  const now = new Date()
+  const cutoff = new Date(now.getFullYear(), now.getMonth() - monthCount, 1).getTime()
+  const rows = await db.transactions
+    .where('date')
+    .aboveOrEqual(cutoff)
+    .filter((t) => t.type === 'keluar' && t.currency === currency && !t.isEarmark)
+    .toArray()
+  if (rows.length === 0) return 0
+  const total = rows.reduce((sum, t) => sum + Math.abs(t.amount), 0)
+  return total / monthCount
+}
+
 export async function getMonthlyFlows(
   currency: string,
   monthStartMs: number,

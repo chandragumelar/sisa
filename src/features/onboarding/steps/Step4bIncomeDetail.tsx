@@ -1,15 +1,17 @@
 import { useState } from 'react'
 import type { IncomeType } from '@/db/database'
 import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
+import { getCurrencySymbol } from '@/shared/utils/formatCurrency'
 
 interface Props {
   incomeType: IncomeType
+  currency?: string
   onNext: (data: { incomeDay: number | null; freelanceMinBalance: string }) => void
 }
 
 const DAY_OPTIONS = Array.from({ length: 31 }, (_, i) => i + 1)
 
-export function Step4bIncomeDetail({ incomeType, onNext }: Props) {
+export function Step4bIncomeDetail({ incomeType, currency = 'IDR', onNext }: Props) {
   const [incomeDay, setIncomeDay] = useState<number | null>(null)
   const [minBalance, setMinBalance] = useState('')
 
@@ -63,7 +65,7 @@ export function Step4bIncomeDetail({ incomeType, onNext }: Props) {
             {isMix ? 'Minimum saldo aman (opsional)' : 'Minimum saldo aman'}
           </div>
           <div className="ob-input-row">
-            <span className="ob-input-prefix">Rp</span>
+            <span className="ob-input-prefix">{getCurrencySymbol(currency)}</span>
             <input
               className="ob-input ob-input-bare"
               type="text"
