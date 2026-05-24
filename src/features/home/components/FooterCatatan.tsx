@@ -25,7 +25,9 @@ export function FooterCatatan({ lastTransaction, currency, onShowHistory, nowMs 
         {lastTransaction ? (
           <>
             <span>terakhir dicatat:</span>
-            <span className={styles.itemName}>{lastTransaction.label ?? 'Transaksi'}</span>
+            <span className={styles.itemName}>
+              {lastTransaction.label ?? lastTransaction.note ?? 'Transaksi'}
+            </span>
             <span className={styles.amount}>
               −
               {formatCurrency(

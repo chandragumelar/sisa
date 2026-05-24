@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import styles from './Toast.module.css'
 
-const DURATION_MS = 5000
+const TOAST_DURATION_MS = 2_000
 
 interface Props {
   message: string
@@ -14,24 +14,29 @@ export function Toast({ message, onUndo, onEdit, onDismiss }: Props) {
   const [progress, setProgress] = useState(100)
   const startRef = useRef<number>(Date.now())
   const rafRef = useRef<number>(0)
+  const dismissRef = useRef(onDismiss)
+
+  useEffect(() => {
+    dismissRef.current = onDismiss
+  })
 
   useEffect(() => {
     startRef.current = Date.now()
 
     function tick() {
       const elapsed = Date.now() - startRef.current
-      const remaining = Math.max(0, 100 - (elapsed / DURATION_MS) * 100)
+      const remaining = Math.max(0, 100 - (elapsed / TOAST_DURATION_MS) * 100)
       setProgress(remaining)
       if (remaining > 0) {
         rafRef.current = requestAnimationFrame(tick)
       } else {
-        onDismiss()
+        dismissRef.current()
       }
     }
 
     rafRef.current = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(rafRef.current)
-  }, [onDismiss])
+  }, [])
 
   return (
     <div className={styles.toast} role="status" aria-live="polite">

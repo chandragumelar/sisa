@@ -3,7 +3,7 @@ import type { Wallet } from '@/db/database'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
 import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
 import { BottomSheet } from '@/shared/components/BottomSheet'
-import { buildTransaction, LABELS_KELUAR, LABELS_MASUK, type QuickLogMode } from './quickLog.utils'
+import { buildTransaction, type QuickLogMode } from './quickLog.utils'
 import { addTransactionAndUpdateBalance, replaceTransaction } from '@/db/transactions.repository'
 import styles from './QuickLogSheet.module.css'
 
@@ -50,7 +50,6 @@ export function QuickLogSheet({
   const [amountStr, setAmountStr] = useState(
     initialAmount ? formatNominalDisplay(String(initialAmount)) : '',
   )
-  const [label, setLabel] = useState(initialLabel ?? '')
   const [isFromSavings, setIsFromSavings] = useState(false)
   const [dateMs, setDateMs] = useState(initialDateMs ?? nowMs)
   const [noteExpanded, setNoteExpanded] = useState(!!initialNote)
@@ -59,7 +58,6 @@ export function QuickLogSheet({
   const [savingsWarning, setSavingsWarning] = useState(false)
 
   const amount = parseInt(parseNominalRaw(amountStr), 10) || 0
-  const labels = mode === 'masuk' ? LABELS_MASUK : LABELS_KELUAR
 
   const todayStart = (() => {
     const d = new Date(nowMs)
@@ -102,7 +100,7 @@ export function QuickLogSheet({
         mode,
         walletId,
         amount,
-        label,
+        label: initialLabel ?? '',
         note,
         dateMs,
         currency,
@@ -126,7 +124,6 @@ export function QuickLogSheet({
 
   function resetForm() {
     setAmountStr('')
-    setLabel('')
     setNote('')
     setIsFromSavings(false)
     setSavingsWarning(false)
@@ -135,7 +132,6 @@ export function QuickLogSheet({
 
   function handleModeChange(m: QuickLogMode) {
     setMode(m)
-    setLabel('')
     setIsFromSavings(false)
     setSavingsWarning(false)
   }
@@ -189,19 +185,6 @@ export function QuickLogSheet({
           Tabungan kamu cuma {formatCurrency(totalNabung, currency)} — mau pakai semua tabungan?
         </div>
       )}
-
-      {/* Label chips */}
-      <div className={styles.labelChips}>
-        {labels.map((l) => (
-          <button
-            key={l}
-            className={`${styles.labelChip} ${label === l ? styles.labelChipActive : ''}`}
-            onClick={() => setLabel(label === l ? '' : l)}
-          >
-            {l}
-          </button>
-        ))}
-      </div>
 
       {/* Dari tabungan toggle (keluar only) */}
       {mode === 'keluar' && (

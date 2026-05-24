@@ -113,7 +113,7 @@ export function HistorySheet({
             {filtered.map((t) => (
               <div key={t.id} className={styles.row}>
                 <div className={styles.rowLeft}>
-                  <span className={styles.rowName}>{t.label ?? typeLabel(t.type)}</span>
+                  <span className={styles.rowName}>{t.label ?? t.note ?? typeLabel(t.type)}</span>
                   {t.note ? <span className={styles.rowNote}>{t.note}</span> : null}
                   <span className={styles.rowMeta}>
                     {walletMap[t.walletId] ?? '—'} · {relativeDate(t.date, nowMs)}
