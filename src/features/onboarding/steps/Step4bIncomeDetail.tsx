@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { IncomeType } from '@/db/database'
+import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
 
 interface Props {
   incomeType: IncomeType
@@ -21,7 +22,7 @@ export function Step4bIncomeDetail({ incomeType, onNext }: Props) {
   function handleNext() {
     onNext({
       incomeDay: incomeDay,
-      freelanceMinBalance: minBalance.trim(),
+      freelanceMinBalance: parseNominalRaw(minBalance),
     })
   }
 
@@ -65,12 +66,11 @@ export function Step4bIncomeDetail({ incomeType, onNext }: Props) {
             <span className="ob-input-prefix">Rp</span>
             <input
               className="ob-input ob-input-bare"
-              type="number"
+              type="text"
               inputMode="numeric"
-              placeholder="500000"
-              min={0}
+              placeholder="500.000"
               value={minBalance}
-              onChange={(e) => setMinBalance(e.target.value)}
+              onChange={(e) => setMinBalance(formatNominalDisplay(parseNominalRaw(e.target.value)))}
             />
           </div>
           {isFreelance && (

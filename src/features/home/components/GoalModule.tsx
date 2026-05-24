@@ -176,7 +176,7 @@ export function GoalModule({
 
         {activeGoal && (
           <div className={styles.footerMeta}>
-            nabung lagi: {activeGoal.goal.name} · tekan lama untuk atur urutan
+            nabung lagi: {activeGoal.goal.name} · tahan &amp; geser untuk ganti urutan
           </div>
         )}
       </div>

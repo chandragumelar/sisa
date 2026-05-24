@@ -473,11 +473,11 @@ Tap "Konfirmasi" → 4 efek sekaligus: (1) saldo wallet berkurang, (2) entry keb
 
 **Pembeda visual aktif vs antri harus tegas** — bukan sekadar opacity decay halus (model lama 1.0→0.58→0.50 dibatalkan). Goal aktif "nyala" (bar + persen), goal antri "mati" (tanpa bar). Reorder punya konsekuensi visual yang kerasa: drag goal ke atas → dia nyala, yang lama mati.
 
-**Progress bar:** track tipis 3px `color.border.hair`. Fill `color.ink.primary`. Marker finish = segitiga kecil di ujung kanan.
+**Progress bar:** track tipis 3px `color.border.hair`. Fill `color.accent` (cobalt). Marker finish = segitiga kecil di ujung kanan.
 
-**Basic: max 4 goals. Pro: unlimited goals.** (Tidak ada lagi pembagian "1 Darurat + 3 Impian" — semua slot bebas.)
+**Basic: max 3 goals, goal ke-4 trigger Pro upsell. Pro: unlimited goals.** (Tidak ada lagi pembagian "1 Darurat + 3 Impian" — semua slot bebas.)
 
-**Footer goal footer-meta:** "nabung lagi: **[nama goal teratas]** · drag untuk ganti"
+**Footer goal footer-meta:** "nabung lagi: **[nama goal teratas]** · tahan & geser untuk ganti urutan"
 
 **Tarik tabungan:** lihat 3.4.11 (Quick Log — mode keluar, toggle "dari tabungan"). Total tabungan turun → goal kering dari bawah ke atas (kebalikan ngisi).
 
@@ -662,7 +662,7 @@ Akses via header "Skenario tersimpan" atau setelah simpan. Isi:
 | Bottom action: 3 button (Catat, Cek Dulu, Andai)                                       | Modern 2026 pattern, bukan tab bar                                                                                                                                                     |
 | Cek Dulu cobalt, dominan visual                                                        | Decision-first paradigm                                                                                                                                                                |
 | Icon Andai = `git-fork`                                                                | What-if branching lebih representatif                                                                                                                                                  |
-| Bar tebal (22px) budget hari ini pakai cobalt, bar tipis (3px) goal pakai ink-primary  | Cobalt = duit aktif yang bisa dipakai sekarang. Ink = progress tabungan jangka panjang. Pembedaan semantik                                                                             |
+| Bar tebal (22px) budget hari ini pakai cobalt, bar tipis (3px) goal pakai cobalt juga  | Cobalt konsisten sebagai warna progress aktif di seluruh app                                                                                                                           |
 | "Tagihan rutin" → "Komitmen bulan ini" → **"Tagihan bulan ini"** (v0.8)                | Cover rutin + sekali bayar. Istilah final: "tagihan" (lebih familiar daripada "komitmen")                                                                                              |
 | Simbol **±** untuk tagihan variabel                                                    | User paham dari konteks, anti-over-explain                                                                                                                                             |
 | Swipe kiri → **push sheet** (bukan modal langsung)                                     | 3 input (nominal, wallet, tanggal) butuh ruang. Modal bottom terlalu sempit untuk edge case variabel + past date                                                                       |

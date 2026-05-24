@@ -3,6 +3,7 @@ import { addTagihan, updateTagihan, deleteTagihan } from '@/db/tagihan.repositor
 import type { Tagihan, NominalType, RecurrenceType } from '@/db/database'
 import { BottomSheet } from '@/shared/components/BottomSheet'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
+import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
 import styles from './ProfilPage.module.css'
 
 interface Props {
@@ -56,7 +57,7 @@ export function ProfilTagihanSheet({
       setForm({
         name: initialEditTagihan.name,
         nominalType: initialEditTagihan.nominalType,
-        nominalEstimate: String(initialEditTagihan.nominalEstimate),
+        nominalEstimate: formatNominalDisplay(String(initialEditTagihan.nominalEstimate)),
         dueDay: String(initialEditTagihan.dueDay),
         recurrenceType: initialEditTagihan.recurrenceType,
       })
@@ -75,7 +76,7 @@ export function ProfilTagihanSheet({
     setForm({
       name: t.name,
       nominalType: t.nominalType,
-      nominalEstimate: String(t.nominalEstimate),
+      nominalEstimate: formatNominalDisplay(String(t.nominalEstimate)),
       dueDay: String(t.dueDay),
       recurrenceType: t.recurrenceType,
     })
@@ -83,7 +84,7 @@ export function ProfilTagihanSheet({
   }
 
   async function handleSave() {
-    const nominal = parseInt(form.nominalEstimate, 10) || 0
+    const nominal = parseInt(parseNominalRaw(form.nominalEstimate), 10) || 0
     const dueDay = parseInt(form.dueDay, 10) || 1
     if (!form.name.trim()) return
     if (editId !== null) {
@@ -185,7 +186,7 @@ export function ProfilTagihanSheet({
                 className={`${styles.seg} ${form.nominalType === n ? styles.segActive : ''}`}
                 onClick={() => patch('nominalType')(n)}
               >
-                {n}
+                {n === 'tetap' ? 'selalu sama' : 'bisa berubah'}
               </button>
             ))}
           </div>
@@ -193,11 +194,13 @@ export function ProfilTagihanSheet({
             <span className={styles.prefix}>Rp</span>
             <input
               className={styles.amountInput}
-              type="number"
+              type="text"
               inputMode="numeric"
               placeholder="0"
               value={form.nominalEstimate}
-              onChange={(e) => patch('nominalEstimate')(e.target.value.replace(/\D/g, ''))}
+              onChange={(e) =>
+                patch('nominalEstimate')(formatNominalDisplay(parseNominalRaw(e.target.value)))
+              }
             />
           </div>
 

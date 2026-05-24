@@ -4,6 +4,7 @@ import { addTransactionAndUpdateBalance } from '@/db/transactions.repository'
 import type { Wallet } from '@/db/database'
 import { BottomSheet } from '@/shared/components/BottomSheet'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
+import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
 import styles from './ProfilPage.module.css'
 
 interface Props {
@@ -72,11 +73,13 @@ export function ProfilWalletsSheet({
     reset()
   }
 
-  const diff = selected ? (parseInt(actualBalanceStr, 10) || 0) - selected.balance : 0
+  const diff = selected
+    ? (parseInt(parseNominalRaw(actualBalanceStr), 10) || 0) - selected.balance
+    : 0
 
   async function handleSesuaikanLupatCatat() {
     if (!selected) return
-    const actual = parseInt(actualBalanceStr, 10)
+    const actual = parseInt(parseNominalRaw(actualBalanceStr), 10)
     if (isNaN(actual)) return
     await addTransactionAndUpdateBalance({
       walletId: selected.id!,
@@ -125,7 +128,7 @@ export function ProfilWalletsSheet({
 
   async function handleSesuaikanKoreksi() {
     if (!selected) return
-    const actual = parseInt(actualBalanceStr, 10)
+    const actual = parseInt(parseNominalRaw(actualBalanceStr), 10)
     if (isNaN(actual)) return
     await setWalletBalance(selected.id!, actual)
     await onUpdate()
@@ -133,7 +136,7 @@ export function ProfilWalletsSheet({
   }
 
   async function handleAddWallet() {
-    const balance = parseInt(addBalance, 10) || 0
+    const balance = parseInt(parseNominalRaw(addBalance), 10) || 0
     if (!addName.trim()) return
     await addWallet({
       name: addName.trim(),
@@ -215,10 +218,12 @@ export function ProfilWalletsSheet({
             <span className={styles.prefix}>Rp</span>
             <input
               className={styles.amountInput}
-              type="number"
+              type="text"
               inputMode="numeric"
               value={actualBalanceStr}
-              onChange={(e) => setActualBalanceStr(e.target.value.replace(/\D/g, ''))}
+              onChange={(e) =>
+                setActualBalanceStr(formatNominalDisplay(parseNominalRaw(e.target.value)))
+              }
               autoFocus
             />
           </div>
@@ -301,10 +306,10 @@ export function ProfilWalletsSheet({
             <span className={styles.prefix}>Rp</span>
             <input
               className={styles.amountInput}
-              type="number"
+              type="text"
               inputMode="numeric"
               value={addBalance}
-              onChange={(e) => setAddBalance(e.target.value.replace(/\D/g, ''))}
+              onChange={(e) => setAddBalance(formatNominalDisplay(parseNominalRaw(e.target.value)))}
             />
           </div>
           <button

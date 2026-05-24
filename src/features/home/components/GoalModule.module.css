@@ -89,7 +89,7 @@
 
 .barFill {
   height: 100%;
-  background: var(--ink-primary);
+  background: var(--accent);
   border-radius: 2px;
 }
 

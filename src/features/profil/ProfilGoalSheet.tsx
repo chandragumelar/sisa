@@ -3,6 +3,7 @@ import { addGoal, updateGoal, deleteGoal } from '@/db/goals.repository'
 import type { Goal } from '@/db/database'
 import { BottomSheet } from '@/shared/components/BottomSheet'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
+import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
 import styles from './ProfilPage.module.css'
 
 interface Props {
@@ -14,6 +15,8 @@ interface Props {
   onUpdate: () => Promise<void>
   showAdd?: boolean
   onDeleteGoal?: (id: number) => Promise<void>
+  maxGoals?: number
+  onLimitReached?: () => void
 }
 
 type Step = 'list' | 'form'
@@ -27,6 +30,8 @@ export function ProfilGoalSheet({
   onUpdate,
   showAdd = true,
   onDeleteGoal,
+  maxGoals,
+  onLimitReached,
 }: Props) {
   const [step, setStep] = useState<Step>('list')
   const [editId, setEditId] = useState<number | null>(null)
@@ -44,12 +49,12 @@ export function ProfilGoalSheet({
   function openEdit(g: Goal) {
     setEditId(g.id!)
     setName(g.name)
-    setTargetStr(String(g.target))
+    setTargetStr(formatNominalDisplay(String(g.target)))
     setStep('form')
   }
 
   async function handleSave() {
-    const target = parseInt(targetStr, 10) || 0
+    const target = parseInt(parseNominalRaw(targetStr), 10) || 0
     if (!name.trim()) return
     if (editId !== null) {
       await updateGoal(editId, { name: name.trim(), target })
@@ -113,7 +118,14 @@ export function ProfilGoalSheet({
           ))}
           <div className={styles.fieldNote}>Urutan goal diatur di Home lewat drag-drop.</div>
           {showAdd && (
-            <button className={styles.ghostBtn} onClick={openAdd}>
+            <button
+              className={styles.ghostBtn}
+              onClick={
+                maxGoals !== undefined && goals.length >= maxGoals
+                  ? () => onLimitReached?.()
+                  : openAdd
+              }
+            >
               + Tambah goal
             </button>
           )}
@@ -135,11 +147,11 @@ export function ProfilGoalSheet({
             <span className={styles.prefix}>Rp</span>
             <input
               className={styles.amountInput}
-              type="number"
+              type="text"
               inputMode="numeric"
               placeholder="0"
               value={targetStr}
-              onChange={(e) => setTargetStr(e.target.value.replace(/\D/g, ''))}
+              onChange={(e) => setTargetStr(formatNominalDisplay(parseNominalRaw(e.target.value)))}
             />
           </div>
           <button className={styles.primaryBtn} onClick={handleSave} disabled={!name.trim()}>
