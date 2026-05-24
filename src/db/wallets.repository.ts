@@ -32,3 +32,12 @@ export async function deleteWallet(id: number): Promise<void> {
 export async function setWalletBalance(id: number, newBalance: number): Promise<void> {
   await db.wallets.update(id, { balance: newBalance })
 }
+
+export async function hasCurrencyData(currency: string): Promise<boolean> {
+  const [wallets, tagihan, goals] = await Promise.all([
+    db.wallets.where('currency').equals(currency).count(),
+    db.tagihan.where('currency').equals(currency).count(),
+    db.goals.where('currency').equals(currency).count(),
+  ])
+  return wallets > 0 || tagihan > 0 || goals > 0
+}

@@ -58,6 +58,7 @@ export function QuickLogSheet({
   const [savingsWarning, setSavingsWarning] = useState(false)
 
   const amount = parseInt(parseNominalRaw(amountStr), 10) || 0
+  const walletCurrency = wallets.find((w) => w.id === walletId)?.currency ?? currency
 
   const todayStart = (() => {
     const d = new Date(nowMs)
@@ -103,7 +104,7 @@ export function QuickLogSheet({
         label: initialLabel ?? '',
         note,
         dateMs,
-        currency,
+        currency: walletCurrency,
         isFromSavings: mode === 'keluar' ? isFromSavings : false,
       })
       let txId: number
@@ -167,7 +168,7 @@ export function QuickLogSheet({
 
       {/* Nominal */}
       <div className={styles.nominalWrap}>
-        <span className={styles.nominalPrefix}>{getCurrencySymbol(currency)}</span>
+        <span className={styles.nominalPrefix}>{getCurrencySymbol(walletCurrency)}</span>
         <input
           className={styles.nominalInput}
           type="text"
@@ -182,7 +183,8 @@ export function QuickLogSheet({
       {/* Savings warning */}
       {savingsWarning && (
         <div className={styles.savingsWarning}>
-          Tabungan kamu cuma {formatCurrency(totalNabung, currency)} — mau pakai semua tabungan?
+          Tabungan kamu cuma {formatCurrency(totalNabung, walletCurrency)} — mau pakai semua
+          tabungan?
         </div>
       )}
 
