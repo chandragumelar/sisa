@@ -1,4 +1,4 @@
-import type { Settings, Wallet, IncomeType, Language, Tier } from '@/db/database'
+import type { Settings, Wallet, IncomeType, Language } from '@/db/database'
 import type { OnboardingStep, WalletInput } from './onboarding.types'
 
 export const TOTAL_PROGRESS_DOTS = 6
@@ -21,7 +21,6 @@ export function getProgressCount(step: OnboardingStep): number {
 export function getNextStep(
   current: OnboardingStep,
   _incomeType: IncomeType | null,
-  tier: Tier | null,
 ): OnboardingStep | 'done' {
   switch (current) {
     case 'language':
@@ -37,7 +36,7 @@ export function getNextStep(
     case 'currency':
       return 'wallet'
     case 'wallet':
-      return tier === 'pro' ? 'currency2' : 'done'
+      return 'currency2'
     case 'currency2':
       return 'done'
   }

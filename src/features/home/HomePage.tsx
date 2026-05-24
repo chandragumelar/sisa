@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useClock } from '@/app/providers/useClock'
 import { getSettings, patchSettings } from '@/db/settings.repository'
-import { getLicense } from '@/db/license.repository'
 import { getAllWallets } from '@/db/wallets.repository'
 import {
   getActiveTagihan,
@@ -20,7 +19,7 @@ import {
   getMonthlyFlows,
   addNabungDeduction,
 } from '@/db/transactions.repository'
-import type { Settings, Wallet, Tagihan, Goal, Transaction, LicenseRecord } from '@/db/database'
+import type { Settings, Wallet, Tagihan, Goal, Transaction } from '@/db/database'
 import {
   calcDailyBudget,
   calcSpentToday,
@@ -53,14 +52,10 @@ import { ProfilGoalSheet } from '@/features/profil/ProfilGoalSheet'
 import { ProfilWalletsSheet } from '@/features/profil/ProfilWalletsSheet'
 import { QuickLogSheet } from '@/features/quickLog/QuickLogSheet'
 import type { QuickLogMode } from '@/features/quickLog/quickLog.utils'
-import { BottomSheet } from '@/shared/components/BottomSheet'
 import styles from './HomePage.module.css'
-
-const BASIC_MAX_GOALS = 3
 
 interface HomeData {
   settings: Settings | null
-  license: LicenseRecord | undefined
   wallets: Wallet[]
   tagihan: Tagihan[]
   goals: Goal[]
@@ -84,7 +79,6 @@ const BACKUP_DISMISS_KEY = 'sisa:backupDismissedAt'
 function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: () => void } {
   const [data, setData] = useState<HomeData>({
     settings: null,
-    license: undefined,
     wallets: [],
     tagihan: [],
     goals: [],
@@ -112,14 +106,13 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
 
     Promise.all([
       getSettings(),
-      getLicense(),
       getAllWallets(),
       getActiveTagihan(),
       getAllGoals(),
       getLastTransaction(),
       getTransactionsByDateRange(todayStart, tomorrowStart),
       getTransactionsByDateRange(yesterdayStart, todayStart),
-    ]).then(([settings, license, wallets, tagihan, goals, lastTx, todayTxs, yesterdayTxs]) => {
+    ]).then(([settings, wallets, tagihan, goals, lastTx, todayTxs, yesterdayTxs]) => {
       if (cancelled || !settings) return
       const currency = settings.primaryCurrency
       Promise.all([
@@ -131,7 +124,6 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
           if (!cancelled) {
             setData({
               settings,
-              license,
               wallets,
               tagihan,
               goals,
@@ -163,7 +155,6 @@ export function HomePage() {
   const nowMs = clock.now()
   const {
     settings,
-    license,
     wallets,
     tagihan,
     goals,
@@ -189,12 +180,10 @@ export function HomePage() {
   const [editWallet, setEditWallet] = useState<Wallet | null>(null)
   const [tagihanSheetOpen, setTagihanSheetOpen] = useState(false)
   const [goalSheetOpen, setGoalSheetOpen] = useState(false)
-  const [goalUpsellOpen, setGoalUpsellOpen] = useState(false)
   const [walletSheetOpen, setWalletSheetOpen] = useState(false)
 
   if (isLoading || !settings) return null
 
-  const isPro = license?.tier === 'pro'
   const currency = settings.activeCurrencyMode || settings.primaryCurrency
   const totalSaldo = wallets
     .filter((w) => w.currency === currency)
@@ -217,9 +206,14 @@ export function HomePage() {
     .filter((t) => t.currency === currency)
     .reduce((sum, t) => sum + t.nominalEstimate, 0)
 
-  const forecastMonths: ForecastMonth[] = isPro
-    ? calcForecast(sisaPasGajian, tagihanTotal, dailyBudget, monthlyIncomeAvg, settings, nowMs)
-    : []
+  const forecastMonths: ForecastMonth[] = calcForecast(
+    sisaPasGajian,
+    tagihanTotal,
+    dailyBudget,
+    monthlyIncomeAvg,
+    settings,
+    nowMs,
+  )
 
   // backup reminder (8.11)
   const backupDismissedAt = (() => {
@@ -293,7 +287,7 @@ export function HomePage() {
     reload()
   }
 
-  const hasDualCurrency = isPro && settings.secondaryCurrency != null
+  const hasDualCurrency = settings.secondaryCurrency != null
   const currencies = hasDualCurrency ? [settings.primaryCurrency, settings.secondaryCurrency!] : []
 
   return (
@@ -302,7 +296,6 @@ export function HomePage() {
       <div className={styles.header}>
         <div className={styles.wordmarkRow}>
           <span className={styles.wordmark}>SISA</span>
-          {isPro && <span className={styles.proLabel}>· pro</span>}
         </div>
 
         <div className={styles.headerRight}>
@@ -391,8 +384,8 @@ export function HomePage() {
         nowMs={nowMs}
       />
 
-      {/* Pro: Forecast 3-bulan (8.4) */}
-      {isPro && forecastMonths.length > 0 && (
+      {/* Forecast 3-bulan (8.4) */}
+      {forecastMonths.length > 0 && (
         <>
           <div className={styles.divider} />
           <ForecastCard
@@ -423,13 +416,7 @@ export function HomePage() {
         totalNabung={totalNabung}
         currency={currency}
         onReorder={handleGoalReorder}
-        onAddTap={() => {
-          if (!isPro && goals.length >= BASIC_MAX_GOALS) {
-            setGoalUpsellOpen(true)
-          } else {
-            setGoalSheetOpen(true)
-          }
-        }}
+        onAddTap={() => setGoalSheetOpen(true)}
         onGoalTap={() => setGoalSheetOpen(true)}
       />
 
@@ -562,11 +549,6 @@ export function HomePage() {
           reload()
         }}
         onDeleteGoal={handleDeleteGoal}
-        maxGoals={isPro ? undefined : BASIC_MAX_GOALS}
-        onLimitReached={() => {
-          setGoalSheetOpen(false)
-          setGoalUpsellOpen(true)
-        }}
       />
 
       <QuickLogSheet
@@ -579,7 +561,7 @@ export function HomePage() {
         onCommit={handleQuickLogCommit}
       />
 
-      {isPro && forecastMonths.length > 0 && (
+      {forecastMonths.length > 0 && (
         <ForecastDetailSheet
           isOpen={forecastDetailOpen}
           onClose={() => setForecastDetailOpen(false)}
@@ -589,41 +571,6 @@ export function HomePage() {
           tagihanTotal={tagihanTotal}
         />
       )}
-
-      <BottomSheet
-        isOpen={goalUpsellOpen}
-        onClose={() => setGoalUpsellOpen(false)}
-        title="Goal tabungan · Pro"
-      >
-        <GoalUpsellContent onNavigate={() => navigate('/settings')} />
-      </BottomSheet>
     </main>
-  )
-}
-
-function GoalUpsellContent({ onNavigate }: { onNavigate: () => void }) {
-  return (
-    <div style={{ padding: '8px 0 16px', display: 'flex', flexDirection: 'column', gap: 12 }}>
-      <p style={{ margin: 0, fontSize: 13, lineHeight: 1.55, color: 'var(--ink-secondary)' }}>
-        Paket Basic mendukung hingga {BASIC_MAX_GOALS} goal. Upgrade ke Pro untuk goal tanpa batas
-        dan fitur lainnya.
-      </p>
-      <button
-        onClick={onNavigate}
-        style={{
-          background: 'var(--accent)',
-          color: '#fff',
-          border: 'none',
-          borderRadius: 8,
-          padding: '10px 16px',
-          fontSize: 13,
-          fontWeight: 600,
-          cursor: 'pointer',
-          fontFamily: 'var(--font-sans)',
-        }}
-      >
-        Lihat paket Pro →
-      </button>
-    </div>
   )
 }

@@ -15,8 +15,6 @@ interface Props {
   onUpdate: () => Promise<void>
   showAdd?: boolean
   onDeleteGoal?: (id: number) => Promise<void>
-  maxGoals?: number
-  onLimitReached?: () => void
 }
 
 type Step = 'list' | 'form'
@@ -30,8 +28,6 @@ export function ProfilGoalSheet({
   onUpdate,
   showAdd = true,
   onDeleteGoal,
-  maxGoals,
-  onLimitReached,
 }: Props) {
   const [step, setStep] = useState<Step>('list')
   const [editId, setEditId] = useState<number | null>(null)
@@ -118,14 +114,7 @@ export function ProfilGoalSheet({
           ))}
           <div className={styles.fieldNote}>Urutan goal diatur di Home lewat drag-drop.</div>
           {showAdd && (
-            <button
-              className={styles.ghostBtn}
-              onClick={
-                maxGoals !== undefined && goals.length >= maxGoals
-                  ? () => onLimitReached?.()
-                  : openAdd
-              }
-            >
+            <button className={styles.ghostBtn} onClick={openAdd}>
               + Tambah goal
             </button>
           )}

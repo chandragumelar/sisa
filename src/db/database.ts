@@ -12,7 +12,6 @@ export type IncomeType = 'tetap' | 'freelance' | 'mix'
 export type WeekendBehavior = 'maju-jumat' | 'mundur-senin' | 'tetap' | 'tidak-konsisten'
 export type Theme = 'light' | 'dark' | 'system'
 export type Language = 'id' | 'en'
-export type Tier = 'basic' | 'pro'
 export type LicenseStatus = 'unactivated' | 'active' | 'expired' | 'invalid' | 'tampered'
 export type MetaKey = 'schemaVersion' | 'installId'
 
@@ -83,7 +82,7 @@ export interface Settings {
   incomeDay: number | null // 1–31 for tetap/mix
   freelanceMinBalance: number | null // target minimum for freelance
   primaryCurrency: string // ISO 4217
-  secondaryCurrency: string | null // Pro only
+  secondaryCurrency: string | null
   activeCurrencyMode: string // current currency context (Pro: one of the two currencies)
   weekendBehavior: WeekendBehavior | null // null until first payday falls on a weekend
   onboardingCompleted: boolean
@@ -94,7 +93,6 @@ export interface Settings {
 export interface LicenseRecord {
   id: 1
   rawKey: string // full key string; never log this
-  tier: Tier
   version: number // payload.v from key format
   issuedAt: number // epoch ms
   expiresAt: number // epoch ms

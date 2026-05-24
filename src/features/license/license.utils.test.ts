@@ -55,7 +55,6 @@ function b64url(bytes: Uint8Array): string {
 async function makeKey(overrides: Partial<LicensePayload> = {}): Promise<string> {
   const payload: LicensePayload = {
     v: 1,
-    tier: 'basic',
     iat: NOW_SEC - 3600,
     exp: NOW_SEC + 90 * 86400,
     bid: 'aabbccdd',
@@ -70,7 +69,6 @@ function makeRecord(rawKey: string, overrides: Partial<LicenseRecord> = {}): Lic
   return {
     id: 1,
     rawKey,
-    tier: 'basic',
     version: 1,
     issuedAt: NOW_MS - 3_600_000,
     expiresAt: NOW_MS + 90 * 86_400_000,
@@ -85,16 +83,12 @@ function makeRecord(rawKey: string, overrides: Partial<LicenseRecord> = {}): Lic
 // verifyLicenseKey
 // ---------------------------------------------------------------------------
 describe('verifyLicenseKey', () => {
-  it('valid — correctly signed, unexpired basic key', async () => {
+  it('valid — correctly signed, unexpired key', async () => {
     const result = await verifyLicenseKey(await makeKey(), clock)
     expect(result.status).toBe('valid')
     if (result.status === 'valid') {
-      expect(result.payload).toMatchObject({ v: 1, tier: 'basic', bid: 'aabbccdd' })
+      expect(result.payload).toMatchObject({ v: 1, bid: 'aabbccdd' })
     }
-  })
-
-  it('valid — pro tier', async () => {
-    expect((await verifyLicenseKey(await makeKey({ tier: 'pro' }), clock)).status).toBe('valid')
   })
 
   it('valid — exp equals now (boundary: strictly less than, so equal = not expired)', async () => {
@@ -119,7 +113,7 @@ describe('verifyLicenseKey', () => {
     const [, sig] = (await makeKey()).split('.')
     const fakePayload = b64url(
       new TextEncoder().encode(
-        JSON.stringify({ v: 1, tier: 'pro', iat: 0, exp: 9_999_999_999, bid: 'hacked00' }),
+        JSON.stringify({ v: 1, iat: 0, exp: 9_999_999_999, bid: 'hacked00' }),
       ),
     )
     expect((await verifyLicenseKey(`${fakePayload}.${sig}`, clock)).status).toBe('invalid')
@@ -130,23 +124,8 @@ describe('verifyLicenseKey', () => {
     expect((await verifyLicenseKey(key, clock)).status).toBe('invalid')
   })
 
-  it('invalid — unknown tier value', async () => {
-    const payload = {
-      v: 1,
-      tier: 'enterprise',
-      iat: NOW_SEC - 1,
-      exp: NOW_SEC + 1000,
-      bid: 'aabbccdd',
-    }
-    const seg = b64url(new TextEncoder().encode(JSON.stringify(payload)))
-    const sig = await crypto.subtle.sign('Ed25519', privKey, new TextEncoder().encode(seg))
-    expect((await verifyLicenseKey(`${seg}.${b64url(new Uint8Array(sig))}`, clock)).status).toBe(
-      'invalid',
-    )
-  })
-
   it('invalid — missing required fields in payload', async () => {
-    const payload = { v: 1, tier: 'basic' }
+    const payload = { v: 1 }
     const seg = b64url(new TextEncoder().encode(JSON.stringify(payload)))
     const sig = await crypto.subtle.sign('Ed25519', privKey, new TextEncoder().encode(seg))
     expect((await verifyLicenseKey(`${seg}.${b64url(new Uint8Array(sig))}`, clock)).status).toBe(
@@ -159,16 +138,14 @@ describe('verifyLicenseKey', () => {
 // activateLicense
 // ---------------------------------------------------------------------------
 describe('activateLicense', () => {
-  it('returns ok with tier and persists correct record for valid key', async () => {
-    const key = await makeKey({ tier: 'pro' })
+  it('returns ok and persists correct record for valid key', async () => {
+    const key = await makeKey()
     const result = await activateLicense(key, clock)
     expect(result.ok).toBe(true)
-    if (result.ok) expect(result.tier).toBe('pro')
     expect(vi.mocked(saveLicense)).toHaveBeenCalledWith(
       expect.objectContaining({
         id: 1,
         rawKey: key,
-        tier: 'pro',
         version: 1,
         buyerIdHash: 'aabbccdd',
         lastSeenAt: NOW_MS,

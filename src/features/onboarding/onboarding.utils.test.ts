@@ -33,34 +33,28 @@ describe('getProgressCount', () => {
 // ---------------------------------------------------------------------------
 describe('getNextStep', () => {
   it('language → license', () => {
-    expect(getNextStep('language', null, null)).toBe('license')
+    expect(getNextStep('language', null)).toBe('license')
   })
   it('license → mentalModel', () => {
-    expect(getNextStep('license', null, 'basic')).toBe('mentalModel')
+    expect(getNextStep('license', null)).toBe('mentalModel')
   })
   it('mentalModel → incomeType', () => {
-    expect(getNextStep('mentalModel', null, 'basic')).toBe('incomeType')
+    expect(getNextStep('mentalModel', null)).toBe('incomeType')
   })
   it('incomeType → incomeDetail', () => {
-    expect(getNextStep('incomeType', 'tetap', 'basic')).toBe('incomeDetail')
+    expect(getNextStep('incomeType', 'tetap')).toBe('incomeDetail')
   })
   it('incomeDetail → currency', () => {
-    expect(getNextStep('incomeDetail', 'tetap', 'basic')).toBe('currency')
+    expect(getNextStep('incomeDetail', 'tetap')).toBe('currency')
   })
   it('currency → wallet', () => {
-    expect(getNextStep('currency', 'tetap', 'basic')).toBe('wallet')
+    expect(getNextStep('currency', 'tetap')).toBe('wallet')
   })
-  it('wallet + basic → done', () => {
-    expect(getNextStep('wallet', 'tetap', 'basic')).toBe('done')
-  })
-  it('wallet + pro → currency2', () => {
-    expect(getNextStep('wallet', 'tetap', 'pro')).toBe('currency2')
-  })
-  it('wallet + null tier → done', () => {
-    expect(getNextStep('wallet', 'tetap', null)).toBe('done')
+  it('wallet → currency2 (always)', () => {
+    expect(getNextStep('wallet', 'tetap')).toBe('currency2')
   })
   it('currency2 → done', () => {
-    expect(getNextStep('currency2', 'tetap', 'pro')).toBe('done')
+    expect(getNextStep('currency2', 'tetap')).toBe('done')
   })
 })
 
