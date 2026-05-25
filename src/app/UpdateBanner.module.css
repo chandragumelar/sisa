@@ -6,7 +6,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  background: var(--ink-primary);
+  background: var(--ink);
   color: #fff;
   padding: 10px 14px;
   border-radius: 10px;

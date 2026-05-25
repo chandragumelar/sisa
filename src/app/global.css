@@ -17,11 +17,11 @@ html {
 }
 
 body {
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   font-size: 14px;
   line-height: 1.4;
-  color: var(--ink-primary);
-  background-color: var(--canvas);
+  color: var(--ink);
+  background-color: var(--bg);
 
   /* Alternate 'l' glyph — cleaner, less ambiguous */
   font-feature-settings: 'cv11';
