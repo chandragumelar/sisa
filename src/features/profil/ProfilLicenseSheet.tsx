@@ -3,6 +3,8 @@ import { useClock } from '@/app/providers/useClock'
 import { activateLicense } from '@/features/license/license.utils'
 import type { LicenseRecord } from '@/db/database'
 import { BottomSheet } from '@/shared/components/BottomSheet'
+import { useLanguage } from '@/app/providers/useLanguage'
+import { t, toLocale } from '@/shared/strings/strings'
 import styles from './ProfilPage.module.css'
 
 interface Props {
@@ -14,6 +16,7 @@ interface Props {
 }
 
 export function ProfilLicenseSheet({ isOpen, onClose, license, nowMs, onUpdate }: Props) {
+  const lang = useLanguage()
   const clock = useClock()
   const [keyInput, setKeyInput] = useState('')
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'invalid' | 'expired'>(
@@ -35,7 +38,7 @@ export function ProfilLicenseSheet({ isOpen, onClose, license, nowMs, onUpdate }
 
   const daysLeft = license ? Math.max(0, Math.ceil((license.expiresAt - nowMs) / 86_400_000)) : 0
   const expiresDate = license
-    ? new Date(license.expiresAt).toLocaleDateString('id-ID', {
+    ? new Date(license.expiresAt).toLocaleDateString(toLocale(lang), {
         day: 'numeric',
         month: 'long',
         year: 'numeric',
@@ -43,26 +46,28 @@ export function ProfilLicenseSheet({ isOpen, onClose, license, nowMs, onUpdate }
     : null
 
   return (
-    <BottomSheet isOpen={isOpen} onClose={onClose} title="Lisensi">
+    <BottomSheet isOpen={isOpen} onClose={onClose} title={t('profil.license_title', lang)}>
       <div className={styles.sheetForm}>
         {license && (
           <div className={styles.licenseCard}>
             <div className={styles.licenseRow}>
-              <span className={styles.licenseKey}>status</span>
-              <span className={styles.tierBadge}>aktif</span>
+              <span className={styles.licenseKey}>{t('profil.license_status_label', lang)}</span>
+              <span className={styles.tierBadge}>{t('profil.license_active', lang)}</span>
             </div>
             <div className={styles.licenseRow}>
-              <span className={styles.licenseKey}>masa aktif</span>
+              <span className={styles.licenseKey}>{t('profil.license_expires_label', lang)}</span>
               <span className={styles.licenseVal}>
-                {daysLeft} hari lagi · s/d {expiresDate}
+                {t('profil.license_days_left', lang)
+                  .replace('{n}', String(daysLeft))
+                  .replace('{date}', expiresDate ?? '')}
               </span>
             </div>
           </div>
         )}
-        {!license && <div className={styles.emptyNote}>Lisensi belum diaktifkan.</div>}
+        {!license && <div className={styles.emptyNote}>{t('profil.license_not_active', lang)}</div>}
 
         <div className={styles.fieldLabel}>
-          {license ? 'Ganti kode lisensi' : 'Masukkan kode lisensi'}
+          {license ? t('profil.license_change', lang) : t('profil.license_enter', lang)}
         </div>
         <input
           className={styles.fieldInput}
@@ -72,11 +77,13 @@ export function ProfilLicenseSheet({ isOpen, onClose, license, nowMs, onUpdate }
           onChange={(e) => setKeyInput(e.target.value.trim())}
         />
         {status === 'invalid' && (
-          <div className={styles.errorMsg}>Kode tidak valid atau tanda tangan tidak cocok.</div>
+          <div className={styles.errorMsg}>{t('profil.license_err_invalid', lang)}</div>
         )}
-        {status === 'expired' && <div className={styles.errorMsg}>Kode sudah kadaluarsa.</div>}
+        {status === 'expired' && (
+          <div className={styles.errorMsg}>{t('profil.license_err_expired', lang)}</div>
+        )}
         {status === 'success' && (
-          <div className={styles.successMsg}>Lisensi berhasil diaktifkan!</div>
+          <div className={styles.successMsg}>{t('profil.license_success', lang)}</div>
         )}
 
         <button
@@ -84,10 +91,12 @@ export function ProfilLicenseSheet({ isOpen, onClose, license, nowMs, onUpdate }
           onClick={handleActivate}
           disabled={!keyInput || status === 'loading'}
         >
-          {status === 'loading' ? 'Memverifikasi…' : 'Aktifkan'}
+          {status === 'loading'
+            ? t('profil.license_verifying', lang)
+            : t('profil.license_activate', lang)}
         </button>
 
-        <div className={styles.fieldLabel}>perpanjang / beli baru</div>
+        <div className={styles.fieldLabel}>{t('profil.license_buy_label', lang)}</div>
         <a
           className={styles.buyLink}
           href="https://clicky.me/sisa"

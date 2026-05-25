@@ -8,6 +8,9 @@ import {
 import { BottomSheet } from '@/shared/components/BottomSheet'
 import { QuickLogSheet } from '@/features/quickLog/QuickLogSheet'
 import type { QuickLogMode } from '@/features/quickLog/quickLog.utils'
+import { useLanguage } from '@/app/providers/useLanguage'
+import { t, toLocale } from '@/shared/strings/strings'
+import type { Language } from '@/db/database'
 import styles from './HistorySheet.module.css'
 
 interface Props {
@@ -22,38 +25,31 @@ interface Props {
 
 type FilterMode = 'semua' | 'keluar' | 'masuk' | 'nabung'
 
-const FILTERS: { key: FilterMode; label: string }[] = [
-  { key: 'semua', label: 'Semua' },
-  { key: 'keluar', label: 'Keluar' },
-  { key: 'masuk', label: 'Masuk' },
-  { key: 'nabung', label: 'Nabung' },
-]
-
 const EDITABLE_TYPES: Transaction['type'][] = ['keluar', 'masuk', 'nabung']
 
-function relativeDate(dateMs: number, nowMs: number): string {
+function relativeDate(dateMs: number, nowMs: number, lang: Language): string {
   const now = new Date(nowMs)
   const d = new Date(dateMs)
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
   const yesterdayStart = todayStart - 86_400_000
 
-  if (dateMs >= todayStart) return 'Hari ini'
-  if (dateMs >= yesterdayStart) return 'Kemarin'
-  return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })
+  if (dateMs >= todayStart) return t('history.today', lang)
+  if (dateMs >= yesterdayStart) return t('history.yesterday', lang)
+  return d.toLocaleDateString(toLocale(lang), { day: 'numeric', month: 'short' })
 }
 
-function typeLabel(type: Transaction['type']): string {
+function typeLabel(type: Transaction['type'], lang: Language): string {
   switch (type) {
     case 'keluar':
-      return 'Pengeluaran'
+      return t('history.type_keluar', lang)
     case 'masuk':
-      return 'Pemasukan'
+      return t('history.type_masuk', lang)
     case 'nabung':
-      return 'Nabung'
+      return t('history.type_nabung', lang)
     case 'tagihan':
-      return 'Tagihan'
+      return t('history.type_tagihan', lang)
     case 'transfer':
-      return 'Transfer'
+      return t('history.type_transfer', lang)
   }
 }
 
@@ -66,11 +62,19 @@ export function HistorySheet({
   totalNabung,
   onUpdate,
 }: Props) {
+  const lang = useLanguage()
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [filter, setFilter] = useState<FilterMode>('semua')
   const [deletingId, setDeletingId] = useState<number | null>(null)
   const [editTx, setEditTx] = useState<Transaction | null>(null)
   const [tick, setTick] = useState(0)
+
+  const FILTERS: { key: FilterMode; label: string }[] = [
+    { key: 'semua', label: t('history.filter_all', lang) },
+    { key: 'keluar', label: t('history.filter_keluar', lang) },
+    { key: 'masuk', label: t('history.filter_masuk', lang) },
+    { key: 'nabung', label: t('history.filter_nabung', lang) },
+  ]
 
   function reload() {
     setTick((n) => n + 1)
@@ -89,11 +93,12 @@ export function HistorySheet({
   }
 
   const walletMap = Object.fromEntries(wallets.map((w) => [w.id!, w.name]))
-  const filtered = filter === 'semua' ? transactions : transactions.filter((t) => t.type === filter)
+  const filtered =
+    filter === 'semua' ? transactions : transactions.filter((tx) => tx.type === filter)
 
   return (
     <>
-      <BottomSheet isOpen={isOpen} onClose={onClose} title="Riwayat">
+      <BottomSheet isOpen={isOpen} onClose={onClose} title={t('history.title', lang)}>
         <div className={styles.filters}>
           {FILTERS.map((f) => (
             <button
@@ -107,35 +112,37 @@ export function HistorySheet({
         </div>
 
         {filtered.length === 0 ? (
-          <div className={styles.empty}>Belum ada catatan</div>
+          <div className={styles.empty}>{t('history.empty', lang)}</div>
         ) : (
           <div className={styles.list}>
-            {filtered.map((t) => (
-              <div key={t.id} className={styles.row}>
+            {filtered.map((tx) => (
+              <div key={tx.id} className={styles.row}>
                 <div className={styles.rowLeft}>
-                  <span className={styles.rowName}>{t.label ?? t.note ?? typeLabel(t.type)}</span>
-                  {t.note ? <span className={styles.rowNote}>{t.note}</span> : null}
+                  <span className={styles.rowName}>
+                    {tx.label ?? tx.note ?? typeLabel(tx.type, lang)}
+                  </span>
+                  {tx.note ? <span className={styles.rowNote}>{tx.note}</span> : null}
                   <span className={styles.rowMeta}>
-                    {walletMap[t.walletId] ?? '—'} · {relativeDate(t.date, nowMs)}
+                    {walletMap[tx.walletId] ?? '—'} · {relativeDate(tx.date, nowMs, lang)}
                   </span>
                 </div>
                 <span
                   className={
-                    t.type === 'masuk' || t.type === 'nabung' ? styles.amountIn : styles.amountOut
+                    tx.type === 'masuk' || tx.type === 'nabung' ? styles.amountIn : styles.amountOut
                   }
                 >
-                  {t.type === 'masuk' || t.type === 'nabung' ? '+' : '−'}
-                  {formatCurrency(Math.abs(t.amount), t.currency ?? currency)}
+                  {tx.type === 'masuk' || tx.type === 'nabung' ? '+' : '−'}
+                  {formatCurrency(Math.abs(tx.amount), tx.currency ?? currency)}
                 </span>
-                {EDITABLE_TYPES.includes(t.type) && (
+                {EDITABLE_TYPES.includes(tx.type) && (
                   <div className={styles.rowActions}>
-                    {deletingId === t.id ? (
+                    {deletingId === tx.id ? (
                       <div className={styles.confirmRow}>
                         <button
                           className={styles.confirmDanger}
-                          onClick={() => handleDelete(t.id!)}
+                          onClick={() => handleDelete(tx.id!)}
                         >
-                          Hapus
+                          {t('common.delete', lang)}
                         </button>
                         <button
                           className={styles.confirmCancel}
@@ -148,15 +155,15 @@ export function HistorySheet({
                       <>
                         <button
                           className={styles.actionBtn}
-                          onClick={() => setEditTx(t)}
-                          aria-label="Edit"
+                          onClick={() => setEditTx(tx)}
+                          aria-label={t('history.edit_aria', lang)}
                         >
                           ✎
                         </button>
                         <button
                           className={styles.actionBtn}
-                          onClick={() => setDeletingId(t.id!)}
-                          aria-label="Hapus"
+                          onClick={() => setDeletingId(tx.id!)}
+                          aria-label={t('history.delete_aria', lang)}
                         >
                           ✕
                         </button>

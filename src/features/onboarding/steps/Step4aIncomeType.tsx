@@ -1,17 +1,20 @@
 import { useState } from 'react'
 import type { IncomeType } from '@/db/database'
+import { useLanguage } from '@/app/providers/useLanguage'
+import { t } from '@/shared/strings/strings'
 
 interface Props {
   onNext: (incomeType: IncomeType) => void
 }
 
 export function Step4aIncomeType({ onNext }: Props) {
+  const lang = useLanguage()
   const [selected, setSelected] = useState<IncomeType | null>(null)
 
   return (
     <>
-      <h1 className="ob-heading">Tipe pemasukan lo</h1>
-      <p className="ob-subheading">Ini buat ngitung kapan duit masuk.</p>
+      <h1 className="ob-heading">{t('ob.step4a.heading', lang)}</h1>
+      <p className="ob-subheading">{t('ob.step4a.sub', lang)}</p>
 
       <button
         className={`ob-option${selected === 'tetap' ? ' ob-option-selected' : ''}`}
@@ -19,8 +22,8 @@ export function Step4aIncomeType({ onNext }: Props) {
       >
         <span className="ob-radio" />
         <span className="ob-option-label">
-          Gaji tetap
-          <span className="ob-option-sub">Masuk tanggal yang sama tiap bulan</span>
+          {t('ob.step4a.tetap_label', lang)}
+          <span className="ob-option-sub">{t('ob.step4a.tetap_sub', lang)}</span>
         </span>
       </button>
 
@@ -30,8 +33,8 @@ export function Step4aIncomeType({ onNext }: Props) {
       >
         <span className="ob-radio" />
         <span className="ob-option-label">
-          Freelance / tidak tetap
-          <span className="ob-option-sub">Nggak tentu tanggal dan jumlahnya</span>
+          {t('ob.step4a.freelance_label', lang)}
+          <span className="ob-option-sub">{t('ob.step4a.freelance_sub', lang)}</span>
         </span>
       </button>
 
@@ -41,8 +44,8 @@ export function Step4aIncomeType({ onNext }: Props) {
       >
         <span className="ob-radio" />
         <span className="ob-option-label">
-          Campuran
-          <span className="ob-option-sub">Ada gaji, ada juga pemasukan lain</span>
+          {t('ob.step4a.mix_label', lang)}
+          <span className="ob-option-sub">{t('ob.step4a.mix_sub', lang)}</span>
         </span>
       </button>
 
@@ -53,7 +56,7 @@ export function Step4aIncomeType({ onNext }: Props) {
         disabled={!selected}
         onClick={() => selected && onNext(selected)}
       >
-        Lanjut
+        {t('ob.step4a.next', lang)}
       </button>
     </>
   )

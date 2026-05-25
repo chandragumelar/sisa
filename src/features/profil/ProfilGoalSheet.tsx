@@ -4,6 +4,8 @@ import type { Goal } from '@/db/database'
 import { BottomSheet } from '@/shared/components/BottomSheet'
 import { formatCurrency, getCurrencySymbol } from '@/shared/utils/formatCurrency'
 import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
+import { useLanguage } from '@/app/providers/useLanguage'
+import { t } from '@/shared/strings/strings'
 import styles from './ProfilPage.module.css'
 
 interface Props {
@@ -29,6 +31,7 @@ export function ProfilGoalSheet({
   showAdd = true,
   onDeleteGoal,
 }: Props) {
+  const lang = useLanguage()
   const [step, setStep] = useState<Step>('list')
   const [editId, setEditId] = useState<number | null>(null)
   const [name, setName] = useState('')
@@ -77,6 +80,11 @@ export function ProfilGoalSheet({
     await onUpdate()
   }
 
+  const titleMap: Record<Step, string> = {
+    list: t('profil.goals_title_list', lang),
+    form: editId ? t('profil.goals_title_edit', lang) : t('profil.goals_title_add', lang),
+  }
+
   return (
     <BottomSheet
       isOpen={isOpen}
@@ -85,11 +93,13 @@ export function ProfilGoalSheet({
         setDeleteId(null)
         onClose()
       }}
-      title={step === 'list' ? 'Goal tabungan' : editId ? 'Edit goal' : 'Tambah goal'}
+      title={titleMap[step]}
     >
       {step === 'list' && (
         <div className={styles.sheetForm}>
-          {goals.length === 0 && <div className={styles.emptyNote}>Belum ada goal.</div>}
+          {goals.length === 0 && (
+            <div className={styles.emptyNote}>{t('profil.goals_empty', lang)}</div>
+          )}
           {goals.map((g) => (
             <div key={g.id} className={styles.itemRow}>
               <button className={styles.itemBody} onClick={() => openEdit(g)}>
@@ -99,10 +109,10 @@ export function ProfilGoalSheet({
               {deleteId === g.id ? (
                 <div className={styles.inlineConfirm}>
                   <button className={styles.dangerBtn} onClick={() => handleDelete(g.id!)}>
-                    Hapus
+                    {t('common.delete', lang)}
                   </button>
                   <button className={styles.ghostBtn} onClick={() => setDeleteId(null)}>
-                    Batal
+                    {t('common.cancel', lang)}
                   </button>
                 </div>
               ) : (
@@ -112,10 +122,10 @@ export function ProfilGoalSheet({
               )}
             </div>
           ))}
-          <div className={styles.fieldNote}>Urutan goal diatur di Home lewat drag-drop.</div>
+          <div className={styles.fieldNote}>{t('profil.goals_reorder_hint', lang)}</div>
           {showAdd && (
             <button className={styles.ghostBtn} onClick={openAdd}>
-              + Tambah goal
+              {t('profil.goals_title_add', lang)}
             </button>
           )}
         </div>
@@ -123,15 +133,15 @@ export function ProfilGoalSheet({
 
       {step === 'form' && (
         <div className={styles.sheetForm}>
-          <div className={styles.fieldLabel}>nama goal</div>
+          <div className={styles.fieldLabel}>{t('profil.goals_name_label', lang)}</div>
           <input
             className={styles.fieldInput}
-            placeholder="e.g. Emergency fund, Liburan"
+            placeholder={t('profil.goals_name_placeholder', lang)}
             value={name}
             onChange={(e) => setName(e.target.value)}
             autoFocus
           />
-          <div className={styles.fieldLabel}>target nominal</div>
+          <div className={styles.fieldLabel}>{t('profil.goals_target_label', lang)}</div>
           <div className={styles.amountRow}>
             <span className={styles.prefix}>{getCurrencySymbol(currency)}</span>
             <input
@@ -144,10 +154,10 @@ export function ProfilGoalSheet({
             />
           </div>
           <button className={styles.primaryBtn} onClick={handleSave} disabled={!name.trim()}>
-            Simpan
+            {t('common.save', lang)}
           </button>
           <button className={styles.ghostBtn} onClick={() => setStep('list')}>
-            Batal
+            {t('common.cancel', lang)}
           </button>
         </div>
       )}

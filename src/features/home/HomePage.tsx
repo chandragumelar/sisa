@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useClock } from '@/app/providers/useClock'
+import { useLanguage } from '@/app/providers/useLanguage'
+import { t } from '@/shared/strings/strings'
 import { getSettings, patchSettings } from '@/db/settings.repository'
 import { getAllWallets } from '@/db/wallets.repository'
 import {
@@ -162,6 +164,7 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
 export function HomePage() {
   const clock = useClock()
   const navigate = useNavigate()
+  const lang = useLanguage()
   const nowMs = clock.now()
   const {
     settings,
@@ -238,19 +241,19 @@ export function HomePage() {
     setToast(null)
   }
 
-  async function handleTagihanPay(t: Tagihan, walletId: number, amount: number, dateMs: number) {
+  async function handleTagihanPay(tg: Tagihan, walletId: number, amount: number, dateMs: number) {
     setMarkPaidTagihan(null)
     try {
-      const result = await commitTagihanPayment(t.id!, walletId, amount, t.currency, dateMs)
+      const result = await commitTagihanPayment(tg.id!, walletId, amount, tg.currency, dateMs)
       reload()
       setToast({
-        message: `${t.name} ditandai dibayar`,
+        message: t('home.toast_paid', lang).replace('{name}', tg.name),
         onUndo: async () => {
           await revertTagihanPayment(result)
           reload()
           dismissToast()
         },
-        onEdit: () => setMarkPaidTagihan(t),
+        onEdit: () => setMarkPaidTagihan(tg),
       })
     } catch {
       // TODO: error toast
@@ -262,10 +265,10 @@ export function HomePage() {
     setToast({
       message:
         mode === 'nabung'
-          ? 'Nabung dicatat'
+          ? t('home.toast_nabung', lang)
           : mode === 'masuk'
-            ? 'Pemasukan dicatat'
-            : 'Pengeluaran dicatat',
+            ? t('home.toast_masuk', lang)
+            : t('home.toast_keluar', lang),
       onUndo: async () => {
         await deleteTransactionAndRevertBalance(txId)
         reload()

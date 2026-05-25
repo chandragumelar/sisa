@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { activateLicense } from '@/features/license/license.utils'
 import { useClock } from '@/app/providers/useClock'
+import { useLanguage } from '@/app/providers/useLanguage'
+import { t } from '@/shared/strings/strings'
 
 interface Props {
   onNext: () => void
@@ -8,6 +10,7 @@ interface Props {
 
 export function Step2License({ onNext }: Props) {
   const clock = useClock()
+  const lang = useLanguage()
   const [key, setKey] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -22,15 +25,15 @@ export function Step2License({ onNext }: Props) {
       if (!result.ok) {
         setError(
           result.reason === 'expired'
-            ? 'kode sudah expired — perpanjang atau beli baru ›'
-            : 'kode ga valid, cek email lo lagi',
+            ? t('ob.step2.err_expired', lang)
+            : t('ob.step2.err_invalid', lang),
         )
         return
       }
       onNext()
     } catch (err) {
       console.error('[Step2License] gagal aktivasi', { error: err })
-      setError('terjadi kesalahan, coba lagi')
+      setError(t('ob.step2.err_other', lang))
     } finally {
       setIsLoading(false)
     }
@@ -42,8 +45,8 @@ export function Step2License({ onNext }: Props) {
 
   return (
     <>
-      <h1 className="ob-heading">Tempel kode lisensi</h1>
-      <p className="ob-subheading">Kode dikirim ke email lo abis beli.</p>
+      <h1 className="ob-heading">{t('ob.step2.heading', lang)}</h1>
+      <p className="ob-subheading">{t('ob.step2.sub', lang)}</p>
 
       <div className="ob-field">
         <input
@@ -60,7 +63,7 @@ export function Step2License({ onNext }: Props) {
         {error && <div className="ob-error">{error}</div>}
       </div>
 
-      <div className="ob-hint">Paste kode dari email lo</div>
+      <div className="ob-hint">{t('ob.step2.hint', lang)}</div>
 
       <div className="ob-grow" />
 
@@ -69,11 +72,11 @@ export function Step2License({ onNext }: Props) {
         disabled={!key.trim() || isLoading}
         onClick={() => void handleActivate()}
       >
-        {isLoading ? 'Memverifikasi…' : 'Aktivasi'}
+        {isLoading ? t('ob.step2.verify', lang) : t('ob.step2.activate', lang)}
       </button>
 
       <button className="ob-link" onClick={() => window.open('#', '_blank')}>
-        Belum punya kode? Beli di sini ›
+        {t('ob.step2.buy_cta', lang)}
       </button>
     </>
   )

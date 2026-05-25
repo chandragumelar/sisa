@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { patchSettings } from '@/db/settings.repository'
 import type { Settings, IncomeType, WeekendBehavior } from '@/db/database'
 import { BottomSheet } from '@/shared/components/BottomSheet'
+import { useLanguage } from '@/app/providers/useLanguage'
+import { t } from '@/shared/strings/strings'
 import styles from './ProfilPage.module.css'
 
 interface Props {
@@ -13,6 +15,7 @@ interface Props {
 }
 
 export function ProfilIncomeSheet({ isOpen, onClose, settings, onUpdate }: Props) {
+  const lang = useLanguage()
   const [incomeType, setIncomeType] = useState<IncomeType>(settings.incomeType)
   const [incomeDay, setIncomeDay] = useState(String(settings.incomeDay ?? 25))
   const [weekendBehavior, setWeekendBehavior] = useState<WeekendBehavior | null>(
@@ -34,25 +37,38 @@ export function ProfilIncomeSheet({ isOpen, onClose, settings, onUpdate }: Props
 
   const showPayday = incomeType !== 'freelance'
 
+  const incomeTypeLabels: Record<IncomeType, string> = {
+    tetap: t('profil.income_type_tetap', lang),
+    freelance: t('profil.income_type_freelance', lang),
+    mix: t('profil.income_type_mix', lang),
+  }
+
+  const weekendOptions: [WeekendBehavior, string][] = [
+    ['maju-jumat', t('profil.income_weekend_maju', lang)],
+    ['mundur-senin', t('profil.income_weekend_mundur', lang)],
+    ['tetap', t('profil.income_weekend_tetap', lang)],
+    ['tidak-konsisten', t('profil.income_weekend_inconsistent', lang)],
+  ]
+
   return (
-    <BottomSheet isOpen={isOpen} onClose={onClose} title="Profil keuangan">
+    <BottomSheet isOpen={isOpen} onClose={onClose} title={t('profil.income_title', lang)}>
       <div className={styles.sheetForm}>
-        <div className={styles.fieldLabel}>tipe income</div>
+        <div className={styles.fieldLabel}>{t('profil.income_type_label', lang)}</div>
         <div className={styles.segmented}>
-          {(['tetap', 'freelance', 'mix'] as IncomeType[]).map((t) => (
+          {(['tetap', 'freelance', 'mix'] as IncomeType[]).map((type) => (
             <button
-              key={t}
-              className={`${styles.seg} ${incomeType === t ? styles.segActive : ''}`}
-              onClick={() => setIncomeType(t)}
+              key={type}
+              className={`${styles.seg} ${incomeType === type ? styles.segActive : ''}`}
+              onClick={() => setIncomeType(type)}
             >
-              {t}
+              {incomeTypeLabels[type]}
             </button>
           ))}
         </div>
 
         {showPayday && (
           <>
-            <div className={styles.fieldLabel}>tanggal gajian (1–31)</div>
+            <div className={styles.fieldLabel}>{t('profil.income_day_label', lang)}</div>
             <input
               className={styles.fieldInput}
               type="number"
@@ -62,16 +78,9 @@ export function ProfilIncomeSheet({ isOpen, onClose, settings, onUpdate }: Props
               value={incomeDay}
               onChange={(e) => setIncomeDay(e.target.value.replace(/\D/g, ''))}
             />
-            <div className={styles.fieldLabel}>kalau jatuh di weekend</div>
+            <div className={styles.fieldLabel}>{t('profil.income_weekend_label', lang)}</div>
             <div className={styles.optionList}>
-              {(
-                [
-                  ['maju-jumat', 'Maju ke Jumat'],
-                  ['mundur-senin', 'Mundur ke Senin'],
-                  ['tetap', 'Tetap di hari itu'],
-                  ['tidak-konsisten', 'Tidak konsisten'],
-                ] as [WeekendBehavior, string][]
-              ).map(([val, label]) => (
+              {weekendOptions.map(([val, label]) => (
                 <button
                   key={val}
                   className={`${styles.optionBtn} ${weekendBehavior === val ? styles.optionBtnActive : ''}`}
@@ -85,13 +94,11 @@ export function ProfilIncomeSheet({ isOpen, onClose, settings, onUpdate }: Props
         )}
 
         {incomeType === 'freelance' && (
-          <div className={styles.fieldNote}>
-            Freelance: sisa = saldo minimum akhir bulan. Payday = hari terakhir bulan.
-          </div>
+          <div className={styles.fieldNote}>{t('profil.income_freelance_note', lang)}</div>
         )}
 
         <button className={styles.primaryBtn} onClick={handleSave} disabled={saving}>
-          Simpan
+          {t('profil.income_save', lang)}
         </button>
       </div>
     </BottomSheet>

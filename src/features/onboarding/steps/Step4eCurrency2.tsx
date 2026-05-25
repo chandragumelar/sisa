@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { CurrencyPickerSheet } from '../components/CurrencyPickerSheet'
 import type { Currency } from '@/constants/currencies'
+import { useLanguage } from '@/app/providers/useLanguage'
+import { t } from '@/shared/strings/strings'
 
 interface Props {
   primaryCurrencyCode: string
@@ -8,6 +10,7 @@ interface Props {
 }
 
 export function Step4eCurrency2({ primaryCurrencyCode, onNext }: Props) {
+  const lang = useLanguage()
   const [selected, setSelected] = useState<Currency | null>(null)
   const [sheetOpen, setSheetOpen] = useState(false)
 
@@ -18,10 +21,8 @@ export function Step4eCurrency2({ primaryCurrencyCode, onNext }: Props) {
 
   return (
     <>
-      <h1 className="ob-heading">Mata uang kedua</h1>
-      <p className="ob-subheading">
-        Lo bisa pantau dua mata uang sekaligus. Bisa diatur ulang nanti.
-      </p>
+      <h1 className="ob-heading">{t('ob.step4e.heading', lang)}</h1>
+      <p className="ob-subheading">{t('ob.step4e.sub', lang)}</p>
 
       <div className="ob-field">
         <button className="ob-select-trigger" onClick={() => setSheetOpen(true)}>
@@ -30,7 +31,7 @@ export function Step4eCurrency2({ primaryCurrencyCode, onNext }: Props) {
               {selected.code} — {selected.name}
             </span>
           ) : (
-            <span className="ob-select-placeholder">Pilih mata uang kedua…</span>
+            <span className="ob-select-placeholder">{t('ob.step4e.placeholder', lang)}</span>
           )}
         </button>
       </div>
@@ -39,14 +40,14 @@ export function Step4eCurrency2({ primaryCurrencyCode, onNext }: Props) {
 
       <div className="ob-btn-row">
         <button className="ob-ghost-btn" onClick={() => onNext(null)}>
-          Nanti aja
+          {t('ob.step4e.skip', lang)}
         </button>
         <button
           className="ob-primary-btn"
           disabled={!selected}
           onClick={() => selected && onNext(selected.code)}
         >
-          + Tambah
+          {t('ob.step4e.add', lang)}
         </button>
       </div>
 

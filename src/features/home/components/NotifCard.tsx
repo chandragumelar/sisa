@@ -1,5 +1,7 @@
 import type { Tagihan } from '@/db/database'
 import { getTagihanUrgency } from '../tagihan.utils'
+import { useLanguage } from '@/app/providers/useLanguage'
+import { t } from '@/shared/strings/strings'
 import styles from './NotifCard.module.css'
 
 interface Props {
@@ -9,28 +11,30 @@ interface Props {
 }
 
 export function NotifCard({ tagihan, nowMs, onClick }: Props) {
-  const lewatTempo = tagihan.filter((t) => getTagihanUrgency(t, nowMs) === 'lewat-tempo')
-  const hariIni = tagihan.filter((t) => getTagihanUrgency(t, nowMs) === 'hari-ini')
+  const lang = useLanguage()
+  const lewatTempo = tagihan.filter((tg) => getTagihanUrgency(tg, nowMs) === 'lewat-tempo')
+  const hariIni = tagihan.filter((tg) => getTagihanUrgency(tg, nowMs) === 'hari-ini')
   const urgent = [...lewatTempo, ...hariIni]
 
   if (urgent.length === 0) return null
 
   const preview = urgent
     .slice(0, 2)
-    .map((t) => t.name)
+    .map((tg) => tg.name)
     .join(' & ')
-  const extra = urgent.length > 2 ? ` +${urgent.length - 2} lainnya` : ''
+  const extra =
+    urgent.length > 2 ? ' ' + t('notif.extra', lang).replace('{n}', String(urgent.length - 2)) : ''
 
   const lewatCount = lewatTempo.length
   const hariIniCount = hariIni.length
 
   let message = ''
   if (lewatCount > 0 && hariIniCount > 0) {
-    message = `${lewatCount + hariIniCount} komitmen lewat tempo & jatuh tempo hari ini`
+    message = t('notif.both', lang).replace('{n}', String(lewatCount + hariIniCount))
   } else if (lewatCount > 0) {
-    message = `${lewatCount} komitmen lewat tempo`
+    message = t('notif.overdue', lang).replace('{n}', String(lewatCount))
   } else {
-    message = `${hariIniCount} komitmen jatuh tempo hari ini`
+    message = t('notif.due_today', lang).replace('{n}', String(hariIniCount))
   }
 
   return (

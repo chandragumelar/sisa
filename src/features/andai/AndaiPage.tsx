@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useClock } from '@/app/providers/useClock'
+import { useLanguage } from '@/app/providers/useLanguage'
+import { t } from '@/shared/strings/strings'
+import type { Language } from '@/db/database'
 import { getSettings } from '@/db/settings.repository'
 import { getAllWallets } from '@/db/wallets.repository'
 import { getActiveTagihan } from '@/db/tagihan.repository'
@@ -29,9 +32,36 @@ import styles from './AndaiPage.module.css'
 
 type AddKind = AndaiKind
 
+function kindLabel(kind: AndaiKind, lang: Language): string {
+  switch (kind) {
+    case 'beli':
+      return t('andai.kind_beli', lang)
+    case 'income':
+      return t('andai.kind_income', lang)
+    case 'tagihan':
+      return t('andai.kind_tagihan', lang)
+    case 'target-nabung':
+      return t('andai.kind_target_nabung', lang)
+  }
+}
+
+function kindPlaceholder(kind: AndaiKind, lang: Language): string {
+  switch (kind) {
+    case 'beli':
+      return t('andai.placeholder_beli', lang)
+    case 'income':
+      return t('andai.placeholder_income', lang)
+    case 'tagihan':
+      return t('andai.placeholder_tagihan', lang)
+    case 'target-nabung':
+      return t('andai.placeholder_nabung', lang)
+  }
+}
+
 export function AndaiPage() {
   const clock = useClock()
   const navigate = useNavigate()
+  const lang = useLanguage()
   const nowMs = clock.now()
 
   const [baseline, setBaseline] = useState<AndaiBaseline | null>(null)
@@ -64,7 +94,7 @@ export function AndaiPage() {
           setBaseline(bl)
           setCurrency(s.primaryCurrency)
 
-          const tagihanTotalForForecast = tagihan.reduce((sum, t) => sum + t.nominalEstimate, 0)
+          const tagihanTotalForForecast = tagihan.reduce((sum, tg) => sum + tg.nominalEstimate, 0)
           Promise.all([
             getMonthlyIncomeSummary(s.primaryCurrency),
             getMonthlyExpenseSummary(s.primaryCurrency),
@@ -96,12 +126,11 @@ export function AndaiPage() {
 
   const result = calcAndai(items, baseline)
 
-  // auto-suggest name from items
   const suggestedName =
     items
       .slice(0, 2)
-      .map((i) => i.desc || kindLabel(i.kind))
-      .join(' + ') || 'skenario baru'
+      .map((i) => i.desc || kindLabel(i.kind, lang))
+      .join(' + ') || (lang === 'en' ? 'new scenario' : 'skenario baru')
 
   function handleAddItem() {
     const amount = parseInt(addAmount, 10)
@@ -111,7 +140,7 @@ export function AndaiPage() {
       {
         id: `${Date.now()}-${Math.random()}`,
         kind: addSheet,
-        desc: addDesc.trim() || kindLabel(addSheet),
+        desc: addDesc.trim() || kindLabel(addSheet, lang),
         amount,
       },
     ])
@@ -166,19 +195,23 @@ export function AndaiPage() {
   return (
     <div className={styles.page}>
       <div className={styles.head}>
-        <button className={styles.backBtn} onClick={() => navigate(-1)} aria-label="Kembali">
+        <button
+          className={styles.backBtn}
+          onClick={() => navigate(-1)}
+          aria-label={t('andai.back_aria', lang)}
+        >
           ‹
         </button>
-        <span className={styles.title}>Andai</span>
-        <span className={styles.titleSub}>skenario hipotetis</span>
+        <span className={styles.title}>{t('andai.title', lang)}</span>
+        <span className={styles.titleSub}>{t('andai.sub', lang)}</span>
       </div>
 
       {/* Baseline card */}
       <div className={styles.baseline}>
-        <div className={styles.baselineLabel}>sekarang · tanpa diandai</div>
+        <div className={styles.baselineLabel}>{t('andai.baseline_label', lang)}</div>
         <div className={styles.baselineGrid}>
           <div className={styles.baselineCell}>
-            <span className={styles.blKey}>saldo operasional</span>
+            <span className={styles.blKey}>{t('andai.baseline_saldo', lang)}</span>
             <span className={styles.blVal}>
               {formatCurrency(
                 Math.max(0, baseline.totalSaldo - baseline.unpaidTagihanTotal),
@@ -187,20 +220,20 @@ export function AndaiPage() {
             </span>
           </div>
           <div className={styles.baselineCell}>
-            <span className={styles.blKey}>total tabungan</span>
+            <span className={styles.blKey}>{t('andai.baseline_tabungan', lang)}</span>
             <span className={styles.blVal}>{formatCurrency(baseline.totalNabung, currency)}</span>
           </div>
         </div>
       </div>
 
       {/* Stack */}
-      <div className={styles.stackLabel}>andai...</div>
+      <div className={styles.stackLabel}>{t('andai.stack_label', lang)}</div>
 
       {items.map((item, i) => (
         <div key={item.id} className={styles.andaiItem}>
           <span className={styles.branch}>{i === items.length - 1 ? '└' : '├'}</span>
           <div className={styles.aiBody}>
-            <div className={styles.aiKind}>{kindLabel(item.kind)}</div>
+            <div className={styles.aiKind}>{kindLabel(item.kind, lang)}</div>
             <div className={styles.aiDesc}>{item.desc}</div>
           </div>
           <span className={styles.aiAmount}>
@@ -210,7 +243,7 @@ export function AndaiPage() {
           <button
             className={styles.aiRemove}
             onClick={() => removeItem(item.id)}
-            aria-label="Hapus"
+            aria-label={t('andai.remove_aria', lang)}
           >
             ✕
           </button>
@@ -221,7 +254,7 @@ export function AndaiPage() {
       <div className={styles.addChips}>
         {(['beli', 'income', 'tagihan', 'target-nabung'] as AndaiKind[]).map((k) => (
           <button key={k} className={styles.addChip} onClick={() => setAddSheet(k)}>
-            <span className={styles.addPlus}>+</span> {kindLabel(k)}
+            <span className={styles.addPlus}>+</span> {kindLabel(k, lang)}
           </button>
         ))}
       </div>
@@ -231,23 +264,23 @@ export function AndaiPage() {
           <div className={styles.divider} />
 
           {/* Results */}
-          <div className={styles.resultLabel}>kalau semua ini kejadian</div>
+          <div className={styles.resultLabel}>{t('andai.result_label', lang)}</div>
 
           <div className={styles.resultCard}>
             <ResultRow
-              label="jatah harian sampai gajian"
+              label={t('andai.result_daily', lang)}
               before={result.dailyBefore}
               after={result.dailyAfter}
               currency={currency}
             />
             <ResultRow
-              label="sisa operasional"
+              label={t('andai.result_sisa', lang)}
               before={result.sisaBefore}
               after={result.sisaAfter}
               currency={currency}
             />
             <ResultRow
-              label="total tabungan"
+              label={t('andai.result_tabungan', lang)}
               before={result.nabungBefore}
               after={result.nabungAfter}
               currency={currency}
@@ -256,7 +289,7 @@ export function AndaiPage() {
 
           {forecastMonths.length > 0 && (
             <div className={styles.andaiForecast}>
-              <div className={styles.andaiForecastLabel}>proyeksi 3 bulan ke depan</div>
+              <div className={styles.andaiForecastLabel}>{t('andai.forecast_label', lang)}</div>
               <div className={styles.andaiForecastCols}>
                 {forecastMonths.map((m) => (
                   <div key={m.label} className={styles.andaiForecastCol}>
@@ -284,7 +317,7 @@ export function AndaiPage() {
             setCompareMode(false)
           }}
         >
-          Reset
+          {t('andai.reset', lang)}
         </button>
 
         <div className={styles.proActions}>
@@ -292,7 +325,7 @@ export function AndaiPage() {
             className={canSave ? styles.saveBtn : `${styles.saveBtn} ${styles.saveBtnDisabled}`}
             onClick={() => canSave && setSaveSheetOpen(true)}
           >
-            Simpan
+            {t('andai.save', lang)}
           </button>
           {savedScenarios.length >= 2 && (
             <button
@@ -304,7 +337,7 @@ export function AndaiPage() {
                 setCompareIds([])
               }}
             >
-              Banding
+              {t('andai.compare', lang)}
             </button>
           )}
         </div>
@@ -314,7 +347,7 @@ export function AndaiPage() {
       {compareMode && compareIds.length === 2 && (
         <div className={styles.compareBar}>
           <button className={styles.compareBarBtn} onClick={() => setCompareSheetOpen(true)}>
-            Bandingkan 2 skenario ini
+            {t('andai.compare_bar', lang)}
           </button>
         </div>
       )}
@@ -332,20 +365,22 @@ export function AndaiPage() {
       <BottomSheet
         isOpen={addSheet !== null}
         onClose={() => setAddSheet(null)}
-        title={addSheet ? `Andai ${kindLabel(addSheet)}` : ''}
+        title={addSheet ? `${t('andai.title', lang)} ${kindLabel(addSheet, lang)}` : ''}
       >
         <div className={styles.addForm}>
-          <div className={styles.addLabel}>Deskripsi (opsional)</div>
+          <div className={styles.addLabel}>{t('andai.add_desc_label', lang)}</div>
           <input
             className={styles.addInput}
             type="text"
-            placeholder={addSheet ? kindPlaceholder(addSheet) : ''}
+            placeholder={addSheet ? kindPlaceholder(addSheet, lang) : ''}
             value={addDesc}
             onChange={(e) => setAddDesc(e.target.value)}
           />
 
           <div className={styles.addLabel}>
-            {addSheet === 'target-nabung' ? 'Target per bulan' : 'Nominal'}
+            {addSheet === 'target-nabung'
+              ? t('andai.add_target_label', lang)
+              : t('andai.add_nominal_label', lang)}
           </div>
           <div className={styles.addAmountRow}>
             <span className={styles.addAmountPrefix}>{getCurrencySymbol(currency)}</span>
@@ -365,7 +400,7 @@ export function AndaiPage() {
             onClick={handleAddItem}
             disabled={!addAmount || parseInt(addAmount, 10) <= 0}
           >
-            Tambah
+            {t('andai.add_submit', lang)}
           </button>
         </div>
       </BottomSheet>
@@ -413,30 +448,4 @@ function ResultRow({
       </span>
     </div>
   )
-}
-
-function kindLabel(kind: AndaiKind): string {
-  switch (kind) {
-    case 'beli':
-      return 'beli'
-    case 'income':
-      return 'income'
-    case 'tagihan':
-      return 'tagihan'
-    case 'target-nabung':
-      return 'target nabung'
-  }
-}
-
-function kindPlaceholder(kind: AndaiKind): string {
-  switch (kind) {
-    case 'beli':
-      return 'e.g. service mobil'
-    case 'income':
-      return 'e.g. gaji, freelance'
-    case 'tagihan':
-      return 'e.g. langganan baru'
-    case 'target-nabung':
-      return 'e.g. nabung tiap bulan'
-  }
 }

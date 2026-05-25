@@ -3,6 +3,8 @@ import type { AndaiBaseline, AndaiItem } from './andai.utils'
 import { calcAndai } from './andai.utils'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
 import { BottomSheet } from '@/shared/components/BottomSheet'
+import { useLanguage } from '@/app/providers/useLanguage'
+import { t } from '@/shared/strings/strings'
 import styles from './CompareSheet.module.css'
 
 interface Props {
@@ -22,12 +24,13 @@ function parseItems(scenario: SavedScenario): AndaiItem[] {
 }
 
 export function CompareSheet({ isOpen, onClose, scenarios, baseline, currency }: Props) {
+  const lang = useLanguage()
   const [a, b] = scenarios
   const resultA = calcAndai(parseItems(a), baseline)
   const resultB = calcAndai(parseItems(b), baseline)
 
   return (
-    <BottomSheet isOpen={isOpen} onClose={onClose} title="Banding skenario">
+    <BottomSheet isOpen={isOpen} onClose={onClose} title={t('andai.compare_sheet_title', lang)}>
       <div className={styles.body}>
         <div className={styles.cols}>
           <div className={styles.colHead}>{a.name}</div>
@@ -35,19 +38,19 @@ export function CompareSheet({ isOpen, onClose, scenarios, baseline, currency }:
         </div>
 
         <CompareRow
-          label="jatah harian"
+          label={t('andai.compare_daily', lang)}
           valA={resultA.dailyAfter}
           valB={resultB.dailyAfter}
           currency={currency}
         />
         <CompareRow
-          label="sisa operasional"
+          label={t('andai.compare_sisa', lang)}
           valA={resultA.sisaAfter}
           valB={resultB.sisaAfter}
           currency={currency}
         />
         <CompareRow
-          label="total tabungan"
+          label={t('andai.compare_tabungan', lang)}
           valA={resultA.nabungAfter}
           valB={resultB.nabungAfter}
           currency={currency}

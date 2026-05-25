@@ -1,12 +1,15 @@
 import { useState } from 'react'
 import { CurrencyPickerSheet } from '../components/CurrencyPickerSheet'
 import type { Currency } from '@/constants/currencies'
+import { useLanguage } from '@/app/providers/useLanguage'
+import { t } from '@/shared/strings/strings'
 
 interface Props {
   onNext: (currencyCode: string) => void
 }
 
 export function Step4cCurrency({ onNext }: Props) {
+  const lang = useLanguage()
   const [selected, setSelected] = useState<Currency | null>(null)
   const [sheetOpen, setSheetOpen] = useState(false)
 
@@ -17,8 +20,8 @@ export function Step4cCurrency({ onNext }: Props) {
 
   return (
     <>
-      <h1 className="ob-heading">Mata uang utama</h1>
-      <p className="ob-subheading">Semua nominal akan ditampilkan dalam mata uang ini.</p>
+      <h1 className="ob-heading">{t('ob.step4c.heading', lang)}</h1>
+      <p className="ob-subheading">{t('ob.step4c.sub', lang)}</p>
 
       <div className="ob-field">
         <button className="ob-select-trigger" onClick={() => setSheetOpen(true)}>
@@ -27,7 +30,7 @@ export function Step4cCurrency({ onNext }: Props) {
               {selected.code} — {selected.name}
             </span>
           ) : (
-            <span className="ob-select-placeholder">Pilih mata uang…</span>
+            <span className="ob-select-placeholder">{t('ob.step4c.placeholder', lang)}</span>
           )}
         </button>
       </div>
@@ -39,7 +42,7 @@ export function Step4cCurrency({ onNext }: Props) {
         disabled={!selected}
         onClick={() => selected && onNext(selected.code)}
       >
-        Lanjut
+        {t('ob.step4c.next', lang)}
       </button>
 
       {sheetOpen && (

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useClock } from '@/app/providers/useClock'
+import { useLanguage, useSetLanguage } from '@/app/providers/useLanguage'
 import { getSettings, patchSettings } from '@/db/settings.repository'
 import { getLicense } from '@/db/license.repository'
 import { hasCurrencyData } from '@/db/wallets.repository'
@@ -13,6 +14,7 @@ import { ALL_CURRENCIES } from '@/constants/currencies'
 import { BottomSheet } from '@/shared/components/BottomSheet'
 import { ProfilIncomeSheet } from '@/features/profil/ProfilIncomeSheet'
 import { ProfilLicenseSheet } from '@/features/profil/ProfilLicenseSheet'
+import { t, toLocale } from '@/shared/strings/strings'
 import {
   buildBackupJSON,
   buildTransactionsCSV,
@@ -30,6 +32,8 @@ interface PageData {
 export function SettingsPage() {
   const clock = useClock()
   const navigate = useNavigate()
+  const lang = useLanguage()
+  const setLang = useSetLanguage()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [data, setData] = useState<PageData | null>(null)
@@ -64,6 +68,7 @@ export function SettingsPage() {
   async function handleLanguageChange(language: Language) {
     await patchSettings({ language })
     applyLanguage(language)
+    setLang(language)
     setData((prev) => prev && { ...prev, settings: { ...prev.settings, language } })
   }
 
@@ -126,7 +131,7 @@ export function SettingsPage() {
   }
 
   async function handleDeleteConfirm() {
-    if (deleteInput !== 'HAPUS') return
+    if (deleteInput !== t('settings.delete_type_word', lang)) return
     await clearAllData()
     navigate('/onboarding')
   }
@@ -134,20 +139,25 @@ export function SettingsPage() {
   const nowMs = clock.now()
   const daysLeft = license ? Math.max(0, Math.ceil((license.expiresAt - nowMs) / 86_400_000)) : 0
   const expiresDate = license
-    ? new Date(license.expiresAt).toLocaleDateString('id-ID', {
+    ? new Date(license.expiresAt).toLocaleDateString(toLocale(lang), {
         day: 'numeric',
         month: 'short',
         year: 'numeric',
       })
     : null
+  const deleteWord = t('settings.delete_type_word', lang)
 
   return (
     <div className={styles.page}>
       <div className={styles.header}>
-        <button className={styles.backBtn} onClick={() => navigate(-1)} aria-label="Kembali">
+        <button
+          className={styles.backBtn}
+          onClick={() => navigate(-1)}
+          aria-label={t('settings.back_aria', lang)}
+        >
           ‹
         </button>
-        <span className={styles.title}>setelan</span>
+        <span className={styles.title}>{t('settings.title', lang)}</span>
       </div>
 
       {/* Profile card */}
@@ -168,7 +178,11 @@ export function SettingsPage() {
         <div className={styles.profileText}>
           <div className={styles.profileName}>SISA</div>
           <div className={styles.profileSub}>
-            {expiresDate ? `Aktif sampai ${expiresDate} · ${daysLeft} hari lagi` : 'Belum aktif'}
+            {expiresDate
+              ? t('settings.profile_active_until', lang)
+                  .replace('{date}', expiresDate)
+                  .replace('{n}', String(daysLeft))
+              : t('settings.profile_not_active', lang)}
           </div>
         </div>
         <svg
@@ -183,42 +197,48 @@ export function SettingsPage() {
       </button>
 
       {/* Profil */}
-      <div className={styles.sectionLabel}>profil</div>
+      <div className={styles.sectionLabel}>{t('settings.section_profil', lang)}</div>
       <div className={styles.card}>
         <button className={styles.actionRow} onClick={() => setActiveSheet('income')}>
-          <span className={styles.rowLabel}>pemasukan</span>
-          <span className={styles.rowSub}>jenis & tanggal gajian</span>
+          <span className={styles.rowLabel}>{t('settings.row_income', lang)}</span>
+          <span className={styles.rowSub}>{t('settings.row_income_sub', lang)}</span>
         </button>
         <div className={styles.divider} />
         <button className={styles.actionRow} onClick={() => setActiveSheet('license')}>
-          <span className={styles.rowLabel}>lisensi</span>
-          <span className={styles.rowSub}>{daysLeft} hari lagi</span>
+          <span className={styles.rowLabel}>{t('settings.row_license', lang)}</span>
+          <span className={styles.rowSub}>
+            {t('settings.row_license_sub', lang).replace('{n}', String(daysLeft))}
+          </span>
         </button>
       </div>
 
       {/* Tampilan */}
-      <div className={styles.sectionLabel}>tampilan</div>
+      <div className={styles.sectionLabel}>{t('settings.section_tampilan', lang)}</div>
       <div className={styles.card}>
         <div className={styles.row}>
-          <span className={styles.rowLabel}>tema</span>
+          <span className={styles.rowLabel}>{t('settings.row_theme', lang)}</span>
           <div className={styles.segmented}>
-            {(['light', 'dark', 'system'] as Theme[]).map((t) => (
+            {(['light', 'dark', 'system'] as Theme[]).map((th) => (
               <button
-                key={t}
-                className={`${styles.seg} ${settings.theme === t ? styles.segActive : ''}`}
-                onClick={() => handleThemeChange(t)}
+                key={th}
+                className={`${styles.seg} ${settings.theme === th ? styles.segActive : ''}`}
+                onClick={() => handleThemeChange(th)}
               >
-                {t === 'light' ? 'terang' : t === 'dark' ? 'gelap' : 'sistem'}
+                {th === 'light'
+                  ? t('settings.theme_light', lang)
+                  : th === 'dark'
+                    ? t('settings.theme_dark', lang)
+                    : t('settings.theme_system', lang)}
               </button>
             ))}
           </div>
         </div>
         {settings.theme === 'dark' && (
-          <div className={styles.rowNote}>gelap = v2 · belum tersedia</div>
+          <div className={styles.rowNote}>{t('settings.dark_note', lang)}</div>
         )}
         <div className={styles.divider} />
         <div className={styles.row}>
-          <span className={styles.rowLabel}>bahasa</span>
+          <span className={styles.rowLabel}>{t('settings.row_language', lang)}</span>
           <select
             className={styles.select}
             value={settings.language}
@@ -230,13 +250,13 @@ export function SettingsPage() {
         </div>
         <div className={styles.divider} />
         <div className={styles.row}>
-          <span className={styles.rowLabel}>mata uang kedua</span>
+          <span className={styles.rowLabel}>{t('settings.row_secondary_currency', lang)}</span>
           <select
             className={styles.select}
             value={settings.secondaryCurrency ?? ''}
             onChange={(e) => handleSecondaryCurrencyChange(e.target.value)}
           >
-            <option value="">tidak ada</option>
+            <option value="">{t('settings.no_secondary_currency', lang)}</option>
             {ALL_CURRENCIES.filter((c) => c.code !== settings.primaryCurrency).map((c) => (
               <option key={c.code} value={c.code}>
                 {c.code}
@@ -247,21 +267,21 @@ export function SettingsPage() {
       </div>
 
       {/* Data & Backup */}
-      <div className={styles.sectionLabel}>data & backup</div>
+      <div className={styles.sectionLabel}>{t('settings.section_data', lang)}</div>
       <div className={styles.card}>
         <button className={styles.actionRow} onClick={handleExportJSON}>
-          <span className={styles.rowLabel}>export backup</span>
-          <span className={styles.rowSub}>file lengkap buat pindah / restore</span>
+          <span className={styles.rowLabel}>{t('settings.export_json', lang)}</span>
+          <span className={styles.rowSub}>{t('settings.export_json_sub', lang)}</span>
         </button>
         <div className={styles.divider} />
         <button className={styles.actionRow} onClick={handleExportCSV}>
-          <span className={styles.rowLabel}>export transaksi</span>
-          <span className={styles.rowSub}>buat dibuka di spreadsheet</span>
+          <span className={styles.rowLabel}>{t('settings.export_csv', lang)}</span>
+          <span className={styles.rowSub}>{t('settings.export_csv_sub', lang)}</span>
         </button>
         <div className={styles.divider} />
         <button className={styles.actionRow} onClick={() => fileInputRef.current?.click()}>
-          <span className={styles.rowLabel}>import dari backup</span>
-          <span className={styles.rowSub}>restore dari file .json</span>
+          <span className={styles.rowLabel}>{t('settings.import', lang)}</span>
+          <span className={styles.rowSub}>{t('settings.import_sub', lang)}</span>
         </button>
         <input
           ref={fileInputRef}
@@ -275,16 +295,16 @@ export function SettingsPage() {
           className={`${styles.actionRow} ${styles.dangerRow}`}
           onClick={() => setDeleteStep('confirm')}
         >
-          <span className={styles.rowLabel}>hapus semua data</span>
-          <span className={styles.rowSub}>tidak bisa di-undo</span>
+          <span className={styles.rowLabel}>{t('settings.delete', lang)}</span>
+          <span className={styles.rowSub}>{t('settings.delete_sub', lang)}</span>
         </button>
       </div>
 
       {/* Tentang */}
-      <div className={styles.sectionLabel}>tentang</div>
+      <div className={styles.sectionLabel}>{t('settings.section_about', lang)}</div>
       <div className={styles.card}>
         <div className={styles.row}>
-          <span className={styles.rowLabel}>dibuat oleh</span>
+          <span className={styles.rowLabel}>{t('settings.made_by', lang)}</span>
           <span className={styles.rowSub}>Chandra Gumelar</span>
         </div>
         <div className={styles.divider} />
@@ -294,7 +314,7 @@ export function SettingsPage() {
           target="_blank"
           rel="noreferrer"
         >
-          <span className={styles.rowLabel}>kontak</span>
+          <span className={styles.rowLabel}>{t('settings.contact', lang)}</span>
           <span className={styles.rowSub}>@win32_icang</span>
         </a>
       </div>
@@ -321,36 +341,40 @@ export function SettingsPage() {
       <BottomSheet
         isOpen={!!importPreview}
         onClose={() => setImportPreview(null)}
-        title="Import backup"
+        title={t('settings.import_preview_title', lang)}
       >
         {importPreview && (
           <div className={styles.sheetBody}>
             <div className={styles.previewGrid}>
               <div className={styles.previewItem}>
                 <span className={styles.previewVal}>{importPreview.preview.walletCount}</span>
-                <span className={styles.previewKey}>dompet</span>
+                <span className={styles.previewKey}>
+                  {t('settings.import_preview_wallets', lang)}
+                </span>
               </div>
               <div className={styles.previewItem}>
                 <span className={styles.previewVal}>{importPreview.preview.txCount}</span>
-                <span className={styles.previewKey}>transaksi</span>
+                <span className={styles.previewKey}>{t('settings.import_preview_txs', lang)}</span>
               </div>
               <div className={styles.previewItem}>
                 <span className={styles.previewVal}>{importPreview.preview.tagihanCount}</span>
-                <span className={styles.previewKey}>tagihan</span>
+                <span className={styles.previewKey}>
+                  {t('settings.import_preview_bills', lang)}
+                </span>
               </div>
               <div className={styles.previewItem}>
                 <span className={styles.previewVal}>{importPreview.preview.goalCount}</span>
-                <span className={styles.previewKey}>goal</span>
+                <span className={styles.previewKey}>
+                  {t('settings.import_preview_goals', lang)}
+                </span>
               </div>
             </div>
-            <div className={styles.sheetWarning}>
-              Data yang ada sekarang akan ditimpa. Tidak bisa di-undo.
-            </div>
+            <div className={styles.sheetWarning}>{t('settings.import_warning', lang)}</div>
             <button className={styles.primaryBtn} onClick={handleImportConfirm}>
-              Restore sekarang
+              {t('settings.import_confirm', lang)}
             </button>
             <button className={styles.ghostBtn} onClick={() => setImportPreview(null)}>
-              Batal
+              {t('common.cancel', lang)}
             </button>
           </div>
         )}
@@ -360,24 +384,26 @@ export function SettingsPage() {
       <BottomSheet
         isOpen={currencyRemoveBlocked}
         onClose={() => setCurrencyRemoveBlocked(false)}
-        title="Mata uang masih dipakai"
+        title={t('settings.currency_blocked_title', lang)}
       >
         <div className={styles.sheetBody}>
-          <div className={styles.sheetWarning}>
-            Hapus dulu semua dompet, tagihan, dan goal dalam mata uang ini sebelum menonaktifkannya.
-          </div>
+          <div className={styles.sheetWarning}>{t('settings.currency_blocked_warning', lang)}</div>
           <button className={styles.ghostBtn} onClick={() => setCurrencyRemoveBlocked(false)}>
-            Oke
+            {t('common.ok', lang)}
           </button>
         </div>
       </BottomSheet>
 
       {/* Import error sheet */}
-      <BottomSheet isOpen={!!importError} onClose={() => setImportError(null)} title="Gagal import">
+      <BottomSheet
+        isOpen={!!importError}
+        onClose={() => setImportError(null)}
+        title={t('settings.import_error_title', lang)}
+      >
         <div className={styles.sheetBody}>
           <div className={styles.errorText}>{importError}</div>
           <button className={styles.ghostBtn} onClick={() => setImportError(null)}>
-            Tutup
+            {t('common.close', lang)}
           </button>
         </div>
       </BottomSheet>
@@ -389,41 +415,47 @@ export function SettingsPage() {
           setDeleteStep('idle')
           setDeleteInput('')
         }}
-        title="Hapus semua data"
+        title={t('settings.delete_title', lang)}
       >
         <div className={styles.sheetBody}>
           {deleteStep === 'confirm' ? (
             <>
-              <div className={styles.sheetWarning}>
-                Semua transaksi, wallet, tagihan, dan goal akan dihapus permanen. Lisensi tetap
-                tersimpan.
-              </div>
+              <div className={styles.sheetWarning}>{t('settings.delete_warning', lang)}</div>
               <button className={styles.dangerBtn} onClick={() => setDeleteStep('type')}>
-                Lanjut hapus
+                {t('settings.delete_next', lang)}
               </button>
               <button className={styles.ghostBtn} onClick={() => setDeleteStep('idle')}>
-                Batal
+                {t('common.cancel', lang)}
               </button>
             </>
           ) : (
             <>
               <div className={styles.deletePrompt}>
-                Ketik <strong>HAPUS</strong> untuk konfirmasi
+                {(() => {
+                  const parts = t('settings.delete_type_prompt', lang).split(deleteWord)
+                  return (
+                    <>
+                      {parts[0]}
+                      <strong>{deleteWord}</strong>
+                      {parts[1]}
+                    </>
+                  )
+                })()}
               </div>
               <input
                 className={styles.deleteInput}
                 type="text"
                 value={deleteInput}
                 onChange={(e) => setDeleteInput(e.target.value)}
-                placeholder="HAPUS"
+                placeholder={t('settings.delete_type_placeholder', lang)}
                 autoFocus
               />
               <button
                 className={styles.dangerBtn}
-                disabled={deleteInput !== 'HAPUS'}
+                disabled={deleteInput !== deleteWord}
                 onClick={handleDeleteConfirm}
               >
-                Hapus semua data
+                {t('settings.delete_confirm_btn', lang)}
               </button>
               <button
                 className={styles.ghostBtn}
@@ -432,7 +464,7 @@ export function SettingsPage() {
                   setDeleteInput('')
                 }}
               >
-                Batal
+                {t('common.cancel', lang)}
               </button>
             </>
           )}

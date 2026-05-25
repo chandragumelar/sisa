@@ -2,6 +2,8 @@ import { useState } from 'react'
 import type { IncomeType } from '@/db/database'
 import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
 import { getCurrencySymbol } from '@/shared/utils/formatCurrency'
+import { useLanguage } from '@/app/providers/useLanguage'
+import { t } from '@/shared/strings/strings'
 
 interface Props {
   incomeType: IncomeType
@@ -12,6 +14,7 @@ interface Props {
 const DAY_OPTIONS = Array.from({ length: 31 }, (_, i) => i + 1)
 
 export function Step4bIncomeDetail({ incomeType, currency = 'IDR', onNext }: Props) {
+  const lang = useLanguage()
   const [incomeDay, setIncomeDay] = useState<number | null>(null)
   const [minBalance, setMinBalance] = useState('')
 
@@ -31,28 +34,32 @@ export function Step4bIncomeDetail({ incomeType, currency = 'IDR', onNext }: Pro
   return (
     <>
       <h1 className="ob-heading">
-        {isTetap ? 'Tanggal gajian' : isMix ? 'Detail pemasukan' : 'Batas aman saldo'}
+        {isTetap
+          ? t('ob.step4b.heading_tetap', lang)
+          : isMix
+            ? t('ob.step4b.heading_mix', lang)
+            : t('ob.step4b.heading_freelance', lang)}
       </h1>
       <p className="ob-subheading">
         {isTetap
-          ? 'Tiap tanggal berapa gaji lo masuk?'
+          ? t('ob.step4b.sub_tetap', lang)
           : isMix
-            ? 'Tanggal gajian tetap lo, kalau ada.'
-            : 'Berapa saldo minimal yang bikin lo merasa aman?'}
+            ? t('ob.step4b.sub_mix', lang)
+            : t('ob.step4b.sub_freelance', lang)}
       </p>
 
       {(isTetap || isMix) && (
         <div className="ob-field">
-          <div className="ob-field-label">Tanggal gajian</div>
+          <div className="ob-field-label">{t('ob.step4b.payday_label', lang)}</div>
           <select
             className="ob-input"
             value={incomeDay ?? ''}
             onChange={(e) => setIncomeDay(e.target.value ? Number(e.target.value) : null)}
           >
-            <option value="">Pilih tanggal…</option>
+            <option value="">{t('ob.step4b.payday_placeholder', lang)}</option>
             {DAY_OPTIONS.map((d) => (
               <option key={d} value={d}>
-                Tanggal {d}
+                {t('ob.step4b.payday_day', lang).replace('{d}', String(d))}
               </option>
             ))}
           </select>
@@ -62,7 +69,9 @@ export function Step4bIncomeDetail({ incomeType, currency = 'IDR', onNext }: Pro
       {(isFreelance || isMix) && (
         <div className="ob-field">
           <div className="ob-field-label">
-            {isMix ? 'Minimum saldo aman (opsional)' : 'Minimum saldo aman'}
+            {isMix
+              ? t('ob.step4b.min_balance_optional', lang)
+              : t('ob.step4b.min_balance_required', lang)}
           </div>
           <div className="ob-input-row">
             <span className="ob-input-prefix">{getCurrencySymbol(currency)}</span>
@@ -75,18 +84,14 @@ export function Step4bIncomeDetail({ incomeType, currency = 'IDR', onNext }: Pro
               onChange={(e) => setMinBalance(formatNominalDisplay(parseNominalRaw(e.target.value)))}
             />
           </div>
-          {isFreelance && (
-            <div className="ob-hint">
-              SISA akan kasih peringatan kalau saldo lo di bawah angka ini.
-            </div>
-          )}
+          {isFreelance && <div className="ob-hint">{t('ob.step4b.min_balance_hint', lang)}</div>}
         </div>
       )}
 
       <div className="ob-grow" />
 
       <button className="ob-primary-btn" disabled={!canProceed} onClick={handleNext}>
-        Lanjut
+        {t('ob.step4b.next', lang)}
       </button>
     </>
   )
