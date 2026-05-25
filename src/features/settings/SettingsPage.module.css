@@ -1,7 +1,7 @@
 .page {
   min-height: 100dvh;
-  background: var(--canvas);
-  padding: 0 0 40px;
+  background: var(--bg);
+  padding: 6px 22px calc(40px + env(safe-area-inset-bottom));
   max-width: 390px;
   margin: 0 auto;
 }
@@ -9,103 +9,107 @@
 .header {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 16px 16px 8px;
+  gap: 12px;
+  padding: 4px 0 14px;
 }
 
 .backBtn {
-  width: 28px;
-  height: 28px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
-  color: var(--ink-secondary);
-  background: none;
-  border: none;
+  font-size: 16px;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
   cursor: pointer;
   flex: none;
 }
 
 .title {
-  font-size: 15px;
-  font-weight: 600;
-  letter-spacing: -0.2px;
-  color: var(--ink-primary);
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--ink);
 }
 
-/* Profile card */
-.profileCard {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: var(--surface);
-  border: 1px solid var(--border-hair);
-  border-radius: 12px;
-  margin: 8px 16px 20px;
-  padding: 13px;
+/* License card */
+.licenseCard {
+  background: var(--ink);
+  color: var(--bg);
+  border-radius: 20px;
+  padding: 16px 18px;
   cursor: pointer;
+  border: none;
   text-align: left;
-  width: calc(100% - 32px);
+  width: 100%;
 }
 
-.avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 11px;
-  background: var(--surface-2);
+.licenseTop {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--ink-tertiary);
-  flex: none;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
 }
 
-.avatar svg {
-  width: 20px;
-  height: 20px;
+.licenseLeft {
+  display: flex;
+  flex-direction: column;
 }
 
-.profileText {
-  flex: 1;
-  min-width: 0;
-}
-
-.profileName {
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: -0.2px;
-  color: var(--ink-primary);
-}
-
-.profileSub {
+.licenseEyebrow {
   font-size: 11px;
-  color: var(--ink-tertiary);
+  opacity: 0.55;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.licenseName {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
   margin-top: 2px;
 }
 
-.chevron {
-  width: 16px;
-  height: 16px;
-  color: var(--ink-tertiary);
-  flex: none;
+.licenseSub {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  opacity: 0.55;
+  margin-top: 4px;
+}
+
+.licenseChip {
+  background: var(--accent);
+  color: var(--bg);
+  padding: 4px 10px;
+  border-radius: 100px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 /* Sections */
 .sectionLabel {
   font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: var(--ink-tertiary);
-  padding: 0 20px 6px;
+  color: var(--muted);
+  padding: 0 4px 6px;
+  margin-top: 16px;
 }
 
 .card {
   background: var(--surface);
-  border: 1px solid var(--border-hair);
-  border-radius: 12px;
-  margin: 0 16px 20px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
   overflow: hidden;
 }
 
@@ -114,35 +118,41 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 12px 14px;
+  padding: 12px 16px;
+}
+
+.divider {
+  height: 1px;
+  background: var(--line);
 }
 
 .rowLabel {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 500;
-  color: var(--ink-primary);
+  color: var(--ink);
   flex: 1;
 }
 
 .rowSub {
   font-size: 11px;
-  color: var(--ink-tertiary);
+  color: var(--muted);
   margin-top: 2px;
 }
 
 .rowNote {
   font-size: 11px;
   font-style: italic;
-  color: var(--ink-tertiary);
-  padding: 0 14px 10px;
+  color: var(--muted);
+  padding: 0 16px 10px;
 }
 
+/* Action row (button) */
 .actionRow {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   width: 100%;
-  padding: 12px 14px;
+  padding: 12px 16px;
   background: none;
   border: none;
   text-align: left;
@@ -150,30 +160,25 @@
 }
 
 .actionRow:active {
-  background: var(--surface-2);
+  background: var(--surface-deep);
 }
 
 .dangerRow .rowLabel {
-  color: var(--signal-danger);
+  color: var(--bahaya-br);
 }
 
+/* Link row */
 .linkRow {
   display: flex;
   flex-direction: column;
-  padding: 12px 14px;
+  padding: 12px 16px;
   text-decoration: none;
-}
-
-.divider {
-  height: 1px;
-  background: var(--border-hair);
-  margin: 0 14px;
 }
 
 /* Segmented control */
 .segmented {
   display: flex;
-  background: var(--surface-2);
+  background: var(--surface-deep);
   border-radius: 8px;
   padding: 2px;
   gap: 2px;
@@ -182,7 +187,7 @@
 .seg {
   font-size: 11px;
   font-weight: 500;
-  color: var(--ink-secondary);
+  color: var(--ink-soft);
   padding: 5px 9px;
   border-radius: 6px;
   border: none;
@@ -194,15 +199,15 @@
 
 .segActive {
   background: var(--surface);
-  color: var(--ink-primary);
+  color: var(--ink);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
 }
 
 /* Select */
 .select {
-  font-size: 12px;
-  color: var(--ink-secondary);
-  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--muted);
+  font-family: var(--font-mono);
   background: none;
   border: none;
   cursor: pointer;
@@ -231,7 +236,7 @@
 }
 
 .previewItem {
-  background: var(--surface-2);
+  background: var(--surface-deep);
   border-radius: 8px;
   padding: 10px 12px;
   display: flex;
@@ -243,30 +248,30 @@
   font-size: 20px;
   font-weight: 700;
   font-family: var(--font-mono);
-  color: var(--ink-primary);
+  color: var(--ink);
 }
 
 .previewKey {
   font-size: 11px;
-  color: var(--ink-tertiary);
+  color: var(--muted);
 }
 
 .sheetWarning {
   font-size: 12px;
-  color: var(--ink-secondary);
+  color: var(--ink-soft);
   padding: 4px 0;
   line-height: 1.5;
 }
 
 .errorText {
   font-size: 13px;
-  color: var(--signal-danger);
+  color: var(--bahaya-br);
   line-height: 1.5;
 }
 
 .deletePrompt {
   font-size: 13px;
-  color: var(--ink-secondary);
+  color: var(--ink-soft);
   line-height: 1.5;
 }
 
@@ -274,39 +279,40 @@
   font-family: var(--font-mono);
   font-size: 16px;
   font-weight: 600;
-  border: 1.5px solid var(--border-hair);
+  border: 1.5px solid var(--line);
   border-radius: 8px;
   padding: 10px 12px;
   width: 100%;
   letter-spacing: 2px;
   background: var(--surface);
+  box-sizing: border-box;
 }
 
 .deleteInput:focus {
   outline: none;
-  border-color: var(--signal-danger);
+  border-color: var(--bahaya-br);
 }
 
 .primaryBtn {
   background: var(--accent);
-  color: #fff;
+  color: var(--bg);
   font-size: 14px;
   font-weight: 600;
   border: none;
-  border-radius: 10px;
-  padding: 12px 0;
+  border-radius: 12px;
+  padding: 13px 0;
   width: 100%;
   cursor: pointer;
 }
 
 .dangerBtn {
-  background: var(--signal-danger);
-  color: #fff;
+  background: var(--bahaya-br);
+  color: var(--bg);
   font-size: 14px;
   font-weight: 600;
   border: none;
-  border-radius: 10px;
-  padding: 12px 0;
+  border-radius: 12px;
+  padding: 13px 0;
   width: 100%;
   cursor: pointer;
 }
@@ -318,7 +324,7 @@
 
 .ghostBtn {
   background: none;
-  color: var(--ink-secondary);
+  color: var(--ink-soft);
   font-size: 14px;
   font-weight: 500;
   border: none;

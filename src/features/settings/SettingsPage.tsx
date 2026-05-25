@@ -160,40 +160,24 @@ export function SettingsPage() {
         <span className={styles.title}>{t('settings.title', lang)}</span>
       </div>
 
-      {/* Profile card */}
-      <button className={styles.profileCard} onClick={() => setActiveSheet('license')}>
-        <div className={styles.avatar}>
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.8"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <circle cx="12" cy="8" r="4" />
-            <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
-          </svg>
-        </div>
-        <div className={styles.profileText}>
-          <div className={styles.profileName}>SISA</div>
-          <div className={styles.profileSub}>
-            {expiresDate
-              ? t('settings.profile_active_until', lang)
-                  .replace('{date}', expiresDate)
-                  .replace('{n}', String(daysLeft))
-              : t('settings.profile_not_active', lang)}
+      {/* License card */}
+      <button className={styles.licenseCard} onClick={() => setActiveSheet('license')}>
+        <div className={styles.licenseTop}>
+          <div className={styles.licenseLeft}>
+            <div className={styles.licenseEyebrow}>{t('profil.license_title', lang)}</div>
+            <div className={styles.licenseName}>SISA</div>
+            <div className={styles.licenseSub}>
+              {expiresDate
+                ? t('profil.license_days_left', lang)
+                    .replace('{n}', String(daysLeft))
+                    .replace('{date}', expiresDate)
+                : t('profil.license_not_active', lang)}
+            </div>
           </div>
+          {license && (
+            <span className={styles.licenseChip}>{t('profil.license_active', lang)}</span>
+          )}
         </div>
-        <svg
-          className={styles.chevron}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.8"
-        >
-          <path d="M9 18l6-6-6-6" />
-        </svg>
       </button>
 
       {/* Profil */}

@@ -1,6 +1,6 @@
 .page {
   min-height: 100dvh;
-  background: var(--canvas);
+  background: var(--bg);
   padding: 0 0 40px;
   max-width: 390px;
   margin: 0 auto;
@@ -20,7 +20,7 @@
   align-items: center;
   justify-content: center;
   font-size: 22px;
-  color: var(--ink-secondary);
+  color: var(--ink-soft);
   background: none;
   border: none;
   cursor: pointer;
@@ -31,7 +31,7 @@
   font-size: 15px;
   font-weight: 600;
   letter-spacing: -0.2px;
-  color: var(--ink-primary);
+  color: var(--ink);
 }
 
 /* User card */
@@ -40,7 +40,7 @@
   align-items: center;
   gap: 12px;
   background: var(--surface);
-  border: 1px solid var(--border-hair);
+  border: 1px solid var(--line);
   border-radius: 12px;
   margin: 8px 16px 16px;
   padding: 14px;
@@ -50,11 +50,11 @@
   width: 40px;
   height: 40px;
   border-radius: 11px;
-  background: var(--surface-2);
+  background: var(--surface-deep);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--ink-tertiary);
+  color: var(--muted);
   flex: none;
 }
 
@@ -67,7 +67,7 @@
   font-size: 14px;
   font-weight: 600;
   letter-spacing: -0.2px;
-  color: var(--ink-primary);
+  color: var(--ink);
 }
 
 .userSub {
@@ -75,7 +75,7 @@
   align-items: center;
   gap: 6px;
   font-size: 11px;
-  color: var(--ink-tertiary);
+  color: var(--muted);
   margin-top: 3px;
 }
 
@@ -85,8 +85,8 @@
   letter-spacing: 0.6px;
   text-transform: uppercase;
   color: var(--accent);
-  border: 1px solid var(--accent-br);
-  background: var(--accent-bg);
+  border: 1px solid var(--line);
+  background: var(--surface-deep);
   padding: 2px 5px;
   border-radius: 4px;
   line-height: 1;
@@ -102,7 +102,7 @@
   font-weight: 600;
   letter-spacing: 0.5px;
   text-transform: uppercase;
-  color: var(--ink-tertiary);
+  color: var(--muted);
   padding: 0 20px 4px;
   margin-top: 8px;
 }
@@ -111,7 +111,7 @@
   display: flex;
   align-items: center;
   background: var(--surface);
-  border: 1px solid var(--border-hair);
+  border: 1px solid var(--line);
   border-radius: 10px;
   margin: 0 16px 8px;
   padding: 12px 14px;
@@ -129,13 +129,13 @@
 .navLabel {
   font-size: 13px;
   font-weight: 500;
-  color: var(--ink-primary);
+  color: var(--ink);
   display: block;
 }
 
 .navSub {
   font-size: 11px;
-  color: var(--ink-tertiary);
+  color: var(--muted);
   display: block;
   margin-top: 2px;
 }
@@ -143,7 +143,7 @@
 .chevron {
   width: 16px;
   height: 16px;
-  color: var(--ink-tertiary);
+  color: var(--muted);
   flex: none;
 }
 
@@ -159,20 +159,20 @@
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.3px;
-  color: var(--ink-secondary);
+  color: var(--ink-soft);
   text-transform: uppercase;
   margin-top: 4px;
 }
 
 .fieldInput {
   font-size: 14px;
-  font-family: var(--font-sans);
-  border: 1.5px solid var(--border-hair);
+  font-family: var(--font-display);
+  border: 1.5px solid var(--line);
   border-radius: 8px;
   padding: 10px 12px;
   width: 100%;
   background: var(--surface);
-  color: var(--ink-primary);
+  color: var(--ink);
 }
 
 .fieldInput:focus {
@@ -182,7 +182,7 @@
 
 .fieldNote {
   font-size: 11px;
-  color: var(--ink-tertiary);
+  color: var(--muted);
   font-style: italic;
   line-height: 1.5;
 }
@@ -190,7 +190,7 @@
 /* Segmented */
 .segmented {
   display: flex;
-  background: var(--surface-2);
+  background: var(--surface-deep);
   border-radius: 8px;
   padding: 2px;
   gap: 2px;
@@ -200,7 +200,7 @@
   flex: 1;
   font-size: 11px;
   font-weight: 500;
-  color: var(--ink-secondary);
+  color: var(--ink-soft);
   padding: 6px 8px;
   border-radius: 6px;
   border: none;
@@ -212,7 +212,7 @@
 
 .segActive {
   background: var(--surface);
-  color: var(--ink-primary);
+  color: var(--ink);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
 }
 
@@ -220,7 +220,7 @@
 .amountRow {
   display: flex;
   align-items: center;
-  border: 1.5px solid var(--border-hair);
+  border: 1.5px solid var(--line);
   border-radius: 8px;
   padding: 8px 12px;
   gap: 6px;
@@ -229,7 +229,7 @@
 
 .prefix {
   font-size: 13px;
-  color: var(--ink-tertiary);
+  color: var(--muted);
   flex: none;
 }
 
@@ -240,7 +240,7 @@
   font-weight: 600;
   border: none;
   background: none;
-  color: var(--ink-primary);
+  color: var(--ink);
   min-width: 0;
 }
 
@@ -253,7 +253,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: var(--surface-2);
+  background: var(--surface-deep);
   border-radius: 8px;
   padding: 10px 12px;
   border: none;
@@ -265,14 +265,14 @@
 .listLabel {
   font-size: 13px;
   font-weight: 500;
-  color: var(--ink-primary);
+  color: var(--ink);
   flex: 1;
 }
 
 .listVal {
   font-size: 12px;
   font-family: var(--font-mono);
-  color: var(--ink-secondary);
+  color: var(--ink-soft);
 }
 
 /* Item rows with delete */
@@ -287,7 +287,7 @@
   align-items: center;
   justify-content: space-between;
   flex: 1;
-  background: var(--surface-2);
+  background: var(--surface-deep);
   border-radius: 8px;
   padding: 10px 12px;
   border: none;
@@ -298,7 +298,7 @@
 
 .deleteBtn {
   font-size: 12px;
-  color: var(--ink-tertiary);
+  color: var(--muted);
   background: none;
   border: none;
   cursor: pointer;
@@ -315,7 +315,7 @@
   font-size: 22px;
   font-weight: 700;
   font-family: var(--font-mono);
-  color: var(--ink-primary);
+  color: var(--ink);
   padding: 8px 0 4px;
 }
 
@@ -326,11 +326,11 @@
 }
 
 .diffPos {
-  color: var(--signal-safe);
+  color: var(--aman-fg);
 }
 
 .diffNeg {
-  color: var(--signal-danger);
+  color: var(--bahaya-br);
 }
 
 /* Inline name edit */
@@ -365,8 +365,8 @@
 .optionBtn {
   font-size: 13px;
   font-weight: 500;
-  color: var(--ink-primary);
-  background: var(--surface-2);
+  color: var(--ink);
+  background: var(--surface-deep);
   border: 1.5px solid transparent;
   border-radius: 8px;
   padding: 10px 12px;
@@ -382,7 +382,7 @@
 
 .optionBtnActive {
   border-color: var(--accent);
-  background: var(--accent-bg);
+  background: var(--surface-deep);
   color: var(--accent);
 }
 
@@ -396,12 +396,12 @@
 
 .confirmText {
   font-size: 13px;
-  color: var(--ink-secondary);
+  color: var(--ink-soft);
 }
 
 /* License card */
 .licenseCard {
-  background: var(--surface-2);
+  background: var(--surface-deep);
   border-radius: 10px;
   padding: 12px 14px;
   display: flex;
@@ -417,23 +417,23 @@
 
 .licenseKey {
   font-size: 12px;
-  color: var(--ink-secondary);
+  color: var(--ink-soft);
 }
 
 .licenseVal {
   font-size: 12px;
   font-family: var(--font-mono);
-  color: var(--ink-primary);
+  color: var(--ink);
 }
 
 .errorMsg {
   font-size: 12px;
-  color: var(--signal-danger);
+  color: var(--bahaya-br);
 }
 
 .successMsg {
   font-size: 12px;
-  color: var(--signal-safe);
+  color: var(--aman-fg);
 }
 
 .buyLink {
@@ -447,7 +447,7 @@
 /* Empty state */
 .emptyNote {
   font-size: 13px;
-  color: var(--ink-tertiary);
+  color: var(--muted);
   text-align: center;
   padding: 12px 0;
 }
@@ -455,7 +455,7 @@
 /* Secondary / ghost action buttons */
 .primaryBtn {
   background: var(--accent);
-  color: #fff;
+  color: var(--bg);
   font-size: 14px;
   font-weight: 600;
   border: none;
@@ -472,11 +472,11 @@
 }
 
 .secondaryBtn {
-  background: var(--accent-bg);
+  background: var(--surface-deep);
   color: var(--accent);
   font-size: 13px;
   font-weight: 600;
-  border: 1px solid var(--accent-br);
+  border: 1px solid var(--line);
   border-radius: 8px;
   padding: 10px 0;
   width: 100%;
@@ -484,8 +484,8 @@
 }
 
 .dangerBtn {
-  background: var(--signal-danger);
-  color: #fff;
+  background: var(--bahaya-br);
+  color: var(--bg);
   font-size: 13px;
   font-weight: 600;
   border: none;
@@ -496,7 +496,7 @@
 
 .dangerGhostBtn {
   background: none;
-  color: var(--signal-danger);
+  color: var(--bahaya-br);
   font-size: 13px;
   font-weight: 500;
   border: none;
@@ -507,7 +507,7 @@
 
 .ghostBtn {
   background: none;
-  color: var(--ink-secondary);
+  color: var(--ink-soft);
   font-size: 14px;
   font-weight: 500;
   border: none;
