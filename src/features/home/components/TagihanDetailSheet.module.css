@@ -7,7 +7,7 @@
   justify-content: space-between;
   align-items: baseline;
   padding: 9px 0;
-  border-bottom: 1px solid var(--border-hair);
+  border-bottom: 1px solid var(--line);
 }
 
 .row:last-child {
@@ -16,44 +16,44 @@
 
 .rowLabel {
   font-size: 12px;
-  color: var(--ink-tertiary);
+  color: var(--muted);
 }
 
 .rowValue {
   font-size: 13px;
   font-weight: 500;
-  color: var(--ink-primary);
+  color: var(--ink);
 }
 
 .rowValueUrgent {
   font-size: 13px;
   font-weight: 500;
-  color: var(--signal-danger);
+  color: var(--bahaya-br);
 }
 
 .payBtn {
   width: 100%;
   padding: 14px;
-  background: var(--accent);
-  color: #ffffff;
+  background: var(--ink);
+  color: var(--bg);
   border: none;
-  border-radius: 12px;
+  border-radius: 16px;
   font-size: 15px;
   font-weight: 600;
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   cursor: pointer;
 }
 
 .editBtn {
   width: 100%;
   padding: 11px;
-  background: var(--surface-2);
-  color: var(--ink-primary);
+  background: var(--surface-deep);
+  color: var(--ink);
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   font-size: 14px;
   font-weight: 500;
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   cursor: pointer;
   margin-top: 6px;
 }
@@ -62,29 +62,30 @@
   width: 100%;
   padding: 11px;
   background: none;
-  color: var(--signal-danger);
+  color: var(--bahaya-br);
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   font-size: 14px;
   font-weight: 500;
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   cursor: pointer;
 }
 
 .dangerBtn {
-  background: var(--signal-danger);
-  color: #fff;
+  background: var(--bahaya-br);
+  color: var(--bg);
   font-size: 13px;
   font-weight: 600;
   border: none;
-  border-radius: 8px;
-  padding: 9px 14px;
+  border-radius: 10px;
+  padding: 10px 14px;
   cursor: pointer;
+  font-family: var(--font-display);
 }
 
 .ghostBtn {
   background: none;
-  color: var(--ink-secondary);
+  color: var(--ink-soft);
   font-size: 14px;
   font-weight: 500;
   border: none;
@@ -92,6 +93,7 @@
   padding: 10px 0;
   width: 100%;
   cursor: pointer;
+  font-family: var(--font-display);
 }
 
 .confirmRow {
@@ -103,7 +105,7 @@
 
 .confirmText {
   font-size: 13px;
-  color: var(--ink-secondary);
+  color: var(--ink-soft);
 }
 
 .urgentRow {
@@ -111,7 +113,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px 0;
-  border-bottom: 1px solid var(--border-hair);
+  border-bottom: 1px solid var(--line);
   gap: 10px;
 }
 
@@ -129,13 +131,13 @@
 .urgentName {
   font-size: 13px;
   font-weight: 500;
-  color: var(--ink-primary);
+  color: var(--ink);
 }
 
 .urgentMeta {
   font-size: 10.5px;
   font-weight: 500;
-  color: var(--signal-danger);
+  color: var(--bahaya-br);
 }
 
 .urgentRight {
@@ -149,7 +151,7 @@
   font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 500;
-  color: var(--ink-primary);
+  color: var(--ink);
   font-feature-settings: 'tnum';
 }
 
@@ -157,10 +159,10 @@
   font-size: 11px;
   font-weight: 600;
   color: var(--accent);
-  background: var(--accent-bg);
-  border: 1px solid var(--accent-br);
-  border-radius: 6px;
+  background: var(--surface-deep);
+  border: 1px solid var(--line);
+  border-radius: 100px;
   padding: 3px 10px;
   cursor: pointer;
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
 }

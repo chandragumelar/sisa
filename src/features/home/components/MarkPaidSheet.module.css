@@ -7,8 +7,9 @@
   font-weight: 500;
   letter-spacing: 0.8px;
   text-transform: uppercase;
-  color: var(--ink-tertiary);
+  color: var(--muted);
   margin-bottom: 8px;
+  font-family: var(--font-mono);
 }
 
 .amountInput {
@@ -16,10 +17,10 @@
   font-family: var(--font-mono);
   font-size: 28px;
   font-weight: 600;
-  color: var(--ink-primary);
-  background: var(--surface-2);
-  border: 1.5px solid var(--border-hair);
-  border-radius: 10px;
+  color: var(--ink);
+  background: var(--surface-deep);
+  border: 1px solid var(--line);
+  border-radius: 12px;
   padding: 10px 14px;
   box-sizing: border-box;
   outline: none;
@@ -33,13 +34,14 @@
   font-family: var(--font-mono);
   font-size: 28px;
   font-weight: 600;
-  color: var(--ink-primary);
+  color: var(--ink);
 }
 
 .amountHint {
   font-size: 11px;
-  color: var(--ink-tertiary);
+  color: var(--muted);
   margin-top: 4px;
+  font-family: var(--font-mono);
 }
 
 .walletList {
@@ -53,34 +55,34 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px 14px;
-  background: var(--surface-2);
-  border: 1.5px solid var(--border-hair);
-  border-radius: 10px;
+  background: var(--surface-deep);
+  border: 1px solid var(--line);
+  border-radius: 12px;
   cursor: pointer;
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
 }
 
 .walletChipActive {
   border-color: var(--accent);
-  background: var(--accent-bg);
+  background: var(--surface-deep);
 }
 
 .walletChipName {
   font-size: 13px;
   font-weight: 500;
-  color: var(--ink-primary);
+  color: var(--ink);
 }
 
 .walletChipBalance {
   font-family: var(--font-mono);
   font-size: 12px;
-  color: var(--ink-secondary);
+  color: var(--ink-soft);
   font-feature-settings: 'tnum';
 }
 
 .warning {
   font-size: 11.5px;
-  color: var(--signal-danger);
+  color: var(--bahaya-br);
   margin-top: 6px;
 }
 
@@ -91,32 +93,32 @@
 
 .datePill {
   padding: 7px 16px;
-  background: var(--surface-2);
-  border: 1.5px solid var(--border-hair);
-  border-radius: 20px;
+  background: var(--surface-deep);
+  border: 1px solid var(--line);
+  border-radius: 100px;
   font-size: 13px;
-  color: var(--ink-secondary);
+  color: var(--ink-soft);
   cursor: pointer;
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
 }
 
 .datePillActive {
   border-color: var(--accent);
   color: var(--accent);
-  background: var(--accent-bg);
+  background: var(--surface-deep);
   font-weight: 500;
 }
 
 .commitBtn {
   width: 100%;
   padding: 14px;
-  background: var(--accent);
-  color: #ffffff;
+  background: var(--ink);
+  color: var(--bg);
   border: none;
-  border-radius: 12px;
+  border-radius: 16px;
   font-size: 15px;
   font-weight: 600;
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   cursor: pointer;
   margin-top: 4px;
 }
@@ -128,20 +130,21 @@
 
 .dateSelectedNote {
   font-size: 11px;
-  color: var(--ink-tertiary);
+  color: var(--muted);
   margin-top: 4px;
+  font-family: var(--font-mono);
 }
 
 .dateInput {
   margin-top: 8px;
   width: 100%;
   padding: 6px 10px;
-  background: var(--surface-2);
-  border: 1.5px solid var(--border-hair);
-  border-radius: 8px;
+  background: var(--surface-deep);
+  border: 1px solid var(--line);
+  border-radius: 10px;
   font-size: 13px;
-  color: var(--ink-secondary);
-  font-family: var(--font-sans);
+  color: var(--ink-soft);
+  font-family: var(--font-display);
   box-sizing: border-box;
   outline: none;
 }

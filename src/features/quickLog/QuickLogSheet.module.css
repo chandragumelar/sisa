@@ -1,6 +1,6 @@
 .modeToggle {
   display: flex;
-  background: var(--surface-2);
+  background: var(--surface-deep);
   border-radius: 10px;
   padding: 3px;
   margin-bottom: 16px;
@@ -14,16 +14,16 @@
   background: none;
   font-size: 13px;
   font-weight: 500;
-  color: var(--ink-tertiary);
+  color: var(--muted);
   cursor: pointer;
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   text-transform: capitalize;
 }
 
 .modeBtnActive {
   background: var(--surface);
-  color: var(--ink-primary);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  color: var(--ink);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 .walletChips {
@@ -41,29 +41,29 @@
   align-items: flex-start;
   padding: 8px 12px;
   min-width: 96px;
-  background: var(--surface-2);
-  border: 1.5px solid var(--border-hair);
-  border-radius: 10px;
+  background: var(--surface-deep);
+  border: 1px solid var(--line);
+  border-radius: 12px;
   cursor: pointer;
   flex-shrink: 0;
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
 }
 
 .walletChipActive {
   border-color: var(--accent);
-  background: var(--accent-bg);
+  background: var(--surface-deep);
 }
 
 .walletChipName {
   font-size: 12px;
   font-weight: 500;
-  color: var(--ink-primary);
+  color: var(--ink);
 }
 
 .walletChipBal {
   font-family: var(--font-mono);
   font-size: 11px;
-  color: var(--ink-tertiary);
+  color: var(--muted);
   font-feature-settings: 'tnum';
 }
 
@@ -77,7 +77,7 @@
 .nominalPrefix {
   font-size: 22px;
   font-weight: 600;
-  color: var(--ink-tertiary);
+  color: var(--muted);
 }
 
 .nominalInput {
@@ -85,7 +85,7 @@
   font-family: var(--font-mono);
   font-size: 34px;
   font-weight: 600;
-  color: var(--ink-primary);
+  color: var(--ink);
   border: none;
   background: none;
   outline: none;
@@ -94,15 +94,15 @@
 }
 
 .nominalInput::placeholder {
-  color: var(--border-soft);
+  color: var(--line);
 }
 
 .savingsWarning {
   font-size: 12px;
-  color: var(--signal-caution);
+  color: var(--mepet-br);
   background: rgba(181, 104, 10, 0.08);
   border: 1px solid rgba(181, 104, 10, 0.2);
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 8px 12px;
   margin-bottom: 12px;
 }
@@ -116,19 +116,19 @@
 
 .labelChip {
   padding: 5px 12px;
-  border-radius: 20px;
-  border: 1.5px solid var(--border-hair);
-  background: var(--surface-2);
+  border-radius: 100px;
+  border: 1px solid var(--line);
+  background: var(--surface-deep);
   font-size: 12px;
-  color: var(--ink-secondary);
+  color: var(--ink-soft);
   cursor: pointer;
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
 }
 
 .labelChipActive {
-  border-color: var(--ink-primary);
-  background: var(--ink-primary);
-  color: var(--canvas);
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--bg);
 }
 
 .toggleRow {
@@ -140,14 +140,14 @@
 
 .toggleLabel {
   font-size: 13px;
-  color: var(--ink-secondary);
+  color: var(--ink-soft);
 }
 
 .toggle {
   width: 42px;
   height: 24px;
   border-radius: 12px;
-  background: var(--border-soft);
+  background: var(--line);
   border: none;
   cursor: pointer;
   position: relative;
@@ -183,25 +183,25 @@
 
 .datePill {
   padding: 6px 14px;
-  border-radius: 20px;
-  border: 1.5px solid var(--border-hair);
-  background: var(--surface-2);
+  border-radius: 100px;
+  border: 1px solid var(--line);
+  background: var(--surface-deep);
   font-size: 12px;
-  color: var(--ink-secondary);
+  color: var(--ink-soft);
   cursor: pointer;
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
 }
 
 .datePillActive {
   border-color: var(--accent);
   color: var(--accent);
-  background: var(--accent-bg);
+  background: var(--surface-deep);
   font-weight: 500;
 }
 
 .dateInput {
   cursor: pointer;
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   outline: none;
 }
 
@@ -219,18 +219,18 @@
   cursor: pointer;
   padding: 0;
   margin-bottom: 14px;
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
 }
 
 .noteInput {
   width: 100%;
-  border: 1.5px solid var(--border-hair);
-  border-radius: 10px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
   padding: 10px 12px;
   font-size: 13px;
-  color: var(--ink-primary);
-  background: var(--surface-2);
-  font-family: var(--font-sans);
+  color: var(--ink);
+  background: var(--surface-deep);
+  font-family: var(--font-display);
   resize: none;
   box-sizing: border-box;
   outline: none;
@@ -244,13 +244,13 @@
 .submitBtn {
   width: 100%;
   padding: 14px;
-  background: var(--accent);
-  color: #ffffff;
+  background: var(--ink);
+  color: var(--bg);
   border: none;
-  border-radius: 12px;
+  border-radius: 16px;
   font-size: 15px;
   font-weight: 600;
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   cursor: pointer;
 }
 
