@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './step.css'
 import { useClock } from '@/app/providers/useClock'
+import { useSetLanguage } from '@/app/providers/useLanguage'
 import { saveSettings } from '@/db/settings.repository'
 import { addWallet } from '@/db/wallets.repository'
 import { OnboardingShell } from './components/OnboardingShell'
@@ -27,11 +28,13 @@ import {
 export function OnboardingPage() {
   const navigate = useNavigate()
   const clock = useClock()
+  const setLang = useSetLanguage()
   const [step, setStep] = useState<OnboardingStep>('language')
   const [data, setData] = useState<OnboardingAccumulated>(INITIAL_ACCUMULATED)
 
   function advance(patch: Partial<OnboardingAccumulated> = {}) {
     const next = { ...data, ...patch }
+    if (patch.language) setLang(patch.language)
     setData(next)
     const nextStep = getNextStep(step, next.incomeType)
     if (nextStep === 'done') {

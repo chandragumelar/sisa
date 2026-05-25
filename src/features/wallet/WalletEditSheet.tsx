@@ -5,6 +5,8 @@ import { addTransactionAndUpdateBalance } from '@/db/transactions.repository'
 import { BottomSheet } from '@/shared/components/BottomSheet'
 import { formatCurrency, getCurrencySymbol } from '@/shared/utils/formatCurrency'
 import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
+import { useLanguage } from '@/app/providers/useLanguage'
+import { t } from '@/shared/strings/strings'
 import styles from './WalletEditSheet.module.css'
 
 interface Props {
@@ -28,6 +30,7 @@ export function WalletEditSheet({
   onClose,
   onUpdate,
 }: Props) {
+  const lang = useLanguage()
   const [step, setStep] = useState<Step>('detail')
   const [nameInput, setNameInput] = useState(wallet.name)
   const [actualBalanceDisplay, setActualBalanceDisplay] = useState('')
@@ -112,21 +115,18 @@ export function WalletEditSheet({
     handleClose()
   }
 
+  const sheetTitle =
+    step === 'sesuaikan-transfer'
+      ? t('profil.wallets_transfer_pick_label', lang)
+      : step === 'sesuaikan'
+        ? t('profil.wallets_sesuaikan_btn', lang)
+        : wallet.name
+
   return (
-    <BottomSheet
-      isOpen={isOpen}
-      onClose={handleClose}
-      title={
-        step === 'detail'
-          ? wallet.name
-          : step === 'sesuaikan-transfer'
-            ? 'Pilih dompet tujuan'
-            : 'Sesuaikan saldo'
-      }
-    >
+    <BottomSheet isOpen={isOpen} onClose={handleClose} title={sheetTitle}>
       {step === 'detail' && (
         <div className={styles.form}>
-          <div className={styles.fieldLabel}>nama dompet</div>
+          <div className={styles.fieldLabel}>{t('profil.wallets_name_label', lang)}</div>
           <div className={styles.inlineRow}>
             <input
               className={styles.fieldInput}
@@ -138,25 +138,27 @@ export function WalletEditSheet({
               onClick={handleRename}
               disabled={!nameInput.trim() || nameInput.trim() === wallet.name}
             >
-              Simpan
+              {t('common.save', lang)}
             </button>
           </div>
           <div className={styles.balanceDisplay}>{formatCurrency(wallet.balance, currency)}</div>
           <button className={styles.secondaryBtn} onClick={() => setStep('sesuaikan')}>
-            Sesuaikan saldo
+            {t('profil.wallets_sesuaikan_btn', lang)}
           </button>
           {!deleteConfirm ? (
             <button className={styles.dangerGhostBtn} onClick={() => setDeleteConfirm(true)}>
-              Hapus dompet
+              {t('profil.wallets_delete_btn', lang)}
             </button>
           ) : (
             <div className={styles.confirmRow}>
-              <span className={styles.confirmText}>Yakin hapus {wallet.name}?</span>
+              <span className={styles.confirmText}>
+                {t('profil.wallets_delete_confirm', lang).replace('{name}', wallet.name)}
+              </span>
               <button className={styles.dangerBtn} onClick={handleDelete}>
-                Hapus
+                {t('common.delete', lang)}
               </button>
               <button className={styles.ghostBtn} onClick={() => setDeleteConfirm(false)}>
-                Batal
+                {t('common.cancel', lang)}
               </button>
             </div>
           )}
@@ -165,7 +167,7 @@ export function WalletEditSheet({
 
       {step === 'sesuaikan' && (
         <div className={styles.form}>
-          <div className={styles.fieldLabel}>saldo aktual sekarang</div>
+          <div className={styles.fieldLabel}>{t('profil.wallets_balance_label', lang)}</div>
           <div className={styles.amountRow}>
             <span className={styles.prefix}>{getCurrencySymbol(currency)}</span>
             <input
@@ -181,17 +183,17 @@ export function WalletEditSheet({
           </div>
           {actualRaw !== '' && (
             <div className={`${styles.diffLabel} ${diff < 0 ? styles.diffNeg : styles.diffPos}`}>
-              selisih {diff >= 0 ? '+' : ''}
+              {t('profil.wallets_diff_prefix', lang)} {diff >= 0 ? '+' : ''}
               {formatCurrency(diff, currency)}
             </div>
           )}
-          <div className={styles.fieldLabel}>selisih dari mana?</div>
+          <div className={styles.fieldLabel}>{t('profil.wallets_diff_from', lang)}</div>
           <button
             className={styles.optionBtn}
             onClick={handleSesuaikanLupaCatat}
             disabled={!actualRaw}
           >
-            Lupa catat — buat transaksi koreksi
+            {t('profil.wallets_opt_lupa', lang)}
           </button>
           <button
             className={styles.optionBtn}
@@ -201,24 +203,24 @@ export function WalletEditSheet({
             }}
             disabled={!actualRaw || diff === 0}
           >
-            Transfer ke wallet lain — 2 transaksi pasangan
+            {t('profil.wallets_opt_transfer', lang)}
           </button>
           <button
             className={styles.optionBtn}
             onClick={handleSesuaikanKoreksi}
             disabled={!actualRaw}
           >
-            Koreksi saja — update angka tanpa transaksi
+            {t('profil.wallets_opt_koreksi', lang)}
           </button>
           <button className={styles.ghostBtn} onClick={() => setStep('detail')}>
-            Batal
+            {t('common.cancel', lang)}
           </button>
         </div>
       )}
 
       {step === 'sesuaikan-transfer' && (
         <div className={styles.form}>
-          <div className={styles.fieldLabel}>pilih dompet tujuan</div>
+          <div className={styles.fieldLabel}>{t('profil.wallets_transfer_pick_label', lang)}</div>
           {wallets
             .filter((w) => w.id !== wallet.id)
             .map((w) => (
@@ -235,10 +237,10 @@ export function WalletEditSheet({
             onClick={handleSesuaikanTransfer}
             disabled={!transferTargetId}
           >
-            Konfirmasi transfer
+            {t('profil.wallets_transfer_confirm', lang)}
           </button>
           <button className={styles.ghostBtn} onClick={() => setStep('sesuaikan')}>
-            Batal
+            {t('common.cancel', lang)}
           </button>
         </div>
       )}

@@ -4,6 +4,8 @@ import { formatCurrency } from '@/shared/utils/formatCurrency'
 import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
 import { hapticMedium } from '@/shared/utils/haptic'
 import { BottomSheet } from '@/shared/components/BottomSheet'
+import { useLanguage } from '@/app/providers/useLanguage'
+import { t } from '@/shared/strings/strings'
 import styles from './MarkPaidSheet.module.css'
 
 interface Props {
@@ -29,6 +31,7 @@ function fromLocalDateStr(s: string): number {
 }
 
 export function MarkPaidSheet({ tagihan, wallets, nowMs, isOpen, onClose, onCommit }: Props) {
+  const lang = useLanguage()
   const [amountStr, setAmountStr] = useState(formatNominalDisplay(String(tagihan.nominalEstimate)))
   const [walletId, setWalletId] = useState<number>(wallets[0]?.id ?? 0)
   const [dateStr, setDateStr] = useState(toLocalDateStr(nowMs))
@@ -52,9 +55,13 @@ export function MarkPaidSheet({ tagihan, wallets, nowMs, isOpen, onClose, onComm
   }
 
   return (
-    <BottomSheet isOpen={isOpen} onClose={onClose} title={`Bayar ${tagihan.name}`}>
+    <BottomSheet
+      isOpen={isOpen}
+      onClose={onClose}
+      title={t('mark_paid.title', lang).replace('{name}', tagihan.name)}
+    >
       <div className={styles.section}>
-        <div className={styles.label}>Nominal</div>
+        <div className={styles.label}>{t('mark_paid.nominal', lang)}</div>
         <input
           className={styles.amountInput}
           type="text"
@@ -64,13 +71,16 @@ export function MarkPaidSheet({ tagihan, wallets, nowMs, isOpen, onClose, onComm
         />
         {tagihan.nominalEstimate > 0 && amount !== tagihan.nominalEstimate && (
           <div className={styles.amountHint}>
-            estimasi: {formatCurrency(tagihan.nominalEstimate, tagihan.currency)}
+            {t('mark_paid.estimate', lang).replace(
+              '{amount}',
+              formatCurrency(tagihan.nominalEstimate, tagihan.currency),
+            )}
           </div>
         )}
       </div>
 
       <div className={styles.section}>
-        <div className={styles.label}>Bayar dari</div>
+        <div className={styles.label}>{t('mark_paid.from', lang)}</div>
         <div className={styles.walletList}>
           {wallets.map((w) => (
             <button
@@ -87,25 +97,25 @@ export function MarkPaidSheet({ tagihan, wallets, nowMs, isOpen, onClose, onComm
         </div>
         {insufficient && (
           <div className={styles.warning}>
-            Saldo {selectedWallet?.name} tidak cukup untuk pembayaran ini.
+            {t('mark_paid.insufficient', lang).replace('{wallet}', selectedWallet?.name ?? '')}
           </div>
         )}
       </div>
 
       <div className={styles.section}>
-        <div className={styles.label}>Tanggal</div>
+        <div className={styles.label}>{t('mark_paid.date_label', lang)}</div>
         <div className={styles.datePills}>
           <button
             className={`${styles.datePill} ${dateStr === todayStr ? styles.datePillActive : ''}`}
             onClick={() => setDateStr(todayStr)}
           >
-            Hari ini
+            {t('common.today', lang)}
           </button>
           <button
             className={`${styles.datePill} ${dateStr === yesterdayStr ? styles.datePillActive : ''}`}
             onClick={() => setDateStr(yesterdayStr)}
           >
-            Kemarin
+            {t('common.yesterday', lang)}
           </button>
         </div>
         {dateStr !== todayStr && dateStr !== yesterdayStr && (
@@ -125,7 +135,7 @@ export function MarkPaidSheet({ tagihan, wallets, nowMs, isOpen, onClose, onComm
         onClick={handleCommit}
         disabled={!walletId || amount <= 0}
       >
-        Tandai Dibayar
+        {t('mark_paid.submit', lang)}
       </button>
     </BottomSheet>
   )

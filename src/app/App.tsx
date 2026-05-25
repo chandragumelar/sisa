@@ -5,6 +5,7 @@ import { getSettings } from '@/db/settings.repository'
 import { applyTheme } from '@/shared/utils/theme'
 import { applyLanguage } from '@/shared/utils/language'
 import { UpdateBanner } from './UpdateBanner'
+import { LanguageProvider } from './providers/LanguageProvider'
 
 export function App() {
   useEffect(() => {
@@ -17,9 +18,9 @@ export function App() {
   }, [])
 
   return (
-    <>
+    <LanguageProvider>
       <RouterProvider router={router} />
       <UpdateBanner />
-    </>
+    </LanguageProvider>
   )
 }

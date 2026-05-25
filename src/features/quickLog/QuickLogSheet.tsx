@@ -5,6 +5,8 @@ import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNomi
 import { BottomSheet } from '@/shared/components/BottomSheet'
 import { buildTransaction, type QuickLogMode } from './quickLog.utils'
 import { addTransactionAndUpdateBalance, replaceTransaction } from '@/db/transactions.repository'
+import { useLanguage } from '@/app/providers/useLanguage'
+import { t } from '@/shared/strings/strings'
 import styles from './QuickLogSheet.module.css'
 
 interface Props {
@@ -45,6 +47,7 @@ export function QuickLogSheet({
   initialNote,
   initialDateMs,
 }: Props) {
+  const lang = useLanguage()
   const [mode, setMode] = useState<QuickLogMode>(initialMode ?? 'keluar')
   const [walletId, setWalletId] = useState<number>(initialWalletId ?? wallets[0]?.id ?? 0)
   const [amountStr, setAmountStr] = useState(
@@ -137,6 +140,12 @@ export function QuickLogSheet({
     setSavingsWarning(false)
   }
 
+  const modeLabels: Record<QuickLogMode, string> = {
+    keluar: t('quick_log.mode_keluar', lang),
+    masuk: t('quick_log.mode_masuk', lang),
+    nabung: t('quick_log.mode_nabung', lang),
+  }
+
   return (
     <BottomSheet isOpen={isOpen} onClose={onClose}>
       {/* Mode toggle */}
@@ -147,7 +156,7 @@ export function QuickLogSheet({
             className={`${styles.modeBtn} ${mode === m ? styles.modeBtnActive : ''}`}
             onClick={() => handleModeChange(m)}
           >
-            {m}
+            {modeLabels[m]}
           </button>
         ))}
       </div>
@@ -183,15 +192,17 @@ export function QuickLogSheet({
       {/* Savings warning */}
       {savingsWarning && (
         <div className={styles.savingsWarning}>
-          Tabungan kamu cuma {formatCurrency(totalNabung, walletCurrency)} — mau pakai semua
-          tabungan?
+          {t('quick_log.savings_warning', lang).replace(
+            '{amount}',
+            formatCurrency(totalNabung, walletCurrency),
+          )}
         </div>
       )}
 
       {/* Dari tabungan toggle (keluar only) */}
       {mode === 'keluar' && (
         <div className={styles.toggleRow}>
-          <label className={styles.toggleLabel}>dari tabungan</label>
+          <label className={styles.toggleLabel}>{t('quick_log.from_savings', lang)}</label>
           <button
             className={`${styles.toggle} ${isFromSavings ? styles.toggleOn : ''}`}
             onClick={handleFromSavingsToggle}
@@ -209,13 +220,13 @@ export function QuickLogSheet({
           className={`${styles.datePill} ${isToday ? styles.datePillActive : ''}`}
           onClick={() => setDateMs(nowMs)}
         >
-          Hari ini
+          {t('common.today', lang)}
         </button>
         <button
           className={`${styles.datePill} ${isYesterday ? styles.datePillActive : ''}`}
           onClick={() => setDateMs(yesterdayStart + 12 * 3600 * 1000)}
         >
-          Kemarin
+          {t('common.yesterday', lang)}
         </button>
         <input
           type="date"
@@ -223,19 +234,19 @@ export function QuickLogSheet({
           max={todayStr}
           value={isCustomDate ? dateStr : ''}
           onChange={(e) => handleDateInput(e.target.value)}
-          aria-label="Pilih tanggal lain"
+          aria-label={t('quick_log.date_custom_aria', lang)}
         />
       </div>
 
       {/* Note expander */}
       {!noteExpanded ? (
         <button className={styles.noteToggle} onClick={() => setNoteExpanded(true)}>
-          + tambah catatan
+          {t('quick_log.add_note', lang)}
         </button>
       ) : (
         <textarea
           className={styles.noteInput}
-          placeholder="Catatan..."
+          placeholder={t('quick_log.note_placeholder', lang)}
           value={note}
           onChange={(e) => setNote(e.target.value)}
           rows={2}
@@ -248,7 +259,11 @@ export function QuickLogSheet({
         onClick={handleSubmit}
         disabled={!amount || !walletId || submitting}
       >
-        {submitting ? 'Menyimpan...' : editTxId !== undefined ? 'Simpan' : 'Catat'}
+        {submitting
+          ? t('quick_log.submitting', lang)
+          : editTxId !== undefined
+            ? t('quick_log.submit_edit', lang)
+            : t('quick_log.submit_new', lang)}
       </button>
     </BottomSheet>
   )

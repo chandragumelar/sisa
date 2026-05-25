@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { BottomSheet } from '@/shared/components/BottomSheet'
+import { useLanguage } from '@/app/providers/useLanguage'
+import { t } from '@/shared/strings/strings'
 import styles from './SaveScenarioSheet.module.css'
 
 interface Props {
@@ -10,6 +12,7 @@ interface Props {
 }
 
 export function SaveScenarioSheet({ isOpen, onClose, suggestedName, onSave }: Props) {
+  const lang = useLanguage()
   const [name, setName] = useState(suggestedName)
 
   function handleSave() {
@@ -20,19 +23,19 @@ export function SaveScenarioSheet({ isOpen, onClose, suggestedName, onSave }: Pr
   }
 
   return (
-    <BottomSheet isOpen={isOpen} onClose={onClose} title="Simpan skenario">
+    <BottomSheet isOpen={isOpen} onClose={onClose} title={t('andai.save_sheet_title', lang)}>
       <div className={styles.body}>
-        <div className={styles.label}>Nama skenario</div>
+        <div className={styles.label}>{t('andai.save_sheet_label', lang)}</div>
         <input
           className={styles.input}
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="e.g. beli motor + freelance"
+          placeholder={t('andai.save_sheet_placeholder', lang)}
           autoFocus={isOpen}
         />
         <button className={styles.saveBtn} onClick={handleSave} disabled={!name.trim()}>
-          Simpan
+          {t('andai.save_sheet_submit', lang)}
         </button>
       </div>
     </BottomSheet>

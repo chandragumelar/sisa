@@ -1,6 +1,8 @@
 import { useRef, useState } from 'react'
 import type { SavedScenario } from '@/db/database'
 import { hapticLight } from '@/shared/utils/haptic'
+import { useLanguage } from '@/app/providers/useLanguage'
+import { t, toLocale } from '@/shared/strings/strings'
 import styles from './ScenariosRack.module.css'
 
 interface Props {
@@ -29,6 +31,7 @@ function ScenarioRow({
   onDelete: () => void
   onToggleCompare: () => void
 }) {
+  const lang = useLanguage()
   const [translateX, setTranslateX] = useState(0)
   const [snapped, setSnapped] = useState(false)
   const startX = useRef<number | null>(null)
@@ -78,14 +81,18 @@ function ScenarioRow({
     }
   }
 
-  const savedDate = new Date(scenario.savedAt).toLocaleDateString('id-ID', {
+  const savedDate = new Date(scenario.savedAt).toLocaleDateString(toLocale(lang), {
     day: 'numeric',
     month: 'short',
   })
 
   return (
     <div className={styles.rowWrapper}>
-      <button className={styles.deleteReveal} onClick={onDelete} aria-label="Hapus skenario">
+      <button
+        className={styles.deleteReveal}
+        onClick={onDelete}
+        aria-label={t('andai.scenarios_delete_aria', lang)}
+      >
         <svg
           width="16"
           height="16"
@@ -101,7 +108,7 @@ function ScenarioRow({
           <path d="M10 11v6M14 11v6" />
           <path d="M9 6V4h6v2" />
         </svg>
-        hapus
+        {t('andai.scenarios_delete_label', lang)}
       </button>
 
       <div
@@ -137,11 +144,12 @@ export function ScenariosRack({
   onToggleCompare,
   compareMode,
 }: Props) {
+  const lang = useLanguage()
   if (scenarios.length === 0) return null
 
   return (
     <div className={styles.rack}>
-      <div className={styles.rackLabel}>skenario tersimpan</div>
+      <div className={styles.rackLabel}>{t('andai.scenarios_label', lang)}</div>
       {scenarios.map((s) => (
         <ScenarioRow
           key={s.id}

@@ -1,6 +1,8 @@
 import type { Language } from '@/db/database'
 import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
 import type { WalletInput } from '../onboarding.types'
+import { useLanguage } from '@/app/providers/useLanguage'
+import { t } from '@/shared/strings/strings'
 
 interface Props {
   primaryCurrency: string
@@ -10,7 +12,9 @@ interface Props {
   onNext: () => void
 }
 
-export function Step4dWallet({ primaryCurrency, language, wallets, onChange, onNext }: Props) {
+export function Step4dWallet({ primaryCurrency, wallets, onChange, onNext }: Props) {
+  const lang = useLanguage()
+
   function updateWalletName(id: string, name: string) {
     onChange(wallets.map((w) => (w.id === id ? { ...w, name } : w)))
   }
@@ -30,27 +34,27 @@ export function Step4dWallet({ primaryCurrency, language, wallets, onChange, onN
 
   const canProceed = wallets.length > 0 && wallets[0].name.trim() !== ''
 
-  const firstPlaceholder =
-    language === 'en'
-      ? 'Wallet name (e.g. Standard Chartered, Wise)'
-      : 'Nama dompet (cth: BCA, GoPay)'
-  const otherPlaceholder = language === 'en' ? 'Wallet name' : 'Nama dompet'
-
   return (
     <>
-      <h1 className="ob-heading">Dompet lo</h1>
-      <p className="ob-subheading">
-        Tambah rekening, dompet tunai, atau e-wallet. Saldo bisa diisi nanti.
-      </p>
+      <h1 className="ob-heading">{t('ob.step4d.heading', lang)}</h1>
+      <p className="ob-subheading">{t('ob.step4d.sub', lang)}</p>
 
       {wallets.map((wallet, i) => (
         <div key={wallet.id} className="ob-field">
-          {i > 0 && <div className="ob-field-label">Dompet {i + 1}</div>}
+          {i > 0 && (
+            <div className="ob-field-label">
+              {t('ob.step4d.wallet_label', lang).replace('{n}', String(i + 1))}
+            </div>
+          )}
           <div className="ob-input-row">
             <input
               className="ob-input ob-input-bare"
               type="text"
-              placeholder={i === 0 ? firstPlaceholder : otherPlaceholder}
+              placeholder={
+                i === 0
+                  ? t('ob.step4d.placeholder_first', lang)
+                  : t('ob.step4d.placeholder_other', lang)
+              }
               value={wallet.name}
               onChange={(e) => updateWalletName(wallet.id, e.target.value)}
               autoComplete="off"
@@ -59,7 +63,7 @@ export function Step4dWallet({ primaryCurrency, language, wallets, onChange, onN
               <button
                 className="ob-remove-btn"
                 onClick={() => removeWallet(wallet.id)}
-                aria-label="Hapus dompet"
+                aria-label={t('ob.step4d.remove_aria', lang)}
               >
                 ✕
               </button>
@@ -71,7 +75,7 @@ export function Step4dWallet({ primaryCurrency, language, wallets, onChange, onN
               className="ob-input ob-input-bare"
               type="text"
               inputMode="numeric"
-              placeholder="Saldo sekarang (opsional)"
+              placeholder={t('ob.step4d.balance_label', lang)}
               value={formatNominalDisplay(wallet.balance)}
               onChange={(e) => updateWalletBalance(wallet.id, e.target.value)}
             />
@@ -80,13 +84,13 @@ export function Step4dWallet({ primaryCurrency, language, wallets, onChange, onN
       ))}
 
       <button className="ob-add-line" onClick={addWallet}>
-        + Tambah dompet lain
+        {t('ob.step4d.add_more', lang)}
       </button>
 
       <div className="ob-grow" />
 
       <button className="ob-primary-btn" disabled={!canProceed} onClick={onNext}>
-        Lanjut
+        {t('ob.step4d.next', lang)}
       </button>
     </>
   )

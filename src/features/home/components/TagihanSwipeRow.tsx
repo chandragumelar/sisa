@@ -3,6 +3,8 @@ import type { Tagihan } from '@/db/database'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
 import { getTagihanUrgency } from '../tagihan.utils'
 import { hapticLight } from '@/shared/utils/haptic'
+import { useLanguage } from '@/app/providers/useLanguage'
+import { t } from '@/shared/strings/strings'
 import styles from './TagihanSwipeRow.module.css'
 
 interface Props {
@@ -16,6 +18,7 @@ interface Props {
 const REVEAL_WIDTH = 110
 
 export function TagihanSwipeRow({ tagihan, nowMs, metaText, onPayTap, onRowTap }: Props) {
+  const lang = useLanguage()
   const [translateX, setTranslateX] = useState(0)
   const [snapped, setSnapped] = useState(false)
   const startX = useRef<number | null>(null)
@@ -67,7 +70,11 @@ export function TagihanSwipeRow({ tagihan, nowMs, metaText, onPayTap, onRowTap }
 
   return (
     <div className={styles.container}>
-      <div className={styles.revealPanel} onClick={onPayTap} aria-label="Tandai dibayar">
+      <div
+        className={styles.revealPanel}
+        onClick={onPayTap}
+        aria-label={t('tagihan_swipe.mark_paid_aria', lang)}
+      >
         <svg
           width="20"
           height="20"
@@ -80,7 +87,7 @@ export function TagihanSwipeRow({ tagihan, nowMs, metaText, onPayTap, onRowTap }
         >
           <polyline points="20 6 9 17 4 12" />
         </svg>
-        <span>tandai dibayar</span>
+        <span>{t('tagihan_swipe.mark_paid_label', lang)}</span>
       </div>
 
       <div
@@ -102,7 +109,9 @@ export function TagihanSwipeRow({ tagihan, nowMs, metaText, onPayTap, onRowTap }
           </span>
         </div>
         <div className={styles.rowRight}>
-          {isPaid && <span className={styles.paidBadge}>lunas</span>}
+          {isPaid && (
+            <span className={styles.paidBadge}>{t('tagihan_swipe.paid_badge', lang)}</span>
+          )}
           <span className={styles.rowAmount}>
             {tagihan.nominalType === 'variabel' ? '± ' : ''}
             {formatCurrency(tagihan.nominalEstimate, tagihan.currency)}

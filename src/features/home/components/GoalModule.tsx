@@ -2,6 +2,8 @@ import { useRef, useState } from 'react'
 import type { Goal } from '@/db/database'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
 import { updateGoalsOrder } from '@/db/goals.repository'
+import { useLanguage } from '@/app/providers/useLanguage'
+import { t } from '@/shared/strings/strings'
 import { calcGoalStatuses } from '../home.utils'
 import styles from './GoalModule.module.css'
 
@@ -24,6 +26,7 @@ export function GoalModule({
   onAddTap,
   onGoalTap,
 }: Props) {
+  const lang = useLanguage()
   const [dragging, setDragging] = useState(false)
   const [dragIndex, setDragIndex] = useState<number | null>(null)
   const [overIndex, setOverIndex] = useState<number | null>(null)
@@ -97,14 +100,11 @@ export function GoalModule({
   if (goals.length === 0) {
     return (
       <>
-        <div className={styles.label}>goal tabungan</div>
+        <div className={styles.label}>{t('goal.title', lang)}</div>
         <div className={styles.emptyBlock}>
-          <p className={styles.emptyText}>
-            Tentukan target nabung — emergency fund, liburan, gadget — supaya lo tau lagi nabung
-            buat apa.
-          </p>
+          <p className={styles.emptyText}>{t('goal.empty_text', lang)}</p>
           <button className={styles.addBtn} onClick={onAddTap}>
-            + Tambah goal
+            {t('goal.add', lang)}
           </button>
         </div>
       </>
@@ -121,7 +121,7 @@ export function GoalModule({
 
   return (
     <>
-      <div className={styles.label}>goal tabungan</div>
+      <div className={styles.label}>{t('goal.title', lang)}</div>
       <div className={styles.card}>
         {statuses.map(({ goal, saved, pct, status }, i) => {
           const origIndex = localGoals.findIndex((g) => g.id === goal.id)
@@ -152,7 +152,7 @@ export function GoalModule({
 
               {status === 'aktif' && (
                 <>
-                  <div className={styles.status}>menabung →</div>
+                  <div className={styles.status}>{t('goal.saving', lang)}</div>
                   <div className={styles.barWrap}>
                     <div className={styles.barFill} style={{ width: `${pct}%` }} />
                     <div className={styles.barMarker} />
@@ -162,26 +162,28 @@ export function GoalModule({
 
               {status === 'tercapai' && (
                 <>
-                  <div className={styles.status}>tercapai ✓</div>
+                  <div className={styles.status}>{t('goal.reached', lang)}</div>
                   <div className={styles.barWrap}>
                     <div className={styles.barFill} style={{ width: '100%' }} />
                   </div>
                 </>
               )}
 
-              {status === 'antri' && <span className={styles.statusWaiting}>nunggu giliran</span>}
+              {status === 'antri' && (
+                <span className={styles.statusWaiting}>{t('goal.waiting', lang)}</span>
+              )}
             </div>
           )
         })}
 
         {activeGoal && (
           <div className={styles.footerMeta}>
-            nabung lagi: {activeGoal.goal.name} · tahan &amp; geser untuk ganti urutan
+            {t('goal.reorder_hint', lang).replace('{name}', activeGoal.goal.name)}
           </div>
         )}
       </div>
       <button className={styles.addBtn} onClick={onAddTap}>
-        + Tambah goal
+        {t('goal.add', lang)}
       </button>
     </>
   )

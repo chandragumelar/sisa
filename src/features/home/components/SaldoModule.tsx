@@ -2,6 +2,8 @@ import { useState } from 'react'
 import type { Wallet } from '@/db/database'
 import { calcSisa } from '@/shared/utils/sisa.utils'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
+import { useLanguage } from '@/app/providers/useLanguage'
+import { t } from '@/shared/strings/strings'
 import styles from './SaldoModule.module.css'
 
 interface Props {
@@ -39,6 +41,7 @@ export function SaldoModule({
   onWalletTap,
   onAddWalletTap,
 }: Props) {
+  const lang = useLanguage()
   const [expanded, setExpanded] = useState(getExpandedPref)
 
   const total = wallets.reduce((sum, w) => sum + w.balance, 0)
@@ -47,9 +50,15 @@ export function SaldoModule({
 
   let heroSub = ''
   if (yesterdaySpent > 0) {
-    heroSub = `${formatCurrency(yesterdaySpent, currency)} terpakai kemarin`
+    heroSub = t('saldo.spent_yesterday', lang).replace(
+      '{amount}',
+      formatCurrency(yesterdaySpent, currency),
+    )
   } else if (yesterdayEarned > 0) {
-    heroSub = `${formatCurrency(yesterdayEarned, currency)} masuk kemarin`
+    heroSub = t('saldo.income_yesterday', lang).replace(
+      '{amount}',
+      formatCurrency(yesterdayEarned, currency),
+    )
   }
 
   function handleToggle() {
@@ -62,12 +71,12 @@ export function SaldoModule({
 
   return (
     <>
-      <div className={styles.label}>sisa bulan ini</div>
+      <div className={styles.label}>{t('saldo.title', lang)}</div>
       <button
         className={styles.heroAmountBtn}
         onClick={handleToggle}
         aria-expanded={expanded}
-        aria-label="Tap untuk lihat detail dompet"
+        aria-label={t('saldo.toggle_aria', lang)}
       >
         <span className={styles.heroAmount}>{formatCurrency(sisa, currency)}</span>
         <svg
@@ -89,7 +98,7 @@ export function SaldoModule({
       {expanded && (
         <div className={styles.walletCard}>
           {visible.length === 0 ? (
-            <div className={styles.empty}>Belum ada dompet</div>
+            <div className={styles.empty}>{t('saldo.no_wallets', lang)}</div>
           ) : (
             visible.map((w) => (
               <button
@@ -106,24 +115,24 @@ export function SaldoModule({
 
           <div className={styles.summaryDivider} />
           <div className={`${styles.summaryRow} ${styles.totalRow}`}>
-            <span className={styles.totalLabel}>Total saldo</span>
+            <span className={styles.totalLabel}>{t('saldo.total', lang)}</span>
             <span className={styles.totalAmount}>{formatCurrency(total, currency)}</span>
           </div>
 
           <div className={styles.summaryRow}>
-            <span className={styles.summaryLabel}>− Tagihan bulan ini</span>
+            <span className={styles.summaryLabel}>{t('saldo.tagihan', lang)}</span>
             <span className={styles.summaryAmountNeg}>
               {formatCurrency(unpaidTagihanTotal, currency)}
             </span>
           </div>
           <div className={styles.summaryRow}>
-            <span className={styles.summaryLabel}>− Tabungan</span>
+            <span className={styles.summaryLabel}>{t('saldo.nabung', lang)}</span>
             <span className={styles.summaryAmountNeg}>{formatCurrency(totalNabung, currency)}</span>
           </div>
 
           <div className={styles.sisaDivider} />
           <div className={`${styles.summaryRow} ${styles.sisaRow}`}>
-            <span className={styles.sisaLabel}>= Sisa bulan ini</span>
+            <span className={styles.sisaLabel}>{t('saldo.sisa', lang)}</span>
             <span className={styles.sisaAmount}>{formatCurrency(sisa, currency)}</span>
           </div>
 
@@ -132,7 +141,7 @@ export function SaldoModule({
               <div className={styles.contextDivider} />
               {monthlyIncome > 0 && (
                 <div className={styles.summaryRow}>
-                  <span className={styles.contextLabel}>Pemasukan bulan ini</span>
+                  <span className={styles.contextLabel}>{t('saldo.income_month', lang)}</span>
                   <span className={styles.contextAmountIn}>
                     +{formatCurrency(monthlyIncome, currency)}
                   </span>
@@ -140,7 +149,7 @@ export function SaldoModule({
               )}
               {monthlyExpense > 0 && (
                 <div className={styles.summaryRow}>
-                  <span className={styles.contextLabel}>Pengeluaran bulan ini</span>
+                  <span className={styles.contextLabel}>{t('saldo.expense_month', lang)}</span>
                   <span className={styles.contextAmountOut}>
                     −{formatCurrency(monthlyExpense, currency)}
                   </span>
@@ -150,7 +159,7 @@ export function SaldoModule({
           )}
 
           <button className={styles.addBtn} onClick={onAddWalletTap}>
-            + Tambah dompet
+            {t('saldo.add_wallet', lang)}
           </button>
         </div>
       )}

@@ -1,5 +1,7 @@
 import { formatCurrency } from '@/shared/utils/formatCurrency'
 import type { ForecastMonth } from '../forecast.utils'
+import { useLanguage } from '@/app/providers/useLanguage'
+import { t } from '@/shared/strings/strings'
 import styles from './ForecastCard.module.css'
 
 interface Props {
@@ -9,12 +11,13 @@ interface Props {
 }
 
 export function ForecastCard({ months, currency, onDetail }: Props) {
+  const lang = useLanguage()
   return (
     <div className={styles.card}>
       <div className={styles.header}>
-        <span className={styles.title}>prediksi uang sisa akhir bulan</span>
+        <span className={styles.title}>{t('forecast.title', lang)}</span>
         <button className={styles.detailBtn} onClick={onDetail}>
-          detail ›
+          {t('forecast.detail_btn', lang)}
         </button>
       </div>
       <div className={styles.cols}>

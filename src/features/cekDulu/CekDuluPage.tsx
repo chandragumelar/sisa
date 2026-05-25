@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useClock } from '@/app/providers/useClock'
+import { useLanguage } from '@/app/providers/useLanguage'
+import { t } from '@/shared/strings/strings'
 import { getSettings } from '@/db/settings.repository'
 import { getAllWallets } from '@/db/wallets.repository'
 import { getActiveTagihan } from '@/db/tagihan.repository'
@@ -25,6 +27,7 @@ interface PageData {
 export function CekDuluPage() {
   const clock = useClock()
   const navigate = useNavigate()
+  const lang = useLanguage()
   const nowMs = clock.now()
 
   const [data, setData] = useState<PageData | null>(null)
@@ -77,17 +80,21 @@ export function CekDuluPage() {
 
       <div className={styles.head}>
         <div>
-          <div className={styles.title}>Cek Dulu</div>
-          <div className={styles.sub}>aman ga gue beli ini?</div>
+          <div className={styles.title}>{t('cek_dulu.title', lang)}</div>
+          <div className={styles.sub}>{t('cek_dulu.sub', lang)}</div>
         </div>
-        <button className={styles.closeBtn} onClick={() => navigate(-1)} aria-label="Tutup">
+        <button
+          className={styles.closeBtn}
+          onClick={() => navigate(-1)}
+          aria-label={t('cek_dulu.close_aria', lang)}
+        >
           ✕
         </button>
       </div>
 
       {/* Nominal input */}
       <div className={styles.nominalBlock}>
-        <div className={styles.nominalLabel}>harga barang</div>
+        <div className={styles.nominalLabel}>{t('cek_dulu.price_label', lang)}</div>
         <div className={styles.nominalRow}>
           <span className={styles.nominalPrefix}>{getCurrencySymbol(currency)}</span>
           <input
@@ -101,36 +108,40 @@ export function CekDuluPage() {
           />
         </div>
         <div className={styles.nominalContext}>
-          sampai gajian: <strong>{daysUntilPayday} hari lagi</strong> · saldo total{' '}
-          <strong>{formatCurrency(totalSaldo, currency)}</strong>
+          {t('cek_dulu.context_line', lang)
+            .replace('{days}', String(daysUntilPayday))
+            .replace('{amount}', formatCurrency(totalSaldo, currency))}
         </div>
       </div>
 
       {/* Comparison frame */}
       <div className={styles.cmpFrame}>
         <div className={styles.cmpColHead}>
-          <span className={styles.headBefore}>sekarang</span>
+          <span className={styles.headBefore}>{t('cek_dulu.col_now', lang)}</span>
           <span className={styles.headArrow}>→</span>
-          <span className={styles.headAfter}>kalau beli</span>
+          <span className={styles.headAfter}>{t('cek_dulu.col_after', lang)}</span>
         </div>
 
         {/* Row 1 — always */}
         <div className={styles.cmpRow}>
-          <div className={styles.rowLabel}>jatah harian sampai gajian</div>
+          <div className={styles.rowLabel}>{t('cek_dulu.daily_label', lang)}</div>
           <div className={styles.cmpValues}>
             <span className={styles.valueBefore}>
               {formatCurrency(result.dailyBefore, currency)}
-              <span className={styles.valueUnit}>/hr</span>
+              <span className={styles.valueUnit}>{t('cek_dulu.daily_unit', lang)}</span>
             </span>
             <span className={styles.cmpArrow}>→</span>
             <span className={styles.valueAfter}>
               {nominal > 0 ? formatCurrency(result.dailyAfter, currency) : '—'}
-              {nominal > 0 && <span className={styles.valueUnit}>/hr</span>}
+              {nominal > 0 && (
+                <span className={styles.valueUnit}>{t('cek_dulu.daily_unit', lang)}</span>
+              )}
             </span>
           </div>
           {nominal > 0 && (
             <div className={styles.rowDelta}>
-              {formatCurrency(result.dailyDelta, currency)}/hr · {daysUntilPayday} hari
+              {formatCurrency(result.dailyDelta, currency)}
+              {t('cek_dulu.daily_unit', lang)} · {daysUntilPayday} {lang === 'en' ? 'days' : 'hari'}
             </div>
           )}
         </div>
@@ -139,8 +150,8 @@ export function CekDuluPage() {
         {result.showSisaRow && (
           <div className={styles.cmpRow}>
             <div className={styles.rowLabel}>
-              sisa operasional
-              <span className={styles.newFlag}>baru muncul</span>
+              {t('cek_dulu.sisa_label', lang)}
+              <span className={styles.newFlag}>{t('cek_dulu.new_flag', lang)}</span>
             </div>
             <div className={styles.cmpValues}>
               <span className={styles.valueBefore}>
@@ -158,8 +169,8 @@ export function CekDuluPage() {
         {result.showTabunganRow && (
           <div className={`${styles.cmpRow} ${styles.cmpRowHeavy}`}>
             <div className={styles.rowLabel}>
-              tabungan kepotong
-              <span className={styles.newFlag}>baru muncul</span>
+              {t('cek_dulu.tabungan_label', lang)}
+              <span className={styles.newFlag}>{t('cek_dulu.new_flag', lang)}</span>
             </div>
             <div className={styles.cmpValues}>
               <span className={styles.valueBefore}>
@@ -171,36 +182,38 @@ export function CekDuluPage() {
               </span>
             </div>
             <div className={styles.rowSubNote}>
-              Buat nutupin, <strong>{formatCurrency(result.nabungDrawn, currency)}</strong> ketarik
-              dari tabungan.
+              {t('cek_dulu.tabungan_note', lang).replace(
+                '{amount}',
+                formatCurrency(result.nabungDrawn, currency),
+              )}
             </div>
           </div>
         )}
       </div>
 
-      {nominal > 0 && (
-        <div className={styles.growHint}>baris nambah otomatis pas pengeluaran makin dalam</div>
-      )}
+      {nominal > 0 && <div className={styles.growHint}>{t('cek_dulu.grow_hint', lang)}</div>}
 
       <div className={styles.srcLine}>
-        <span>dihitung dari saldo total</span>
+        <span>{t('cek_dulu.src_label', lang)}</span>
         <span className={styles.srcVal}>
-          {wallets.length} dompet · {formatCurrency(totalSaldo, currency)}
+          {t('cek_dulu.src_wallets', lang)
+            .replace('{n}', String(wallets.length))
+            .replace('{amount}', formatCurrency(totalSaldo, currency))}
         </span>
       </div>
 
       {/* Actions */}
       <div className={styles.actions}>
         <button className={styles.closeAction} onClick={() => navigate(-1)}>
-          Tutup
+          {t('cek_dulu.close_btn', lang)}
         </button>
         <button
           className={styles.buyAction}
           onClick={() => setQuickLogOpen(true)}
           disabled={nominal === 0}
         >
-          <span className={styles.buyLabel}>Jadi beli — catat keluar</span>
-          <span className={styles.buySub}>masuk ke history sebagai pengeluaran</span>
+          <span className={styles.buyLabel}>{t('cek_dulu.buy_label', lang)}</span>
+          <span className={styles.buySub}>{t('cek_dulu.buy_sub', lang)}</span>
         </button>
       </div>
 

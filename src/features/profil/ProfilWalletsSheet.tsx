@@ -5,6 +5,8 @@ import type { Wallet } from '@/db/database'
 import { BottomSheet } from '@/shared/components/BottomSheet'
 import { formatCurrency, getCurrencySymbol } from '@/shared/utils/formatCurrency'
 import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
+import { useLanguage } from '@/app/providers/useLanguage'
+import { t } from '@/shared/strings/strings'
 import styles from './ProfilPage.module.css'
 
 interface Props {
@@ -30,6 +32,7 @@ export function ProfilWalletsSheet({
   initialStep,
   showAdd = true,
 }: Props) {
+  const lang = useLanguage()
   const [step, setStep] = useState<Step>(initialStep ?? 'list')
   const [selected, setSelected] = useState<Wallet | null>(null)
   const [nameInput, setNameInput] = useState('')
@@ -151,6 +154,13 @@ export function ProfilWalletsSheet({
     setStep('list')
   }
 
+  const sheetTitle =
+    step === 'list'
+      ? t('profil.wallets_title_list', lang)
+      : step === 'add'
+        ? t('profil.wallets_title_add', lang)
+        : (selected?.name ?? '')
+
   return (
     <BottomSheet
       isOpen={isOpen}
@@ -158,7 +168,7 @@ export function ProfilWalletsSheet({
         reset()
         onClose()
       }}
-      title={step === 'list' ? 'Dompet' : step === 'add' ? 'Tambah dompet' : (selected?.name ?? '')}
+      title={sheetTitle}
     >
       {step === 'list' && (
         <div className={styles.sheetForm}>
@@ -170,7 +180,7 @@ export function ProfilWalletsSheet({
           ))}
           {showAdd && (
             <button className={styles.ghostBtn} onClick={() => setStep('add')}>
-              + Tambah dompet
+              {t('profil.wallets_add_more', lang)}
             </button>
           )}
         </div>
@@ -178,7 +188,7 @@ export function ProfilWalletsSheet({
 
       {step === 'detail' && selected && (
         <div className={styles.sheetForm}>
-          <div className={styles.fieldLabel}>nama dompet</div>
+          <div className={styles.fieldLabel}>{t('profil.wallets_name_label', lang)}</div>
           <div className={styles.inlineRow}>
             <input
               className={styles.fieldInput}
@@ -186,25 +196,27 @@ export function ProfilWalletsSheet({
               onChange={(e) => setNameInput(e.target.value)}
             />
             <button className={styles.inlineBtn} onClick={handleRename}>
-              Simpan
+              {t('common.save', lang)}
             </button>
           </div>
           <div className={styles.balanceDisplay}>{formatCurrency(selected.balance, currency)}</div>
           <button className={styles.secondaryBtn} onClick={() => setStep('sesuaikan')}>
-            Sesuaikan saldo
+            {t('profil.wallets_sesuaikan_btn', lang)}
           </button>
           {!deleteConfirm ? (
             <button className={styles.dangerGhostBtn} onClick={() => setDeleteConfirm(true)}>
-              Hapus dompet
+              {t('profil.wallets_delete_btn', lang)}
             </button>
           ) : (
             <div className={styles.confirmRow}>
-              <span className={styles.confirmText}>Yakin hapus {selected.name}?</span>
+              <span className={styles.confirmText}>
+                {t('profil.wallets_delete_confirm', lang).replace('{name}', selected.name)}
+              </span>
               <button className={styles.dangerBtn} onClick={handleDelete}>
-                Hapus
+                {t('common.delete', lang)}
               </button>
               <button className={styles.ghostBtn} onClick={() => setDeleteConfirm(false)}>
-                Batal
+                {t('common.cancel', lang)}
               </button>
             </div>
           )}
@@ -213,7 +225,7 @@ export function ProfilWalletsSheet({
 
       {step === 'sesuaikan' && selected && (
         <div className={styles.sheetForm}>
-          <div className={styles.fieldLabel}>saldo aktual sekarang</div>
+          <div className={styles.fieldLabel}>{t('profil.wallets_balance_label', lang)}</div>
           <div className={styles.amountRow}>
             <span className={styles.prefix}>{getCurrencySymbol(currency)}</span>
             <input
@@ -229,17 +241,17 @@ export function ProfilWalletsSheet({
           </div>
           {actualBalanceStr !== '' && (
             <div className={`${styles.diffLabel} ${diff < 0 ? styles.diffNeg : styles.diffPos}`}>
-              selisih {diff >= 0 ? '+' : ''}
+              {t('profil.wallets_diff_prefix', lang)} {diff >= 0 ? '+' : ''}
               {formatCurrency(diff, currency)}
             </div>
           )}
-          <div className={styles.fieldLabel}>selisih dari mana?</div>
+          <div className={styles.fieldLabel}>{t('profil.wallets_diff_from', lang)}</div>
           <button
             className={styles.optionBtn}
             onClick={handleSesuaikanLupatCatat}
             disabled={!actualBalanceStr}
           >
-            Lupa catat — buat transaksi koreksi
+            {t('profil.wallets_opt_lupa', lang)}
           </button>
           <button
             className={styles.optionBtn}
@@ -249,24 +261,24 @@ export function ProfilWalletsSheet({
             }}
             disabled={!actualBalanceStr || diff === 0}
           >
-            Transfer ke wallet lain — 2 transaksi pasangan
+            {t('profil.wallets_opt_transfer', lang)}
           </button>
           <button
             className={styles.optionBtn}
             onClick={handleSesuaikanKoreksi}
             disabled={!actualBalanceStr}
           >
-            Koreksi saja — update angka tanpa transaksi
+            {t('profil.wallets_opt_koreksi', lang)}
           </button>
           <button className={styles.ghostBtn} onClick={() => setStep('detail')}>
-            Batal
+            {t('common.cancel', lang)}
           </button>
         </div>
       )}
 
       {step === 'sesuaikan-transfer' && selected && (
         <div className={styles.sheetForm}>
-          <div className={styles.fieldLabel}>pilih dompet tujuan</div>
+          <div className={styles.fieldLabel}>{t('profil.wallets_transfer_pick_label', lang)}</div>
           {wallets
             .filter((w) => w.id !== selected.id)
             .map((w) => (
@@ -283,25 +295,25 @@ export function ProfilWalletsSheet({
             onClick={handleSesuaikanTransfer}
             disabled={!transferTargetId}
           >
-            Konfirmasi transfer
+            {t('profil.wallets_transfer_confirm', lang)}
           </button>
           <button className={styles.ghostBtn} onClick={() => setStep('sesuaikan')}>
-            Batal
+            {t('common.cancel', lang)}
           </button>
         </div>
       )}
 
       {step === 'add' && (
         <div className={styles.sheetForm}>
-          <div className={styles.fieldLabel}>nama dompet</div>
+          <div className={styles.fieldLabel}>{t('profil.wallets_name_label', lang)}</div>
           <input
             className={styles.fieldInput}
-            placeholder="e.g. BCA, Dana, Tunai"
+            placeholder={t('profil.wallets_add_placeholder', lang)}
             value={addName}
             onChange={(e) => setAddName(e.target.value)}
             autoFocus
           />
-          <div className={styles.fieldLabel}>saldo awal</div>
+          <div className={styles.fieldLabel}>{t('profil.wallets_initial_balance', lang)}</div>
           <div className={styles.amountRow}>
             <span className={styles.prefix}>{getCurrencySymbol(currency)}</span>
             <input
@@ -317,10 +329,10 @@ export function ProfilWalletsSheet({
             onClick={handleAddWallet}
             disabled={!addName.trim()}
           >
-            Tambah dompet
+            {t('profil.wallets_add_btn', lang)}
           </button>
           <button className={styles.ghostBtn} onClick={() => setStep('list')}>
-            Batal
+            {t('common.cancel', lang)}
           </button>
         </div>
       )}

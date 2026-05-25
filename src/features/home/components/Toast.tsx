@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
+import { useLanguage } from '@/app/providers/useLanguage'
+import { t } from '@/shared/strings/strings'
 import styles from './Toast.module.css'
 
 const TOAST_DURATION_MS = 2_000
@@ -11,6 +13,7 @@ interface Props {
 }
 
 export function Toast({ message, onUndo, onEdit, onDismiss }: Props) {
+  const lang = useLanguage()
   const [progress, setProgress] = useState(100)
   const startRef = useRef<number>(Date.now())
   const rafRef = useRef<number>(0)
@@ -46,11 +49,11 @@ export function Toast({ message, onUndo, onEdit, onDismiss }: Props) {
         <div className={styles.actions}>
           {onEdit && (
             <button className={styles.editBtn} onClick={onEdit}>
-              Ubah
+              {t('toast.edit', lang)}
             </button>
           )}
           <button className={styles.undoBtn} onClick={onUndo}>
-            Batal
+            {t('toast.undo', lang)}
           </button>
         </div>
       </div>
