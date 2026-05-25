@@ -10,15 +10,19 @@ interface OnboardingShellProps {
 
 export function OnboardingShell({ step, children }: OnboardingShellProps) {
   const filled = getProgressCount(step)
+  const filledStr = String(filled).padStart(2, '0')
+  const totalStr = String(TOTAL_PROGRESS_DOTS).padStart(2, '0')
 
   return (
     <div className={styles.screen}>
       <div className={styles.header}>
-        <span className={styles.wordmark}>SISA</span>
-        <div className={styles.progress} aria-hidden="true">
+        <div className={styles.segments} aria-hidden="true">
           {Array.from({ length: TOTAL_PROGRESS_DOTS }, (_, i) => (
-            <span key={i} className={i < filled ? styles.dotActive : styles.dot} />
+            <span key={i} className={i < filled ? styles.segmentActive : styles.segment} />
           ))}
+        </div>
+        <div className={styles.stepLabel}>
+          {filledStr} / {totalStr}
         </div>
       </div>
       <div className={styles.body}>{children}</div>
