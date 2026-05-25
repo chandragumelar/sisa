@@ -31,7 +31,7 @@
 .dragHandle {
   width: 32px;
   height: 3px;
-  background: var(--surface-2);
+  background: var(--surface-deep);
   border-radius: 2px;
   margin: 10px auto 0;
   flex-shrink: 0;
@@ -42,14 +42,14 @@
   align-items: center;
   gap: 8px;
   padding: 12px 16px;
-  border-bottom: 1px solid var(--border-hair);
+  border-bottom: 1px solid var(--line);
   flex-shrink: 0;
 }
 
 .searchIcon {
   width: 16px;
   height: 16px;
-  color: var(--ink-tertiary);
+  color: var(--muted);
   flex-shrink: 0;
 }
 
@@ -58,8 +58,8 @@
   border: none;
   outline: none;
   font-size: 14px;
-  font-family: var(--font-sans);
-  color: var(--ink-primary);
+  font-family: var(--font-display);
+  color: var(--ink);
   background: none;
 }
 
@@ -74,8 +74,9 @@
   font-weight: 600;
   letter-spacing: 0.8px;
   text-transform: uppercase;
-  color: var(--ink-tertiary);
+  color: var(--muted);
   padding: 10px 16px 4px;
+  font-family: var(--font-mono);
 }
 
 .row {
@@ -87,12 +88,12 @@
   background: none;
   border: none;
   cursor: pointer;
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   text-align: left;
 }
 .row:hover,
 .row:focus-visible {
-  background: var(--accent-bg);
+  background: var(--surface-deep);
   outline: none;
 }
 
@@ -100,7 +101,7 @@
   font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 500;
-  color: var(--ink-secondary);
+  color: var(--ink-soft);
   width: 32px;
   flex-shrink: 0;
 }
@@ -109,14 +110,14 @@
   font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 600;
-  color: var(--ink-primary);
+  color: var(--ink);
   width: 40px;
   flex-shrink: 0;
 }
 
 .rowName {
   font-size: 13px;
-  color: var(--ink-secondary);
+  color: var(--ink-soft);
   flex: 1;
   white-space: nowrap;
   overflow: hidden;
@@ -126,6 +127,6 @@
 .empty {
   padding: 24px 16px;
   font-size: 13px;
-  color: var(--ink-tertiary);
+  color: var(--muted);
   text-align: center;
 }
