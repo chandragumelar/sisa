@@ -1,39 +1,68 @@
 /* ============================================================
-   SISA — Design Tokens (Light Mode v1)
-   Source of truth: design_system.md §1 & §2
+   SISA — Design Tokens (Light Mode v2 — warm revamp)
+   Source of truth: design_handoff_sisa_revamp/README.md
    Semantic naming only — never hardcode hex in components.
-   Dark mode v2: swap this file, components stay untouched.
+   Dark mode: swap :root block; components stay untouched.
    ============================================================ */
 
 :root {
-  /* --- Surfaces --- */
-  --canvas: #eef1f5;
-  --surface: #ffffff;
-  --surface-2: #e4e8ee;
+  /* ── Surfaces ─────────────────────────────────────────── */
+  --bg: #f2ede3; /* page canvas — warm cream  */
+  --surface: #faf6ee; /* cards, sheets, list bg    */
+  --surface-deep: #ebe5d7; /* sunken / secondary card   */
 
-  /* --- Ink (text) --- */
-  --ink-primary: #11141a;
-  --ink-secondary: #565c66;
-  --ink-tertiary: #939aa5;
+  /* ── Ink (text) ───────────────────────────────────────── */
+  --ink: #1a1815; /* primary text, primary CTA */
+  --ink-soft: #48433b; /* body text                 */
+  --muted: #857f73; /* metadata, helper, eyebrow */
 
-  /* --- Borders --- */
-  --border-hair: #e1e5eb;
-  --border-soft: #eaedf2;
+  /* ── Borders ──────────────────────────────────────────── */
+  --line: #e2dbcb; /* universal hairline        */
 
-  /* --- Accent — Cobalt (interactive / brand) --- */
-  --accent: #1f4fe0;
-  --accent-hover: #1a44c2;
-  --accent-bg: #edf1fe;
-  --accent-br: #cfd9f9;
+  /* ── Accent — Coral (interactive / brand) ─────────────── */
+  --accent: #e4623c; /* CTA, active states, dots  */
 
-  /* --- Signal — saturated, anti-pastel --- */
-  --signal-danger: #d11f1f;
-  --signal-danger-bg: #fceeee;
-  --signal-danger-br: #f4d4d4;
-  --signal-caution: #b5680a;
-  --signal-safe: #1b7a38;
+  /* ── Verdict tones — used INSIDE cards, never full-bleed  */
+  --aman-bg: #e4ebda;
+  --aman-fg: #1f3825;
+  --aman-br: #2d5743;
 
-  /* --- Typography --- */
-  --font-sans: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;
+  --mepet-bg: #f3dbb2;
+  --mepet-fg: #4d3608;
+  --mepet-br: #9c6b14;
+
+  --bahaya-bg: #f3cfbe;
+  --bahaya-fg: #4a1a0b;
+  --bahaya-br: #a8331a;
+
+  /* ── Typography ───────────────────────────────────────── */
+  --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* ── Legacy aliases — kept until all screens migrate ──── */
+  /* Remove each alias once the consuming screen PR updates  */
+  /* its CSS module to use the new token names directly.     */
+
+  --canvas: var(--bg);
+  --surface-2: var(--surface-deep);
+
+  --ink-primary: var(--ink);
+  --ink-secondary: var(--ink-soft);
+  --ink-tertiary: var(--muted);
+
+  --border-hair: var(--line);
+  --border-soft: var(--line); /* no direct equiv — mapped to --line */
+
+  --accent-bg: #ede8e2; /* warm-neutral placeholder; per-screen decision */
+  --accent-br: var(--line); /* no direct equiv — mapped to --line            */
+
+  --signal-safe: var(--aman-br);
+  --signal-caution: var(--mepet-br);
+  --signal-danger: var(--bahaya-br);
+  --signal-danger-bg: var(--bahaya-bg);
+  --signal-danger-br: var(--bahaya-br);
+
+  --font-sans: var(--font-display);
+
+  /* --accent-hover dropped — zero references in codebase */
 }
