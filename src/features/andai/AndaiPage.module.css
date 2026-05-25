@@ -1,7 +1,7 @@
 .page {
   min-height: 100dvh;
-  background: var(--canvas);
-  padding: 14px 14px calc(80px + env(safe-area-inset-bottom, 0px));
+  background: var(--bg);
+  padding: 8px 22px calc(24px + env(safe-area-inset-bottom, 0px));
   max-width: 390px;
   margin: 0 auto;
 }
@@ -9,57 +9,73 @@
 /* ── Header ── */
 .head {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 8px;
-  padding: 4px 0 16px;
+  padding: 6px 0 14px;
 }
 
 .backBtn {
-  width: 28px;
-  height: 28px;
-  border: 1px solid var(--border-hair);
-  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: var(--ink-secondary);
-  font-size: 18px;
-  background: none;
+  color: var(--ink);
+  font-size: 16px;
+  background: var(--surface);
   cursor: pointer;
   flex-shrink: 0;
   line-height: 1;
 }
 
+.headCenter {
+  text-align: center;
+}
+
 .title {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--ink-primary);
-  letter-spacing: -0.2px;
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  line-height: 1;
 }
 
 .titleSub {
   font-size: 11px;
-  color: var(--ink-tertiary);
-  border-bottom: 1px dashed var(--border-hair);
-  padding-bottom: 1px;
+  color: var(--muted);
+  margin-top: 2px;
 }
 
-/* ── Baseline ── */
+.resetBtn {
+  padding: 7px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  cursor: pointer;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* ── Baseline strip ── */
 .baseline {
   background: var(--surface);
-  border: 1px solid var(--border-hair);
-  border-radius: 10px;
-  padding: 11px 13px;
+  border: 1px dashed rgba(133, 127, 115, 0.8);
+  border-radius: 16px;
+  padding: 12px 14px;
   margin-bottom: 16px;
 }
 
 .baselineLabel {
-  font-size: 9px;
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  letter-spacing: 0.7px;
-  color: var(--ink-tertiary);
-  font-weight: 600;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .baselineGrid {
@@ -75,46 +91,63 @@
 }
 
 .blKey {
-  font-size: 9.5px;
-  color: var(--ink-tertiary);
+  font-size: 10.5px;
+  color: var(--muted);
 }
 
 .blVal {
-  font-family: var(--font-mono);
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--ink-secondary);
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.03em;
   font-feature-settings: 'tnum';
-  letter-spacing: -0.3px;
 }
 
-/* ── Stack ── */
+/* ── Stack header ── */
+.stackHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
 .stackLabel {
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: var(--ink-tertiary);
-  font-weight: 500;
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+  line-height: 1;
+}
+
+.stackAccent {
+  color: var(--accent);
+}
+
+/* ── Stack items ── */
+.stackItems {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   margin-bottom: 8px;
 }
 
 .andaiItem {
   background: var(--surface);
-  border: 1px solid var(--border-hair);
-  border-radius: 10px;
-  padding: 11px 12px;
-  margin-bottom: 7px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 12px 14px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
-.branch {
-  width: 16px;
+.aiRail {
+  width: 4px;
+  height: 28px;
+  border-radius: 4px;
   flex-shrink: 0;
-  color: var(--ink-tertiary);
-  font-size: 13px;
-  font-family: var(--font-mono);
 }
 
 .aiBody {
@@ -123,29 +156,31 @@
 }
 
 .aiKind {
-  font-size: 9px;
+  font-family: var(--font-mono);
+  font-size: 10px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--ink-tertiary);
-  font-weight: 600;
-  margin-bottom: 3px;
+  letter-spacing: 0.05em;
+  color: var(--muted);
 }
 
 .aiDesc {
-  font-size: 12.5px;
-  color: var(--ink-primary);
-  font-weight: 500;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  margin-top: 1px;
 }
 
 .aiAmount {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--ink-primary);
-  font-feature-settings: 'tnum';
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -153,70 +188,56 @@
 .aiRemove {
   background: none;
   border: none;
-  color: var(--ink-tertiary);
-  font-size: 12px;
+  color: var(--muted);
+  font-size: 14px;
   cursor: pointer;
-  padding: 2px 4px;
+  padding: 0;
   flex-shrink: 0;
 }
 
-.addChips {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  margin-top: 4px;
-  margin-bottom: 18px;
-}
-
-.addChip {
-  font-size: 10.5px;
-  color: var(--ink-secondary);
-  background: var(--surface);
-  border: 1px dashed var(--border-hair);
-  border-radius: 8px;
-  padding: 7px 11px;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
+/* ── Add button ── */
+.addBtn {
+  width: 100%;
+  background: transparent;
+  border: 1.5px dashed var(--line);
+  border-radius: 16px;
+  padding: 12px;
+  color: var(--muted);
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
-  font-family: var(--font-sans);
-}
-
-.addPlus {
-  color: var(--ink-tertiary);
-  font-weight: 600;
-}
-
-.divider {
-  height: 1px;
-  background: var(--border-hair);
-  margin: 4px 0 16px;
+  text-align: center;
+  box-sizing: border-box;
 }
 
 /* ── Results ── */
+.resultSection {
+  margin-top: 16px;
+}
+
 .resultLabel {
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: var(--ink-tertiary);
+  font-size: 11px;
   font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
   margin-bottom: 10px;
 }
 
 .resultCard {
   background: var(--surface);
-  border: 1px solid var(--border-hair);
-  border-radius: 10px;
-  padding: 4px 13px;
-  margin-bottom: 8px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  overflow: hidden;
 }
 
 .resRow {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
-  padding: 9px 0;
-  border-bottom: 1px solid var(--border-soft);
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
 }
 
 .resRow:last-child {
@@ -224,97 +245,105 @@
 }
 
 .resKey {
-  font-size: 11px;
-  color: var(--ink-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink-soft);
   flex: 1;
 }
 
 .resVgrp {
   display: inline-flex;
-  align-items: baseline;
-  gap: 6px;
-  font-family: var(--font-mono);
-  font-feature-settings: 'tnum';
+  align-items: center;
+  gap: 8px;
   flex-shrink: 0;
 }
 
 .resBefore {
-  font-size: 11px;
-  color: var(--ink-tertiary);
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  font-feature-settings: 'tnum';
 }
 
 .resArrow {
-  color: var(--ink-tertiary);
-  font-size: 10px;
+  color: var(--muted);
+  font-size: 12px;
 }
 
 .resAfter {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--ink-primary);
-  letter-spacing: -0.3px;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  font-feature-settings: 'tnum';
 }
 
-/* ── Actions ── */
+/* ── Inline actions ── */
 .actions {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: env(safe-area-inset-bottom, 0px);
-  padding: 12px 14px;
   display: flex;
   gap: 8px;
-  background: var(--canvas);
-  max-width: 390px;
-  margin: 0 auto;
-}
-
-.resetBtn {
-  flex: 0 0 auto;
-  padding: 0 18px;
-  height: 50px;
-  border-radius: 13px;
-  background: var(--surface);
-  border: 1px solid var(--border-hair);
-  color: var(--ink-secondary);
-  font-size: 12px;
-  font-weight: 500;
-  font-family: var(--font-sans);
-  cursor: pointer;
+  margin-top: 8px;
 }
 
 .saveBtn {
   flex: 1;
-  height: 50px;
-  border-radius: 13px;
-  background: var(--surface);
-  border: 1px solid var(--ink-primary);
-  color: var(--ink-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
+  background: var(--ink);
+  color: var(--bg);
+  border: none;
+  border-radius: 16px;
+  padding: 13px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 14px;
   cursor: pointer;
-  font-family: var(--font-sans);
+  text-align: center;
 }
 
-.saveBtnLabel {
-  font-size: 13px;
+.saveBtnDisabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.compareBtn {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 13px;
+  font-family: var(--font-display);
   font-weight: 600;
+  font-size: 14px;
+  color: var(--ink);
+  cursor: pointer;
 }
 
-.proTag {
-  font-size: 8px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--canvas);
-  background: var(--ink-primary);
-  padding: 2px 6px;
-  border-radius: 3px;
+.compareBtnActive {
+  background: rgba(228, 98, 60, 0.08);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ── Compare bar ── */
+.compareBar {
+  margin-top: 8px;
+}
+
+.compareBarBtn {
+  width: 100%;
+  padding: 12px;
+  background: var(--accent);
+  color: var(--bg);
+  border: none;
+  border-radius: 16px;
+  font-family: var(--font-display);
+  font-size: 14px;
   font-weight: 600;
+  cursor: pointer;
 }
 
-/* ── Add item sheet ── */
+/* ── Add form (inside BottomSheet) ── */
 .addForm {
   display: flex;
   flex-direction: column;
@@ -322,24 +351,24 @@
 }
 
 .addLabel {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 500;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: var(--ink-tertiary);
+  color: var(--muted);
   margin-top: 12px;
   margin-bottom: 6px;
 }
 
 .addInput {
   width: 100%;
-  border: 1.5px solid var(--border-hair);
-  border-radius: 10px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
   padding: 10px 12px;
-  font-size: 13px;
-  color: var(--ink-primary);
-  background: var(--surface-2);
-  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--surface);
+  font-family: var(--font-display);
   box-sizing: border-box;
   outline: none;
 }
@@ -355,18 +384,19 @@
 }
 
 .addAmountPrefix {
-  font-size: 18px;
-  font-weight: 500;
-  color: var(--ink-tertiary);
-  font-family: var(--font-mono);
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--muted);
 }
 
 .addAmountInput {
   flex: 1;
-  font-family: var(--font-mono);
-  font-size: 28px;
-  font-weight: 600;
-  color: var(--ink-primary);
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--ink);
   border: none;
   background: none;
   outline: none;
@@ -376,13 +406,13 @@
 .addSubmitBtn {
   width: 100%;
   padding: 14px;
-  background: var(--accent);
-  color: #ffffff;
+  background: var(--ink);
+  color: var(--bg);
   border: none;
-  border-radius: 12px;
+  border-radius: 14px;
+  font-family: var(--font-display);
   font-size: 15px;
   font-weight: 600;
-  font-family: var(--font-sans);
   cursor: pointer;
   margin-top: 16px;
 }
@@ -392,108 +422,39 @@
   cursor: not-allowed;
 }
 
-/* ── Pro actions row ── */
-.proActions {
-  flex: 1;
-  display: flex;
-  gap: 8px;
-}
-
-.saveBtnDisabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.compareBtn {
-  flex: 0 0 auto;
-  padding: 0 14px;
-  height: 50px;
-  border-radius: 13px;
-  background: var(--surface);
-  border: 1px solid var(--border-hair);
-  color: var(--ink-secondary);
-  font-size: 12px;
-  font-weight: 500;
-  font-family: var(--font-sans);
-  cursor: pointer;
-}
-
-.compareBtnActive {
-  background: var(--accent-bg);
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
-.compareBar {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: calc(74px + env(safe-area-inset-bottom, 0px));
-  padding: 8px 14px;
-  max-width: 390px;
-  margin: 0 auto;
-}
-
-.compareBarBtn {
-  width: 100%;
-  padding: 12px;
-  background: var(--accent);
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  font-size: 14px;
-  font-weight: 600;
-  font-family: var(--font-sans);
-  cursor: pointer;
-}
-
-/* ── 8.7 Andai forecast block ── */
-.andaiForecast {
-  background: var(--surface);
-  border: 1px solid var(--border-hair);
-  border-radius: 10px;
-  padding: 12px 13px;
-  margin-top: 8px;
-}
-
-.andaiForecastLabel {
-  font-size: 9px;
-  text-transform: uppercase;
-  letter-spacing: 0.7px;
-  color: var(--ink-tertiary);
-  font-weight: 600;
-  margin-bottom: 10px;
-}
-
-.andaiForecastCols {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-}
-
-.andaiForecastCol {
+/* ── Kind picker (inside BottomSheet) ── */
+.kindPicker {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 8px;
+  padding: 4px 0 16px;
 }
 
-.andaiForecastMonth {
-  font-size: 10px;
-  color: var(--ink-tertiary);
+.kindPickerBtn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  font-family: var(--font-display);
 }
 
-.andaiForecastAmt {
-  font-family: var(--font-mono);
-  font-size: 13px;
+.kindPickerRail {
+  width: 4px;
+  height: 24px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.kindPickerLabel {
+  font-family: var(--font-display);
+  font-size: 14px;
   font-weight: 600;
-  color: var(--ink-primary);
-  letter-spacing: -0.02em;
-}
-
-.andaiForecastAmtNeg {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--signal-danger);
-  letter-spacing: -0.02em;
+  color: var(--ink);
+  letter-spacing: -0.01em;
 }

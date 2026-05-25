@@ -258,6 +258,7 @@ export type StringKey =
   | 'andai.save'
   | 'andai.compare'
   | 'andai.compare_bar'
+  | 'andai.add_event'
   | 'andai.add_desc_label'
   | 'andai.add_nominal_label'
   | 'andai.add_target_label'
@@ -656,6 +657,7 @@ const id: StringDictionary = {
   'andai.save': 'Simpan',
   'andai.compare': 'Banding',
   'andai.compare_bar': 'Bandingkan 2 skenario ini',
+  'andai.add_event': '+ tambah kejadian',
   'andai.add_desc_label': 'Deskripsi (opsional)',
   'andai.add_nominal_label': 'Nominal',
   'andai.add_target_label': 'Target per bulan',
@@ -1056,6 +1058,7 @@ const en: StringDictionary = {
   'andai.save': 'Save',
   'andai.compare': 'Compare',
   'andai.compare_bar': 'Compare these 2 scenarios',
+  'andai.add_event': '+ add event',
   'andai.add_desc_label': 'Description (optional)',
   'andai.add_nominal_label': 'Amount',
   'andai.add_target_label': 'Monthly target',
