@@ -24,12 +24,35 @@ interface Props {
   nowMs: number
 }
 
-function getBurdenVerdict(pct: number, lang: Language): { label: string; className: string } {
+type VerdictKey = 'aman' | 'mepet' | 'bahaya'
+
+function getBurdenVerdict(
+  pct: number,
+  lang: Language,
+): { label: string; key: VerdictKey; textClass: string; ribbonClass: string; badgeClass: string } {
   if (pct < TAGIHAN_BURDEN_LOW)
-    return { label: t('budget.verdict_good', lang), className: styles.statusAman }
+    return {
+      label: t('budget.verdict_good', lang),
+      key: 'aman',
+      textClass: styles.statusAman,
+      ribbonClass: styles.ribbonAman,
+      badgeClass: styles.badgeAman,
+    }
   if (pct < TAGIHAN_BURDEN_HIGH)
-    return { label: t('budget.verdict_ok', lang), className: styles.statusKetat }
-  return { label: t('budget.verdict_tight', lang), className: styles.statusBerat }
+    return {
+      label: t('budget.verdict_ok', lang),
+      key: 'mepet',
+      textClass: styles.statusKetat,
+      ribbonClass: styles.ribbonMepet,
+      badgeClass: styles.badgeMepet,
+    }
+  return {
+    label: t('budget.verdict_tight', lang),
+    key: 'bahaya',
+    textClass: styles.statusBerat,
+    ribbonClass: styles.ribbonBahaya,
+    badgeClass: styles.badgeBahaya,
+  }
 }
 
 export function BudgetModule({
@@ -49,15 +72,34 @@ export function BudgetModule({
   const weeklyBudget = calcWeeklyBudget(dailyBudget, daysUntilWeekEnd, daysUntilPayday)
 
   const sisaHariIni = Math.max(0, dailyBudget - spentToday)
-  const fillPct = dailyBudget > 0 ? Math.min(100, (spentToday / dailyBudget) * 100) : 0
 
   const burdenPct = totalSaldo > 0 ? (unpaidTagihanTotal / totalSaldo) * 100 : null
   const burden = burdenPct !== null ? getBurdenVerdict(burdenPct, lang) : null
 
+  const ribbonClass = burden ? burden.ribbonClass : styles.ribbonEmpty
+  const badgeClass = burden ? burden.badgeClass : ''
+
+  // Format daily budget for ribbon — show amount without currency prefix for compact display
+  const dailyFmt = formatCurrency(dailyBudget, currency)
+  const sisaFmt = formatCurrency(sisaHariIni, currency)
+
   return (
-    <>
-      <div className={styles.labelRow}>
-        <span className={styles.label}>{t('budget.title', lang)}</span>
+    <div className={styles.wrapper}>
+      <div className={`${styles.ribbon} ${ribbonClass}`}>
+        <div className={styles.ribbonLeft}>
+          <span className={styles.ribbonEyebrow}>{t('budget.title', lang)}</span>
+          <div className={styles.ribbonAmount}>
+            {dailyFmt}
+            <span className={styles.ribbonAmountSub}>/hr</span>
+          </div>
+        </div>
+        <div className={styles.ribbonRight}>
+          {burden && <span className={`${styles.verdictBadge} ${badgeClass}`}>{burden.label}</span>}
+          <span className={styles.ribbonMeta}>{sisaFmt} sisa</span>
+        </div>
+      </div>
+
+      <div className={styles.infoRow}>
         <button
           className={styles.infoDot}
           onClick={() => setInfoOpen(true)}
@@ -65,27 +107,6 @@ export function BudgetModule({
         >
           i
         </button>
-      </div>
-
-      <div className={styles.bigAmount}>{formatCurrency(dailyBudget, currency)}</div>
-
-      <div className={styles.descLine}>
-        {t('budget.desc_line', lang)
-          .replace('{days}', String(daysUntilPayday))
-          .replace('{date}', String(paydayDate.getDate()))}
-      </div>
-
-      <div className={styles.barWrap}>
-        <div className={styles.barFill} style={{ width: `${fillPct}%` }} />
-      </div>
-
-      <div className={styles.barFooter}>
-        <span>
-          {t('budget.spent', lang).replace('{amount}', formatCurrency(spentToday, currency))}
-        </span>
-        <span className={styles.barFooterRight}>
-          {t('budget.left_today', lang).replace('{amount}', formatCurrency(sisaHariIni, currency))}
-        </span>
       </div>
 
       <div className={styles.grid}>
@@ -103,7 +124,7 @@ export function BudgetModule({
             <>
               <div className={styles.cardNum}>{Math.round(burdenPct!)}%</div>
               <div className={styles.cardSub}>
-                <span className={burden.className}>{burden.label}</span>
+                <span className={burden.textClass}>{burden.label}</span>
               </div>
             </>
           ) : (
@@ -124,7 +145,10 @@ export function BudgetModule({
           {lang === 'en' ? (
             <>
               <p>
-                <strong>Daily budget</strong> = (Balance − Bills − Savings) ÷ Days until payday
+                <strong>Daily budget</strong> = (Balance − Bills − Savings) ÷ Days until payday.{' '}
+                {t('budget.desc_line', lang)
+                  .replace('{days}', String(daysUntilPayday))
+                  .replace('{date}', String(paydayDate.getDate()))}
               </p>
               <p>
                 <strong>Bills vs your money</strong> = Unpaid bills ÷ Total balance × 100%
@@ -137,7 +161,10 @@ export function BudgetModule({
           ) : (
             <>
               <p>
-                <strong>Budget harian</strong> = (Saldo − Tagihan − Tabungan) ÷ Hari sampai gajian
+                <strong>Budget harian</strong> = (Saldo − Tagihan − Tabungan) ÷ Hari sampai gajian.{' '}
+                {t('budget.desc_line', lang)
+                  .replace('{days}', String(daysUntilPayday))
+                  .replace('{date}', String(paydayDate.getDate()))}
               </p>
               <p>
                 <strong>Tagihan vs uangmu</strong> = Tagihan belum dibayar ÷ Total saldo × 100%
@@ -150,6 +177,6 @@ export function BudgetModule({
           )}
         </div>
       </BottomSheet>
-    </>
+    </div>
   )
 }

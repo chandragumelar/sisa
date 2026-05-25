@@ -68,6 +68,13 @@ export function TagihanSwipeRow({ tagihan, nowMs, metaText, onPayTap, onRowTap }
   const urgency = getTagihanUrgency(tagihan, nowMs)
   const isPaid = urgency === 'normal' && tagihan.lastPaidAt !== null
 
+  const dotColor =
+    urgency === 'lewat-tempo' || urgency === 'hari-ini'
+      ? 'var(--bahaya-br)'
+      : urgency === 'dalam-7-hari'
+        ? 'var(--mepet-br)'
+        : 'var(--line)'
+
   return (
     <div className={styles.container}>
       <div
@@ -102,6 +109,7 @@ export function TagihanSwipeRow({ tagihan, nowMs, metaText, onPayTap, onRowTap }
         onPointerCancel={handlePointerUp}
         onClick={handleRowClick}
       >
+        <span className={styles.rowDot} style={{ background: dotColor }} />
         <div className={styles.rowLeft}>
           <span className={styles.rowName}>{tagihan.name}</span>
           <span className={metaText.urgent ? styles.rowMetaUrgent : styles.rowMeta}>

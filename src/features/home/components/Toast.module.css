@@ -5,12 +5,12 @@
   right: 14px;
   max-width: calc(390px - 28px);
   margin: 0 auto;
-  background: #11141a;
-  color: #ffffff;
-  border-radius: 12px;
+  background: var(--ink);
+  color: var(--bg);
+  border-radius: 14px;
   overflow: hidden;
   z-index: 90;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 20px rgba(26, 24, 21, 0.3);
 }
 
 .progressBar {
@@ -40,23 +40,23 @@
 }
 
 .editBtn {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(242, 237, 227, 0.15);
   border: none;
-  color: #ffffff;
+  color: var(--bg);
   font-size: 12px;
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   padding: 5px 10px;
   border-radius: 6px;
   cursor: pointer;
 }
 
 .undoBtn {
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(242, 237, 227, 0.25);
   border: none;
-  color: #ffffff;
+  color: var(--bg);
   font-size: 12px;
   font-weight: 600;
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   padding: 5px 10px;
   border-radius: 6px;
   cursor: pointer;

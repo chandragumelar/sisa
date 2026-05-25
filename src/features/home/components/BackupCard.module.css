@@ -1,16 +1,17 @@
 .card {
-  background: var(--accent-bg);
-  border: 1px solid var(--accent-br);
-  border-radius: 12px;
+  background: var(--surface-deep);
+  border: 1px solid var(--line);
+  border-radius: 14px;
   padding: 14px 16px;
   display: flex;
   gap: 12px;
   align-items: flex-start;
+  margin: 0 16px 12px;
 }
 
 .cardHigh {
-  background: var(--signal-danger-bg);
-  border-color: var(--signal-danger-br);
+  background: var(--bahaya-bg);
+  border-color: var(--bahaya-br);
 }
 
 .icon {
@@ -26,13 +27,13 @@
 .title {
   font-size: 13px;
   font-weight: 600;
-  color: var(--ink-primary);
+  color: var(--ink);
   margin-bottom: 2px;
 }
 
 .desc {
   font-size: 12px;
-  color: var(--ink-secondary);
+  color: var(--ink-soft);
   line-height: 1.5;
 }
 
@@ -50,17 +51,17 @@
   border: none;
   padding: 0;
   cursor: pointer;
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
 }
 
 .btnDismiss {
   font-size: 12px;
-  color: var(--ink-tertiary);
+  color: var(--muted);
   background: none;
   border: none;
   padding: 0;
   cursor: pointer;
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
 }
 
 /* Guide sheet */
@@ -95,7 +96,7 @@
 .sheetHandle {
   width: 32px;
   height: 3px;
-  background: var(--surface-2);
+  background: var(--surface-deep);
   border-radius: 2px;
   margin: 0 auto 16px;
 }
@@ -103,7 +104,7 @@
 .sheetTitle {
   font-size: 16px;
   font-weight: 700;
-  color: var(--ink-primary);
+  color: var(--ink);
   margin-bottom: 16px;
 }
 
@@ -130,7 +131,7 @@
 
 .stepText {
   font-size: 13px;
-  color: var(--ink-secondary);
+  color: var(--ink-soft);
   line-height: 1.5;
 }
 
@@ -138,12 +139,12 @@
   width: 100%;
   margin-top: 8px;
   padding: 12px;
-  background: var(--surface-2);
+  background: var(--surface-deep);
   border: none;
   border-radius: 10px;
   font-size: 14px;
   font-weight: 600;
-  color: var(--ink-primary);
+  color: var(--ink);
   cursor: pointer;
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
 }

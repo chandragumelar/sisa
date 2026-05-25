@@ -1,16 +1,110 @@
-.labelRow {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  margin-bottom: 6px;
+.wrapper {
+  padding: 0 16px;
 }
 
-.label {
-  font-size: 10px;
+/* Verdict ribbon */
+.ribbon {
+  border-radius: 20px;
+  padding: 14px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ribbonAman {
+  background: var(--aman-bg);
+  color: var(--aman-fg);
+  border: 1px solid rgba(31, 56, 37, 0.1);
+}
+
+.ribbonMepet {
+  background: var(--mepet-bg);
+  color: var(--mepet-fg);
+  border: 1px solid rgba(77, 54, 8, 0.1);
+}
+
+.ribbonBahaya {
+  background: var(--bahaya-bg);
+  color: var(--bahaya-fg);
+  border: 1px solid rgba(74, 26, 11, 0.1);
+}
+
+.ribbonEmpty {
+  background: var(--surface-deep);
+  color: var(--ink-soft);
+  border: 1px solid var(--line);
+}
+
+.ribbonLeft {
+  display: flex;
+  flex-direction: column;
+}
+
+.ribbonEyebrow {
+  font-size: 11px;
   font-weight: 500;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--ink-tertiary);
+  opacity: 0.7;
+}
+
+.ribbonAmount {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin-top: 2px;
+}
+
+.ribbonAmountSub {
+  font-size: 14px;
+  opacity: 0.55;
+}
+
+.ribbonRight {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.verdictBadge {
+  color: var(--bg);
+  padding: 4px 10px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-family: var(--font-display);
+}
+
+.badgeAman {
+  background: var(--aman-br);
+}
+
+.badgeMepet {
+  background: var(--mepet-br);
+}
+
+.badgeBahaya {
+  background: var(--bahaya-br);
+}
+
+.ribbonMeta {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  opacity: 0.65;
+}
+
+/* Info button */
+.infoRow {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 6px;
+  padding: 0 2px;
 }
 
 .infoDot {
@@ -19,10 +113,10 @@
   justify-content: center;
   width: 13px;
   height: 13px;
-  border: 1px solid var(--ink-secondary);
+  border: 1px solid var(--ink-soft);
   border-radius: 50%;
   font-size: 9px;
-  color: var(--ink-secondary);
+  color: var(--ink-soft);
   line-height: 1;
   flex-shrink: 0;
   background: none;
@@ -30,110 +124,66 @@
   padding: 0;
 }
 
-.bigAmount {
-  font-size: 30px;
-  font-weight: 600;
-  letter-spacing: -0.9px;
-  margin-bottom: 4px;
-  font-feature-settings: 'tnum', 'lnum';
-  color: var(--ink-primary);
-  line-height: 1.05;
-  font-family: var(--font-sans);
-}
-
-.descLine {
-  font-size: 11px;
-  color: var(--ink-tertiary);
-  margin-bottom: 12px;
-}
-
-.barWrap {
-  height: 22px;
-  background: var(--surface-2);
-  border-radius: 6px;
-  overflow: hidden;
-  margin-bottom: 8px;
-}
-
-.barFill {
-  height: 100%;
-  background: var(--accent);
-  border-radius: 6px 0 0 6px;
-  transition: width 0.3s ease;
-}
-
-.barFooter {
-  display: flex;
-  justify-content: space-between;
-  font-size: 11px;
-  color: var(--ink-secondary);
-}
-
-.barFooterRight {
-  font-weight: 600;
-  color: var(--ink-primary);
-}
-
-/* 2-col grid */
+/* Supplemental 2-col grid */
 .grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
-  margin-top: 12px;
+  margin-top: 8px;
 }
 
 .card {
   background: var(--surface);
-  border: 1px solid var(--border-hair);
-  border-radius: 10px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
   padding: 11px 12px;
 }
 
 .cardLabel {
   font-size: 10px;
   font-weight: 500;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--ink-tertiary);
+  color: var(--muted);
 }
 
 .cardNum {
+  font-family: var(--font-display);
   font-size: 19px;
-  font-weight: 600;
-  letter-spacing: -0.5px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
   margin-top: 3px;
   font-feature-settings: 'tnum', 'lnum';
-  color: var(--ink-primary);
+  color: var(--ink);
   line-height: 1.1;
-  font-family: var(--font-sans);
 }
 
 .cardNumEmpty {
   font-size: 19px;
   font-weight: 600;
   margin-top: 3px;
-  color: var(--ink-tertiary);
+  color: var(--muted);
   line-height: 1.1;
 }
 
 .cardSub {
   font-size: 10px;
-  color: var(--ink-tertiary);
+  color: var(--muted);
   margin-top: 4px;
 }
 
 .statusAman {
-  color: var(--signal-safe);
+  color: var(--aman-br);
   font-weight: 500;
 }
 
 .statusKetat {
-  color: var(--signal-caution);
+  color: var(--mepet-br);
   font-weight: 500;
 }
 
 .statusBerat {
-  color: var(--signal-danger);
+  color: var(--bahaya-br);
   font-weight: 500;
 }
 
@@ -147,13 +197,13 @@
 
 .infoContent p {
   font-size: 13px;
-  color: var(--ink-primary);
+  color: var(--ink);
   line-height: 1.55;
   margin: 0;
 }
 
 .infoNote {
   font-size: 12px;
-  color: var(--ink-tertiary);
+  color: var(--muted);
   font-style: italic;
 }

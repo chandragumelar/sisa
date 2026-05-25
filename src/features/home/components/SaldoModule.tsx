@@ -11,6 +11,7 @@ interface Props {
   currency: string
   unpaidTagihanTotal: number
   totalNabung: number
+  daysUntilPayday: number
   yesterdaySpent: number
   yesterdayEarned: number
   onWalletTap?: (wallet: Wallet) => void
@@ -27,11 +28,18 @@ function getExpandedPref(): boolean {
   }
 }
 
+function splitRp(formatted: string): [string, string] {
+  if (formatted.startsWith('Rp')) return ['Rp', formatted.slice(2)]
+  if (formatted.startsWith('−Rp')) return ['Rp', formatted.slice(3)]
+  return ['', formatted]
+}
+
 export function SaldoModule({
   wallets,
   currency,
   unpaidTagihanTotal,
   totalNabung,
+  daysUntilPayday,
   yesterdaySpent,
   yesterdayEarned,
   onWalletTap,
@@ -42,7 +50,7 @@ export function SaldoModule({
 
   const total = wallets.reduce((sum, w) => sum + w.balance, 0)
   const sisa = calcSisa(total, unpaidTagihanTotal, totalNabung)
-  const visible = wallets
+  const [rpPrefix, sisaNum] = splitRp(formatCurrency(sisa, currency))
 
   let heroSub = ''
   if (yesterdaySpent > 0) {
@@ -65,78 +73,84 @@ export function SaldoModule({
     })
   }
 
+  const metaRight = lang === 'en' ? `${daysUntilPayday} days` : `${daysUntilPayday} hr ke gajian`
+
   return (
-    <>
-      <div className={styles.label}>{t('saldo.title', lang)}</div>
-      <button
-        className={styles.heroAmountBtn}
-        onClick={handleToggle}
-        aria-expanded={expanded}
-        aria-label={t('saldo.toggle_aria', lang)}
-      >
-        <span className={styles.heroAmount}>{formatCurrency(sisa, currency)}</span>
-        <svg
-          className={`${styles.chevron} ${expanded ? styles.chevronUp : ''}`}
-          width="14"
-          height="14"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
+    <div className={styles.wrapper}>
+      <div className={styles.card}>
+        <div className={styles.cardTop}>
+          <span className={styles.eyebrow}>{t('saldo.title', lang)}</span>
+          <span className={styles.metaRight}>{metaRight}</span>
+        </div>
+
+        <button
+          className={styles.heroAmountBtn}
+          onClick={handleToggle}
+          aria-expanded={expanded}
+          aria-label={t('saldo.toggle_aria', lang)}
         >
-          <polyline points="6 9 12 15 18 9" />
-        </svg>
-      </button>
-      {heroSub && <div className={styles.heroSub}>{heroSub}</div>}
+          <span className={styles.heroAmount}>
+            <span className={styles.heroRp}>{rpPrefix}</span>
+            {sisaNum}
+          </span>
+        </button>
 
-      {expanded && (
-        <div className={styles.walletCard}>
-          {visible.length === 0 ? (
-            <div className={styles.empty}>{t('saldo.no_wallets', lang)}</div>
-          ) : (
-            visible.map((w) => (
-              <button
-                key={w.id}
-                className={styles.walletRow}
-                onClick={() => onWalletTap?.(w)}
-                disabled={!onWalletTap}
-              >
-                <span className={styles.walletName}>{w.name}</span>
-                <span className={styles.walletAmount}>{formatCurrency(w.balance, w.currency)}</span>
-              </button>
-            ))
-          )}
-
-          <div className={styles.summaryDivider} />
-          <div className={`${styles.summaryRow} ${styles.totalRow}`}>
-            <span className={styles.totalLabel}>{t('saldo.total', lang)}</span>
-            <span className={styles.totalAmount}>{formatCurrency(total, currency)}</span>
+        {heroSub && (
+          <div
+            style={{
+              fontSize: 11,
+              color: 'var(--muted)',
+              fontFamily: 'var(--font-mono)',
+              marginTop: 4,
+            }}
+          >
+            {heroSub}
           </div>
+        )}
 
-          <div className={styles.summaryRow}>
-            <span className={styles.summaryLabel}>{t('saldo.tagihan', lang)}</span>
-            <span className={styles.summaryAmountNeg}>
+        <div className={styles.breakdown}>
+          <div className={styles.bkdwnRow}>
+            <span className={styles.bkdwnLabel}>{t('saldo.total', lang)}</span>
+            <span className={styles.bkdwnValue}>{formatCurrency(total, currency)}</span>
+          </div>
+          <div className={styles.bkdwnRow}>
+            <span className={styles.bkdwnLabel}>{t('saldo.tagihan', lang)}</span>
+            <span className={styles.bkdwnValue}>
               {formatCurrency(unpaidTagihanTotal, currency)}
             </span>
           </div>
-          <div className={styles.summaryRow}>
-            <span className={styles.summaryLabel}>{t('saldo.nabung', lang)}</span>
-            <span className={styles.summaryAmountNeg}>{formatCurrency(totalNabung, currency)}</span>
+          <div className={styles.bkdwnRow}>
+            <span className={styles.bkdwnLabel}>{t('saldo.nabung', lang)}</span>
+            <span className={styles.bkdwnValue}>{formatCurrency(totalNabung, currency)}</span>
           </div>
-
-          <div className={styles.sisaDivider} />
-          <div className={`${styles.summaryRow} ${styles.sisaRow}`}>
-            <span className={styles.sisaLabel}>{t('saldo.sisa', lang)}</span>
-            <span className={styles.sisaAmount}>{formatCurrency(sisa, currency)}</span>
-          </div>
-
-          <button className={styles.addBtn} onClick={onAddWalletTap}>
-            {t('saldo.add_wallet', lang)}
-          </button>
         </div>
-      )}
-    </>
+
+        {expanded && (
+          <>
+            <div className={styles.walletDivider} />
+            {wallets.length === 0 ? (
+              <div className={styles.empty}>{t('saldo.no_wallets', lang)}</div>
+            ) : (
+              wallets.map((w) => (
+                <button
+                  key={w.id}
+                  className={styles.walletRow}
+                  onClick={() => onWalletTap?.(w)}
+                  disabled={!onWalletTap}
+                >
+                  <span className={styles.walletName}>{w.name}</span>
+                  <span className={styles.walletAmount}>
+                    {formatCurrency(w.balance, w.currency)}
+                  </span>
+                </button>
+              ))
+            )}
+            <button className={styles.addBtn} onClick={onAddWalletTap}>
+              {t('saldo.add_wallet', lang)}
+            </button>
+          </>
+        )}
+      </div>
+    </div>
   )
 }

@@ -17,6 +17,8 @@ interface Props {
 }
 
 const LONG_PRESS_MS = 300
+const CIRCLE_R = 16
+const CIRCLE_CIRCUMFERENCE = 2 * Math.PI * CIRCLE_R // ≈ 100.53
 
 export function GoalModule({
   goals,
@@ -36,7 +38,6 @@ export function GoalModule({
   const dragStartY = useRef(0)
   const itemHeight = useRef(0)
 
-  // Sync if parent goals change (e.g. after DB reload)
   if (!dragging && localGoals !== goals) {
     setLocalGoals(goals)
   }
@@ -99,15 +100,17 @@ export function GoalModule({
 
   if (goals.length === 0) {
     return (
-      <>
-        <div className={styles.label}>{t('goal.title', lang)}</div>
+      <div className={styles.wrapper}>
+        <div className={styles.sectionHeader}>
+          <span className={styles.label}>{t('goal.title', lang)}</span>
+        </div>
         <div className={styles.emptyBlock}>
           <p className={styles.emptyText}>{t('goal.empty_text', lang)}</p>
           <button className={styles.addBtn} onClick={onAddTap}>
             {t('goal.add', lang)}
           </button>
         </div>
-      </>
+      </div>
     )
   }
 
@@ -120,12 +123,15 @@ export function GoalModule({
   const activeGoal = statuses.find((s) => s.status === 'aktif')
 
   return (
-    <>
-      <div className={styles.label}>{t('goal.title', lang)}</div>
+    <div className={styles.wrapper}>
+      <div className={styles.sectionHeader}>
+        <span className={styles.label}>{t('goal.title', lang)}</span>
+      </div>
       <div className={styles.card}>
         {statuses.map(({ goal, saved, pct, status }, i) => {
           const origIndex = localGoals.findIndex((g) => g.id === goal.id)
           const isDragged = dragging && dragIndex === origIndex
+          const dashFilled = (pct / 100) * CIRCLE_CIRCUMFERENCE
           return (
             <div
               key={goal.id}
@@ -138,40 +144,42 @@ export function GoalModule({
                 setDragging(false)
               }}
             >
-              <div className={styles.head}>
-                <div className={styles.headLeft}>
-                  <span className={`${styles.badge} ${dragging ? styles.badgeDrag : ''}`}>
-                    #{i + 1}
-                  </span>
-                  <span className={styles.name}>{goal.name}</span>
-                </div>
-                <span className={styles.amount}>
-                  {formatCurrency(saved, currency)} / {formatCurrency(goal.target, currency)}
-                </span>
+              <div className={styles.rowLeft}>
+                <div className={styles.rowEyebrow}>nabung untuk · #{i + 1}</div>
+                <div className={styles.rowName}>{goal.name}</div>
+                {status === 'aktif' && (
+                  <div className={styles.rowProgress}>
+                    {formatCurrency(saved, currency)} / {formatCurrency(goal.target, currency)}
+                  </div>
+                )}
+                {status === 'tercapai' && (
+                  <div className={styles.rowStatus}>{t('goal.reached', lang)}</div>
+                )}
+                {status === 'antri' && (
+                  <div className={styles.rowWaiting}>{t('goal.waiting', lang)}</div>
+                )}
               </div>
-
-              {status === 'aktif' && (
-                <>
-                  <div className={styles.status}>{t('goal.saving', lang)}</div>
-                  <div className={styles.barWrap}>
-                    <div className={styles.barFill} style={{ width: `${pct}%` }} />
-                    <div className={styles.barMarker} />
-                  </div>
-                </>
-              )}
-
-              {status === 'tercapai' && (
-                <>
-                  <div className={styles.status}>{t('goal.reached', lang)}</div>
-                  <div className={styles.barWrap}>
-                    <div className={styles.barFill} style={{ width: '100%' }} />
-                  </div>
-                </>
-              )}
-
-              {status === 'antri' && (
-                <span className={styles.statusWaiting}>{t('goal.waiting', lang)}</span>
-              )}
+              <svg className={styles.rowCircle} width="40" height="40" viewBox="0 0 40 40">
+                <circle
+                  cx="20"
+                  cy="20"
+                  r={CIRCLE_R}
+                  fill="none"
+                  stroke="var(--line)"
+                  strokeWidth="4"
+                />
+                <circle
+                  cx="20"
+                  cy="20"
+                  r={CIRCLE_R}
+                  fill="none"
+                  stroke="var(--accent)"
+                  strokeWidth="4"
+                  strokeDasharray={`${dashFilled} ${CIRCLE_CIRCUMFERENCE}`}
+                  strokeLinecap="round"
+                  transform="rotate(-90 20 20)"
+                />
+              </svg>
             </div>
           )
         })}
@@ -185,7 +193,7 @@ export function GoalModule({
       <button className={styles.addBtn} onClick={onAddTap}>
         {t('goal.add', lang)}
       </button>
-    </>
+    </div>
   )
 }
 
