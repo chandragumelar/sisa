@@ -17,8 +17,6 @@ import {
   getTransactionsByDateRange,
   getTotalNabung,
   deleteTransactionAndRevertBalance,
-  getMonthlyIncomeSummary,
-  getMonthlyExpenseSummary,
   getMonthlyFlows,
   addNabungDeduction,
 } from '@/db/transactions.repository'
@@ -28,13 +26,11 @@ import {
   calcSpentToday,
   calcYesterdayStats,
   calcDaysUntilPayday,
-  calcSisaPasGajian,
   calcGoalStatuses,
 } from './home.utils'
 import { calcUnpaidTagihanTotal, hasUrgentTagihan } from './tagihan.utils'
-import { calcForecast } from './forecast.utils'
-import type { ForecastMonth } from './forecast.utils'
 import { shouldShowBackupReminder, calcBackupUrgency } from './backup-reminder.utils'
+import { formatCurrency } from '@/shared/utils/formatCurrency'
 import { SaldoModule } from './components/SaldoModule'
 import { NotifCard } from './components/NotifCard'
 import { BudgetModule } from './components/BudgetModule'
@@ -46,8 +42,6 @@ import { Toast } from './components/Toast'
 import { MarkPaidSheet } from './components/MarkPaidSheet'
 import { TagihanDetailSheet, UrgentTagihanSheet } from './components/TagihanDetailSheet'
 import { HistorySheet } from './components/HistorySheet'
-import { ForecastCard } from './components/ForecastCard'
-import { ForecastDetailSheet } from './components/ForecastDetailSheet'
 import { BackupCard } from './components/BackupCard'
 import { WalletEditSheet } from '@/features/wallet/WalletEditSheet'
 import { ProfilTagihanSheet } from '@/features/profil/ProfilTagihanSheet'
@@ -66,8 +60,6 @@ interface HomeData {
   todayTxs: Transaction[]
   yesterdayTxs: Transaction[]
   totalNabung: number
-  monthlyIncomeAvg: number
-  monthlySpendingAvg: number
   monthlyIncome: number
   monthlyExpense: number
 }
@@ -90,8 +82,6 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
     todayTxs: [],
     yesterdayTxs: [],
     totalNabung: 0,
-    monthlyIncomeAvg: 0,
-    monthlySpendingAvg: 0,
     monthlyIncome: 0,
     monthlyExpense: 0,
   })
@@ -120,18 +110,8 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
     ]).then(([settings, wallets, tagihan, goals, lastTx, todayTxs, yesterdayTxs]) => {
       if (cancelled || !settings) return
       const currency = settings.activeCurrencyMode || settings.primaryCurrency
-      Promise.all([
-        getTotalNabung(currency),
-        getMonthlyIncomeSummary(currency),
-        getMonthlyExpenseSummary(currency),
-        getMonthlyFlows(currency, monthStart, monthEnd),
-      ]).then(
-        ([
-          totalNabung,
-          monthlyIncomeAvg,
-          monthlySpendingAvg,
-          { income: monthlyIncome, expense: monthlyExpense },
-        ]) => {
+      Promise.all([getTotalNabung(currency), getMonthlyFlows(currency, monthStart, monthEnd)]).then(
+        ([totalNabung, { income: monthlyIncome, expense: monthlyExpense }]) => {
           if (!cancelled) {
             setData({
               settings,
@@ -142,8 +122,6 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
               todayTxs,
               yesterdayTxs,
               totalNabung,
-              monthlyIncomeAvg,
-              monthlySpendingAvg,
               monthlyIncome,
               monthlyExpense,
             })
@@ -175,8 +153,6 @@ export function HomePage() {
     todayTxs,
     yesterdayTxs,
     totalNabung,
-    monthlyIncomeAvg,
-    monthlySpendingAvg,
     monthlyIncome,
     monthlyExpense,
     isLoading,
@@ -190,7 +166,6 @@ export function HomePage() {
   const [urgentSheetOpen, setUrgentSheetOpen] = useState(false)
   const [historyOpen, setHistoryOpen] = useState(false)
   const [quickLogOpen, setQuickLogOpen] = useState(false)
-  const [forecastDetailOpen, setForecastDetailOpen] = useState(false)
   const [editWallet, setEditWallet] = useState<Wallet | null>(null)
   const [tagihanSheetOpen, setTagihanSheetOpen] = useState(false)
   const [goalSheetOpen, setGoalSheetOpen] = useState(false)
@@ -210,25 +185,6 @@ export function HomePage() {
   const dailyBudget = calcDailyBudget(totalSaldo, unpaidTagihanTotal, totalNabung, daysUntilPayday)
   const spentToday = calcSpentToday(todayTxs, nowMs)
   const { spent: yesterdaySpent, earned: yesterdayEarned } = calcYesterdayStats(yesterdayTxs, nowMs)
-  const sisaPasGajian = calcSisaPasGajian(
-    totalSaldo,
-    dailyBudget,
-    daysUntilPayday,
-    unpaidTagihanTotal,
-  )
-  const tagihanTotal = tagihan
-    .filter((t) => t.currency === currency)
-    .reduce((sum, t) => sum + t.nominalEstimate, 0)
-
-  const forecastMonths: ForecastMonth[] = calcForecast(
-    sisaPasGajian,
-    tagihanTotal,
-    monthlySpendingAvg,
-    monthlyIncomeAvg,
-    settings,
-    nowMs,
-  )
-
   // backup reminder (8.11)
   const backupDismissedAt = (() => {
     const raw = localStorage.getItem(BACKUP_DISMISS_KEY)
@@ -389,11 +345,27 @@ export function HomePage() {
         totalNabung={totalNabung}
         yesterdaySpent={yesterdaySpent}
         yesterdayEarned={yesterdayEarned}
-        monthlyIncome={monthlyIncome}
-        monthlyExpense={monthlyExpense}
         onWalletTap={(w) => setEditWallet(w)}
         onAddWalletTap={() => setWalletSheetOpen(true)}
       />
+
+      {/* Monthly flow cards */}
+      {(monthlyIncome > 0 || monthlyExpense > 0) && (
+        <div className={styles.flowCards}>
+          <div className={styles.flowCard}>
+            <span className={styles.flowLabel}>{t('saldo.income_month', lang)}</span>
+            <span className={styles.flowAmountIn}>
+              {monthlyIncome > 0 ? `+${formatCurrency(monthlyIncome, currency)}` : '—'}
+            </span>
+          </div>
+          <div className={styles.flowCard}>
+            <span className={styles.flowLabel}>{t('saldo.expense_month', lang)}</span>
+            <span className={styles.flowAmountOut}>
+              {monthlyExpense > 0 ? `−${formatCurrency(monthlyExpense, currency)}` : '—'}
+            </span>
+          </div>
+        </div>
+      )}
 
       <div className={styles.divider} />
 
@@ -407,18 +379,6 @@ export function HomePage() {
         totalSaldo={totalSaldo}
         nowMs={nowMs}
       />
-
-      {/* Forecast 3-bulan (8.4) */}
-      {forecastMonths.length > 0 && (
-        <>
-          <div className={styles.divider} />
-          <ForecastCard
-            months={forecastMonths}
-            currency={currency}
-            onDetail={() => setForecastDetailOpen(true)}
-          />
-        </>
-      )}
 
       <div className={styles.divider} />
 
@@ -584,17 +544,6 @@ export function HomePage() {
         nowMs={nowMs}
         onCommit={handleQuickLogCommit}
       />
-
-      {forecastMonths.length > 0 && (
-        <ForecastDetailSheet
-          isOpen={forecastDetailOpen}
-          onClose={() => setForecastDetailOpen(false)}
-          months={forecastMonths}
-          currency={currency}
-          dailyBudget={dailyBudget}
-          tagihanTotal={tagihanTotal}
-        />
-      )}
     </main>
   )
 }

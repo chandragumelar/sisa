@@ -13,8 +13,6 @@ interface Props {
   totalNabung: number
   yesterdaySpent: number
   yesterdayEarned: number
-  monthlyIncome: number
-  monthlyExpense: number
   onWalletTap?: (wallet: Wallet) => void
   onAddWalletTap?: () => void
 }
@@ -36,8 +34,6 @@ export function SaldoModule({
   totalNabung,
   yesterdaySpent,
   yesterdayEarned,
-  monthlyIncome,
-  monthlyExpense,
   onWalletTap,
   onAddWalletTap,
 }: Props) {
@@ -135,28 +131,6 @@ export function SaldoModule({
             <span className={styles.sisaLabel}>{t('saldo.sisa', lang)}</span>
             <span className={styles.sisaAmount}>{formatCurrency(sisa, currency)}</span>
           </div>
-
-          {(monthlyIncome > 0 || monthlyExpense > 0) && (
-            <>
-              <div className={styles.contextDivider} />
-              {monthlyIncome > 0 && (
-                <div className={styles.summaryRow}>
-                  <span className={styles.contextLabel}>{t('saldo.income_month', lang)}</span>
-                  <span className={styles.contextAmountIn}>
-                    +{formatCurrency(monthlyIncome, currency)}
-                  </span>
-                </div>
-              )}
-              {monthlyExpense > 0 && (
-                <div className={styles.summaryRow}>
-                  <span className={styles.contextLabel}>{t('saldo.expense_month', lang)}</span>
-                  <span className={styles.contextAmountOut}>
-                    −{formatCurrency(monthlyExpense, currency)}
-                  </span>
-                </div>
-              )}
-            </>
-          )}
 
           <button className={styles.addBtn} onClick={onAddWalletTap}>
             {t('saldo.add_wallet', lang)}

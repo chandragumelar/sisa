@@ -7,11 +7,7 @@ import type { Language } from '@/db/database'
 import { getSettings } from '@/db/settings.repository'
 import { getAllWallets } from '@/db/wallets.repository'
 import { getActiveTagihan } from '@/db/tagihan.repository'
-import {
-  getTotalNabung,
-  getMonthlyIncomeSummary,
-  getMonthlyExpenseSummary,
-} from '@/db/transactions.repository'
+import { getTotalNabung } from '@/db/transactions.repository'
 import {
   getSavedScenarios,
   saveScenario,
@@ -20,10 +16,10 @@ import {
 } from '@/db/scenarios.repository'
 import type { SavedScenario } from '@/db/database'
 import { calcUnpaidTagihanTotal } from '@/features/home/tagihan.utils'
+import { calcSisa } from '@/shared/utils/sisa.utils'
 import { formatCurrency, getCurrencySymbol } from '@/shared/utils/formatCurrency'
 import { calcAndai, buildAndaiBaseline } from './andai.utils'
 import type { AndaiBaseline, AndaiItem, AndaiKind } from './andai.utils'
-import { calcForecast, type ForecastMonth } from '@/features/home/forecast.utils'
 import { BottomSheet } from '@/shared/components/BottomSheet'
 import { SaveScenarioSheet } from './SaveScenarioSheet'
 import { ScenariosRack } from './ScenariosRack'
@@ -78,9 +74,6 @@ export function AndaiPage() {
   const [compareIds, setCompareIds] = useState<number[]>([])
   const [compareSheetOpen, setCompareSheetOpen] = useState(false)
 
-  // forecast
-  const [forecastMonths, setForecastMonths] = useState<ForecastMonth[]>([])
-
   useEffect(() => {
     let cancelled = false
     Promise.all([getSettings(), getAllWallets(), getActiveTagihan()]).then(
@@ -94,23 +87,6 @@ export function AndaiPage() {
           setBaseline(bl)
           setCurrency(s.primaryCurrency)
 
-          const tagihanTotalForForecast = tagihan.reduce((sum, tg) => sum + tg.nominalEstimate, 0)
-          Promise.all([
-            getMonthlyIncomeSummary(s.primaryCurrency),
-            getMonthlyExpenseSummary(s.primaryCurrency),
-          ]).then(([incomeAvg, spendingAvg]) => {
-            if (cancelled) return
-            setForecastMonths(
-              calcForecast(
-                bl.sisaPasGajian,
-                tagihanTotalForForecast,
-                spendingAvg,
-                incomeAvg,
-                s,
-                nowMs,
-              ),
-            )
-          })
           getSavedScenarios().then((rows) => {
             if (!cancelled) setSavedScenarios(rows)
           })
@@ -214,7 +190,10 @@ export function AndaiPage() {
             <span className={styles.blKey}>{t('andai.baseline_saldo', lang)}</span>
             <span className={styles.blVal}>
               {formatCurrency(
-                Math.max(0, baseline.totalSaldo - baseline.unpaidTagihanTotal),
+                Math.max(
+                  0,
+                  calcSisa(baseline.totalSaldo, baseline.unpaidTagihanTotal, baseline.totalNabung),
+                ),
                 currency,
               )}
             </span>
@@ -286,24 +265,6 @@ export function AndaiPage() {
               currency={currency}
             />
           </div>
-
-          {forecastMonths.length > 0 && (
-            <div className={styles.andaiForecast}>
-              <div className={styles.andaiForecastLabel}>{t('andai.forecast_label', lang)}</div>
-              <div className={styles.andaiForecastCols}>
-                {forecastMonths.map((m) => (
-                  <div key={m.label} className={styles.andaiForecastCol}>
-                    <span className={styles.andaiForecastMonth}>{m.label}</span>
-                    <span
-                      className={m.sisa >= 0 ? styles.andaiForecastAmt : styles.andaiForecastAmtNeg}
-                    >
-                      {formatCurrency(m.sisa, currency)}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
         </>
       )}
 

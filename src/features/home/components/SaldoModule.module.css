@@ -162,34 +162,6 @@
   font-feature-settings: 'tnum';
 }
 
-.contextDivider {
-  height: 1px;
-  background: var(--border-hair);
-  margin: 4px 0 2px;
-}
-
-.contextLabel {
-  font-size: 11px;
-  color: var(--ink-tertiary);
-  font-style: italic;
-}
-
-.contextAmountIn {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--signal-safe);
-  font-feature-settings: 'tnum';
-  font-style: italic;
-}
-
-.contextAmountOut {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--signal-danger);
-  font-feature-settings: 'tnum';
-  font-style: italic;
-}
-
 .addBtn {
   width: 100%;
   margin-top: 8px;
