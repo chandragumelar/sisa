@@ -3,16 +3,14 @@ import { calcAndai } from './andai.utils'
 import type { AndaiBaseline, AndaiItem } from './andai.utils'
 
 // Self-consistent baseline:
-//   totalSaldo=5jt, unpaidTagihan=1jt → availableOp=4jt
+//   totalSaldo=5jt, unpaidTagihan=1jt, totalNabung=0 → sisa=4jt
 //   dailyBudget = 4jt / 20 = 200rb
-//   sisaPasGajian = 4jt - 200rb×20 = 0 (with reservedSavings=0)
 const BASELINE: AndaiBaseline = {
   totalSaldo: 5_000_000,
   unpaidTagihanTotal: 1_000_000,
   dailyBudget: 200_000,
   daysUntilPayday: 20,
-  totalNabung: 3_000_000,
-  sisaPasGajian: 0,
+  totalNabung: 0,
 }
 
 function item(kind: AndaiItem['kind'], amount: number, desc = ''): AndaiItem {
@@ -128,12 +126,11 @@ describe('calcAndai — combined variables', () => {
     expect(r1.dailyAfter).toBeCloseTo(r2.dailyAfter, 0)
   })
 
-  it('tagihan + income: can offset each other on daily budget', () => {
-    const r = calcAndai([item('tagihan', 1_000_000), item('income', 2_000_000)], BASELINE)
-    // income 2jt, tagihan reduces ops by 1jt (saldo -1jt, tagihan +1jt)
-    // net saldo delta = +2jt - 1jt = +1jt; afterSaldo=6jt, afterTagihan=2jt, afterAvailable=4jt
-    // afterDailyBudget = 4jt / 20 = 200rb = baseline (neutral)
+  it('tagihan + income of equal amounts: daily returns to baseline', () => {
+    // income 1jt raises saldo, tagihan 1jt raises unpaidTagihan by same — sisa unchanged
+    const r = calcAndai([item('tagihan', 1_000_000), item('income', 1_000_000)], BASELINE)
     expect(r.dailyAfter).toBeCloseTo(r.dailyBefore, 0)
+    expect(r.sisaAfter).toBeCloseTo(r.sisaBefore, 0)
   })
 })
 
@@ -142,5 +139,41 @@ describe('calcAndai — daily never negative', () => {
     const r = calcAndai([item('beli', 50_000_000)], BASELINE)
     expect(r.dailyAfter).toBe(0)
     expect(r.dailyAfter).toBeGreaterThanOrEqual(0)
+  })
+})
+
+describe('calcAndai — sisa correctness (repro: saldo 8jt, purchases 5jt → sisa 3jt not -5jt)', () => {
+  const BIG: AndaiBaseline = {
+    totalSaldo: 8_000_000,
+    unpaidTagihanTotal: 0,
+    dailyBudget: 400_000, // 8jt / 20
+    daysUntilPayday: 20,
+    totalNabung: 0,
+  }
+
+  it('no items: sisa before equals totalSaldo when no tagihan/nabung', () => {
+    const r = calcAndai([], BIG)
+    expect(r.sisaBefore).toBe(8_000_000)
+    expect(r.sisaAfter).toBe(r.sisaBefore)
+  })
+
+  it('single beli: sisaAfter = sisaBefore − purchaseAmount', () => {
+    const r = calcAndai([item('beli', 3_000_000)], BIG)
+    expect(r.sisaAfter).toBe(r.sisaBefore - 3_000_000)
+    expect(r.sisaAfter).toBe(5_000_000)
+  })
+
+  it('multiple beli summing to 5jt: sisaAfter = 3jt', () => {
+    const r = calcAndai(
+      [item('beli', 2_000_000), item('beli', 2_000_000), item('beli', 1_000_000)],
+      BIG,
+    )
+    expect(r.sisaAfter).toBe(3_000_000)
+  })
+
+  it('beli exceeding saldo: sisa goes negative, daily clamps to 0', () => {
+    const r = calcAndai([item('beli', 10_000_000)], BIG)
+    expect(r.sisaAfter).toBe(-2_000_000)
+    expect(r.dailyAfter).toBe(0)
   })
 })

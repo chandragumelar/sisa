@@ -128,15 +128,6 @@ export type StringKey =
   | 'notif.overdue'
   | 'notif.due_today'
   | 'notif.extra'
-  // forecast
-  | 'forecast.title'
-  | 'forecast.detail_btn'
-  | 'forecast.sheet_title'
-  | 'forecast.daily_label'
-  | 'forecast.tagihan_label'
-  | 'forecast.month_current'
-  | 'forecast.month_plus'
-  | 'forecast.note'
   // backup card
   | 'backup.title_urgent'
   | 'backup.title_normal'
@@ -260,7 +251,6 @@ export type StringKey =
   | 'andai.result_daily'
   | 'andai.result_sisa'
   | 'andai.result_tabungan'
-  | 'andai.forecast_label'
   | 'andai.reset'
   | 'andai.save'
   | 'andai.compare'
@@ -364,8 +354,6 @@ export type StringKey =
   | 'settings.section_profil'
   | 'settings.row_income'
   | 'settings.row_income_sub'
-  | 'settings.row_license'
-  | 'settings.row_license_sub'
   | 'settings.section_tampilan'
   | 'settings.row_theme'
   | 'settings.theme_light'
@@ -536,15 +524,6 @@ const id: StringDictionary = {
   'notif.due_today': '{n} komitmen jatuh tempo hari ini',
   'notif.extra': '+{n} lainnya',
 
-  'forecast.title': 'prediksi uang sisa akhir bulan',
-  'forecast.detail_btn': 'detail ›',
-  'forecast.sheet_title': 'prediksi 3 bulan',
-  'forecast.daily_label': 'jatah harian',
-  'forecast.tagihan_label': 'tagihan per bulan',
-  'forecast.month_current': 'bulan ini',
-  'forecast.month_plus': '+{n} bulan',
-  'forecast.note': 'Proyeksi berdasarkan rata-rata income dan pengeluaran 3 bulan terakhir.',
-
   'backup.title_urgent': 'Sudah lama gak backup!',
   'backup.title_normal': 'Backup data lo',
   'backup.desc': 'Data SISA tersimpan di HP ini. Kalau ganti HP tanpa backup, data hilang.',
@@ -667,7 +646,6 @@ const id: StringDictionary = {
   'andai.result_daily': 'jatah harian sampai gajian',
   'andai.result_sisa': 'sisa operasional',
   'andai.result_tabungan': 'total tabungan',
-  'andai.forecast_label': 'proyeksi 3 bulan ke depan',
   'andai.reset': 'Reset',
   'andai.save': 'Simpan',
   'andai.compare': 'Banding',
@@ -772,8 +750,6 @@ const id: StringDictionary = {
   'settings.section_profil': 'profil',
   'settings.row_income': 'pemasukan',
   'settings.row_income_sub': 'jenis & tanggal gajian',
-  'settings.row_license': 'lisensi',
-  'settings.row_license_sub': '{n} hari lagi',
   'settings.section_tampilan': 'tampilan',
   'settings.row_theme': 'tema',
   'settings.theme_light': 'terang',
@@ -945,15 +921,6 @@ const en: StringDictionary = {
   'notif.due_today': '{n} commitments due today',
   'notif.extra': '+{n} more',
 
-  'forecast.title': 'end-of-month forecast',
-  'forecast.detail_btn': 'details ›',
-  'forecast.sheet_title': '3-month forecast',
-  'forecast.daily_label': 'daily budget',
-  'forecast.tagihan_label': 'bills / month',
-  'forecast.month_current': 'this month',
-  'forecast.month_plus': '+{n} months',
-  'forecast.note': 'Projection based on 3-month average income and spending.',
-
   'backup.title_urgent': "Haven't backed up in a while!",
   'backup.title_normal': 'Back up your data',
   'backup.desc': "SISA data lives on this phone. Switch phones without a backup and it's gone.",
@@ -1076,7 +1043,6 @@ const en: StringDictionary = {
   'andai.result_daily': 'daily budget until payday',
   'andai.result_sisa': 'operating balance',
   'andai.result_tabungan': 'total savings',
-  'andai.forecast_label': '3-month projection',
   'andai.reset': 'Reset',
   'andai.save': 'Save',
   'andai.compare': 'Compare',
@@ -1181,8 +1147,6 @@ const en: StringDictionary = {
   'settings.section_profil': 'profile',
   'settings.row_income': 'income',
   'settings.row_income_sub': 'type & payday',
-  'settings.row_license': 'license',
-  'settings.row_license_sub': '{n} days left',
   'settings.section_tampilan': 'display',
   'settings.row_theme': 'theme',
   'settings.theme_light': 'light',

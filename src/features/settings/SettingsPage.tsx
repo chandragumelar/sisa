@@ -203,13 +203,6 @@ export function SettingsPage() {
           <span className={styles.rowLabel}>{t('settings.row_income', lang)}</span>
           <span className={styles.rowSub}>{t('settings.row_income_sub', lang)}</span>
         </button>
-        <div className={styles.divider} />
-        <button className={styles.actionRow} onClick={() => setActiveSheet('license')}>
-          <span className={styles.rowLabel}>{t('settings.row_license', lang)}</span>
-          <span className={styles.rowSub}>
-            {t('settings.row_license_sub', lang).replace('{n}', String(daysLeft))}
-          </span>
-        </button>
       </div>
 
       {/* Tampilan */}
