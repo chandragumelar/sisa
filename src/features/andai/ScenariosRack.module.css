@@ -5,7 +5,7 @@
 .rackLabel {
   font-size: 11px;
   font-weight: 500;
-  color: var(--ink-tertiary);
+  color: var(--muted);
   text-transform: lowercase;
   letter-spacing: 0.05em;
   margin-bottom: 6px;
@@ -15,7 +15,7 @@
 .rowWrapper {
   position: relative;
   overflow: hidden;
-  border-radius: 10px;
+  border-radius: 12px;
   margin-bottom: 4px;
 }
 
@@ -25,8 +25,8 @@
   top: 0;
   bottom: 0;
   width: 80px;
-  background: var(--signal-danger);
-  color: #fff;
+  background: var(--bahaya-br);
+  color: var(--bg);
   border: none;
   display: flex;
   flex-direction: column;
@@ -40,8 +40,8 @@
 
 .row {
   background: var(--surface);
-  border: 1px solid var(--border-hair);
-  border-radius: 10px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
   padding: 12px 14px;
   display: flex;
   align-items: center;
@@ -54,7 +54,7 @@
 
 .rowSelected {
   border-color: var(--accent);
-  background: var(--accent-bg);
+  background: var(--surface-deep);
 }
 
 .rowLeft {
@@ -66,7 +66,7 @@
 .checkboxOff {
   width: 18px;
   height: 18px;
-  border: 2px solid var(--border-hair);
+  border: 2px solid var(--line);
   border-radius: 4px;
   flex-shrink: 0;
 }
@@ -88,8 +88,8 @@
   top: 6px;
   width: 8px;
   height: 4px;
-  border-left: 2px solid #fff;
-  border-bottom: 2px solid #fff;
+  border-left: 2px solid var(--bg);
+  border-bottom: 2px solid var(--bg);
   transform: rotate(-45deg) translateY(-2px);
 }
 
@@ -100,17 +100,19 @@
 }
 
 .rowName {
+  font-family: var(--font-display);
   font-size: 14px;
   font-weight: 500;
-  color: var(--ink-primary);
+  color: var(--ink);
 }
 
 .rowDate {
+  font-family: var(--font-mono);
   font-size: 11px;
-  color: var(--ink-tertiary);
+  color: var(--muted);
 }
 
 .rowChev {
-  color: var(--ink-tertiary);
+  color: var(--muted);
   font-size: 16px;
 }

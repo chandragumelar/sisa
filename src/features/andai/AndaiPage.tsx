@@ -28,6 +28,13 @@ import styles from './AndaiPage.module.css'
 
 type AddKind = AndaiKind
 
+const KIND_RAIL_COLOR: Record<AndaiKind, string> = {
+  beli: 'var(--bahaya-br)',
+  income: 'var(--aman-br)',
+  tagihan: 'var(--mepet-br)',
+  'target-nabung': 'var(--accent)',
+}
+
 function kindLabel(kind: AndaiKind, lang: Language): string {
   switch (kind) {
     case 'beli':
@@ -54,6 +61,17 @@ function kindPlaceholder(kind: AndaiKind, lang: Language): string {
   }
 }
 
+function styledStackLabel(str: string) {
+  const dotIdx = str.lastIndexOf('...')
+  if (dotIdx < 0) return <>{str}</>
+  return (
+    <>
+      {str.slice(0, dotIdx)}
+      <span className={styles.stackAccent}>{str.slice(dotIdx)}</span>
+    </>
+  )
+}
+
 export function AndaiPage() {
   const clock = useClock()
   const navigate = useNavigate()
@@ -63,6 +81,7 @@ export function AndaiPage() {
   const [baseline, setBaseline] = useState<AndaiBaseline | null>(null)
   const [currency, setCurrency] = useState('IDR')
   const [items, setItems] = useState<AndaiItem[]>([])
+  const [kindPickerOpen, setKindPickerOpen] = useState(false)
   const [addSheet, setAddSheet] = useState<AddKind | null>(null)
   const [addDesc, setAddDesc] = useState('')
   const [addAmount, setAddAmount] = useState('')
@@ -170,16 +189,29 @@ export function AndaiPage() {
 
   return (
     <div className={styles.page}>
+      {/* Header */}
       <div className={styles.head}>
         <button
           className={styles.backBtn}
           onClick={() => navigate(-1)}
           aria-label={t('andai.back_aria', lang)}
         >
-          ‹
+          ←
         </button>
-        <span className={styles.title}>{t('andai.title', lang)}</span>
-        <span className={styles.titleSub}>{t('andai.sub', lang)}</span>
+        <div className={styles.headCenter}>
+          <div className={styles.title}>{t('andai.title', lang)}</div>
+          <div className={styles.titleSub}>{t('andai.sub', lang)}</div>
+        </div>
+        <button
+          className={styles.resetBtn}
+          onClick={() => {
+            setItems([])
+            setCompareIds([])
+            setCompareMode(false)
+          }}
+        >
+          {t('andai.reset', lang)}
+        </button>
       </div>
 
       {/* Baseline card */}
@@ -205,46 +237,43 @@ export function AndaiPage() {
         </div>
       </div>
 
-      {/* Stack */}
-      <div className={styles.stackLabel}>{t('andai.stack_label', lang)}</div>
-
-      {items.map((item, i) => (
-        <div key={item.id} className={styles.andaiItem}>
-          <span className={styles.branch}>{i === items.length - 1 ? '└' : '├'}</span>
-          <div className={styles.aiBody}>
-            <div className={styles.aiKind}>{kindLabel(item.kind, lang)}</div>
-            <div className={styles.aiDesc}>{item.desc}</div>
-          </div>
-          <span className={styles.aiAmount}>
-            {item.kind === 'income' ? '+' : '−'}
-            {formatCurrency(item.amount, currency)}
-          </span>
-          <button
-            className={styles.aiRemove}
-            onClick={() => removeItem(item.id)}
-            aria-label={t('andai.remove_aria', lang)}
-          >
-            ✕
-          </button>
-        </div>
-      ))}
-
-      {/* Add chips */}
-      <div className={styles.addChips}>
-        {(['beli', 'income', 'tagihan', 'target-nabung'] as AndaiKind[]).map((k) => (
-          <button key={k} className={styles.addChip} onClick={() => setAddSheet(k)}>
-            <span className={styles.addPlus}>+</span> {kindLabel(k, lang)}
-          </button>
-        ))}
+      {/* Stack label */}
+      <div className={styles.stackHeader}>
+        <div className={styles.stackLabel}>{styledStackLabel(t('andai.stack_label', lang))}</div>
       </div>
 
+      {/* Stack items */}
+      <div className={styles.stackItems}>
+        {items.map((item) => (
+          <div key={item.id} className={styles.andaiItem}>
+            <span className={styles.aiRail} style={{ background: KIND_RAIL_COLOR[item.kind] }} />
+            <div className={styles.aiBody}>
+              <div className={styles.aiKind}>{kindLabel(item.kind, lang)}</div>
+              <div className={styles.aiDesc}>{item.desc}</div>
+            </div>
+            <span className={styles.aiAmount}>
+              {item.kind === 'income' ? '+' : '−'}
+              {formatCurrency(item.amount, currency)}
+            </span>
+            <button
+              className={styles.aiRemove}
+              onClick={() => removeItem(item.id)}
+              aria-label={t('andai.remove_aria', lang)}
+            >
+              ✕
+            </button>
+          </div>
+        ))}
+
+        <button className={styles.addBtn} onClick={() => setKindPickerOpen(true)}>
+          {t('andai.add_event', lang)}
+        </button>
+      </div>
+
+      {/* Results + actions */}
       {items.length > 0 && (
-        <>
-          <div className={styles.divider} />
-
-          {/* Results */}
+        <div className={styles.resultSection}>
           <div className={styles.resultLabel}>{t('andai.result_label', lang)}</div>
-
           <div className={styles.resultCard}>
             <ResultRow
               label={t('andai.result_daily', lang)}
@@ -265,51 +294,38 @@ export function AndaiPage() {
               currency={currency}
             />
           </div>
-        </>
-      )}
 
-      {/* Actions */}
-      <div className={styles.actions}>
-        <button
-          className={styles.resetBtn}
-          onClick={() => {
-            setItems([])
-            setCompareIds([])
-            setCompareMode(false)
-          }}
-        >
-          {t('andai.reset', lang)}
-        </button>
-
-        <div className={styles.proActions}>
-          <button
-            className={canSave ? styles.saveBtn : `${styles.saveBtn} ${styles.saveBtnDisabled}`}
-            onClick={() => canSave && setSaveSheetOpen(true)}
-          >
-            {t('andai.save', lang)}
-          </button>
-          {savedScenarios.length >= 2 && (
+          <div className={styles.actions}>
+            {savedScenarios.length >= 2 && (
+              <button
+                className={
+                  compareMode
+                    ? `${styles.compareBtn} ${styles.compareBtnActive}`
+                    : styles.compareBtn
+                }
+                onClick={() => {
+                  setCompareMode((prev) => !prev)
+                  setCompareIds([])
+                }}
+              >
+                {t('andai.compare', lang)}
+              </button>
+            )}
             <button
-              className={
-                compareMode ? `${styles.compareBtn} ${styles.compareBtnActive}` : styles.compareBtn
-              }
-              onClick={() => {
-                setCompareMode((prev) => !prev)
-                setCompareIds([])
-              }}
+              className={canSave ? styles.saveBtn : `${styles.saveBtn} ${styles.saveBtnDisabled}`}
+              onClick={() => canSave && setSaveSheetOpen(true)}
             >
-              {t('andai.compare', lang)}
+              {t('andai.save', lang)}
             </button>
-          )}
-        </div>
-      </div>
+          </div>
 
-      {/* Compare action bar */}
-      {compareMode && compareIds.length === 2 && (
-        <div className={styles.compareBar}>
-          <button className={styles.compareBarBtn} onClick={() => setCompareSheetOpen(true)}>
-            {t('andai.compare_bar', lang)}
-          </button>
+          {compareMode && compareIds.length === 2 && (
+            <div className={styles.compareBar}>
+              <button className={styles.compareBarBtn} onClick={() => setCompareSheetOpen(true)}>
+                {t('andai.compare_bar', lang)}
+              </button>
+            </div>
+          )}
         </div>
       )}
 
@@ -321,6 +337,29 @@ export function AndaiPage() {
         onDelete={handleDeleteScenario}
         onToggleCompare={handleToggleCompare}
       />
+
+      {/* Kind picker sheet */}
+      <BottomSheet
+        isOpen={kindPickerOpen}
+        onClose={() => setKindPickerOpen(false)}
+        title={t('andai.title', lang)}
+      >
+        <div className={styles.kindPicker}>
+          {(['beli', 'income', 'tagihan', 'target-nabung'] as AndaiKind[]).map((k) => (
+            <button
+              key={k}
+              className={styles.kindPickerBtn}
+              onClick={() => {
+                setKindPickerOpen(false)
+                setAddSheet(k)
+              }}
+            >
+              <span className={styles.kindPickerRail} style={{ background: KIND_RAIL_COLOR[k] }} />
+              <span className={styles.kindPickerLabel}>{kindLabel(k, lang)}</span>
+            </button>
+          ))}
+        </div>
+      </BottomSheet>
 
       {/* Add item sheet */}
       <BottomSheet

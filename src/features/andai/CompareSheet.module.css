@@ -10,14 +10,15 @@
 }
 
 .colHead {
+  font-family: var(--font-display);
   font-size: 13px;
   font-weight: 600;
-  color: var(--ink-primary);
+  color: var(--ink);
   text-align: center;
   padding: 8px;
-  background: var(--accent-bg);
-  border: 1px solid var(--accent-br);
-  border-radius: 8px;
+  background: var(--surface-deep);
+  border: 1px solid var(--line);
+  border-radius: 10px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -25,7 +26,7 @@
 
 .metricRow {
   padding: 12px 0;
-  border-bottom: 1px solid var(--border-hair);
+  border-bottom: 1px solid var(--line);
 }
 
 .metricRow:last-child {
@@ -33,10 +34,12 @@
 }
 
 .metricLabel {
-  font-size: 12px;
-  color: var(--ink-tertiary);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
   margin-bottom: 6px;
-  text-transform: lowercase;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .metricCols {
@@ -46,17 +49,17 @@
 }
 
 .metricVal {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 14px;
   font-weight: 500;
-  color: var(--ink-secondary);
+  color: var(--ink-soft);
   text-align: center;
   padding: 6px 8px;
-  border-radius: 6px;
+  border-radius: 8px;
 }
 
 .metricWin {
-  color: var(--signal-safe);
-  background: rgba(27, 122, 56, 0.06);
+  color: var(--aman-fg);
+  background: var(--aman-bg);
   font-weight: 600;
 }
