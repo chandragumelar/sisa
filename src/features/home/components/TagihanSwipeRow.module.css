@@ -1,7 +1,7 @@
 .container {
   position: relative;
   overflow: hidden;
-  border-bottom: 1px solid var(--border-hair);
+  border-bottom: 1px solid var(--line);
 }
 
 .container:last-of-type {
@@ -14,7 +14,7 @@
   top: 0;
   bottom: 0;
   width: 110px;
-  background: var(--signal-safe);
+  background: var(--aman-br);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -30,15 +30,21 @@
 .rowContent {
   position: relative;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 9px 0;
-  gap: 10px;
-  background: var(--canvas);
+  padding: 10px 0;
+  gap: 12px;
+  background: var(--bg);
   cursor: pointer;
   touch-action: pan-y;
   user-select: none;
   will-change: transform;
+}
+
+.rowDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 8px;
+  flex-shrink: 0;
 }
 
 .rowLeft {
@@ -50,20 +56,24 @@
 }
 
 .rowName {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--ink-primary);
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.01em;
 }
 
 .rowMeta {
-  font-size: 10.5px;
-  color: var(--ink-tertiary);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
 }
 
 .rowMetaUrgent {
-  font-size: 10.5px;
+  font-family: var(--font-mono);
+  font-size: 11px;
   font-weight: 500;
-  color: var(--signal-danger);
+  color: var(--bahaya-br);
 }
 
 .rowRight {
@@ -75,24 +85,25 @@
 .paidBadge {
   font-size: 9.5px;
   font-weight: 600;
-  color: var(--signal-safe);
-  background: rgba(27, 122, 56, 0.1);
+  color: var(--aman-br);
+  background: rgba(45, 87, 67, 0.1);
   padding: 2px 6px;
   border-radius: 4px;
   letter-spacing: 0.3px;
 }
 
 .rowAmount {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--ink-primary);
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
   white-space: nowrap;
   font-feature-settings: 'tnum';
+  letter-spacing: -0.02em;
 }
 
 .chev {
   font-size: 13px;
-  color: var(--ink-tertiary);
+  color: var(--muted);
   margin-left: 2px;
 }

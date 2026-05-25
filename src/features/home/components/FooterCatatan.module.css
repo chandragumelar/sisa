@@ -2,9 +2,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 14px 0 4px;
+  padding: 14px 16px 4px;
   font-size: 11px;
-  color: var(--ink-tertiary);
+  color: var(--muted);
   gap: 8px;
 }
 
@@ -19,26 +19,26 @@
 
 .itemName {
   font-weight: 500;
-  color: var(--ink-primary);
+  color: var(--ink);
 }
 
 .amount {
   font-family: var(--font-mono);
   font-weight: 500;
-  color: var(--signal-danger);
+  color: var(--bahaya-br);
   font-feature-settings: 'tnum';
 }
 
 .link {
   color: var(--accent);
   text-decoration: underline;
-  text-decoration-color: var(--accent-br);
+  text-decoration-color: var(--line);
   text-underline-offset: 2px;
   white-space: nowrap;
   background: none;
   border: none;
   font-size: 11px;
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   cursor: pointer;
   padding: 0;
 }

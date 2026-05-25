@@ -27,7 +27,7 @@ export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap, on
   const total = active.reduce((sum, tg) => sum + tg.nominalEstimate, 0)
 
   return (
-    <>
+    <div className={styles.wrapper}>
       <div className={styles.header}>
         <span className={styles.label}>{t('tagihan_module.title', lang)}</span>
         {active.length > 0 && (
@@ -71,6 +71,6 @@ export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap, on
           </button>
         </>
       )}
-    </>
+    </div>
   )
 }

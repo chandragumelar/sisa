@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useClock } from '@/app/providers/useClock'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
+import type { Language } from '@/db/database'
 import { getSettings, patchSettings } from '@/db/settings.repository'
 import { getAllWallets } from '@/db/wallets.repository'
 import {
@@ -21,6 +22,47 @@ import {
   addNabungDeduction,
 } from '@/db/transactions.repository'
 import type { Settings, Wallet, Tagihan, Goal, Transaction } from '@/db/database'
+
+const DAY_NAMES_ID = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab']
+const DAY_NAMES_EN = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+const MONTH_NAMES_ID = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'Mei',
+  'Jun',
+  'Jul',
+  'Agt',
+  'Sep',
+  'Okt',
+  'Nov',
+  'Des',
+]
+const MONTH_NAMES_EN = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+]
+
+function formatHeaderSub(nowMs: number, daysUntilPayday: number, lang: Language): string {
+  const d = new Date(nowMs)
+  const dayNames = lang === 'en' ? DAY_NAMES_EN : DAY_NAMES_ID
+  const monthNames = lang === 'en' ? MONTH_NAMES_EN : MONTH_NAMES_ID
+  const dateStr = `${dayNames[d.getDay()]} ${d.getDate()} ${monthNames[d.getMonth()]}`
+  const paydayStr =
+    lang === 'en' ? `${daysUntilPayday} days to payday` : `${daysUntilPayday} hr ke gajian`
+  return `${dateStr} · ${paydayStr}`
+}
 import {
   calcDailyBudget,
   calcSpentToday,
@@ -264,10 +306,13 @@ export function HomePage() {
 
   return (
     <main className={styles.page}>
-      {/* Header (8.8 currency, 8.9 Pro label) */}
+      {/* Header */}
       <div className={styles.header}>
         <div className={styles.wordmarkRow}>
           <span className={styles.wordmark}>SISA</span>
+          <span className={styles.wordmarkSub}>
+            {formatHeaderSub(nowMs, daysUntilPayday, lang)}
+          </span>
         </div>
 
         <div className={styles.headerRight}>
@@ -294,21 +339,17 @@ export function HomePage() {
             aria-label="Pengaturan"
           >
             <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
+              width="14"
+              height="14"
+              viewBox="0 0 16 16"
               fill="none"
               stroke="currentColor"
               strokeWidth="1.5"
               strokeLinecap="round"
-              strokeLinejoin="round"
             >
-              <line x1="4" y1="6" x2="20" y2="6" />
-              <line x1="4" y1="12" x2="20" y2="12" />
-              <line x1="4" y1="18" x2="20" y2="18" />
-              <circle cx="9" cy="6" r="2" fill="var(--canvas)" />
-              <circle cx="15" cy="12" r="2" fill="var(--canvas)" />
-              <circle cx="11" cy="18" r="2" fill="var(--canvas)" />
+              <line x1="2" y1="4" x2="14" y2="4" />
+              <line x1="2" y1="8" x2="14" y2="8" />
+              <line x1="2" y1="12" x2="14" y2="12" />
             </svg>
           </button>
         </div>
@@ -343,6 +384,7 @@ export function HomePage() {
         currency={currency}
         unpaidTagihanTotal={unpaidTagihanTotal}
         totalNabung={totalNabung}
+        daysUntilPayday={daysUntilPayday}
         yesterdaySpent={yesterdaySpent}
         yesterdayEarned={yesterdayEarned}
         onWalletTap={(w) => setEditWallet(w)}

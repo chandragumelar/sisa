@@ -1,79 +1,34 @@
+.wrapper {
+  padding: 0 22px;
+}
+
 .header {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 
 .label {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 500;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: var(--ink-tertiary);
+  color: var(--muted);
 }
 
 .totalMeta {
-  font-size: 10.5px;
-  color: var(--ink-tertiary);
-}
-
-.row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 9px 0;
-  border-bottom: 1px solid var(--border-hair);
-  gap: 10px;
-}
-
-.row:last-of-type {
-  border-bottom: none;
-}
-
-.rowLeft {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  flex: 1;
-  min-width: 0;
-}
-
-.rowName {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--ink-primary);
-}
-
-.rowMeta {
-  font-size: 10.5px;
-  color: var(--ink-tertiary);
-}
-
-.rowMetaUrgent {
-  font-size: 10.5px;
-  font-weight: 500;
-  color: var(--signal-danger);
-}
-
-.rowRight {
-  display: flex;
-  align-items: center;
-}
-
-.rowAmount {
   font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--ink-primary);
-  white-space: nowrap;
-  font-feature-settings: 'tnum';
+  font-size: 11px;
+  color: var(--muted);
 }
 
-.chev {
-  font-size: 13px;
-  color: var(--ink-tertiary);
-  margin-left: 6px;
+.swipeHint {
+  font-size: 9.5px;
+  color: var(--muted);
+  font-style: italic;
+  text-align: right;
+  margin-top: 6px;
 }
 
 .expandLink {
@@ -81,30 +36,16 @@
   font-size: 11px;
   color: var(--accent);
   padding: 10px 0 2px;
-  border-top: 1px solid var(--border-hair);
+  border-top: 1px solid var(--line);
   margin-top: 4px;
   cursor: pointer;
   background: none;
   border-left: none;
   border-right: none;
   border-bottom: none;
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   text-align: left;
   width: 100%;
-}
-
-.swipeHint {
-  font-size: 9.5px;
-  color: var(--ink-tertiary);
-  font-style: italic;
-  text-align: right;
-  margin-top: 6px;
-}
-
-.empty {
-  font-size: 13px;
-  color: var(--ink-tertiary);
-  padding: 12px 0;
 }
 
 .emptyBlock {
@@ -116,7 +57,7 @@
 
 .emptyText {
   font-size: 12.5px;
-  color: var(--ink-tertiary);
+  color: var(--muted);
   line-height: 1.5;
   margin: 0;
 }
@@ -126,11 +67,9 @@
   font-size: 13px;
   font-weight: 600;
   color: var(--accent);
-  background: var(--accent-bg);
-  border: 1px solid var(--accent-br);
-  border-radius: 8px;
-  padding: 8px 14px;
+  background: none;
+  border: none;
+  padding: 10px 0 0;
   cursor: pointer;
-  font-family: var(--font-sans);
-  margin-top: 8px;
+  font-family: var(--font-display);
 }
