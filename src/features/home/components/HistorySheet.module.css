@@ -8,27 +8,27 @@
 
 .filterChip {
   padding: 6px 14px;
-  border-radius: 20px;
-  border: 1.5px solid var(--border-hair);
-  background: var(--surface-2);
+  border-radius: 100px;
+  border: 1px solid var(--line);
+  background: var(--surface-deep);
   font-size: 12px;
   font-weight: 500;
-  color: var(--ink-secondary);
+  color: var(--ink-soft);
   cursor: pointer;
   white-space: nowrap;
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   flex-shrink: 0;
 }
 
 .filterChipActive {
   border-color: var(--accent);
-  background: var(--accent-bg);
+  background: var(--surface-deep);
   color: var(--accent);
 }
 
 .empty {
   font-size: 13px;
-  color: var(--ink-tertiary);
+  color: var(--muted);
   padding: 24px 0;
   text-align: center;
 }
@@ -43,7 +43,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 9px 0;
-  border-bottom: 1px solid var(--border-hair);
+  border-bottom: 1px solid var(--line);
   gap: 10px;
 }
 
@@ -62,7 +62,7 @@
 .rowName {
   font-size: 13px;
   font-weight: 500;
-  color: var(--ink-primary);
+  color: var(--ink);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -70,14 +70,15 @@
 
 .rowMeta {
   font-size: 10.5px;
-  color: var(--ink-tertiary);
+  color: var(--muted);
+  font-family: var(--font-mono);
 }
 
 .amountOut {
   font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 500;
-  color: var(--signal-danger);
+  color: var(--bahaya-br);
   white-space: nowrap;
   font-feature-settings: 'tnum';
   flex-shrink: 0;
@@ -87,7 +88,7 @@
   font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 500;
-  color: var(--signal-safe);
+  color: var(--aman-br);
   white-space: nowrap;
   font-feature-settings: 'tnum';
   flex-shrink: 0;
@@ -95,7 +96,7 @@
 
 .rowNote {
   font-size: 10.5px;
-  color: var(--ink-tertiary);
+  color: var(--muted);
   font-style: italic;
   white-space: nowrap;
   overflow: hidden;
@@ -113,16 +114,16 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: var(--ink-tertiary);
+  color: var(--muted);
   font-size: 13px;
   padding: 4px 6px;
   border-radius: 6px;
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
 }
 
 .actionBtn:hover {
-  background: var(--surface-2);
-  color: var(--ink-secondary);
+  background: var(--surface-deep);
+  color: var(--ink-soft);
 }
 
 .confirmRow {
@@ -134,22 +135,22 @@
 .confirmDanger {
   font-size: 11px;
   font-weight: 600;
-  color: var(--signal-danger);
+  color: var(--bahaya-br);
   background: none;
-  border: 1px solid var(--signal-danger);
-  border-radius: 6px;
+  border: 1px solid var(--bahaya-br);
+  border-radius: 100px;
   padding: 3px 8px;
   cursor: pointer;
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
 }
 
 .confirmCancel {
   font-size: 11px;
-  color: var(--ink-tertiary);
+  color: var(--muted);
   background: none;
-  border: 1px solid var(--border-hair);
-  border-radius: 6px;
+  border: 1px solid var(--line);
+  border-radius: 100px;
   padding: 3px 8px;
   cursor: pointer;
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
 }
