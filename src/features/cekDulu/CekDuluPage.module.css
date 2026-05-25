@@ -1,165 +1,269 @@
 .page {
   min-height: 100dvh;
-  background: var(--canvas);
-  padding: 14px 14px calc(80px + env(safe-area-inset-bottom, 0px));
+  background: var(--bg);
+  padding: 8px 22px calc(90px + env(safe-area-inset-bottom, 0px));
   max-width: 390px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .grab {
   width: 36px;
   height: 4px;
-  background: var(--border-hair);
+  background: var(--line);
   border-radius: 3px;
-  margin: 2px auto 16px;
+  margin: 2px auto 4px;
 }
 
 .head {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  padding: 0 2px 14px;
+  padding: 4px 0 2px;
 }
 
 .title {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--ink-primary);
-  letter-spacing: -0.2px;
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  line-height: 1;
 }
 
 .sub {
-  font-size: 10.5px;
-  color: var(--ink-tertiary);
-  margin-top: 2px;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 3px;
 }
 
 .closeBtn {
-  background: none;
-  border: 1px solid var(--border-hair);
-  border-radius: 50%;
-  width: 26px;
-  height: 26px;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 16px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
-  color: var(--ink-secondary);
   cursor: pointer;
   flex-shrink: 0;
 }
 
-/* ── Nominal hero ── */
+/* ── Nominal card ── */
 .nominalBlock {
-  text-align: center;
-  padding: 18px 0 22px;
+  background: var(--ink);
+  border-radius: 22px;
+  padding: 18px 20px;
 }
 
 .nominalLabel {
-  font-size: 10px;
-  color: var(--ink-tertiary);
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
+  font-size: 11px;
   font-weight: 500;
-  margin-bottom: 8px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: rgba(242, 237, 227, 0.55);
 }
 
 .nominalRow {
   display: flex;
-  align-items: baseline;
-  justify-content: center;
+  align-items: center;
   gap: 4px;
+  margin-top: 4px;
 }
 
 .nominalPrefix {
-  font-size: 24px;
-  font-weight: 500;
-  color: var(--ink-tertiary);
-  font-family: var(--font-mono);
-  letter-spacing: -0.5px;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--bg);
+  opacity: 0.5;
+  line-height: 1;
+  flex-shrink: 0;
 }
 
 .nominalInput {
-  font-family: var(--font-mono);
-  font-size: 46px;
-  font-weight: 600;
-  letter-spacing: -2px;
-  color: var(--ink-primary);
+  font-family: var(--font-display);
+  font-size: 48px;
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  color: var(--bg);
   border: none;
   background: none;
   outline: none;
   padding: 0;
-  min-width: 60px;
-  max-width: 260px;
-  text-align: left;
-  font-feature-settings: 'tnum', 'lnum';
+  min-width: 40px;
+  max-width: 240px;
   line-height: 1;
+  caret-color: transparent;
+  font-feature-settings: 'tnum', 'lnum';
+}
+
+.nominalInput::placeholder {
+  color: rgba(242, 237, 227, 0.25);
+}
+
+/* Hide number input spinners */
+.nominalInput::-webkit-inner-spin-button,
+.nominalInput::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
+.nominalCaret {
+  display: inline-block;
+  width: 2px;
+  height: 38px;
+  background: var(--bg);
+  opacity: 0.7;
+  border-radius: 1px;
+  flex-shrink: 0;
+  animation: caretBlink 1s step-end infinite;
+}
+
+@keyframes caretBlink {
+  0%,
+  100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 0;
+  }
 }
 
 .nominalContext {
+  font-family: var(--font-mono);
   font-size: 11px;
-  color: var(--ink-tertiary);
-  margin-top: 12px;
+  color: rgba(242, 237, 227, 0.55);
+  margin-top: 8px;
 }
 
-.nominalContext strong {
-  color: var(--ink-secondary);
-  font-weight: 500;
+/* ── Verdict card ── */
+.verdictCard {
+  border-radius: 20px;
+  padding: 16px 18px;
+}
+
+.verdictAman {
+  background: var(--aman-bg);
+  color: var(--aman-fg);
+  border: 1px solid var(--aman-br);
+}
+
+.verdictMepet {
+  background: var(--mepet-bg);
+  color: var(--mepet-fg);
+  border: 1px solid var(--mepet-br);
+}
+
+.verdictBahaya {
+  background: var(--bahaya-bg);
+  color: var(--bahaya-fg);
+  border: 1px solid var(--bahaya-br);
+}
+
+.verdictTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.verdictEyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.verdictWord {
+  font-family: var(--font-display);
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  margin-top: 4px;
+}
+
+.verdictChip {
+  border-radius: 100px;
+  padding: 5px 11px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--bg);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.chipAman {
+  background: var(--aman-br);
+}
+
+.chipMepet {
+  background: var(--mepet-br);
+}
+
+.chipBahaya {
+  background: var(--bahaya-br);
+}
+
+.verdictExplain {
+  font-size: 13px;
+  opacity: 0.78;
+  line-height: 1.35;
+  margin-top: 6px;
 }
 
 /* ── Comparison frame ── */
 .cmpFrame {
   background: var(--surface);
-  border: 1px solid var(--border-hair);
-  border-radius: 12px;
-  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 14px 16px;
 }
 
 .cmpColHead {
   display: grid;
   grid-template-columns: 1fr 22px 1fr;
   align-items: center;
-  padding: 10px 14px 9px;
-  border-bottom: 1px solid var(--border-hair);
-  background: #fafafa;
-}
-
-.headBefore {
-  font-size: 9px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  letter-spacing: 0.7px;
-  font-weight: 600;
-  color: var(--ink-tertiary);
+  color: var(--muted);
+  margin-bottom: 10px;
 }
 
 .headArrow {
   text-align: center;
-  font-size: 10px;
-  color: var(--ink-tertiary);
 }
 
 .headAfter {
-  font-size: 9px;
-  text-transform: uppercase;
-  letter-spacing: 0.7px;
-  font-weight: 600;
-  color: var(--ink-primary);
   text-align: right;
 }
 
-.cmpRow {
-  padding: 12px 14px;
-  border-bottom: 1px solid var(--border-soft);
+.cmpDivider {
+  height: 1px;
+  background: var(--line);
+  margin: 10px 0;
 }
 
-.cmpRow:last-child {
-  border-bottom: none;
+.cmpRow {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .rowLabel {
-  font-size: 10.5px;
-  color: var(--ink-secondary);
-  margin-bottom: 7px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink-soft);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -169,8 +273,8 @@
   font-size: 8px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: var(--canvas);
-  background: var(--ink-primary);
+  color: var(--bg);
+  background: var(--ink);
   padding: 1px 5px;
   border-radius: 3px;
   font-weight: 600;
@@ -183,68 +287,54 @@
 }
 
 .valueBefore {
-  font-family: var(--font-mono);
+  font-family: var(--font-display);
   font-size: 15px;
   font-weight: 500;
-  color: var(--ink-tertiary);
+  color: var(--muted);
   font-feature-settings: 'tnum';
-  letter-spacing: -0.4px;
 }
 
 .cmpArrow {
   text-align: center;
-  color: var(--ink-tertiary);
+  color: var(--muted);
   font-size: 12px;
 }
 
 .valueAfter {
-  font-family: var(--font-mono);
-  font-size: 22px;
-  font-weight: 600;
-  color: var(--ink-primary);
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
   text-align: right;
   font-feature-settings: 'tnum', 'lnum';
-  letter-spacing: -0.6px;
 }
 
 .valueUnit {
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 400;
-  color: var(--ink-secondary);
+  color: var(--muted);
 }
 
 .rowDelta {
-  text-align: right;
-  font-size: 9.5px;
-  color: var(--ink-secondary);
-  margin-top: 4px;
   font-family: var(--font-mono);
-  font-feature-settings: 'tnum';
-}
-
-.cmpRowHeavy {
-  background: var(--surface-2);
-  border-top: 1px solid var(--border-hair);
+  font-size: 10.5px;
+  color: var(--muted);
+  text-align: right;
 }
 
 .rowSubNote {
-  font-size: 9.5px;
-  color: var(--ink-tertiary);
-  margin-top: 8px;
+  font-size: 10.5px;
+  color: var(--muted);
   line-height: 1.4;
 }
 
-.rowSubNote strong {
-  color: var(--ink-secondary);
-  font-weight: 500;
-}
-
+/* ── Footer lines ── */
 .growHint {
   text-align: center;
   font-size: 9px;
-  color: var(--ink-tertiary);
+  color: var(--muted);
   font-style: italic;
-  margin: 10px 0 2px;
 }
 
 .srcLine {
@@ -252,14 +342,13 @@
   justify-content: space-between;
   align-items: center;
   font-size: 10px;
-  color: var(--ink-tertiary);
-  margin-top: 12px;
-  padding: 0 4px;
+  color: var(--muted);
+  padding: 0 2px;
 }
 
 .srcVal {
-  color: var(--ink-secondary);
   font-family: var(--font-mono);
+  color: var(--ink-soft);
   font-feature-settings: 'tnum';
 }
 
@@ -269,42 +358,40 @@
   left: 0;
   right: 0;
   bottom: env(safe-area-inset-bottom, 0px);
-  padding: 12px 14px;
-  display: flex;
+  padding: 12px 22px;
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
   gap: 8px;
-  background: var(--canvas);
+  background: var(--bg);
   max-width: 390px;
   margin: 0 auto;
 }
 
 .closeAction {
-  flex: 0 0 auto;
-  padding: 0 18px;
-  height: 50px;
-  border-radius: 13px;
+  padding: 14px;
+  border-radius: 16px;
   background: var(--surface);
-  border: 1px solid var(--border-hair);
-  color: var(--ink-secondary);
-  font-size: 12px;
-  font-weight: 500;
-  font-family: var(--font-sans);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
 }
 
 .buyAction {
-  flex: 1;
-  height: 50px;
-  border-radius: 13px;
-  background: var(--ink-primary);
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: var(--ink);
   border: none;
-  color: var(--canvas);
+  color: var(--bg);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-start;
   gap: 1px;
   cursor: pointer;
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
+  text-align: left;
 }
 
 .buyAction:disabled {
@@ -313,13 +400,13 @@
 }
 
 .buyLabel {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 600;
-  letter-spacing: 0.1px;
+  letter-spacing: -0.01em;
 }
 
 .buySub {
-  font-size: 9px;
-  opacity: 0.7;
-  font-weight: 400;
+  font-size: 10px;
+  opacity: 0.65;
+  font-family: var(--font-mono);
 }

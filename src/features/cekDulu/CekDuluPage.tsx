@@ -7,11 +7,12 @@ import { getSettings } from '@/db/settings.repository'
 import { getAllWallets } from '@/db/wallets.repository'
 import { getActiveTagihan } from '@/db/tagihan.repository'
 import { getTotalNabung } from '@/db/transactions.repository'
-import type { Settings, Wallet } from '@/db/database'
+import type { Settings, Wallet, Language } from '@/db/database'
 import { calcDaysUntilPayday } from '@/features/home/home.utils'
 import { calcUnpaidTagihanTotal } from '@/features/home/tagihan.utils'
 import { formatCurrency, getCurrencySymbol } from '@/shared/utils/formatCurrency'
 import { calcCekDulu } from './cekDulu.utils'
+import type { CekDuluResult } from './cekDulu.utils'
 import { QuickLogSheet } from '@/features/quickLog/QuickLogSheet'
 import styles from './CekDuluPage.module.css'
 
@@ -22,6 +23,58 @@ interface PageData {
   unpaidTagihanTotal: number
   daysUntilPayday: number
   totalNabung: number
+}
+
+interface VerdictInfo {
+  verdictClass: string
+  chipClass: string
+  chipLabel: string
+  wordKey: 'budget.verdict_good' | 'budget.verdict_ok' | 'budget.verdict_tight'
+  explainKey:
+    | 'cek_dulu.verdict_explain_good'
+    | 'cek_dulu.verdict_explain_ok'
+    | 'cek_dulu.verdict_explain_tight'
+  absPct: number
+}
+
+function getVerdictInfo(
+  result: CekDuluResult,
+  nominal: number,
+  lang: Language,
+): VerdictInfo | null {
+  void lang
+  if (nominal === 0 || result.dailyBefore === 0) return null
+  const deltaPct = ((result.dailyAfter - result.dailyBefore) / result.dailyBefore) * 100
+  const absPct = Math.abs(Math.round(deltaPct))
+  const chipLabel = `−${absPct}% / hr`
+  if (result.showTabunganRow || deltaPct <= -50) {
+    return {
+      verdictClass: styles.verdictBahaya,
+      chipClass: styles.chipBahaya,
+      chipLabel,
+      wordKey: 'budget.verdict_tight',
+      explainKey: 'cek_dulu.verdict_explain_tight',
+      absPct,
+    }
+  }
+  if (deltaPct <= -20) {
+    return {
+      verdictClass: styles.verdictMepet,
+      chipClass: styles.chipMepet,
+      chipLabel,
+      wordKey: 'budget.verdict_ok',
+      explainKey: 'cek_dulu.verdict_explain_ok',
+      absPct,
+    }
+  }
+  return {
+    verdictClass: styles.verdictAman,
+    chipClass: styles.chipAman,
+    chipLabel,
+    wordKey: 'budget.verdict_good',
+    explainKey: 'cek_dulu.verdict_explain_good',
+    absPct,
+  }
 }
 
 export function CekDuluPage() {
@@ -74,6 +127,8 @@ export function CekDuluPage() {
     totalNabung,
   })
 
+  const verdictInfo = getVerdictInfo(result, nominal, lang)
+
   return (
     <div className={styles.page}>
       <div className={styles.grab} />
@@ -92,7 +147,7 @@ export function CekDuluPage() {
         </button>
       </div>
 
-      {/* Nominal input */}
+      {/* Nominal card */}
       <div className={styles.nominalBlock}>
         <div className={styles.nominalLabel}>{t('cek_dulu.price_label', lang)}</div>
         <div className={styles.nominalRow}>
@@ -106,6 +161,7 @@ export function CekDuluPage() {
             onChange={(e) => setAmountStr(e.target.value.replace(/\D/g, ''))}
             autoFocus
           />
+          <span className={styles.nominalCaret} />
         </div>
         <div className={styles.nominalContext}>
           {t('cek_dulu.context_line', lang)
@@ -114,10 +170,28 @@ export function CekDuluPage() {
         </div>
       </div>
 
+      {/* Verdict card */}
+      {verdictInfo && (
+        <div className={`${styles.verdictCard} ${verdictInfo.verdictClass}`}>
+          <div className={styles.verdictTop}>
+            <div>
+              <div className={styles.verdictEyebrow}>VERDICT</div>
+              <div className={styles.verdictWord}>{t(verdictInfo.wordKey, lang)}.</div>
+            </div>
+            <span className={`${styles.verdictChip} ${verdictInfo.chipClass}`}>
+              {verdictInfo.chipLabel}
+            </span>
+          </div>
+          <div className={styles.verdictExplain}>
+            {t(verdictInfo.explainKey, lang).replace('{pct}', String(verdictInfo.absPct))}
+          </div>
+        </div>
+      )}
+
       {/* Comparison frame */}
       <div className={styles.cmpFrame}>
         <div className={styles.cmpColHead}>
-          <span className={styles.headBefore}>{t('cek_dulu.col_now', lang)}</span>
+          <span>{t('cek_dulu.col_now', lang)}</span>
           <span className={styles.headArrow}>→</span>
           <span className={styles.headAfter}>{t('cek_dulu.col_after', lang)}</span>
         </div>
@@ -148,46 +222,52 @@ export function CekDuluPage() {
 
         {/* Row 2 — muncul saat nembus operasional */}
         {result.showSisaRow && (
-          <div className={styles.cmpRow}>
-            <div className={styles.rowLabel}>
-              {t('cek_dulu.sisa_label', lang)}
-              <span className={styles.newFlag}>{t('cek_dulu.new_flag', lang)}</span>
+          <>
+            <div className={styles.cmpDivider} />
+            <div className={styles.cmpRow}>
+              <div className={styles.rowLabel}>
+                {t('cek_dulu.sisa_label', lang)}
+                <span className={styles.newFlag}>{t('cek_dulu.new_flag', lang)}</span>
+              </div>
+              <div className={styles.cmpValues}>
+                <span className={styles.valueBefore}>
+                  {formatCurrency(result.sisaBefore, currency)}
+                </span>
+                <span className={styles.cmpArrow}>→</span>
+                <span className={styles.valueAfter}>
+                  {formatCurrency(result.sisaAfter, currency)}
+                </span>
+              </div>
             </div>
-            <div className={styles.cmpValues}>
-              <span className={styles.valueBefore}>
-                {formatCurrency(result.sisaBefore, currency)}
-              </span>
-              <span className={styles.cmpArrow}>→</span>
-              <span className={styles.valueAfter}>
-                {formatCurrency(result.sisaAfter, currency)}
-              </span>
-            </div>
-          </div>
+          </>
         )}
 
         {/* Row 3 — muncul saat nyentuh tabungan */}
         {result.showTabunganRow && (
-          <div className={`${styles.cmpRow} ${styles.cmpRowHeavy}`}>
-            <div className={styles.rowLabel}>
-              {t('cek_dulu.tabungan_label', lang)}
-              <span className={styles.newFlag}>{t('cek_dulu.new_flag', lang)}</span>
+          <>
+            <div className={styles.cmpDivider} />
+            <div className={styles.cmpRow}>
+              <div className={styles.rowLabel}>
+                {t('cek_dulu.tabungan_label', lang)}
+                <span className={styles.newFlag}>{t('cek_dulu.new_flag', lang)}</span>
+              </div>
+              <div className={styles.cmpValues}>
+                <span className={styles.valueBefore}>
+                  {formatCurrency(result.nabungBefore, currency)}
+                </span>
+                <span className={styles.cmpArrow}>→</span>
+                <span className={styles.valueAfter}>
+                  {formatCurrency(result.nabungAfter, currency)}
+                </span>
+              </div>
+              <div className={styles.rowSubNote}>
+                {t('cek_dulu.tabungan_note', lang).replace(
+                  '{amount}',
+                  formatCurrency(result.nabungDrawn, currency),
+                )}
+              </div>
             </div>
-            <div className={styles.cmpValues}>
-              <span className={styles.valueBefore}>
-                {formatCurrency(result.nabungBefore, currency)}
-              </span>
-              <span className={styles.cmpArrow}>→</span>
-              <span className={styles.valueAfter}>
-                {formatCurrency(result.nabungAfter, currency)}
-              </span>
-            </div>
-            <div className={styles.rowSubNote}>
-              {t('cek_dulu.tabungan_note', lang).replace(
-                '{amount}',
-                formatCurrency(result.nabungDrawn, currency),
-              )}
-            </div>
-          </div>
+          </>
         )}
       </div>
 
