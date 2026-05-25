@@ -234,6 +234,9 @@ export type StringKey =
   | 'cek_dulu.close_btn'
   | 'cek_dulu.buy_label'
   | 'cek_dulu.buy_sub'
+  | 'cek_dulu.verdict_explain_good'
+  | 'cek_dulu.verdict_explain_ok'
+  | 'cek_dulu.verdict_explain_tight'
   // andai page
   | 'andai.title'
   | 'andai.sub'
@@ -629,6 +632,9 @@ const id: StringDictionary = {
   'cek_dulu.close_btn': 'Tutup',
   'cek_dulu.buy_label': 'Jadi beli — catat keluar',
   'cek_dulu.buy_sub': 'masuk ke history sebagai pengeluaran',
+  'cek_dulu.verdict_explain_good': 'jatah harian turun {pct}% — masih oke sampai gajian.',
+  'cek_dulu.verdict_explain_ok': 'jatah harian turun {pct}% — perhatikan pengeluaranmu ya.',
+  'cek_dulu.verdict_explain_tight': 'jatah harian turun {pct}% — cukup berat sampai gajian.',
 
   'andai.title': 'Andai',
   'andai.sub': 'skenario hipotetis',
@@ -1026,6 +1032,9 @@ const en: StringDictionary = {
   'cek_dulu.close_btn': 'Close',
   'cek_dulu.buy_label': 'Go ahead — log as expense',
   'cek_dulu.buy_sub': 'records to history as an expense',
+  'cek_dulu.verdict_explain_good': 'daily budget drops {pct}% — still fine until payday.',
+  'cek_dulu.verdict_explain_ok': 'daily budget drops {pct}% — watch your spending carefully.',
+  'cek_dulu.verdict_explain_tight': 'daily budget drops {pct}% — quite tight until payday.',
 
   'andai.title': 'What If',
   'andai.sub': 'hypothetical scenarios',
