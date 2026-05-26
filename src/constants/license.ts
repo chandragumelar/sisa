@@ -1,5 +1,5 @@
 // Ed25519 public key — SPKI DER, standard base64. Safe to bundle (asymmetric).
-export const PUBLIC_KEY_SPKI_B64 = 'MCowBQYDK2VwAyEAhQwC0Dwb/pd7WHM3Ow+AeUSc+V/cRVbotGtuaILjonM='
+export const PUBLIC_KEY_SPKI_B64 = 'MCowBQYDK2VwAyEA/EfKH5nn7/EJ4rHvRq9XdP1qh7ZdpP2F+y5JkA8zI2E='
 
 export const LICENSE_VERSION = 1 as const
 export const LICENSE_DURATION_DAYS = 90
