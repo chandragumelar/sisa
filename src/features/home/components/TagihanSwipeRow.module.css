@@ -32,6 +32,7 @@
   display: flex;
   align-items: center;
   padding: 10px 0;
+  min-height: 44px;
   gap: 12px;
   background: var(--bg);
   cursor: pointer;
