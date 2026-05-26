@@ -69,11 +69,8 @@ a {
 html,
 body {
   overscroll-behavior: none;
-  overflow-x: hidden;
-  max-width: 100vw;
 }
 
 #root {
   min-height: 100dvh;
-  overflow-x: hidden;
 }
