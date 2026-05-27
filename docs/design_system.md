@@ -1,3 +1,5 @@
+> ⚠️ **DEPRECATED** — File ini sudah tidak aktif. Source of truth visual sekarang ada di [`design_handoff_sisa_revamp/README.md`](../design_handoff_sisa_revamp/README.md). Jangan gunakan file ini untuk referensi desain baru.
+
 # SISA — Design System
 
 > **Versi:** 1.1 (sync dengan PRD v0.9 — 2026-05-22)

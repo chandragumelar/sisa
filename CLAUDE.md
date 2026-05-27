@@ -24,16 +24,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 2. Urutan Baca (sebelum nulis kode apapun)
 
-| #   | Dokumen                                  | Untuk                                                                 |
-| --- | ---------------------------------------- | --------------------------------------------------------------------- |
-| 1   | **`CLAUDE.md`** (ini)                    | Aturan kritis + peta. Selalu di context                               |
-| 2   | **`docs/PRD.md`**                        | _Apa_ yang dibangun — produk, fitur, spec. **Source of truth produk** |
-| 3   | **`docs/engineering-guidelines-pwa.md`** | _Bagaimana_ — arsitektur, license, storage, testing                   |
-| 4   | **`docs/design_system.md`**              | Visual — token, komponen, voice/copy. **Source of truth visual**      |
+| #   | Dokumen                                    | Untuk                                                                 |
+| --- | ------------------------------------------ | --------------------------------------------------------------------- |
+| 1   | **`CLAUDE.md`** (ini)                      | Aturan kritis + peta. Selalu di context                               |
+| 2   | **`docs/PRD.md`**                          | _Apa_ yang dibangun — produk, fitur, spec. **Source of truth produk** |
+| 3   | **`docs/engineering-guidelines-pwa.md`**   | _Bagaimana_ — arsitektur, license, storage, testing                   |
+| 4   | **`design_handoff_sisa_revamp/README.md`** | Visual — token, komponen, voice/copy. **Source of truth visual**      |
 
 Tarik dokumen **saat relevan**, bukan semua sekaligus (irit token). Kerja di fitur tagihan → baca section tagihan di PRD + guidelines, bukan seluruh PRD.
 
-**Prioritas saat konflik:** PRD menang untuk produk · design_system menang untuk visual · engineering-guidelines menang untuk keputusan teknis PWA · CLAUDE.md (ini) menang untuk aturan koding & batasan keras.
+**Prioritas saat konflik:** PRD menang untuk produk · design_handoff_sisa_revamp/README.md menang untuk visual · engineering-guidelines menang untuk keputusan teknis PWA · CLAUDE.md (ini) menang untuk aturan koding & batasan keras.
 
 ---
 
@@ -210,4 +210,4 @@ Kalau ragu antara nambah infra vs tetap client-only → **tetap client-only**.
 
 ---
 
-_File ini ringkas sengaja. Detail hidup di PRD / guidelines / design_system. Update di sini hanya kalau ada aturan kritis atau batasan baru._
+_File ini ringkas sengaja. Detail hidup di PRD / guidelines / design_handoff. Update di sini hanya kalau ada aturan kritis atau batasan baru._
