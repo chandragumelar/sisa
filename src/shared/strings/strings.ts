@@ -202,6 +202,7 @@ export type StringKey =
   | 'home.toast_nabung'
   | 'home.toast_masuk'
   | 'home.toast_keluar'
+  | 'home.days_to_payday'
   // quick log sheet
   | 'quick_log.mode_keluar'
   | 'quick_log.mode_masuk'
@@ -601,6 +602,7 @@ const id: StringDictionary = {
   'home.toast_nabung': 'Nabung dicatat',
   'home.toast_masuk': 'Pemasukan dicatat',
   'home.toast_keluar': 'Pengeluaran dicatat',
+  'home.days_to_payday': '{n} hr ke gajian',
 
   'quick_log.mode_keluar': 'keluar',
   'quick_log.mode_masuk': 'masuk',
@@ -1002,6 +1004,7 @@ const en: StringDictionary = {
   'home.toast_nabung': 'Savings logged',
   'home.toast_masuk': 'Income logged',
   'home.toast_keluar': 'Expense logged',
+  'home.days_to_payday': '{n} days to payday',
 
   'quick_log.mode_keluar': 'out',
   'quick_log.mode_masuk': 'in',

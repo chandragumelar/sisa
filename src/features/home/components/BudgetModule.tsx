@@ -90,7 +90,7 @@ export function BudgetModule({
           <span className={styles.ribbonEyebrow}>{t('budget.title', lang)}</span>
           <div className={styles.ribbonAmount}>
             {dailyFmt}
-            <span className={styles.ribbonAmountSub}>/hr</span>
+            <span className={styles.ribbonAmountSub}>{t('cek_dulu.daily_unit', lang)}</span>
           </div>
         </div>
         <div className={styles.ribbonRight}>

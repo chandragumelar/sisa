@@ -59,8 +59,7 @@ function formatHeaderSub(nowMs: number, daysUntilPayday: number, lang: Language)
   const dayNames = lang === 'en' ? DAY_NAMES_EN : DAY_NAMES_ID
   const monthNames = lang === 'en' ? MONTH_NAMES_EN : MONTH_NAMES_ID
   const dateStr = `${dayNames[d.getDay()]} ${d.getDate()} ${monthNames[d.getMonth()]}`
-  const paydayStr =
-    lang === 'en' ? `${daysUntilPayday} days to payday` : `${daysUntilPayday} hr ke gajian`
+  const paydayStr = t('home.days_to_payday', lang).replace('{n}', String(daysUntilPayday))
   return `${dateStr} · ${paydayStr}`
 }
 import {
