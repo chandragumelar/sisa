@@ -73,7 +73,7 @@ export function SaldoModule({
     })
   }
 
-  const metaRight = lang === 'en' ? `${daysUntilPayday} days` : `${daysUntilPayday} hr ke gajian`
+  const metaRight = t('home.days_to_payday', lang).replace('{n}', String(daysUntilPayday))
 
   return (
     <div className={styles.wrapper}>

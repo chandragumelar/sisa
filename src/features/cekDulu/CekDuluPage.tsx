@@ -42,11 +42,10 @@ function getVerdictInfo(
   nominal: number,
   lang: Language,
 ): VerdictInfo | null {
-  void lang
   if (nominal === 0 || result.dailyBefore === 0) return null
   const deltaPct = ((result.dailyAfter - result.dailyBefore) / result.dailyBefore) * 100
   const absPct = Math.abs(Math.round(deltaPct))
-  const chipLabel = `−${absPct}% / hr`
+  const chipLabel = `−${absPct}%${t('cek_dulu.daily_unit', lang)}`
   if (result.showTabunganRow || deltaPct <= -50) {
     return {
       verdictClass: styles.verdictBahaya,
