@@ -350,6 +350,13 @@ export type StringKey =
   | 'profil.tagihan_freq_label'
   | 'profil.tagihan_rutin'
   | 'profil.tagihan_sekali'
+  | 'profil.tagihan_freq_sekali'
+  | 'profil.tagihan_freq_mingguan'
+  | 'profil.tagihan_freq_2mingguan'
+  | 'profil.tagihan_freq_bulanan'
+  | 'profil.tagihan_freq_2bulanan'
+  | 'profil.tagihan_freq_3bulanan'
+  | 'profil.tagihan_freq_tahunan'
   | 'profil.tagihan_add_btn'
   // settings page
   | 'settings.title'
@@ -751,6 +758,13 @@ const id: StringDictionary = {
   'profil.tagihan_freq_label': 'frekuensi',
   'profil.tagihan_rutin': 'rutin',
   'profil.tagihan_sekali': 'sekali',
+  'profil.tagihan_freq_sekali': 'Sekali',
+  'profil.tagihan_freq_mingguan': 'Mingguan',
+  'profil.tagihan_freq_2mingguan': '2 Mingguan',
+  'profil.tagihan_freq_bulanan': 'Bulanan',
+  'profil.tagihan_freq_2bulanan': '2 Bulanan',
+  'profil.tagihan_freq_3bulanan': '3 Bulanan',
+  'profil.tagihan_freq_tahunan': 'Tahunan',
   'profil.tagihan_add_btn': '+ Tambah tagihan',
 
   'settings.title': 'setelan',
@@ -1153,6 +1167,13 @@ const en: StringDictionary = {
   'profil.tagihan_freq_label': 'frequency',
   'profil.tagihan_rutin': 'recurring',
   'profil.tagihan_sekali': 'one-time',
+  'profil.tagihan_freq_sekali': 'One-time',
+  'profil.tagihan_freq_mingguan': 'Weekly',
+  'profil.tagihan_freq_2mingguan': 'Biweekly',
+  'profil.tagihan_freq_bulanan': 'Monthly',
+  'profil.tagihan_freq_2bulanan': 'Bimonthly',
+  'profil.tagihan_freq_3bulanan': 'Quarterly',
+  'profil.tagihan_freq_tahunan': 'Yearly',
   'profil.tagihan_add_btn': '+ Add bill',
 
   'settings.title': 'settings',

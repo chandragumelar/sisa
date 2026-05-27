@@ -8,7 +8,7 @@ import { getAllWallets } from '@/db/wallets.repository'
 import { getActiveTagihan } from '@/db/tagihan.repository'
 import { getTotalNabung } from '@/db/transactions.repository'
 import type { Settings, Wallet, Language } from '@/db/database'
-import { calcDaysUntilPayday } from '@/features/home/home.utils'
+import { calcDaysUntilPayday, getPaydayDate } from '@/features/home/home.utils'
 import { calcUnpaidTagihanTotal } from '@/features/home/tagihan.utils'
 import { formatCurrency, getCurrencySymbol } from '@/shared/utils/formatCurrency'
 import { calcCekDulu } from './cekDulu.utils'
@@ -92,7 +92,11 @@ export function CekDuluPage() {
       ([settings, wallets, tagihan]) => {
         if (cancelled || !settings) return
         const totalSaldo = wallets.reduce((s, w) => s + w.balance, 0)
-        const unpaidTagihanTotal = calcUnpaidTagihanTotal(tagihan, nowMs)
+        const unpaidTagihanTotal = calcUnpaidTagihanTotal(
+          tagihan,
+          nowMs,
+          getPaydayDate(nowMs, settings).getTime(),
+        )
         const daysUntilPayday = calcDaysUntilPayday(nowMs, settings)
         getTotalNabung(settings.primaryCurrency).then((totalNabung) => {
           if (!cancelled)

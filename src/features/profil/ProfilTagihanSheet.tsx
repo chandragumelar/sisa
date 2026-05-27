@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
 import { addTagihan, updateTagihan, deleteTagihan } from '@/db/tagihan.repository'
-import type { Tagihan, NominalType, RecurrenceType } from '@/db/database'
+import type { Tagihan, NominalType, TagihanFrequency } from '@/db/database'
 import { BottomSheet } from '@/shared/components/BottomSheet'
 import { formatCurrency, getCurrencySymbol } from '@/shared/utils/formatCurrency'
 import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
+import type { StringKey } from '@/shared/strings/strings'
 import styles from './ProfilPage.module.css'
 
 interface Props {
@@ -24,7 +25,7 @@ interface FormState {
   nominalType: NominalType
   nominalEstimate: string
   dueDay: string
-  recurrenceType: RecurrenceType
+  frequency: TagihanFrequency
 }
 
 const EMPTY_FORM: FormState = {
@@ -32,8 +33,30 @@ const EMPTY_FORM: FormState = {
   nominalType: 'tetap',
   nominalEstimate: '',
   dueDay: '',
-  recurrenceType: 'rutin',
+  frequency: 'bulanan',
 }
+
+const FREQ_KEYS: TagihanFrequency[] = [
+  'sekali',
+  'mingguan',
+  '2mingguan',
+  'bulanan',
+  '2bulanan',
+  '3bulanan',
+  'tahunan',
+]
+
+const FREQ_LABEL: Record<TagihanFrequency, StringKey> = {
+  sekali: 'profil.tagihan_freq_sekali',
+  mingguan: 'profil.tagihan_freq_mingguan',
+  '2mingguan': 'profil.tagihan_freq_2mingguan',
+  bulanan: 'profil.tagihan_freq_bulanan',
+  '2bulanan': 'profil.tagihan_freq_2bulanan',
+  '3bulanan': 'profil.tagihan_freq_3bulanan',
+  tahunan: 'profil.tagihan_freq_tahunan',
+}
+
+const WEEKLY_FREQS: Set<TagihanFrequency> = new Set(['mingguan', '2mingguan'])
 
 type Step = 'list' | 'form'
 
@@ -62,7 +85,7 @@ export function ProfilTagihanSheet({
         nominalType: initialEditTagihan.nominalType,
         nominalEstimate: formatNominalDisplay(String(initialEditTagihan.nominalEstimate)),
         dueDay: String(initialEditTagihan.dueDay),
-        recurrenceType: initialEditTagihan.recurrenceType,
+        frequency: initialEditTagihan.frequency,
       })
       setStep('form')
     }
@@ -81,7 +104,7 @@ export function ProfilTagihanSheet({
       nominalType: tg.nominalType,
       nominalEstimate: formatNominalDisplay(String(tg.nominalEstimate)),
       dueDay: String(tg.dueDay),
-      recurrenceType: tg.recurrenceType,
+      frequency: tg.frequency,
     })
     setStep('form')
   }
@@ -96,7 +119,7 @@ export function ProfilTagihanSheet({
         nominalType: form.nominalType,
         nominalEstimate: nominal,
         dueDay,
-        recurrenceType: form.recurrenceType,
+        frequency: form.frequency,
       })
     } else {
       await addTagihan({
@@ -104,7 +127,8 @@ export function ProfilTagihanSheet({
         nominalType: form.nominalType,
         nominalEstimate: nominal,
         dueDay,
-        recurrenceType: form.recurrenceType,
+        frequency: form.frequency,
+        anchorDate: nowMs,
         currency,
         isActive: true,
         lastPaidAt: null,
@@ -129,6 +153,8 @@ export function ProfilTagihanSheet({
     list: t('profil.tagihan_title_list', lang),
     form: editId ? t('profil.tagihan_title_edit', lang) : t('profil.tagihan_title_add', lang),
   }
+
+  const showDueDay = !WEEKLY_FREQS.has(form.frequency)
 
   return (
     <BottomSheet
@@ -216,30 +242,34 @@ export function ProfilTagihanSheet({
             />
           </div>
 
-          <div className={styles.fieldLabel}>{t('profil.tagihan_due_label', lang)}</div>
-          <input
-            className={styles.fieldInput}
-            type="number"
-            inputMode="numeric"
-            min={1}
-            max={31}
-            placeholder="25"
-            value={form.dueDay}
-            onChange={(e) => patch('dueDay')(e.target.value.replace(/\D/g, ''))}
-          />
-
           <div className={styles.fieldLabel}>{t('profil.tagihan_freq_label', lang)}</div>
           <div className={styles.segmented}>
-            {(['rutin', 'sekali'] as RecurrenceType[]).map((r) => (
+            {FREQ_KEYS.map((f) => (
               <button
-                key={r}
-                className={`${styles.seg} ${form.recurrenceType === r ? styles.segActive : ''}`}
-                onClick={() => patch('recurrenceType')(r)}
+                key={f}
+                className={`${styles.seg} ${form.frequency === f ? styles.segActive : ''}`}
+                onClick={() => patch('frequency')(f)}
               >
-                {r === 'rutin' ? t('profil.tagihan_rutin', lang) : t('profil.tagihan_sekali', lang)}
+                {t(FREQ_LABEL[f], lang)}
               </button>
             ))}
           </div>
+
+          {showDueDay && (
+            <>
+              <div className={styles.fieldLabel}>{t('profil.tagihan_due_label', lang)}</div>
+              <input
+                className={styles.fieldInput}
+                type="number"
+                inputMode="numeric"
+                min={1}
+                max={31}
+                placeholder="25"
+                value={form.dueDay}
+                onChange={(e) => patch('dueDay')(e.target.value.replace(/\D/g, ''))}
+              />
+            </>
+          )}
 
           <button className={styles.primaryBtn} onClick={handleSave} disabled={!form.name.trim()}>
             {t('common.save', lang)}

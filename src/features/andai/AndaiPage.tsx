@@ -16,6 +16,7 @@ import {
 } from '@/db/scenarios.repository'
 import type { SavedScenario } from '@/db/database'
 import { calcUnpaidTagihanTotal } from '@/features/home/tagihan.utils'
+import { getPaydayDate } from '@/features/home/home.utils'
 import { calcSisa } from '@/shared/utils/sisa.utils'
 import { formatCurrency, getCurrencySymbol } from '@/shared/utils/formatCurrency'
 import { calcAndai, buildAndaiBaseline } from './andai.utils'
@@ -99,7 +100,11 @@ export function AndaiPage() {
       ([s, wallets, tagihan]) => {
         if (cancelled || !s) return
         const totalSaldo = wallets.reduce((sum, w) => sum + w.balance, 0)
-        const unpaidTagihanTotal = calcUnpaidTagihanTotal(tagihan, nowMs)
+        const unpaidTagihanTotal = calcUnpaidTagihanTotal(
+          tagihan,
+          nowMs,
+          getPaydayDate(nowMs, s).getTime(),
+        )
         getTotalNabung(s.primaryCurrency).then((totalNabung) => {
           if (cancelled) return
           const bl = buildAndaiBaseline(totalSaldo, unpaidTagihanTotal, totalNabung, s, nowMs)

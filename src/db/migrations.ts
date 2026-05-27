@@ -10,6 +10,28 @@ import type Dexie from 'dexie'
  *   - Each new version must be additive or explicitly migrate data in upgrade().
  *   - Upgrade functions must be idempotent and non-destructive.
  */
+
+/**
+ * Compute the fields added in v3 from a legacy tagihan record.
+ * Exported for unit testing — called inside the Dexie upgrade callback.
+ *
+ * anchorDate uses dueDay (the user's chosen due date) as the day component,
+ * and createdAt's month/year as the month component. This gives a deterministic
+ * cycle reference tied to the real due date, not the arbitrary creation timestamp.
+ * Note: dueDay 29/30/31 is NOT clamped here — JS Date overflow is intentional
+ * and consistent with how calcNextDueDate handles short months.
+ */
+export function buildV3MigrationPatch(record: {
+  recurrenceType: string
+  dueDay: number
+  createdAt: number
+}): { frequency: string; anchorDate: number } {
+  const frequency = record.recurrenceType === 'sekali' ? 'sekali' : 'bulanan'
+  const created = new Date(record.createdAt)
+  const anchorDate = new Date(created.getFullYear(), created.getMonth(), record.dueDay).getTime()
+  return { frequency, anchorDate }
+}
+
 export function applyMigrations(db: Dexie): void {
   // v1 — initial schema. No upgrade callback (nothing to migrate from).
   db.version(1).stores({
@@ -35,4 +57,34 @@ export function applyMigrations(db: Dexie): void {
     meta: 'key',
     savedScenarios: '++id, savedAt',
   })
+
+  // v3: tagihan gains frequency + anchorDate; recurrenceType kept (additive only).
+  // Upgrade maps legacy recurrenceType → frequency and derives anchorDate from dueDay + createdAt.
+  db.version(3)
+    .stores({
+      transactions: '++id, walletId, date, type, currency',
+      wallets: '++id, currency, order',
+      tagihan: '++id, currency, isActive',
+      goals: '++id, currency, order',
+      settings: 'id',
+      license: 'id',
+      meta: 'key',
+      savedScenarios: '++id, savedAt',
+    })
+    .upgrade((tx) => {
+      return tx
+        .table('tagihan')
+        .toCollection()
+        .modify((row) => {
+          if (row.frequency == null) {
+            const patch = buildV3MigrationPatch({
+              recurrenceType: row.recurrenceType ?? 'rutin',
+              dueDay: row.dueDay,
+              createdAt: row.createdAt,
+            })
+            row.frequency = patch.frequency
+            row.anchorDate = patch.anchorDate
+          }
+        })
+    })
 }

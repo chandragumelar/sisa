@@ -8,6 +8,14 @@ import { applyMigrations } from './migrations'
 export type TransactionType = 'keluar' | 'masuk' | 'nabung' | 'transfer' | 'tagihan'
 export type NominalType = 'tetap' | 'variabel'
 export type RecurrenceType = 'rutin' | 'sekali'
+export type TagihanFrequency =
+  | 'sekali'
+  | 'mingguan'
+  | '2mingguan'
+  | 'bulanan'
+  | '2bulanan'
+  | '3bulanan'
+  | 'tahunan'
 export type IncomeType = 'tetap' | 'freelance' | 'mix'
 export type WeekendBehavior = 'maju-jumat' | 'mundur-senin' | 'tetap' | 'tidak-konsisten'
 export type Theme = 'light' | 'dark' | 'system'
@@ -55,8 +63,10 @@ export interface Tagihan {
   name: string
   nominalType: NominalType
   nominalEstimate: number
-  dueDay: number // 1–31
-  recurrenceType: RecurrenceType
+  dueDay: number // 1–31; day of month for month-cadence frequencies
+  frequency: TagihanFrequency
+  anchorDate: number // epoch ms — reference date for cycle alignment
+  recurrenceType?: RecurrenceType // legacy; kept for v3 additive migration
   currency: string
   isActive: boolean
   lastPaidAt: number | null // epoch ms

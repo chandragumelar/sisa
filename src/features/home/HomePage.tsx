@@ -68,6 +68,7 @@ import {
   calcYesterdayStats,
   calcDaysUntilPayday,
   calcGoalStatuses,
+  getPaydayDate,
 } from './home.utils'
 import { calcUnpaidTagihanTotal, hasUrgentTagihan } from './tagihan.utils'
 import { shouldShowBackupReminder, calcBackupUrgency } from './backup-reminder.utils'
@@ -218,9 +219,11 @@ export function HomePage() {
   const totalSaldo = wallets
     .filter((w) => w.currency === currency)
     .reduce((sum, w) => sum + w.balance, 0)
+  const nextPaydayMs = getPaydayDate(nowMs, settings).getTime()
   const unpaidTagihanTotal = calcUnpaidTagihanTotal(
     tagihan.filter((t) => t.currency === currency),
     nowMs,
+    nextPaydayMs,
   )
   const daysUntilPayday = calcDaysUntilPayday(nowMs, settings)
   const dailyBudget = calcDailyBudget(totalSaldo, unpaidTagihanTotal, totalNabung, daysUntilPayday)
