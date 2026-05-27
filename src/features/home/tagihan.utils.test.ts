@@ -9,6 +9,9 @@ import {
   rankTagihan,
   calcUnpaidTagihanTotal,
   hasUrgentTagihan,
+  getOccurrencesInWindow,
+  isOccurrencePaid,
+  calcNextOccurrence,
 } from './tagihan.utils'
 
 // Jan 10, 2026, noon UTC  (getDate() = 10 in all but extreme UTC-offset timezones)
@@ -18,6 +21,13 @@ const JAN28_MS = new Date('2026-01-28T12:00:00Z').getTime()
 // Apr 15, 2026, noon UTC (April has 30 days)
 const APR15_MS = new Date('2026-04-15T12:00:00Z').getTime()
 
+// Feb 10, 2026 — used as nextPaydayMs in calcUnpaidTagihanTotal tests
+const FEB10_MS = new Date(2026, 1, 10).getTime()
+
+// Helpers for common lastPaidAt dates
+const JAN9_MIDNIGHT = new Date(2026, 0, 9).getTime()
+const JAN15_MIDNIGHT = new Date(2026, 0, 15).getTime()
+
 function makeTagihan(overrides: Partial<Tagihan> = {}): Tagihan {
   return {
     id: 1,
@@ -25,7 +35,8 @@ function makeTagihan(overrides: Partial<Tagihan> = {}): Tagihan {
     nominalType: 'tetap',
     nominalEstimate: 100_000,
     dueDay: 15,
-    recurrenceType: 'rutin',
+    frequency: 'bulanan',
+    anchorDate: new Date(2026, 0, 1).getTime(), // Jan 1, 2026 local
     currency: 'IDR',
     isActive: true,
     lastPaidAt: null,
@@ -35,6 +46,135 @@ function makeTagihan(overrides: Partial<Tagihan> = {}): Tagihan {
   }
 }
 
+// ─── isOccurrencePaid ────────────────────────────────────────────────────────
+
+describe('isOccurrencePaid', () => {
+  it('null lastPaidAt → false', () => {
+    expect(isOccurrencePaid(makeTagihan(), new Date(2026, 0, 15).getTime())).toBe(false)
+  })
+
+  it('lastPaidAt === occurrenceMs → true (paid on due day)', () => {
+    const occ = new Date(2026, 0, 15).getTime()
+    expect(isOccurrencePaid(makeTagihan({ lastPaidAt: occ }), occ)).toBe(true)
+  })
+
+  it('lastPaidAt > occurrenceMs → true (paid after due day)', () => {
+    const occ = new Date(2026, 0, 15).getTime()
+    const later = new Date(2026, 0, 20).getTime()
+    expect(isOccurrencePaid(makeTagihan({ lastPaidAt: later }), occ)).toBe(true)
+  })
+
+  it('lastPaidAt < occurrenceMs → false (paid before due day)', () => {
+    const occ = new Date(2026, 0, 15).getTime()
+    const earlier = new Date(2026, 0, 5).getTime()
+    expect(isOccurrencePaid(makeTagihan({ lastPaidAt: earlier }), occ)).toBe(false)
+  })
+})
+
+// ─── getOccurrencesInWindow ──────────────────────────────────────────────────
+
+describe('getOccurrencesInWindow — bulanan', () => {
+  it('includes occurrence in window', () => {
+    const t = makeTagihan({ dueDay: 15, anchorDate: new Date(2026, 0, 1).getTime() })
+    const jan10 = new Date(2026, 0, 10).getTime()
+    const feb10 = new Date(2026, 1, 10).getTime()
+    const occs = getOccurrencesInWindow(t, jan10, feb10)
+    expect(occs).toHaveLength(1)
+    expect(occs[0].getDate()).toBe(15)
+    expect(occs[0].getMonth()).toBe(0) // January
+  })
+
+  it('window spanning 2 months gets 2 occurrences', () => {
+    const t = makeTagihan({ dueDay: 5, anchorDate: new Date(2026, 0, 1).getTime() })
+    const dec1 = new Date(2025, 11, 1).getTime() // before Dec 5
+    const jan6 = new Date(2026, 0, 6).getTime() // after Jan 5, before Feb 5
+    const occs = getOccurrencesInWindow(t, dec1, jan6)
+    expect(occs).toHaveLength(2)
+    expect(occs[0].getMonth()).toBe(11) // December
+    expect(occs[1].getMonth()).toBe(0) // January
+  })
+
+  it('sekali: occurrence in window', () => {
+    const t = makeTagihan({
+      frequency: 'sekali',
+      dueDay: 20,
+      anchorDate: new Date(2026, 0, 1).getTime(),
+    })
+    const jan10 = new Date(2026, 0, 10).getTime()
+    const feb1 = new Date(2026, 1, 1).getTime()
+    const occs = getOccurrencesInWindow(t, jan10, feb1)
+    expect(occs).toHaveLength(1)
+    expect(occs[0].getDate()).toBe(20)
+  })
+
+  it('sekali: occurrence outside window → empty', () => {
+    const t = makeTagihan({
+      frequency: 'sekali',
+      dueDay: 5,
+      anchorDate: new Date(2026, 0, 1).getTime(),
+    })
+    const jan10 = new Date(2026, 0, 10).getTime()
+    const feb1 = new Date(2026, 1, 1).getTime()
+    expect(getOccurrencesInWindow(t, jan10, feb1)).toHaveLength(0)
+  })
+
+  it('mingguan: 4 weekly occurrences in 28-day window', () => {
+    const anchor = new Date(2026, 0, 1).getTime() // Thu Jan 1
+    const t = makeTagihan({ frequency: 'mingguan', anchorDate: anchor })
+    const jan1 = new Date(2026, 0, 1).getTime()
+    const jan29 = new Date(2026, 0, 29).getTime()
+    const occs = getOccurrencesInWindow(t, jan1, jan29)
+    expect(occs).toHaveLength(4) // Jan 1, 8, 15, 22
+  })
+
+  it('3bulanan: only every-3-month occurrences included', () => {
+    const t = makeTagihan({
+      frequency: '3bulanan',
+      dueDay: 1,
+      anchorDate: new Date(2026, 0, 1).getTime(), // Jan 2026 anchor
+    })
+    const oct2025 = new Date(2025, 9, 1).getTime()
+    const jul2026 = new Date(2026, 6, 2).getTime()
+    const occs = getOccurrencesInWindow(t, oct2025, jul2026)
+    // Oct 1 2025, Jan 1 2026, Apr 1 2026, Jul 1 2026
+    expect(occs).toHaveLength(4)
+    expect(occs[0].getMonth()).toBe(9) // October
+    expect(occs[1].getMonth()).toBe(0) // January
+    expect(occs[2].getMonth()).toBe(3) // April
+    expect(occs[3].getMonth()).toBe(6) // July
+  })
+})
+
+// ─── calcNextOccurrence ──────────────────────────────────────────────────────
+
+describe('calcNextOccurrence', () => {
+  it('upcoming occurrence → returns it', () => {
+    const t = makeTagihan({ dueDay: 15, lastPaidAt: JAN9_MIDNIGHT })
+    const occ = calcNextOccurrence(t, NOW_MS) // today=Jan10
+    expect(occ).not.toBeNull()
+    expect(occ!.getDate()).toBe(15) // Jan 15
+  })
+
+  it('past unpaid occurrence → returns most recent overdue', () => {
+    const t = makeTagihan({ dueDay: 5, lastPaidAt: null }) // Jan 5 overdue, today=Jan10
+    const occ = calcNextOccurrence(t, NOW_MS)
+    expect(occ).not.toBeNull()
+    expect(occ!.getDate()).toBe(5) // Jan 5 (most recent overdue, not Dec 5)
+  })
+
+  it('all past occurrences paid → returns next future', () => {
+    // lastPaidAt = Jan 5 noon; marks Dec 5 + Jan 5 as paid; next = Feb 5
+    const t = makeTagihan({
+      dueDay: 5,
+      lastPaidAt: new Date(2026, 0, 5, 12).getTime(),
+    })
+    const occ = calcNextOccurrence(t, NOW_MS)
+    expect(occ).not.toBeNull()
+    expect(occ!.getMonth()).toBe(1) // February
+    expect(occ!.getDate()).toBe(5)
+  })
+})
+
 // ─── isTagihanPaidThisPeriod ─────────────────────────────────────────────────
 
 describe('isTagihanPaidThisPeriod', () => {
@@ -42,18 +182,24 @@ describe('isTagihanPaidThisPeriod', () => {
     expect(isTagihanPaidThisPeriod(makeTagihan(), NOW_MS)).toBe(false)
   })
 
-  it('paid this month → paid', () => {
-    const paidAt = new Date('2026-01-05T10:00:00Z').getTime()
-    expect(isTagihanPaidThisPeriod(makeTagihan({ lastPaidAt: paidAt }), NOW_MS)).toBe(true)
+  it('paid on due day → paid', () => {
+    // dueDay=15, today=Jan10 → calcNextOccurrence=Jan15; lastPaidAt=Jan15midnight → paid
+    expect(isTagihanPaidThisPeriod(makeTagihan({ lastPaidAt: JAN15_MIDNIGHT }), NOW_MS)).toBe(true)
   })
 
-  it('paid last month → not paid', () => {
+  it('paid before due day this month → not yet paid', () => {
+    // Jan 5 payment for Jan 15 occurrence: Jan5 < Jan15midnight → not paid
+    const paidAt = new Date(2026, 0, 5).getTime()
+    expect(isTagihanPaidThisPeriod(makeTagihan({ lastPaidAt: paidAt }), NOW_MS)).toBe(false)
+  })
+
+  it('paid last month → not paid for this month', () => {
     const paidAt = new Date('2025-12-25T10:00:00Z').getTime()
     expect(isTagihanPaidThisPeriod(makeTagihan({ lastPaidAt: paidAt }), NOW_MS)).toBe(false)
   })
 
-  it('rutin Dec→Jan: paid in Dec, nowMs in Jan → not paid', () => {
-    const paidAt = new Date('2025-12-20T12:00:00Z').getTime()
+  it('bulanan Dec→Jan: paid Dec 15, nowMs=Jan 1 → Jan 15 not yet paid', () => {
+    const paidAt = new Date(2025, 11, 15).getTime() // Dec 15 midnight
     const janMs = new Date('2026-01-01T12:00:00Z').getTime()
     expect(isTagihanPaidThisPeriod(makeTagihan({ lastPaidAt: paidAt }), janMs)).toBe(false)
   })
@@ -61,24 +207,21 @@ describe('isTagihanPaidThisPeriod', () => {
   it('sekali: stays paid in a later month', () => {
     const paidAt = new Date('2025-11-01T12:00:00Z').getTime()
     expect(
-      isTagihanPaidThisPeriod(
-        makeTagihan({ recurrenceType: 'sekali', lastPaidAt: paidAt }),
-        NOW_MS,
-      ),
+      isTagihanPaidThisPeriod(makeTagihan({ frequency: 'sekali', lastPaidAt: paidAt }), NOW_MS),
     ).toBe(true)
   })
 
-  it('sekali: paid Dec stays paid in Jan (Dec→Jan rollover)', () => {
+  it('sekali: paid Dec stays paid in Jan', () => {
     const paidAt = new Date('2025-12-20T12:00:00Z').getTime()
     const janMs = new Date('2026-01-10T12:00:00Z').getTime()
     expect(
-      isTagihanPaidThisPeriod(makeTagihan({ recurrenceType: 'sekali', lastPaidAt: paidAt }), janMs),
+      isTagihanPaidThisPeriod(makeTagihan({ frequency: 'sekali', lastPaidAt: paidAt }), janMs),
     ).toBe(true)
   })
 
-  it('sekali: null lastPaidAt → not paid even for sekali', () => {
+  it('sekali: null lastPaidAt → not paid', () => {
     expect(
-      isTagihanPaidThisPeriod(makeTagihan({ recurrenceType: 'sekali', lastPaidAt: null }), NOW_MS),
+      isTagihanPaidThisPeriod(makeTagihan({ frequency: 'sekali', lastPaidAt: null }), NOW_MS),
     ).toBe(false)
   })
 })
@@ -153,73 +296,96 @@ describe('calcDaysUntilDue', () => {
 // ─── getTagihanUrgency ───────────────────────────────────────────────────────
 
 describe('getTagihanUrgency', () => {
-  it('due today → hari-ini', () => {
-    expect(getTagihanUrgency(makeTagihan({ dueDay: 10 }), NOW_MS)).toBe('hari-ini')
+  it('due today → hari-ini (prev occurrence paid)', () => {
+    // lastPaidAt=Jan9midnight marks Dec 10 as paid; Jan 10 (today) is upcoming+unpaid
+    expect(getTagihanUrgency(makeTagihan({ dueDay: 10, lastPaidAt: JAN9_MIDNIGHT }), NOW_MS)).toBe(
+      'hari-ini',
+    )
   })
 
   it('due tomorrow → dalam-7-hari', () => {
-    expect(getTagihanUrgency(makeTagihan({ dueDay: 11 }), NOW_MS)).toBe('dalam-7-hari')
+    expect(getTagihanUrgency(makeTagihan({ dueDay: 11, lastPaidAt: JAN9_MIDNIGHT }), NOW_MS)).toBe(
+      'dalam-7-hari',
+    )
   })
 
   it('due in exactly 7 days → dalam-7-hari', () => {
-    expect(getTagihanUrgency(makeTagihan({ dueDay: 17 }), NOW_MS)).toBe('dalam-7-hari')
+    expect(getTagihanUrgency(makeTagihan({ dueDay: 17, lastPaidAt: JAN9_MIDNIGHT }), NOW_MS)).toBe(
+      'dalam-7-hari',
+    )
   })
 
   it('due in 8 days → normal', () => {
-    expect(getTagihanUrgency(makeTagihan({ dueDay: 18 }), NOW_MS)).toBe('normal')
+    expect(getTagihanUrgency(makeTagihan({ dueDay: 18, lastPaidAt: JAN9_MIDNIGHT }), NOW_MS)).toBe(
+      'normal',
+    )
   })
 
-  it('due day past this month → normal (NOT lewat-tempo — month rollover fix)', () => {
-    // TODAY=10, dueDay=5: old code showed lewat-tempo, new code shows normal (next month)
-    expect(getTagihanUrgency(makeTagihan({ dueDay: 5 }), NOW_MS)).toBe('normal')
+  it('past due day, unpaid → lewat-tempo (overdue correctly detected)', () => {
+    // dueDay=5, today=Jan10, lastPaidAt=null → Jan 5 is overdue
+    expect(getTagihanUrgency(makeTagihan({ dueDay: 5, lastPaidAt: null }), NOW_MS)).toBe(
+      'lewat-tempo',
+    )
   })
 
-  it('paid this month → normal regardless of dueDay', () => {
-    const paidAt = new Date('2026-01-05T10:00:00Z').getTime()
+  it('paid on due day → normal', () => {
+    // lastPaidAt=Jan5noon marks Dec5+Jan5 as paid; next=Feb5 (26 days)
+    const paidAt = new Date(2026, 0, 5, 12).getTime()
     expect(getTagihanUrgency(makeTagihan({ dueDay: 5, lastPaidAt: paidAt }), NOW_MS)).toBe('normal')
   })
 
-  it('month-rollover boundary: today=28, dueDay=2 → 5 days → dalam-7-hari', () => {
-    expect(getTagihanUrgency(makeTagihan({ dueDay: 2 }), JAN28_MS)).toBe('dalam-7-hari')
+  it('month-rollover: today=28, dueDay=2, Jan2 paid → Feb2 is 5 days → dalam-7-hari', () => {
+    // Jan 2 midnight paid; Feb 2 is 5 days away
+    const paidAt = new Date(2026, 0, 2).getTime()
+    expect(getTagihanUrgency(makeTagihan({ dueDay: 2, lastPaidAt: paidAt }), JAN28_MS)).toBe(
+      'dalam-7-hari',
+    )
+  })
+
+  it('month-rollover: today=28, dueDay=2, unpaid → lewat-tempo', () => {
+    expect(getTagihanUrgency(makeTagihan({ dueDay: 2, lastPaidAt: null }), JAN28_MS)).toBe(
+      'lewat-tempo',
+    )
   })
 })
 
 // ─── formatTagihanMeta ───────────────────────────────────────────────────────
 
 describe('formatTagihanMeta', () => {
-  it('due today → "jatuh tempo hari ini · belum dibayar" (urgent)', () => {
-    const result = formatTagihanMeta(makeTagihan({ dueDay: 10 }), NOW_MS)
+  it('due today, prev paid → "jatuh tempo hari ini · belum dibayar" (urgent)', () => {
+    const result = formatTagihanMeta(makeTagihan({ dueDay: 10, lastPaidAt: JAN9_MIDNIGHT }), NOW_MS)
     expect(result.text).toBe('jatuh tempo hari ini · belum dibayar')
     expect(result.urgent).toBe(true)
   })
 
   it('due tomorrow → "jatuh tempo besok" (not urgent)', () => {
-    const result = formatTagihanMeta(makeTagihan({ dueDay: 11 }), NOW_MS)
+    const result = formatTagihanMeta(makeTagihan({ dueDay: 11, lastPaidAt: JAN9_MIDNIGHT }), NOW_MS)
     expect(result.text).toBe('jatuh tempo besok')
     expect(result.urgent).toBe(false)
   })
 
   it('due in N days → "jatuh tempo N hari lagi"', () => {
-    const result = formatTagihanMeta(makeTagihan({ dueDay: 16 }), NOW_MS)
+    const result = formatTagihanMeta(makeTagihan({ dueDay: 16, lastPaidAt: JAN9_MIDNIGHT }), NOW_MS)
     expect(result.text).toBe('jatuh tempo 6 hari lagi')
     expect(result.urgent).toBe(false)
   })
 
-  it('due day past this month → shows "tgl X" (normal, not overdue)', () => {
-    // KEY FIX: dueDay=5, today=10 — old code showed "lewat 5 hari", new shows "tgl 5"
-    const result = formatTagihanMeta(makeTagihan({ dueDay: 5 }), NOW_MS)
-    expect(result.text).toBe('tgl 5')
-    expect(result.urgent).toBe(false)
+  it('past due day, unpaid → overdue text (urgent)', () => {
+    // dueDay=5, today=Jan10, unpaid → Jan 5 overdue = 5 days past
+    const result = formatTagihanMeta(makeTagihan({ dueDay: 5, lastPaidAt: null }), NOW_MS)
+    expect(result.text).toBe('lewat 5 hari · belum dibayar')
+    expect(result.urgent).toBe(true)
   })
 
-  it('month-rollover: today=28, dueDay=2 → "jatuh tempo 5 hari lagi"', () => {
-    const result = formatTagihanMeta(makeTagihan({ dueDay: 2 }), JAN28_MS)
+  it('month-rollover: today=28, dueDay=2, Jan2 paid → "jatuh tempo 5 hari lagi"', () => {
+    const paidAt = new Date(2026, 0, 2).getTime()
+    const result = formatTagihanMeta(makeTagihan({ dueDay: 2, lastPaidAt: paidAt }), JAN28_MS)
     expect(result.text).toBe('jatuh tempo 5 hari lagi')
     expect(result.urgent).toBe(false)
   })
 
-  it('paid this month → "tgl X" (normal)', () => {
-    const paidAt = new Date('2026-01-05T10:00:00Z').getTime()
+  it('paid on due day → "tgl X" (normal)', () => {
+    const paidAt = new Date(2026, 0, 10).getTime() // Jan 10 midnight (= today)
     const result = formatTagihanMeta(makeTagihan({ dueDay: 10, lastPaidAt: paidAt }), NOW_MS)
     expect(result.text).toBe('tgl 10')
     expect(result.urgent).toBe(false)
@@ -229,17 +395,19 @@ describe('formatTagihanMeta', () => {
 // ─── rankTagihan ─────────────────────────────────────────────────────────────
 
 describe('rankTagihan', () => {
+  // Use JAN9_MIDNIGHT as lastPaidAt for all — marks all past occurrences as paid,
+  // leaving each tagihan's urgency determined solely by its dueDay relative to today (Jan 10).
   it('sorts by urgency: hari-ini → dalam-7-hari → normal', () => {
     const tagihan = [
-      makeTagihan({ id: 3, dueDay: 17 }), // dalam-7-hari (7 days)
-      makeTagihan({ id: 1, dueDay: 5 }), // normal (26 days — month rollover)
-      makeTagihan({ id: 2, dueDay: 10 }), // hari-ini
-      makeTagihan({ id: 4, dueDay: 20 }), // normal (10 days)
+      makeTagihan({ id: 3, dueDay: 17, lastPaidAt: JAN9_MIDNIGHT }), // dalam-7-hari (7 days)
+      makeTagihan({ id: 1, dueDay: 5, lastPaidAt: JAN9_MIDNIGHT }), // normal (Feb 5, 26 days)
+      makeTagihan({ id: 2, dueDay: 10, lastPaidAt: JAN9_MIDNIGHT }), // hari-ini
+      makeTagihan({ id: 4, dueDay: 20, lastPaidAt: JAN9_MIDNIGHT }), // normal (10 days)
     ]
     const ranked = rankTagihan(tagihan, NOW_MS)
     expect(ranked[0].id).toBe(2) // hari-ini
     expect(ranked[1].id).toBe(3) // dalam-7-hari
-    // both id=1 (dueDay=5) and id=4 (dueDay=20) are normal; sorted by dueDay ascending
+    // both id=1 (dueDay=5, normal) and id=4 (dueDay=20, normal) — sorted by dueDay
     expect(ranked[2].id).toBe(1) // normal, dueDay=5
     expect(ranked[3].id).toBe(4) // normal, dueDay=20
   })
@@ -252,27 +420,45 @@ describe('rankTagihan', () => {
 // ─── calcUnpaidTagihanTotal ──────────────────────────────────────────────────
 
 describe('calcUnpaidTagihanTotal', () => {
-  it('sums unpaid active tagihan estimates', () => {
+  it('sums unpaid active tagihan occurrences in window', () => {
     const tagihan = [
-      makeTagihan({ id: 1, dueDay: 15, nominalEstimate: 100_000 }), // unpaid
-      makeTagihan({ id: 2, dueDay: 20, nominalEstimate: 200_000 }), // unpaid
+      makeTagihan({ id: 1, dueDay: 15, nominalEstimate: 100_000 }), // Jan 15 in [Jan10, Feb10)
+      makeTagihan({ id: 2, dueDay: 20, nominalEstimate: 200_000 }), // Jan 20 in window
       makeTagihan({
         id: 3,
         dueDay: 20,
         nominalEstimate: 300_000,
-        lastPaidAt: new Date('2026-01-02').getTime(),
-      }), // paid this month
+        lastPaidAt: new Date(2026, 0, 20).getTime(), // paid on Jan 20 → isOccurrencePaid=true
+      }),
     ]
-    expect(calcUnpaidTagihanTotal(tagihan, NOW_MS)).toBe(300_000)
+    expect(calcUnpaidTagihanTotal(tagihan, NOW_MS, FEB10_MS)).toBe(300_000)
   })
 
-  it('all paid → 0', () => {
-    const paid = new Date('2026-01-02').getTime()
-    expect(calcUnpaidTagihanTotal([makeTagihan({ lastPaidAt: paid })], NOW_MS)).toBe(0)
+  it('all occurrences paid → 0', () => {
+    const paid = new Date(2026, 0, 15).getTime() // Jan 15 midnight
+    expect(calcUnpaidTagihanTotal([makeTagihan({ lastPaidAt: paid })], NOW_MS, FEB10_MS)).toBe(0)
   })
 
   it('empty → 0', () => {
-    expect(calcUnpaidTagihanTotal([], NOW_MS)).toBe(0)
+    expect(calcUnpaidTagihanTotal([], NOW_MS, FEB10_MS)).toBe(0)
+  })
+
+  it('inactive tagihan excluded', () => {
+    const inactive = makeTagihan({ isActive: false, nominalEstimate: 500_000 })
+    expect(calcUnpaidTagihanTotal([inactive], NOW_MS, FEB10_MS)).toBe(0)
+  })
+
+  it('weekly tagihan with 2 occurrences in window counted twice', () => {
+    // anchor = Jan 1 (Thu), weekly → Jan 1, Jan 8, Jan 15, Jan 22, Jan 29
+    // window = [Jan 10 midnight, Jan 24 midnight): Jan 15, Jan 22
+    const t = makeTagihan({
+      frequency: 'mingguan',
+      anchorDate: new Date(2026, 0, 1).getTime(),
+      nominalEstimate: 50_000,
+      lastPaidAt: null,
+    })
+    const jan24 = new Date(2026, 0, 24).getTime()
+    expect(calcUnpaidTagihanTotal([t], NOW_MS, jan24)).toBe(100_000)
   })
 })
 
@@ -280,16 +466,25 @@ describe('calcUnpaidTagihanTotal', () => {
 
 describe('hasUrgentTagihan', () => {
   it('hari-ini → urgent', () => {
-    expect(hasUrgentTagihan([makeTagihan({ dueDay: 10 })], NOW_MS)).toBe(true)
+    expect(hasUrgentTagihan([makeTagihan({ dueDay: 10, lastPaidAt: JAN9_MIDNIGHT })], NOW_MS)).toBe(
+      true,
+    )
+  })
+
+  it('lewat-tempo (past due unpaid) → urgent', () => {
+    expect(hasUrgentTagihan([makeTagihan({ dueDay: 5, lastPaidAt: null })], NOW_MS)).toBe(true)
   })
 
   it('dalam-7-hari only → not urgent', () => {
-    expect(hasUrgentTagihan([makeTagihan({ dueDay: 17 })], NOW_MS)).toBe(false)
+    expect(hasUrgentTagihan([makeTagihan({ dueDay: 17, lastPaidAt: JAN9_MIDNIGHT })], NOW_MS)).toBe(
+      false,
+    )
   })
 
-  it('past due day (month rolled over) → not urgent', () => {
-    // dueDay=5, today=10 → next occurrence Feb 5 (normal) → NOT urgent
-    expect(hasUrgentTagihan([makeTagihan({ dueDay: 5 })], NOW_MS)).toBe(false)
+  it('normal → not urgent', () => {
+    expect(hasUrgentTagihan([makeTagihan({ dueDay: 20, lastPaidAt: JAN9_MIDNIGHT })], NOW_MS)).toBe(
+      false,
+    )
   })
 
   it('empty → false', () => {
