@@ -372,6 +372,8 @@ Conversational UI (bukan form): user input saldo aktual → app hitung selisih �
 **Formula popup (saat tap ⓘ):**
 
 > `budget hari ini = (saldo - tagihan tersisa - target tabungan) ÷ hari sampai gajian`
+>
+> "Tagihan tersisa" = total tagihan unpaid dengan occurrence dalam window [hari ini, gajian). Lihat §3.4.7 Model A.
 
 **Income Schedule (basis perhitungan):**
 User setup income schedule saat onboarding (editable di Settings → Income Schedule):
@@ -402,16 +404,34 @@ Card full-width di bawah 2-col. **Hanya tampil di Pro.**
 
 #### 3.4.7 Tagihan Bulan Ini
 
-**Konsep:** Payung untuk semua pengeluaran yang punya due date + nominal commitment. Dua sub-tipe:
+**Konsep:** Payung untuk semua pengeluaran yang punya due date + nominal commitment. Tujuh frekuensi:
 
-- **Rutin** — recurring (Spotify, KPR, Listrik)
-- **Sekali** — one-off berdue date (hutang ke teman, cicilan non-recurring)
+| Frekuensi | Deskripsi |
+|---|---|
+| **Sekali** | One-off berdue date — lunas satu kali, status paid tetap selamanya |
+| **Mingguan** | Jatuh tempo setiap 7 hari dari `anchorDate` |
+| **2 Mingguan** | Jatuh tempo setiap 14 hari dari `anchorDate` |
+| **Bulanan** | Jatuh tempo setiap bulan di tanggal `dueDay` |
+| **2 Bulanan** | Jatuh tempo setiap 2 bulan di tanggal `dueDay`, alignment dari `anchorDate` |
+| **3 Bulanan** | Jatuh tempo setiap 3 bulan (quarterly), alignment dari `anchorDate` |
+| **Tahunan** | Jatuh tempo setiap 12 bulan di tanggal `dueDay`, alignment dari `anchorDate` |
 
-Tidak ada tag "rutin/sekali" di UI — redundant.
+`anchorDate` = tanggal referensi cycle (epoch ms). Untuk tagihan baru: `anchorDate = nowMs` saat dibuat. Untuk mingguan/2-mingguan: menentukan exact weekday cycle. Untuk bulanan+: menentukan bulan mana saja yang masuk cycle (via modulo interval).
 
-**Aturan reset status paid:**
-- **Rutin:** status "dibayar" reset otomatis di awal setiap bulan kalender. Dibaca dari `lastPaidAt` vs bulan kalender `nowMs` saat app dibuka — tidak ada timer atau cron.
-- **Sekali:** sekali ditandai dibayar, statusnya tetap selamanya (tidak pernah reset).
+**Aturan status paid — per occurrence, bukan per bulan kalender:**
+
+Tagihan dianggap lunas untuk satu occurrence jika `lastPaidAt >= occurrenceMs` (waktu bayar sama atau setelah tengah malam tanggal jatuh tempo). Tidak ada reset otomatis di tanggal 1 — status ditentukan dari occurrence berikutnya vs `lastPaidAt` setiap kali app dibuka.
+
+- **Sekali:** sekali `lastPaidAt` di-set, tagihan dianggap lunas selamanya (tidak ada occurrence berikutnya).
+- **Frekuensi lain:** `calcNextOccurrence()` mencari occurrence paling relevan — overdue (lewat, belum dibayar) atau upcoming (mendatang). `isOccurrencePaid()` = `lastPaidAt >= occurrenceMs`.
+
+**Model A — kalkulasi "tagihan tersisa" untuk budget & sisa:**
+
+> `total tagihan tersisa = Σ nominalEstimate untuk setiap occurrence yang jatuh dalam [today midnight, next payday midnight) dan belum dibayar`
+
+- Window = hari ini sampai gajian berikutnya, bukan bulan kalender.
+- Tagihan mingguan/2-mingguan bisa muncul **lebih dari satu kali** dalam window — semua occurrences yang unpaid dijumlahkan.
+- "Tagihan tersisa" di formula `sisa` dan `budget harian` menggunakan angka ini. Single source of truth: `calcUnpaidTagihanTotal(tagihan, nowMs, nextPaydayMs)`.
 
 **Ranking urgency (top 4 yang ditampilkan):**
 
@@ -756,7 +776,7 @@ Akses via header "Skenario tersimpan" atau setelah simpan. Isi:
 | **Budget hari ini** + formula popup                  | ✓                    | ✓                      |
 | **Budget minggu ini + Sisa Pas Gajian**              | ✓                    | ✓                      |
 | **Prediksi uang sisa akhir bulan** (3-bulan rolling) | —                    | ✓                      |
-| **Tagihan** — rutin + sekali, unlimited              | ✓                    | ✓                      |
+| **Tagihan** — 7 frekuensi (sekali/mingguan/2mingguan/bulanan/2bulanan/3bulanan/tahunan) | ✓ | ✓ |
 | **Alert anomali tagihan**                            | ✓                    | ✓                      |
 | **Phantom subscription detection**                   | —                    | ~~✓~~ _[dropped v1]_   |
 | **Wallet max**                                       | 4                    | 10                     |
