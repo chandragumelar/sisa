@@ -210,6 +210,15 @@
   line-height: 1;
 }
 
+/* Wrapping variant for freq picker (7 chips) */
+.segmentedWrap {
+  flex-wrap: wrap;
+}
+
+.segmentedWrap .seg {
+  flex: none;
+}
+
 .segActive {
   background: var(--surface);
   color: var(--ink);
