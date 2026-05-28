@@ -16,6 +16,7 @@ import {
   computeAnchor,
 } from './ProfilTagihanSheet.utils'
 import type { FormState } from './ProfilTagihanSheet.utils'
+import { ScrollSegmented } from '@/shared/components/ScrollSegmented'
 import styles from './ProfilPage.module.css'
 
 interface Props {
@@ -204,17 +205,11 @@ export function ProfilTagihanSheet({
           </div>
 
           <div className={styles.fieldLabel}>{t('profil.tagihan_freq_label', lang)}</div>
-          <div className={`${styles.segmented} ${styles.segmentedWrap}`}>
-            {FREQ_KEYS.map((f) => (
-              <button
-                key={f}
-                className={`${styles.seg} ${form.frequency === f ? styles.segActive : ''}`}
-                onClick={() => patch('frequency')(f)}
-              >
-                {t(FREQ_LABEL[f], lang)}
-              </button>
-            ))}
-          </div>
+          <ScrollSegmented
+            items={FREQ_KEYS.map((f) => ({ value: f, label: t(FREQ_LABEL[f], lang) }))}
+            value={form.frequency}
+            onChange={(f) => patch('frequency')(f)}
+          />
 
           <TagihanAnchorInput
             frequency={form.frequency}
