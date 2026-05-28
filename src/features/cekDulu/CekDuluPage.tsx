@@ -11,6 +11,7 @@ import type { Settings, Wallet, Language } from '@/db/database'
 import { calcDaysUntilPayday, getPaydayDate } from '@/features/home/home.utils'
 import { calcUnpaidTagihanTotal } from '@/features/home/tagihan.utils'
 import { formatCurrency, getCurrencySymbol } from '@/shared/utils/formatCurrency'
+import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
 import { calcCekDulu } from './cekDulu.utils'
 import type { CekDuluResult } from './cekDulu.utils'
 import { QuickLogSheet } from '@/features/quickLog/QuickLogSheet'
@@ -121,7 +122,7 @@ export function CekDuluPage() {
   const { settings, wallets, totalSaldo, unpaidTagihanTotal, daysUntilPayday, totalNabung } = data
   const currency = settings.primaryCurrency
 
-  const nominal = parseInt(amountStr, 10) || 0
+  const nominal = parseInt(parseNominalRaw(amountStr), 10) || 0
   const result = calcCekDulu({
     nominal,
     totalSaldo,
@@ -157,11 +158,11 @@ export function CekDuluPage() {
           <span className={styles.nominalPrefix}>{getCurrencySymbol(currency)}</span>
           <input
             className={styles.nominalInput}
-            type="number"
+            type="text"
             inputMode="numeric"
             placeholder="0"
             value={amountStr}
-            onChange={(e) => setAmountStr(e.target.value.replace(/\D/g, ''))}
+            onChange={(e) => setAmountStr(formatNominalDisplay(parseNominalRaw(e.target.value)))}
             autoFocus
           />
           <span className={styles.nominalCaret} />

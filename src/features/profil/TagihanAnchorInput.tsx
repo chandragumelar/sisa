@@ -7,7 +7,6 @@ export interface AnchorFields {
   dueDay: string
   fullDate: string
   weekDay: string
-  weekStartDate: string
   anchorMonth: string
   annualMonth: string
 }
@@ -21,7 +20,7 @@ interface Props {
 
 function getDayNames(lang: Language): string[] {
   const locale = toLocale(lang)
-  // Generate Mon–Sun names using a known Monday reference date (2024-01-01 = Monday)
+  // Generate Mon–Sun names (2024-01-01 = Monday)
   return Array.from({ length: 7 }, (_, i) => {
     const d = new Date(2024, 0, 1 + i)
     return d.toLocaleDateString(locale, { weekday: 'long' })
@@ -67,14 +66,6 @@ export function TagihanAnchorInput({ frequency, fields, onChange, lang }: Props)
             </option>
           ))}
         </select>
-
-        <div className={styles.fieldLabel}>{t('profil.tagihan_start_label', lang)}</div>
-        <input
-          className={styles.fieldInput}
-          type="date"
-          value={fields.weekStartDate}
-          onChange={(e) => onChange('weekStartDate', e.target.value)}
-        />
       </>
     )
   }

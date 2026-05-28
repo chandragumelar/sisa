@@ -416,7 +416,7 @@ Card full-width di bawah 2-col. **Hanya tampil di Pro.**
 | **3 Bulanan** | Jatuh tempo setiap 3 bulan (quarterly), alignment dari `anchorDate` |
 | **Tahunan** | Jatuh tempo setiap 12 bulan di tanggal `dueDay`, alignment dari `anchorDate` |
 
-`anchorDate` = tanggal referensi cycle (epoch ms). Untuk tagihan baru: `anchorDate = nowMs` saat dibuat. Untuk mingguan/2-mingguan: menentukan exact weekday cycle. Untuk bulanan+: menentukan bulan mana saja yang masuk cycle (via modulo interval).
+`anchorDate` = tanggal referensi cycle (epoch ms). Untuk tagihan baru: `anchorDate = nowMs` saat dibuat. Untuk mingguan/2-mingguan: auto-derive ke occurrence berikutnya dari hari yang dipilih — `diff = (selectedJsDay − todayJsDay + 7) % 7`, anchor = tengah malam hari ini + diff hari (diff=0 berarti hari ini sendiri). User tidak perlu input tanggal mulai. Untuk bulanan+: menentukan bulan mana saja yang masuk cycle (via modulo interval).
 
 **Aturan status paid — per occurrence, bukan per bulan kalender:**
 

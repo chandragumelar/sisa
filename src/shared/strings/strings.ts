@@ -359,7 +359,6 @@ export type StringKey =
   | 'profil.tagihan_freq_tahunan'
   | 'profil.tagihan_date_label'
   | 'profil.tagihan_weekday_label'
-  | 'profil.tagihan_start_label'
   | 'profil.tagihan_anchor_month_label'
   | 'profil.tagihan_annual_month_label'
   | 'profil.tagihan_add_btn'
@@ -772,7 +771,6 @@ const id: StringDictionary = {
   'profil.tagihan_freq_tahunan': 'Tahunan',
   'profil.tagihan_date_label': 'Tanggal',
   'profil.tagihan_weekday_label': 'Hari',
-  'profil.tagihan_start_label': 'Mulai dari',
   'profil.tagihan_anchor_month_label': 'Bulan mulai',
   'profil.tagihan_annual_month_label': 'Bulan',
   'profil.tagihan_add_btn': '+ Tambah tagihan',
@@ -1186,7 +1184,6 @@ const en: StringDictionary = {
   'profil.tagihan_freq_tahunan': 'Yearly',
   'profil.tagihan_date_label': 'Date',
   'profil.tagihan_weekday_label': 'Day',
-  'profil.tagihan_start_label': 'Starting from',
   'profil.tagihan_anchor_month_label': 'Starting month',
   'profil.tagihan_annual_month_label': 'Month',
   'profil.tagihan_add_btn': '+ Add bill',

@@ -10,7 +10,6 @@ export interface FormState {
   dueDay: string
   fullDate: string
   weekDay: string
-  weekStartDate: string
   anchorMonth: string
   annualMonth: string
 }
@@ -23,7 +22,6 @@ export const EMPTY_FORM: FormState = {
   dueDay: '',
   fullDate: '',
   weekDay: '1',
-  weekStartDate: '',
   anchorMonth: '',
   annualMonth: '',
 }
@@ -71,8 +69,6 @@ export function tagihanToForm(tg: Tagihan): FormState {
     dueDay: String(tg.dueDay),
     fullDate: tg.frequency === 'sekali' ? isoDateStr(tg.anchorDate) : '',
     weekDay: toIsoWeekDay(anchor.getDay()),
-    weekStartDate:
-      tg.frequency === 'mingguan' || tg.frequency === '2mingguan' ? isoDateStr(tg.anchorDate) : '',
     anchorMonth: String(anchor.getMonth() + 1),
     annualMonth: String(anchor.getMonth() + 1),
   }
@@ -91,10 +87,11 @@ export function computeAnchor(
 
   if (form.frequency === 'mingguan' || form.frequency === '2mingguan') {
     const isoDay = parseInt(form.weekDay, 10) || 1
+    // ISO Mon=1…Sun=7 → JS Sun=0, Mon=1…Sat=6
     const jsDay = isoDay === 7 ? 0 : isoDay
-    const base = form.weekStartDate ? new Date(form.weekStartDate) : now
-    const diff = (jsDay - base.getDay() + 7) % 7
-    const anchor = new Date(base.getFullYear(), base.getMonth(), base.getDate() + diff)
+    const todayJsDay = now.getDay()
+    const diff = (jsDay - todayJsDay + 7) % 7
+    const anchor = new Date(now.getFullYear(), now.getMonth(), now.getDate() + diff)
     return { anchorDate: anchor.getTime(), dueDay: 1 }
   }
 

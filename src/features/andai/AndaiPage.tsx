@@ -391,12 +391,11 @@ export function AndaiPage() {
             <span className={styles.addAmountPrefix}>{getCurrencySymbol(currency)}</span>
             <input
               className={styles.addAmountInput}
-              type="number"
+              type="text"
               inputMode="numeric"
               placeholder="0"
               value={addAmount}
               onChange={(e) => setAddAmount(e.target.value.replace(/\D/g, ''))}
-              autoFocus={addSheet !== null}
             />
           </div>
 
