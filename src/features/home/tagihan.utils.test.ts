@@ -18,6 +18,8 @@ import {
 const NOW_MS = new Date('2026-01-10T12:00:00Z').getTime()
 // Jan 28, 2026, noon UTC
 const JAN28_MS = new Date('2026-01-28T12:00:00Z').getTime()
+// Dec 1, 2025 — used as createdAt "well before any Jan occurrence"
+const DEC1_2025_MS = new Date(2025, 11, 1).getTime()
 // Apr 15, 2026, noon UTC (April has 30 days)
 const APR15_MS = new Date('2026-04-15T12:00:00Z').getTime()
 
@@ -156,7 +158,8 @@ describe('calcNextOccurrence', () => {
   })
 
   it('past unpaid occurrence → returns most recent overdue', () => {
-    const t = makeTagihan({ dueDay: 5, lastPaidAt: null }) // Jan 5 overdue, today=Jan10
+    // createdAt=Dec1 ensures Jan 5 is after createdAt and counts as overdue
+    const t = makeTagihan({ dueDay: 5, lastPaidAt: null, createdAt: DEC1_2025_MS })
     const occ = calcNextOccurrence(t, NOW_MS)
     expect(occ).not.toBeNull()
     expect(occ!.getDate()).toBe(5) // Jan 5 (most recent overdue, not Dec 5)
@@ -321,11 +324,14 @@ describe('getTagihanUrgency', () => {
     )
   })
 
-  it('past due day, unpaid → lewat-tempo (overdue correctly detected)', () => {
-    // dueDay=5, today=Jan10, lastPaidAt=null → Jan 5 is overdue
-    expect(getTagihanUrgency(makeTagihan({ dueDay: 5, lastPaidAt: null }), NOW_MS)).toBe(
-      'lewat-tempo',
-    )
+  it('past due day, unpaid, created before → lewat-tempo', () => {
+    // createdAt=Dec1 → Jan 5 is after createdAt → counts as overdue
+    expect(
+      getTagihanUrgency(
+        makeTagihan({ dueDay: 5, lastPaidAt: null, createdAt: DEC1_2025_MS }),
+        NOW_MS,
+      ),
+    ).toBe('lewat-tempo')
   })
 
   it('paid on due day → normal', () => {
@@ -342,10 +348,14 @@ describe('getTagihanUrgency', () => {
     )
   })
 
-  it('month-rollover: today=28, dueDay=2, unpaid → lewat-tempo', () => {
-    expect(getTagihanUrgency(makeTagihan({ dueDay: 2, lastPaidAt: null }), JAN28_MS)).toBe(
-      'lewat-tempo',
-    )
+  it('month-rollover: today=28, dueDay=2, created before → lewat-tempo', () => {
+    // createdAt=Dec1 → Jan 2 is after createdAt → counts as overdue
+    expect(
+      getTagihanUrgency(
+        makeTagihan({ dueDay: 2, lastPaidAt: null, createdAt: DEC1_2025_MS }),
+        JAN28_MS,
+      ),
+    ).toBe('lewat-tempo')
   })
 })
 
@@ -370,9 +380,12 @@ describe('formatTagihanMeta', () => {
     expect(result.urgent).toBe(false)
   })
 
-  it('past due day, unpaid → overdue text (urgent)', () => {
-    // dueDay=5, today=Jan10, unpaid → Jan 5 overdue = 5 days past
-    const result = formatTagihanMeta(makeTagihan({ dueDay: 5, lastPaidAt: null }), NOW_MS)
+  it('past due day, unpaid, created before → overdue text (urgent)', () => {
+    // createdAt=Dec1 → Jan 5 counts as overdue (5 days past)
+    const result = formatTagihanMeta(
+      makeTagihan({ dueDay: 5, lastPaidAt: null, createdAt: DEC1_2025_MS }),
+      NOW_MS,
+    )
     expect(result.text).toBe('lewat 5 hari · belum dibayar')
     expect(result.urgent).toBe(true)
   })
@@ -471,8 +484,13 @@ describe('hasUrgentTagihan', () => {
     )
   })
 
-  it('lewat-tempo (past due unpaid) → urgent', () => {
-    expect(hasUrgentTagihan([makeTagihan({ dueDay: 5, lastPaidAt: null })], NOW_MS)).toBe(true)
+  it('lewat-tempo (past due unpaid, created before) → urgent', () => {
+    expect(
+      hasUrgentTagihan(
+        [makeTagihan({ dueDay: 5, lastPaidAt: null, createdAt: DEC1_2025_MS })],
+        NOW_MS,
+      ),
+    ).toBe(true)
   })
 
   it('dalam-7-hari only → not urgent', () => {
@@ -489,5 +507,224 @@ describe('hasUrgentTagihan', () => {
 
   it('empty → false', () => {
     expect(hasUrgentTagihan([], NOW_MS)).toBe(false)
+  })
+})
+
+// ─── calcNextOccurrence — createdAt boundary per frequency ───────────────────
+
+describe('calcNextOccurrence — createdAt boundary', () => {
+  // NOW_MS = Jan 10, 2026 noon
+
+  // ── bulanan ────────────────────────────────────────────────────────────────
+
+  it('bulanan: created AFTER dueDay → shows next month (not overdue this month)', () => {
+    // dueDay=5, createdAt=Jan10 → Jan 5 occurrence is before createdAt → skip
+    // next: Feb 5
+    const tag = makeTagihan({
+      dueDay: 5,
+      frequency: 'bulanan',
+      lastPaidAt: null,
+      createdAt: NOW_MS,
+    })
+    const result = calcNextOccurrence(tag, NOW_MS)
+    expect(result).toEqual(new Date(2026, 1, 5))
+  })
+
+  it('bulanan: created BEFORE dueDay → shows overdue occurrence', () => {
+    // dueDay=5, createdAt=Dec1 → Jan 5 occurrence is after createdAt and before today → overdue
+    const tag = makeTagihan({
+      dueDay: 5,
+      frequency: 'bulanan',
+      lastPaidAt: null,
+      createdAt: DEC1_2025_MS,
+    })
+    const result = calcNextOccurrence(tag, NOW_MS)
+    expect(result).toEqual(new Date(2026, 0, 5))
+  })
+
+  it('bulanan: created ON dueDay → shows today as upcoming (not overdue)', () => {
+    // dueDay=10, createdAt=Jan10 noon → today midnight = Jan 10 → upcoming
+    const jan10Noon = NOW_MS
+    const tag = makeTagihan({
+      dueDay: 10,
+      frequency: 'bulanan',
+      lastPaidAt: null,
+      createdAt: jan10Noon,
+    })
+    const result = calcNextOccurrence(tag, NOW_MS)
+    expect(result).toEqual(new Date(2026, 0, 10))
+  })
+
+  it('bulanan: dueDay=31 clamps to Feb 28 when upcoming occurrence is in February', () => {
+    // nowMs=Feb 10; Jan 31 paid → no overdue; next occurrence is Feb 28 (31→28 clamp)
+    const feb10 = new Date('2026-02-10T12:00:00Z').getTime()
+    const jan31Midnight = new Date(2026, 0, 31).getTime()
+    const tag = makeTagihan({
+      dueDay: 31,
+      frequency: 'bulanan',
+      lastPaidAt: jan31Midnight,
+      createdAt: DEC1_2025_MS,
+    })
+    const result = calcNextOccurrence(tag, feb10)
+    expect(result).toEqual(new Date(2026, 1, 28))
+  })
+
+  // ── sekali ─────────────────────────────────────────────────────────────────
+
+  it('sekali: created AFTER dueDay in anchor month → returns null (occurrence before createdAt)', () => {
+    // anchorDate=Jan1, dueDay=5 → occurrence=Jan5; createdAt=Jan10 → Jan5 < createdAt → null
+    const tag = makeTagihan({
+      dueDay: 5,
+      frequency: 'sekali',
+      anchorDate: new Date(2026, 0, 1).getTime(),
+      lastPaidAt: null,
+      createdAt: NOW_MS,
+    })
+    const result = calcNextOccurrence(tag, NOW_MS)
+    expect(result).toBeNull()
+  })
+
+  it('sekali: created BEFORE dueDay → shows occurrence as overdue', () => {
+    // anchorDate=Jan1, dueDay=5 → occurrence=Jan5; createdAt=Dec1 → overdue
+    const tag = makeTagihan({
+      dueDay: 5,
+      frequency: 'sekali',
+      anchorDate: new Date(2026, 0, 1).getTime(),
+      lastPaidAt: null,
+      createdAt: DEC1_2025_MS,
+    })
+    const result = calcNextOccurrence(tag, NOW_MS)
+    expect(result).toEqual(new Date(2026, 0, 5))
+  })
+
+  it('sekali: created ON dueDay → shows today as upcoming', () => {
+    // anchorDate=Jan10, dueDay=10 → occurrence=Jan10; createdAt=Jan10 noon
+    const tag = makeTagihan({
+      dueDay: 10,
+      frequency: 'sekali',
+      anchorDate: new Date(2026, 0, 10).getTime(),
+      lastPaidAt: null,
+      createdAt: NOW_MS,
+    })
+    const result = calcNextOccurrence(tag, NOW_MS)
+    expect(result).toEqual(new Date(2026, 0, 10))
+  })
+
+  // ── mingguan ───────────────────────────────────────────────────────────────
+
+  it('mingguan: created AFTER anchor occurrence → shows next weekly occurrence', () => {
+    // anchor=Jan1 (Thu), interval=7 → occurrences: Jan1, Jan8, Jan15, ...
+    // createdAt=Jan10 (noon) → Jan1 and Jan8 before createdAt → skip; Jan15 is upcoming
+    const tag = makeTagihan({
+      frequency: 'mingguan',
+      anchorDate: new Date(2026, 0, 1).getTime(),
+      lastPaidAt: null,
+      createdAt: NOW_MS,
+    })
+    const result = calcNextOccurrence(tag, NOW_MS)
+    expect(result).toEqual(new Date(2026, 0, 15))
+  })
+
+  it('mingguan: created BEFORE recent occurrence → shows overdue', () => {
+    // anchor=Jan1, interval=7 → Jan8 occurrence; createdAt=Dec1 → Jan8 is overdue
+    const tag = makeTagihan({
+      frequency: 'mingguan',
+      anchorDate: new Date(2026, 0, 1).getTime(),
+      lastPaidAt: null,
+      createdAt: DEC1_2025_MS,
+    })
+    const result = calcNextOccurrence(tag, NOW_MS)
+    expect(result).toEqual(new Date(2026, 0, 8))
+  })
+
+  // ── 2mingguan ──────────────────────────────────────────────────────────────
+
+  it('2mingguan: created AFTER anchor occurrence → shows next bi-weekly', () => {
+    // anchor=Jan1, interval=14 → occurrences: Jan1, Jan15, Jan29, ...
+    // createdAt=Jan10 → Jan1 before createdAt → skip; Jan15 is upcoming
+    const tag = makeTagihan({
+      frequency: '2mingguan',
+      anchorDate: new Date(2026, 0, 1).getTime(),
+      lastPaidAt: null,
+      createdAt: NOW_MS,
+    })
+    const result = calcNextOccurrence(tag, NOW_MS)
+    expect(result).toEqual(new Date(2026, 0, 15))
+  })
+
+  it('2mingguan: created BEFORE anchor → shows latest overdue bi-weekly', () => {
+    // anchor=Jan1, interval=14 → Jan1 overdue; createdAt=Dec1 → overdue
+    const tag = makeTagihan({
+      frequency: '2mingguan',
+      anchorDate: new Date(2026, 0, 1).getTime(),
+      lastPaidAt: null,
+      createdAt: DEC1_2025_MS,
+    })
+    const result = calcNextOccurrence(tag, NOW_MS)
+    // Jan 1 is the most recent overdue (Jan 15 is upcoming)
+    expect(result).toEqual(new Date(2026, 0, 1))
+  })
+
+  // ── 2bulanan ───────────────────────────────────────────────────────────────
+
+  it('2bulanan: created AFTER dueDay → next occurrence skips to +2 months', () => {
+    // anchor=Jan1, dueDay=5, interval=2 → occurrences: Jan5, Mar5, May5, ...
+    // createdAt=Jan10 → Jan5 before createdAt → skip; Mar5 is next
+    const tag = makeTagihan({
+      dueDay: 5,
+      frequency: '2bulanan',
+      anchorDate: new Date(2026, 0, 1).getTime(),
+      lastPaidAt: null,
+      createdAt: NOW_MS,
+    })
+    const result = calcNextOccurrence(tag, NOW_MS)
+    expect(result).toEqual(new Date(2026, 2, 5))
+  })
+
+  // ── 3bulanan ───────────────────────────────────────────────────────────────
+
+  it('3bulanan: created AFTER dueDay → shows next interval occurrence', () => {
+    // anchor=Jan1, dueDay=5, interval=3 → occurrences: Jan5, Apr5, Jul5, ...
+    // createdAt=Jan10 → Jan5 before createdAt → skip
+    // nowMs=Mar15 → Apr5 is 21 days away, within 60-day lookahead
+    const mar15 = new Date('2026-03-15T12:00:00Z').getTime()
+    const tag = makeTagihan({
+      dueDay: 5,
+      frequency: '3bulanan',
+      anchorDate: new Date(2026, 0, 1).getTime(),
+      lastPaidAt: null,
+      createdAt: NOW_MS,
+    })
+    const result = calcNextOccurrence(tag, mar15)
+    expect(result).toEqual(new Date(2026, 3, 5))
+  })
+
+  // ── tahunan ────────────────────────────────────────────────────────────────
+
+  it('tahunan: created AFTER dueDay → next occurrence is +12 months (outside 60-day window → null)', () => {
+    // anchor=Jan1, dueDay=5, interval=12 → occurrences: Jan5 2026, Jan5 2027, ...
+    // createdAt=Jan10 → Jan5 2026 before createdAt → skip; Jan5 2027 outside 60-day window → null
+    const tag = makeTagihan({
+      dueDay: 5,
+      frequency: 'tahunan',
+      anchorDate: new Date(2026, 0, 1).getTime(),
+      lastPaidAt: null,
+      createdAt: NOW_MS,
+    })
+    const result = calcNextOccurrence(tag, NOW_MS)
+    expect(result).toBeNull()
+  })
+
+  it('tahunan: created BEFORE dueDay in same month → shows upcoming occurrence', () => {
+    // anchor=Jan1, dueDay=15, interval=12 → Jan15 upcoming (createdAt=Jan10)
+    const tag = makeTagihan({
+      dueDay: 15,
+      frequency: 'tahunan',
+      anchorDate: new Date(2026, 0, 1).getTime(),
+      lastPaidAt: null,
+      createdAt: NOW_MS,
+    })
+    const result = calcNextOccurrence(tag, NOW_MS)
+    expect(result).toEqual(new Date(2026, 0, 15))
   })
 })

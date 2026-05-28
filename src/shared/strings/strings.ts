@@ -12,6 +12,8 @@ export type StringKey =
   | 'common.today'
   | 'common.yesterday'
   | 'common.saving'
+  | 'common.day'
+  | 'common.days'
   // update banner
   | 'update_banner.msg'
   | 'update_banner.reload'
@@ -203,12 +205,14 @@ export type StringKey =
   | 'home.toast_masuk'
   | 'home.toast_keluar'
   | 'home.days_to_payday'
+  | 'home.day_to_payday'
   // quick log sheet
   | 'quick_log.mode_keluar'
   | 'quick_log.mode_masuk'
   | 'quick_log.mode_nabung'
   | 'quick_log.savings_warning'
   | 'quick_log.from_savings'
+  | 'quick_log.date_label'
   | 'quick_log.date_custom_aria'
   | 'quick_log.submitting'
   | 'quick_log.submit_edit'
@@ -422,6 +426,8 @@ const id: StringDictionary = {
   'common.today': 'Hari ini',
   'common.yesterday': 'Kemarin',
   'common.saving': 'Menyimpan...',
+  'common.day': 'hari',
+  'common.days': 'hari',
   'update_banner.msg': 'versi baru tersedia',
   'update_banner.reload': 'muat ulang ›',
 
@@ -613,13 +619,15 @@ const id: StringDictionary = {
   'home.toast_nabung': 'Nabung dicatat',
   'home.toast_masuk': 'Pemasukan dicatat',
   'home.toast_keluar': 'Pengeluaran dicatat',
-  'home.days_to_payday': '{n} hr ke gajian',
+  'home.days_to_payday': '{n} hari ke gajian',
+  'home.day_to_payday': '{n} hari ke gajian',
 
   'quick_log.mode_keluar': 'keluar',
   'quick_log.mode_masuk': 'masuk',
   'quick_log.mode_nabung': 'nabung',
   'quick_log.savings_warning': 'Tabungan kamu cuma {amount} — mau pakai semua tabungan?',
   'quick_log.from_savings': 'dari tabungan',
+  'quick_log.date_label': 'Pilih tanggal',
   'quick_log.date_custom_aria': 'Pilih tanggal lain',
   'quick_log.submitting': 'Menyimpan...',
   'quick_log.submit_edit': 'Simpan',
@@ -635,7 +643,7 @@ const id: StringDictionary = {
   'cek_dulu.col_now': 'sekarang',
   'cek_dulu.col_after': 'kalau beli',
   'cek_dulu.daily_label': 'jatah harian sampai gajian',
-  'cek_dulu.daily_unit': '/hr',
+  'cek_dulu.daily_unit': '/hari',
   'cek_dulu.sisa_label': 'sisa operasional',
   'cek_dulu.new_flag': 'baru muncul',
   'cek_dulu.tabungan_label': 'tabungan kepotong',
@@ -835,6 +843,8 @@ const en: StringDictionary = {
   'common.today': 'Today',
   'common.yesterday': 'Yesterday',
   'common.saving': 'Saving...',
+  'common.day': 'day',
+  'common.days': 'days',
   'update_banner.msg': 'new version available',
   'update_banner.reload': 'reload ›',
 
@@ -962,7 +972,7 @@ const en: StringDictionary = {
 
   'footer.last_recorded': 'last recorded:',
   'footer.minutes_ago': '{n} min ago',
-  'footer.hours_ago': '{n} hr ago',
+  'footer.hours_ago': '{n} hours ago',
   'footer.days_ago': '{n} days ago',
   'footer.no_records': 'no records yet',
   'footer.all_records': 'all records ›',
@@ -1027,12 +1037,14 @@ const en: StringDictionary = {
   'home.toast_masuk': 'Income logged',
   'home.toast_keluar': 'Expense logged',
   'home.days_to_payday': '{n} days to payday',
+  'home.day_to_payday': '{n} day to payday',
 
   'quick_log.mode_keluar': 'out',
   'quick_log.mode_masuk': 'in',
   'quick_log.mode_nabung': 'save',
   'quick_log.savings_warning': 'Your savings are only {amount} — use all your savings?',
   'quick_log.from_savings': 'from savings',
+  'quick_log.date_label': 'Pick date',
   'quick_log.date_custom_aria': 'Pick another date',
   'quick_log.submitting': 'Saving...',
   'quick_log.submit_edit': 'Save',

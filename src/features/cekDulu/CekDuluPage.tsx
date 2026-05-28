@@ -219,7 +219,8 @@ export function CekDuluPage() {
           {nominal > 0 && (
             <div className={styles.rowDelta}>
               {formatCurrency(result.dailyDelta, currency)}
-              {t('cek_dulu.daily_unit', lang)} · {daysUntilPayday} {lang === 'en' ? 'days' : 'hari'}
+              {t('cek_dulu.daily_unit', lang)} · {daysUntilPayday}{' '}
+              {t(daysUntilPayday === 1 ? 'common.day' : 'common.days', lang)}
             </div>
           )}
         </div>

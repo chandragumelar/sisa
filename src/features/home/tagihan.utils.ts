@@ -109,15 +109,20 @@ export function isOccurrencePaid(tagihan: Tagihan, occurrenceMs: number): boolea
 
 export function calcNextOccurrence(tagihan: Tagihan, nowMs: number): Date | null {
   const todayMidnight = startOfDayMs(new Date(nowMs))
+  const createdMidnight = startOfDayMs(new Date(tagihan.createdAt))
   const lookbackMs = todayMidnight - 60 * 86_400_000
   const lookaheadMs = todayMidnight + 60 * 86_400_000
 
   const all = getOccurrencesInWindow(tagihan, lookbackMs, lookaheadMs)
   if (all.length === 0) return null
 
-  // Most recent overdue: past occurrence that is unpaid
+  // Most recent overdue: past occurrence on/after createdAt that is unpaid.
+  // Occurrences before createdAt are skipped — tagihan didn't exist yet.
   const overdue = all.filter(
-    (d) => d.getTime() < todayMidnight && !isOccurrencePaid(tagihan, d.getTime()),
+    (d) =>
+      d.getTime() >= createdMidnight &&
+      d.getTime() < todayMidnight &&
+      !isOccurrencePaid(tagihan, d.getTime()),
   )
   if (overdue.length > 0) return overdue[overdue.length - 1]
 

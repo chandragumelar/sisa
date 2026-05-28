@@ -73,7 +73,8 @@ export function SaldoModule({
     })
   }
 
-  const metaRight = t('home.days_to_payday', lang).replace('{n}', String(daysUntilPayday))
+  const paydayKey = daysUntilPayday === 1 ? 'home.day_to_payday' : 'home.days_to_payday'
+  const metaRight = t(paydayKey, lang).replace('{n}', String(daysUntilPayday))
 
   return (
     <div className={styles.wrapper}>
