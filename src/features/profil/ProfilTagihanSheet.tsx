@@ -1,12 +1,21 @@
 import { useEffect, useState } from 'react'
 import { addTagihan, updateTagihan, deleteTagihan } from '@/db/tagihan.repository'
-import type { Tagihan, NominalType, TagihanFrequency } from '@/db/database'
+import type { Tagihan, NominalType } from '@/db/database'
 import { BottomSheet } from '@/shared/components/BottomSheet'
 import { formatCurrency, getCurrencySymbol } from '@/shared/utils/formatCurrency'
 import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
-import type { StringKey } from '@/shared/strings/strings'
+import { TagihanAnchorInput } from './TagihanAnchorInput'
+import type { AnchorFields } from './TagihanAnchorInput'
+import {
+  EMPTY_FORM,
+  FREQ_KEYS,
+  FREQ_LABEL,
+  tagihanToForm,
+  computeAnchor,
+} from './ProfilTagihanSheet.utils'
+import type { FormState } from './ProfilTagihanSheet.utils'
 import styles from './ProfilPage.module.css'
 
 interface Props {
@@ -19,44 +28,6 @@ interface Props {
   showAdd?: boolean
   initialEditTagihan?: Tagihan | null
 }
-
-interface FormState {
-  name: string
-  nominalType: NominalType
-  nominalEstimate: string
-  dueDay: string
-  frequency: TagihanFrequency
-}
-
-const EMPTY_FORM: FormState = {
-  name: '',
-  nominalType: 'tetap',
-  nominalEstimate: '',
-  dueDay: '',
-  frequency: 'bulanan',
-}
-
-const FREQ_KEYS: TagihanFrequency[] = [
-  'sekali',
-  'mingguan',
-  '2mingguan',
-  'bulanan',
-  '2bulanan',
-  '3bulanan',
-  'tahunan',
-]
-
-const FREQ_LABEL: Record<TagihanFrequency, StringKey> = {
-  sekali: 'profil.tagihan_freq_sekali',
-  mingguan: 'profil.tagihan_freq_mingguan',
-  '2mingguan': 'profil.tagihan_freq_2mingguan',
-  bulanan: 'profil.tagihan_freq_bulanan',
-  '2bulanan': 'profil.tagihan_freq_2bulanan',
-  '3bulanan': 'profil.tagihan_freq_3bulanan',
-  tahunan: 'profil.tagihan_freq_tahunan',
-}
-
-const WEEKLY_FREQS: Set<TagihanFrequency> = new Set(['mingguan', '2mingguan'])
 
 type Step = 'list' | 'form'
 
@@ -80,13 +51,7 @@ export function ProfilTagihanSheet({
     if (!isOpen) return
     if (initialEditTagihan) {
       setEditId(initialEditTagihan.id!)
-      setForm({
-        name: initialEditTagihan.name,
-        nominalType: initialEditTagihan.nominalType,
-        nominalEstimate: formatNominalDisplay(String(initialEditTagihan.nominalEstimate)),
-        dueDay: String(initialEditTagihan.dueDay),
-        frequency: initialEditTagihan.frequency,
-      })
+      setForm(tagihanToForm(initialEditTagihan))
       setStep('form')
     }
   }, [isOpen, initialEditTagihan])
@@ -99,20 +64,14 @@ export function ProfilTagihanSheet({
 
   function openEdit(tg: Tagihan) {
     setEditId(tg.id!)
-    setForm({
-      name: tg.name,
-      nominalType: tg.nominalType,
-      nominalEstimate: formatNominalDisplay(String(tg.nominalEstimate)),
-      dueDay: String(tg.dueDay),
-      frequency: tg.frequency,
-    })
+    setForm(tagihanToForm(tg))
     setStep('form')
   }
 
   async function handleSave() {
     const nominal = parseInt(parseNominalRaw(form.nominalEstimate), 10) || 0
-    const dueDay = parseInt(form.dueDay, 10) || 1
     if (!form.name.trim()) return
+    const { anchorDate, dueDay } = computeAnchor(form, nowMs)
     if (editId !== null) {
       await updateTagihan(editId, {
         name: form.name.trim(),
@@ -120,6 +79,7 @@ export function ProfilTagihanSheet({
         nominalEstimate: nominal,
         dueDay,
         frequency: form.frequency,
+        anchorDate,
       })
     } else {
       await addTagihan({
@@ -128,7 +88,7 @@ export function ProfilTagihanSheet({
         nominalEstimate: nominal,
         dueDay,
         frequency: form.frequency,
-        anchorDate: nowMs,
+        anchorDate,
         currency,
         isActive: true,
         lastPaidAt: null,
@@ -149,12 +109,13 @@ export function ProfilTagihanSheet({
 
   const patch = (k: keyof FormState) => (v: string) => setForm((f) => ({ ...f, [k]: v }))
 
+  const patchAnchor = (field: keyof AnchorFields, value: string) =>
+    setForm((f) => ({ ...f, [field]: value }))
+
   const titleMap: Record<Step, string> = {
     list: t('profil.tagihan_title_list', lang),
     form: editId ? t('profil.tagihan_title_edit', lang) : t('profil.tagihan_title_add', lang),
   }
-
-  const showDueDay = !WEEKLY_FREQS.has(form.frequency)
 
   return (
     <BottomSheet
@@ -243,7 +204,7 @@ export function ProfilTagihanSheet({
           </div>
 
           <div className={styles.fieldLabel}>{t('profil.tagihan_freq_label', lang)}</div>
-          <div className={styles.segmented}>
+          <div className={`${styles.segmented} ${styles.segmentedWrap}`}>
             {FREQ_KEYS.map((f) => (
               <button
                 key={f}
@@ -255,21 +216,12 @@ export function ProfilTagihanSheet({
             ))}
           </div>
 
-          {showDueDay && (
-            <>
-              <div className={styles.fieldLabel}>{t('profil.tagihan_due_label', lang)}</div>
-              <input
-                className={styles.fieldInput}
-                type="number"
-                inputMode="numeric"
-                min={1}
-                max={31}
-                placeholder="25"
-                value={form.dueDay}
-                onChange={(e) => patch('dueDay')(e.target.value.replace(/\D/g, ''))}
-              />
-            </>
-          )}
+          <TagihanAnchorInput
+            frequency={form.frequency}
+            fields={form}
+            onChange={patchAnchor}
+            lang={lang}
+          />
 
           <button className={styles.primaryBtn} onClick={handleSave} disabled={!form.name.trim()}>
             {t('common.save', lang)}

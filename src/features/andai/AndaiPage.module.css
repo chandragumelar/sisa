@@ -4,6 +4,7 @@
   padding: 8px 22px calc(24px + env(safe-area-inset-bottom, 0px));
   max-width: 390px;
   margin: 0 auto;
+  overflow-x: hidden;
 }
 
 /* ── Header ── */
