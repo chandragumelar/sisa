@@ -357,6 +357,10 @@ export type StringKey =
   | 'profil.tagihan_freq_2bulanan'
   | 'profil.tagihan_freq_3bulanan'
   | 'profil.tagihan_freq_tahunan'
+  | 'profil.tagihan_date_label'
+  | 'profil.tagihan_weekday_label'
+  | 'profil.tagihan_anchor_month_label'
+  | 'profil.tagihan_annual_month_label'
   | 'profil.tagihan_add_btn'
   // settings page
   | 'settings.title'
@@ -765,6 +769,10 @@ const id: StringDictionary = {
   'profil.tagihan_freq_2bulanan': '2 Bulanan',
   'profil.tagihan_freq_3bulanan': '3 Bulanan',
   'profil.tagihan_freq_tahunan': 'Tahunan',
+  'profil.tagihan_date_label': 'Tanggal',
+  'profil.tagihan_weekday_label': 'Hari',
+  'profil.tagihan_anchor_month_label': 'Bulan mulai',
+  'profil.tagihan_annual_month_label': 'Bulan',
   'profil.tagihan_add_btn': '+ Tambah tagihan',
 
   'settings.title': 'setelan',
@@ -1174,6 +1182,10 @@ const en: StringDictionary = {
   'profil.tagihan_freq_2bulanan': 'Bimonthly',
   'profil.tagihan_freq_3bulanan': 'Quarterly',
   'profil.tagihan_freq_tahunan': 'Yearly',
+  'profil.tagihan_date_label': 'Date',
+  'profil.tagihan_weekday_label': 'Day',
+  'profil.tagihan_anchor_month_label': 'Starting month',
+  'profil.tagihan_annual_month_label': 'Month',
   'profil.tagihan_add_btn': '+ Add bill',
 
   'settings.title': 'settings',
