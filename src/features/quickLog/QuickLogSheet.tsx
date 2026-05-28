@@ -228,14 +228,19 @@ export function QuickLogSheet({
         >
           {t('common.yesterday', lang)}
         </button>
-        <input
-          type="date"
-          className={`${styles.datePill} ${styles.dateInput} ${isCustomDate ? styles.datePillActive : ''}`}
-          max={todayStr}
-          value={isCustomDate ? dateStr : ''}
-          onChange={(e) => handleDateInput(e.target.value)}
-          aria-label={t('quick_log.date_custom_aria', lang)}
-        />
+        <label
+          className={`${styles.datePill} ${styles.datePillCalendar} ${isCustomDate ? styles.datePillActive : ''}`}
+        >
+          {isCustomDate ? dateStr : t('quick_log.date_label', lang)}
+          <input
+            type="date"
+            className={styles.dateInputHidden}
+            max={todayStr}
+            value={isCustomDate ? dateStr : ''}
+            onChange={(e) => handleDateInput(e.target.value)}
+            aria-label={t('quick_log.date_custom_aria', lang)}
+          />
+        </label>
       </div>
 
       {/* Note expander */}
