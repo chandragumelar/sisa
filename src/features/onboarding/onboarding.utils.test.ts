@@ -32,8 +32,11 @@ describe('getProgressCount', () => {
 // getNextStep
 // ---------------------------------------------------------------------------
 describe('getNextStep', () => {
-  it('language → license', () => {
-    expect(getNextStep('language', null)).toBe('license')
+  it('language → installGuide', () => {
+    expect(getNextStep('language', null)).toBe('installGuide')
+  })
+  it('installGuide → license', () => {
+    expect(getNextStep('installGuide', null)).toBe('license')
   })
   it('license → mentalModel', () => {
     expect(getNextStep('license', null)).toBe('mentalModel')
