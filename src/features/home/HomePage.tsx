@@ -311,165 +311,166 @@ export function HomePage() {
   const currencies = hasDualCurrency ? [settings.primaryCurrency, settings.secondaryCurrency!] : []
 
   return (
-    <main className={styles.page}>
-      {/* Header */}
-      <div className={styles.header}>
-        <div className={styles.wordmarkRow}>
-          <span className={styles.wordmark}>SISA</span>
-          <span className={styles.wordmarkSub}>
-            {formatHeaderSub(nowMs, daysUntilPayday, lang)}
-          </span>
-        </div>
+    <div className={styles.shell}>
+      <main className={styles.page}>
+        {/* Header */}
+        <div className={styles.header}>
+          <div className={styles.wordmarkRow}>
+            <span className={styles.wordmark}>SISA</span>
+            <span className={styles.wordmarkSub}>
+              {formatHeaderSub(nowMs, daysUntilPayday, lang)}
+            </span>
+          </div>
 
-        <div className={styles.headerRight}>
-          {hasDualCurrency && (
-            <div className={styles.currencySegmented}>
-              {currencies.map((cur) => (
-                <button
-                  key={cur}
-                  className={
-                    cur === currency
-                      ? `${styles.currencyBtn} ${styles.currencyBtnActive}`
-                      : styles.currencyBtn
-                  }
-                  onClick={() => handleCurrencySwitch(cur)}
-                >
-                  {cur}
-                </button>
-              ))}
-            </div>
-          )}
-          <button
-            className={styles.settingsBtn}
-            onClick={() => navigate('/settings')}
-            aria-label="Pengaturan"
-          >
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 16 16"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
+          <div className={styles.headerRight}>
+            {hasDualCurrency && (
+              <div className={styles.currencySegmented}>
+                {currencies.map((cur) => (
+                  <button
+                    key={cur}
+                    className={
+                      cur === currency
+                        ? `${styles.currencyBtn} ${styles.currencyBtnActive}`
+                        : styles.currencyBtn
+                    }
+                    onClick={() => handleCurrencySwitch(cur)}
+                  >
+                    {cur}
+                  </button>
+                ))}
+              </div>
+            )}
+            <button
+              className={styles.settingsBtn}
+              onClick={() => navigate('/settings')}
+              aria-label="Pengaturan"
             >
-              <line x1="2" y1="4" x2="14" y2="4" />
-              <line x1="2" y1="8" x2="14" y2="8" />
-              <line x1="2" y1="12" x2="14" y2="12" />
-            </svg>
-          </button>
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              >
+                <line x1="2" y1="4" x2="14" y2="4" />
+                <line x1="2" y1="8" x2="14" y2="8" />
+                <line x1="2" y1="12" x2="14" y2="12" />
+              </svg>
+            </button>
+          </div>
         </div>
-      </div>
 
-      {/* Backup reminder (8.11) */}
-      {showBackupCard && (
-        <BackupCard
-          urgency={backupUrgency}
-          onDismiss={() => {
-            localStorage.setItem(BACKUP_DISMISS_KEY, String(nowMs))
-            reload()
-          }}
+        {/* Backup reminder (8.11) */}
+        {showBackupCard && (
+          <BackupCard
+            urgency={backupUrgency}
+            onDismiss={() => {
+              localStorage.setItem(BACKUP_DISMISS_KEY, String(nowMs))
+              reload()
+            }}
+          />
+        )}
+
+        {/* Notif */}
+        {hasUrgentTagihan(
+          tagihan.filter((t) => t.currency === currency),
+          nowMs,
+        ) && (
+          <NotifCard
+            tagihan={tagihan.filter((t) => t.currency === currency)}
+            nowMs={nowMs}
+            onClick={() => setUrgentSheetOpen(true)}
+          />
+        )}
+
+        {/* Saldo */}
+        <SaldoModule
+          wallets={wallets.filter((w) => w.currency === currency)}
+          currency={currency}
+          unpaidTagihanTotal={unpaidTagihanTotal}
+          totalNabung={totalNabung}
+          daysUntilPayday={daysUntilPayday}
+          yesterdaySpent={yesterdaySpent}
+          yesterdayEarned={yesterdayEarned}
+          onWalletTap={(w) => setEditWallet(w)}
+          onAddWalletTap={() => setWalletSheetOpen(true)}
         />
-      )}
 
-      {/* Notif */}
-      {hasUrgentTagihan(
-        tagihan.filter((t) => t.currency === currency),
-        nowMs,
-      ) && (
-        <NotifCard
-          tagihan={tagihan.filter((t) => t.currency === currency)}
+        {/* Monthly flow cards */}
+        {(monthlyIncome > 0 || monthlyExpense > 0) && (
+          <div className={styles.flowCards}>
+            <div className={styles.flowCard}>
+              <span className={styles.flowLabel}>{t('saldo.income_month', lang)}</span>
+              <span className={styles.flowAmountIn}>
+                {monthlyIncome > 0 ? `+${formatCurrency(monthlyIncome, currency)}` : '—'}
+              </span>
+            </div>
+            <div className={styles.flowCard}>
+              <span className={styles.flowLabel}>{t('saldo.expense_month', lang)}</span>
+              <span className={styles.flowAmountOut}>
+                {monthlyExpense > 0 ? `−${formatCurrency(monthlyExpense, currency)}` : '—'}
+              </span>
+            </div>
+          </div>
+        )}
+
+        <div className={styles.divider} />
+
+        {/* Budget */}
+        <BudgetModule
+          dailyBudget={dailyBudget}
+          spentToday={spentToday}
+          settings={settings}
+          currency={currency}
+          unpaidTagihanTotal={unpaidTagihanTotal}
+          totalSaldo={totalSaldo}
           nowMs={nowMs}
-          onClick={() => setUrgentSheetOpen(true)}
         />
-      )}
 
-      {/* Saldo */}
-      <SaldoModule
-        wallets={wallets.filter((w) => w.currency === currency)}
-        currency={currency}
-        unpaidTagihanTotal={unpaidTagihanTotal}
-        totalNabung={totalNabung}
-        daysUntilPayday={daysUntilPayday}
-        yesterdaySpent={yesterdaySpent}
-        yesterdayEarned={yesterdayEarned}
-        onWalletTap={(w) => setEditWallet(w)}
-        onAddWalletTap={() => setWalletSheetOpen(true)}
-      />
+        <div className={styles.divider} />
 
-      {/* Monthly flow cards */}
-      {(monthlyIncome > 0 || monthlyExpense > 0) && (
-        <div className={styles.flowCards}>
-          <div className={styles.flowCard}>
-            <span className={styles.flowLabel}>{t('saldo.income_month', lang)}</span>
-            <span className={styles.flowAmountIn}>
-              {monthlyIncome > 0 ? `+${formatCurrency(monthlyIncome, currency)}` : '—'}
-            </span>
-          </div>
-          <div className={styles.flowCard}>
-            <span className={styles.flowLabel}>{t('saldo.expense_month', lang)}</span>
-            <span className={styles.flowAmountOut}>
-              {monthlyExpense > 0 ? `−${formatCurrency(monthlyExpense, currency)}` : '—'}
-            </span>
-          </div>
-        </div>
-      )}
+        {/* Tagihan */}
+        <TagihanModule
+          tagihan={tagihan.filter((t) => t.currency === currency)}
+          currency={currency}
+          nowMs={nowMs}
+          onPayTap={(t) => setMarkPaidTagihan(t)}
+          onRowTap={(t) => setDetailTagihan(t)}
+          onAddTap={() => setTagihanSheetOpen(true)}
+        />
 
-      <div className={styles.divider} />
+        <div className={styles.divider} />
 
-      {/* Budget */}
-      <BudgetModule
-        dailyBudget={dailyBudget}
-        spentToday={spentToday}
-        settings={settings}
-        currency={currency}
-        unpaidTagihanTotal={unpaidTagihanTotal}
-        totalSaldo={totalSaldo}
-        nowMs={nowMs}
-      />
+        {/* Goal */}
+        <GoalModule
+          goals={goals.filter((g) => g.currency === currency)}
+          totalNabung={totalNabung}
+          currency={currency}
+          onReorder={handleGoalReorder}
+          onAddTap={() => setGoalSheetOpen(true)}
+          onGoalTap={() => setGoalSheetOpen(true)}
+        />
 
-      <div className={styles.divider} />
+        <div className={styles.divider} />
 
-      {/* Tagihan */}
-      <TagihanModule
-        tagihan={tagihan.filter((t) => t.currency === currency)}
-        currency={currency}
-        nowMs={nowMs}
-        onPayTap={(t) => setMarkPaidTagihan(t)}
-        onRowTap={(t) => setDetailTagihan(t)}
-        onAddTap={() => setTagihanSheetOpen(true)}
-      />
+        {/* Footer */}
+        <FooterCatatan
+          lastTransaction={lastTx}
+          currency={currency}
+          onShowHistory={() => setHistoryOpen(true)}
+          nowMs={nowMs}
+        />
+      </main>
 
-      <div className={styles.divider} />
-
-      {/* Goal */}
-      <GoalModule
-        goals={goals.filter((g) => g.currency === currency)}
-        totalNabung={totalNabung}
-        currency={currency}
-        onReorder={handleGoalReorder}
-        onAddTap={() => setGoalSheetOpen(true)}
-        onGoalTap={() => setGoalSheetOpen(true)}
-      />
-
-      <div className={styles.divider} />
-
-      {/* Footer */}
-      <FooterCatatan
-        lastTransaction={lastTx}
-        currency={currency}
-        onShowHistory={() => setHistoryOpen(true)}
-        nowMs={nowMs}
-      />
-
-      {/* Bottom action */}
       <BottomActionBar
         onCatat={() => setQuickLogOpen(true)}
         onCekDulu={() => navigate('/cek-dulu')}
         onAndai={() => navigate('/andai')}
       />
 
-      {/* Toast */}
+      {/* Toast (position: fixed, DOM position irrelevant) */}
       {toast && (
         <Toast
           message={toast.message}
@@ -479,7 +480,7 @@ export function HomePage() {
         />
       )}
 
-      {/* Sheets */}
+      {/* Sheets (position: fixed, DOM position irrelevant) */}
       {markPaidTagihan && (
         <MarkPaidSheet
           tagihan={markPaidTagihan}
@@ -592,6 +593,6 @@ export function HomePage() {
         nowMs={nowMs}
         onCommit={handleQuickLogCommit}
       />
-    </main>
+    </div>
   )
 }
