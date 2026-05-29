@@ -16,14 +16,13 @@ import type { WalletInput } from './onboarding.types'
 describe('getProgressCount', () => {
   it('language → 1', () => expect(getProgressCount('language')).toBe(1))
   it('license → 2', () => expect(getProgressCount('license')).toBe(2))
-  it('pwaInstall → 3', () => expect(getProgressCount('pwaInstall')).toBe(3))
-  it('mentalModel → 4', () => expect(getProgressCount('mentalModel')).toBe(4))
-  it('incomeType → 5', () => expect(getProgressCount('incomeType')).toBe(5))
-  it('incomeDetail → 5 (same dot as incomeType)', () =>
-    expect(getProgressCount('incomeDetail')).toBe(5))
-  it('currency → 6', () => expect(getProgressCount('currency')).toBe(6))
-  it('wallet → 7', () => expect(getProgressCount('wallet')).toBe(7))
-  it('currency2 → 7 (same dot as wallet)', () => expect(getProgressCount('currency2')).toBe(7))
+  it('mentalModel → 3', () => expect(getProgressCount('mentalModel')).toBe(3))
+  it('incomeType → 4', () => expect(getProgressCount('incomeType')).toBe(4))
+  it('incomeDetail → 4 (same dot as incomeType)', () =>
+    expect(getProgressCount('incomeDetail')).toBe(4))
+  it('currency → 5', () => expect(getProgressCount('currency')).toBe(5))
+  it('wallet → 6', () => expect(getProgressCount('wallet')).toBe(6))
+  it('currency2 → 6 (same dot as wallet)', () => expect(getProgressCount('currency2')).toBe(6))
   it('max filled equals TOTAL_PROGRESS_DOTS', () => {
     expect(getProgressCount('wallet')).toBe(TOTAL_PROGRESS_DOTS)
   })
@@ -39,11 +38,8 @@ describe('getNextStep', () => {
   it('installGuide → license', () => {
     expect(getNextStep('installGuide', null)).toBe('license')
   })
-  it('license → pwaInstall', () => {
-    expect(getNextStep('license', null)).toBe('pwaInstall')
-  })
-  it('pwaInstall → mentalModel', () => {
-    expect(getNextStep('pwaInstall', null)).toBe('mentalModel')
+  it('license → mentalModel', () => {
+    expect(getNextStep('license', null)).toBe('mentalModel')
   })
   it('mentalModel → incomeType', () => {
     expect(getNextStep('mentalModel', null)).toBe('incomeType')

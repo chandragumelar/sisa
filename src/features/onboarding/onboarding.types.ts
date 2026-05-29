@@ -4,7 +4,6 @@ export type OnboardingStep =
   | 'language'
   | 'installGuide'
   | 'license'
-  | 'pwaInstall'
   | 'mentalModel'
   | 'incomeType'
   | 'incomeDetail'
