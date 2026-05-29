@@ -75,7 +75,15 @@ export function Step2License({ onNext }: Props) {
         {isLoading ? t('ob.step2.verify', lang) : t('ob.step2.activate', lang)}
       </button>
 
-      <button className="ob-link" onClick={() => window.open('#', '_blank')}>
+      <button
+        className="ob-link"
+        onClick={() =>
+          window.open(
+            'https://clicky.id/warung-dgt/sisa-app-budget-tracker-finance-tracker-planner-expense',
+            '_blank',
+          )
+        }
+      >
         {t('ob.step2.buy_cta', lang)}
       </button>
     </>

@@ -147,31 +147,34 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
       getAllWallets(),
       getActiveTagihan(),
       getAllGoals(),
-      getLastTransaction(),
       getTransactionsByDateRange(todayStart, tomorrowStart),
       getTransactionsByDateRange(yesterdayStart, todayStart),
-    ]).then(([settings, wallets, tagihan, goals, lastTx, todayTxs, yesterdayTxs]) => {
+    ]).then(([settings, wallets, tagihan, goals, todayTxsAll, yesterdayTxsAll]) => {
       if (cancelled || !settings) return
       const currency = settings.activeCurrencyMode || settings.primaryCurrency
-      Promise.all([getTotalNabung(currency), getMonthlyFlows(currency, monthStart, monthEnd)]).then(
-        ([totalNabung, { income: monthlyIncome, expense: monthlyExpense }]) => {
-          if (!cancelled) {
-            setData({
-              settings,
-              wallets,
-              tagihan,
-              goals,
-              lastTx,
-              todayTxs,
-              yesterdayTxs,
-              totalNabung,
-              monthlyIncome,
-              monthlyExpense,
-            })
-            setIsLoading(false)
-          }
-        },
-      )
+      const todayTxs = todayTxsAll.filter((tx) => tx.currency === currency)
+      const yesterdayTxs = yesterdayTxsAll.filter((tx) => tx.currency === currency)
+      Promise.all([
+        getTotalNabung(currency),
+        getMonthlyFlows(currency, monthStart, monthEnd),
+        getLastTransaction(currency),
+      ]).then(([totalNabung, { income: monthlyIncome, expense: monthlyExpense }, lastTx]) => {
+        if (!cancelled) {
+          setData({
+            settings,
+            wallets,
+            tagihan,
+            goals,
+            lastTx,
+            todayTxs,
+            yesterdayTxs,
+            totalNabung,
+            monthlyIncome,
+            monthlyExpense,
+          })
+          setIsLoading(false)
+        }
+      })
     })
 
     return () => {
