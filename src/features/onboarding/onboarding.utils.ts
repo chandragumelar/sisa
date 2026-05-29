@@ -5,6 +5,7 @@ export const TOTAL_PROGRESS_DOTS = 6
 
 const STEP_PROGRESS: Record<OnboardingStep, number> = {
   language: 1,
+  installGuide: 1,
   license: 2,
   mentalModel: 3,
   incomeType: 4,
@@ -24,6 +25,8 @@ export function getNextStep(
 ): OnboardingStep | 'done' {
   switch (current) {
     case 'language':
+      return 'installGuide'
+    case 'installGuide':
       return 'license'
     case 'license':
       return 'mentalModel'

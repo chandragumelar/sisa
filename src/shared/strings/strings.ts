@@ -17,6 +17,15 @@ export type StringKey =
   // update banner
   | 'update_banner.msg'
   | 'update_banner.reload'
+  // onboarding install guide
+  | 'ob.install.heading'
+  | 'ob.install.sub'
+  | 'ob.install.ios_label'
+  | 'ob.install.ios_steps'
+  | 'ob.install.android_label'
+  | 'ob.install.android_steps'
+  | 'ob.install.cta'
+  | 'ob.install.skip'
   // onboarding step 2
   | 'ob.step2.heading'
   | 'ob.step2.sub'
@@ -430,6 +439,17 @@ const id: StringDictionary = {
   'common.days': 'hari',
   'update_banner.msg': 'versi baru tersedia',
   'update_banner.reload': 'muat ulang ›',
+
+  'ob.install.heading': 'Pasang di layar utama',
+  'ob.install.sub':
+    'Data SISA ada di HP lo, bukan server. Pasang di layar utama supaya data lebih aman dan gak gampang hilang.',
+  'ob.install.ios_label': 'iPhone (Safari)',
+  'ob.install.ios_steps': 'Tap ikon Share → pilih Add to Home Screen → tap Add',
+  'ob.install.android_label': 'Android (Chrome)',
+  'ob.install.android_steps':
+    'Tap menu titik tiga → pilih Add to Home Screen atau Install App → tap Install',
+  'ob.install.cta': 'Sudah dipasang',
+  'ob.install.skip': 'Nanti dulu ›',
 
   'ob.step2.heading': 'Tempel kode lisensi',
   'ob.step2.sub': 'Kode dikirim ke email lo abis beli.',
@@ -847,6 +867,17 @@ const en: StringDictionary = {
   'common.days': 'days',
   'update_banner.msg': 'new version available',
   'update_banner.reload': 'reload ›',
+
+  'ob.install.heading': 'Add to home screen',
+  'ob.install.sub':
+    "SISA's data lives on your phone, not a server. Adding to your home screen keeps it safe.",
+  'ob.install.ios_label': 'iPhone (Safari)',
+  'ob.install.ios_steps': 'Tap the Share icon → Add to Home Screen → Add',
+  'ob.install.android_label': 'Android (Chrome)',
+  'ob.install.android_steps':
+    'Tap the three-dot menu → Add to Home Screen or Install App → Install',
+  'ob.install.cta': "Done, it's added",
+  'ob.install.skip': 'Skip for now ›',
 
   'ob.step2.heading': 'Paste your license key',
   'ob.step2.sub': 'Your key was emailed right after purchase.',
