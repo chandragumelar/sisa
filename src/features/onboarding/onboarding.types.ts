@@ -3,6 +3,7 @@ import type { IncomeType, Language } from '@/db/database'
 export type OnboardingStep =
   | 'language'
   | 'license'
+  | 'pwaInstall'
   | 'mentalModel'
   | 'incomeType'
   | 'incomeDetail'

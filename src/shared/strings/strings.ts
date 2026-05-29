@@ -27,6 +27,20 @@ export type StringKey =
   | 'ob.step2.err_expired'
   | 'ob.step2.err_invalid'
   | 'ob.step2.err_other'
+  // onboarding pwa install guide
+  | 'ob.pwa_install.heading'
+  | 'ob.pwa_install.ios_label'
+  | 'ob.pwa_install.ios_step1'
+  | 'ob.pwa_install.ios_step2'
+  | 'ob.pwa_install.ios_step3'
+  | 'ob.pwa_install.ios_hint'
+  | 'ob.pwa_install.android_label'
+  | 'ob.pwa_install.android_step1'
+  | 'ob.pwa_install.android_step2'
+  | 'ob.pwa_install.android_step3'
+  | 'ob.pwa_install.cta'
+  | 'ob.pwa_install.skip'
+  | 'ob.pwa_install.tooltip'
   // onboarding step 3
   | 'ob.step3.heading'
   | 'ob.step3.body1'
@@ -440,6 +454,21 @@ const id: StringDictionary = {
   'ob.step2.err_expired': 'kode sudah expired — perpanjang atau beli baru ›',
   'ob.step2.err_invalid': 'kode ga valid, cek email lo lagi',
   'ob.step2.err_other': 'terjadi kesalahan, coba lagi',
+
+  'ob.pwa_install.heading': 'Pasang di layar utama biar kayak app beneran',
+  'ob.pwa_install.ios_label': 'iPhone',
+  'ob.pwa_install.ios_step1':
+    'Tap ikon Bagikan — tombol kotak dengan panah ke atas, di tengah bawah layar',
+  'ob.pwa_install.ios_step2': 'Scroll ke bawah, pilih "Tambahkan ke Layar Utama"',
+  'ob.pwa_install.ios_step3': 'Tap Tambah di pojok kanan atas',
+  'ob.pwa_install.ios_hint': 'Gak ketemu opsinya? Coba buka di Safari ya.',
+  'ob.pwa_install.android_label': 'Android',
+  'ob.pwa_install.android_step1': 'Tap ⋮ — tiga titik di pojok kanan atas',
+  'ob.pwa_install.android_step2': 'Pilih "Tambahkan ke layar utama" atau "Instal aplikasi"',
+  'ob.pwa_install.android_step3': 'Tap Tambah atau Instal',
+  'ob.pwa_install.cta': 'Pasang sekarang',
+  'ob.pwa_install.skip': 'Lewati',
+  'ob.pwa_install.tooltip': 'Ikuti langkah di atas ya',
 
   'ob.step3.heading': 'SISA bukan tracker',
   'ob.step3.body1': 'app jawab satu hal: aman ga gue beli ini sekarang?',
@@ -857,6 +886,21 @@ const en: StringDictionary = {
   'ob.step2.err_expired': 'key expired — renew or buy a new one ›',
   'ob.step2.err_invalid': 'invalid key — double-check your email',
   'ob.step2.err_other': 'something went wrong, try again',
+
+  'ob.pwa_install.heading': 'Add to home screen for the full app experience',
+  'ob.pwa_install.ios_label': 'iPhone',
+  'ob.pwa_install.ios_step1':
+    'Tap the Share icon — the box with an arrow at the bottom of your screen',
+  'ob.pwa_install.ios_step2': 'Scroll down and tap "Add to Home Screen"',
+  'ob.pwa_install.ios_step3': 'Tap Add in the top right corner',
+  'ob.pwa_install.ios_hint': "Can't find it? Try opening this page in Safari.",
+  'ob.pwa_install.android_label': 'Android',
+  'ob.pwa_install.android_step1': 'Tap ⋮ — three dots in the top right corner',
+  'ob.pwa_install.android_step2': 'Select "Add to home screen" or "Install app"',
+  'ob.pwa_install.android_step3': 'Tap Add or Install',
+  'ob.pwa_install.cta': 'Add now',
+  'ob.pwa_install.skip': 'Skip',
+  'ob.pwa_install.tooltip': 'Follow the steps above',
 
   'ob.step3.heading': "SISA isn't a tracker",
   'ob.step3.body1': 'One question: can I buy this right now?',

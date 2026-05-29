@@ -1,17 +1,18 @@
 import type { Settings, Wallet, IncomeType, Language } from '@/db/database'
 import type { OnboardingStep, WalletInput } from './onboarding.types'
 
-export const TOTAL_PROGRESS_DOTS = 6
+export const TOTAL_PROGRESS_DOTS = 7
 
 const STEP_PROGRESS: Record<OnboardingStep, number> = {
   language: 1,
   license: 2,
-  mentalModel: 3,
-  incomeType: 4,
-  incomeDetail: 4,
-  currency: 5,
-  wallet: 6,
-  currency2: 6,
+  pwaInstall: 3,
+  mentalModel: 4,
+  incomeType: 5,
+  incomeDetail: 5,
+  currency: 6,
+  wallet: 7,
+  currency2: 7,
 }
 
 export function getProgressCount(step: OnboardingStep): number {
@@ -26,6 +27,8 @@ export function getNextStep(
     case 'language':
       return 'license'
     case 'license':
+      return 'pwaInstall'
+    case 'pwaInstall':
       return 'mentalModel'
     case 'mentalModel':
       return 'incomeType'
