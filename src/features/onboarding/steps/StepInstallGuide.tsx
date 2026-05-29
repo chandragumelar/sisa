@@ -1,5 +1,6 @@
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
+import styles from './StepInstallGuide.module.css'
 
 interface Props {
   onNext: () => void
@@ -11,16 +12,24 @@ export function StepInstallGuide({ onNext }: Props) {
   return (
     <>
       <h1 className="ob-heading">{t('ob.install.heading', lang)}</h1>
-      <p className="ob-subheading">{t('ob.install.sub', lang)}</p>
 
-      <div className="ob-install-section">
-        <p className="ob-install-label">{t('ob.install.ios_label', lang)}</p>
-        <p className="ob-install-steps">{t('ob.install.ios_steps', lang)}</p>
+      <div className={styles.card}>
+        <p className={styles.platform}>{t('ob.install.ios_label', lang)}</p>
+        <ol className={styles.steps}>
+          <li>{t('ob.install.ios_step1', lang)}</li>
+          <li>{t('ob.install.ios_step2', lang)}</li>
+          <li>{t('ob.install.ios_step3', lang)}</li>
+        </ol>
+        <p className={styles.hint}>{t('ob.install.ios_hint', lang)}</p>
       </div>
 
-      <div className="ob-install-section">
-        <p className="ob-install-label">{t('ob.install.android_label', lang)}</p>
-        <p className="ob-install-steps">{t('ob.install.android_steps', lang)}</p>
+      <div className={styles.card}>
+        <p className={styles.platform}>{t('ob.install.android_label', lang)}</p>
+        <ol className={styles.steps}>
+          <li>{t('ob.install.android_step1', lang)}</li>
+          <li>{t('ob.install.android_step2', lang)}</li>
+          <li>{t('ob.install.android_step3', lang)}</li>
+        </ol>
       </div>
 
       <div className="ob-grow" />

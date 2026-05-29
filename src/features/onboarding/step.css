@@ -303,31 +303,6 @@
   border-color: var(--bahaya-br);
 }
 
-/* Install guide sections */
-.ob-install-section {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  padding: 14px;
-  margin-bottom: 10px;
-}
-
-.ob-install-label {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.8px;
-  text-transform: uppercase;
-  color: var(--muted);
-  font-family: var(--font-mono);
-  margin-bottom: 6px;
-}
-
-.ob-install-steps {
-  font-size: 14px;
-  color: var(--ink-soft);
-  line-height: 1.6;
-}
-
 /* Dashed "add another" button */
 .ob-add-line {
   font-size: 13px;

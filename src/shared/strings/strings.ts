@@ -19,11 +19,15 @@ export type StringKey =
   | 'update_banner.reload'
   // onboarding install guide
   | 'ob.install.heading'
-  | 'ob.install.sub'
   | 'ob.install.ios_label'
-  | 'ob.install.ios_steps'
+  | 'ob.install.ios_step1'
+  | 'ob.install.ios_step2'
+  | 'ob.install.ios_step3'
+  | 'ob.install.ios_hint'
   | 'ob.install.android_label'
-  | 'ob.install.android_steps'
+  | 'ob.install.android_step1'
+  | 'ob.install.android_step2'
+  | 'ob.install.android_step3'
   | 'ob.install.cta'
   | 'ob.install.skip'
   // onboarding step 2
@@ -440,14 +444,17 @@ const id: StringDictionary = {
   'update_banner.msg': 'versi baru tersedia',
   'update_banner.reload': 'muat ulang ›',
 
-  'ob.install.heading': 'Pasang di layar utama',
-  'ob.install.sub':
-    'Data SISA ada di HP lo, bukan server. Pasang di layar utama supaya data lebih aman dan gak gampang hilang.',
-  'ob.install.ios_label': 'iPhone (Safari)',
-  'ob.install.ios_steps': 'Tap ikon Share → pilih Add to Home Screen → tap Add',
-  'ob.install.android_label': 'Android (Chrome)',
-  'ob.install.android_steps':
-    'Tap menu titik tiga → pilih Add to Home Screen atau Install App → tap Install',
+  'ob.install.heading': 'Pasang di layar utama biar kayak app beneran',
+  'ob.install.ios_label': 'iPhone',
+  'ob.install.ios_step1':
+    'Tap ikon Bagikan — tombol kotak dengan panah ke atas, di tengah bawah layar',
+  'ob.install.ios_step2': 'Scroll ke bawah, pilih "Tambahkan ke Layar Utama"',
+  'ob.install.ios_step3': 'Tap Tambah di pojok kanan atas',
+  'ob.install.ios_hint': 'Gak ketemu opsinya? Coba buka di Safari ya.',
+  'ob.install.android_label': 'Android',
+  'ob.install.android_step1': 'Tap ⋮ — tiga titik di pojok kanan atas',
+  'ob.install.android_step2': 'Pilih "Tambahkan ke layar utama" atau "Instal aplikasi"',
+  'ob.install.android_step3': 'Tap Tambah atau Instal',
   'ob.install.cta': 'Sudah dipasang',
   'ob.install.skip': 'Nanti dulu ›',
 
@@ -868,14 +875,16 @@ const en: StringDictionary = {
   'update_banner.msg': 'new version available',
   'update_banner.reload': 'reload ›',
 
-  'ob.install.heading': 'Add to home screen',
-  'ob.install.sub':
-    "SISA's data lives on your phone, not a server. Adding to your home screen keeps it safe.",
-  'ob.install.ios_label': 'iPhone (Safari)',
-  'ob.install.ios_steps': 'Tap the Share icon → Add to Home Screen → Add',
-  'ob.install.android_label': 'Android (Chrome)',
-  'ob.install.android_steps':
-    'Tap the three-dot menu → Add to Home Screen or Install App → Install',
+  'ob.install.heading': 'Add to home screen for the full app experience',
+  'ob.install.ios_label': 'iPhone',
+  'ob.install.ios_step1': 'Tap the Share icon — the box with an arrow at the bottom of your screen',
+  'ob.install.ios_step2': 'Scroll down and tap "Add to Home Screen"',
+  'ob.install.ios_step3': 'Tap Add in the top right corner',
+  'ob.install.ios_hint': "Can't find it? Try opening this page in Safari.",
+  'ob.install.android_label': 'Android',
+  'ob.install.android_step1': 'Tap ⋮ — three dots in the top right corner',
+  'ob.install.android_step2': 'Select "Add to home screen" or "Install app"',
+  'ob.install.android_step3': 'Tap Add or Install',
   'ob.install.cta': "Done, it's added",
   'ob.install.skip': 'Skip for now ›',
 
