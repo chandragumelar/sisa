@@ -1,10 +1,7 @@
 .bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
   padding: 8px 16px calc(8px + env(safe-area-inset-bottom, 0px));
   background: transparent;
+  flex-shrink: 0;
 }
 
 .container {
