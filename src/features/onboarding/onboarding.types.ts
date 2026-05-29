@@ -2,6 +2,7 @@ import type { IncomeType, Language } from '@/db/database'
 
 export type OnboardingStep =
   | 'language'
+  | 'installGuide'
   | 'license'
   | 'mentalModel'
   | 'incomeType'

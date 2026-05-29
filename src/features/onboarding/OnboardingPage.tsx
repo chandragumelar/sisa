@@ -7,6 +7,7 @@ import { saveSettings } from '@/db/settings.repository'
 import { addWallet } from '@/db/wallets.repository'
 import { OnboardingShell } from './components/OnboardingShell'
 import { Step1Language } from './steps/Step1Language'
+import { StepInstallGuide } from './steps/StepInstallGuide'
 import { Step2License } from './steps/Step2License'
 import { Step3MentalModel } from './steps/Step3MentalModel'
 import { Step4aIncomeType } from './steps/Step4aIncomeType'
@@ -77,6 +78,7 @@ export function OnboardingPage() {
   return (
     <OnboardingShell step={step}>
       {step === 'language' && <Step1Language onNext={(lang) => advance({ language: lang })} />}
+      {step === 'installGuide' && <StepInstallGuide onNext={() => advance()} />}
       {step === 'license' && <Step2License onNext={() => advance()} />}
       {step === 'mentalModel' && <Step3MentalModel onNext={() => advance()} />}
       {step === 'incomeType' && (
