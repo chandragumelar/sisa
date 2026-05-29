@@ -1,9 +1,9 @@
 import { db } from './database'
 import type { Transaction } from './database'
 
-export async function getLastTransaction(): Promise<Transaction | undefined> {
-  const all = await db.transactions.orderBy('date').reverse().limit(1).toArray()
-  return all[0]
+export async function getLastTransaction(currency: string): Promise<Transaction | undefined> {
+  const all = await db.transactions.where('currency').equals(currency).sortBy('date')
+  return all[all.length - 1]
 }
 
 export async function getTransactionsByDateRange(
