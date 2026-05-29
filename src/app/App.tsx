@@ -6,7 +6,6 @@ import { applyTheme } from '@/shared/utils/theme'
 import { applyLanguage } from '@/shared/utils/language'
 import { UpdateBanner } from './UpdateBanner'
 import { LanguageProvider } from './providers/LanguageProvider'
-import { PwaInstallProvider } from './providers/PwaInstallProvider'
 
 export function App() {
   useEffect(() => {
@@ -19,11 +18,9 @@ export function App() {
   }, [])
 
   return (
-    <PwaInstallProvider>
-      <LanguageProvider>
-        <RouterProvider router={router} />
-        <UpdateBanner />
-      </LanguageProvider>
-    </PwaInstallProvider>
+    <LanguageProvider>
+      <RouterProvider router={router} />
+      <UpdateBanner />
+    </LanguageProvider>
   )
 }
