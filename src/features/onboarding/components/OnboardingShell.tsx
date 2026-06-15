@@ -17,9 +17,12 @@ export function OnboardingShell({ step, children }: OnboardingShellProps) {
     <div className={styles.screen}>
       <div className={styles.header}>
         <div className={styles.segments} aria-hidden="true">
-          {Array.from({ length: TOTAL_PROGRESS_DOTS }, (_, i) => (
-            <span key={i} className={i < filled ? styles.segmentActive : styles.segment} />
-          ))}
+          {Array.from({ length: TOTAL_PROGRESS_DOTS }, (_, i) => {
+            let cls = styles.segment
+            if (i < filled - 1) cls = styles.segmentDone
+            else if (i === filled - 1) cls = styles.segmentActive
+            return <span key={i} className={cls} />
+          })}
         </div>
         <div className={styles.stepLabel}>
           {filledStr} / {totalStr}
