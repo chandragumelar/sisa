@@ -4,18 +4,18 @@
    ============================================================ */
 
 .ob-heading {
-  font-family: var(--font-display);
-  font-size: 22px;
+  font-family: var(--font-sans);
+  font-size: 24px;
   font-weight: 700;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.5px;
   line-height: 1.15;
-  color: var(--ink);
+  color: var(--ink-primary);
   margin-bottom: 6px;
 }
 
 .ob-subheading {
-  font-size: 13px;
-  color: var(--muted);
+  font-size: 14px;
+  color: var(--ink-tertiary);
   line-height: 1.5;
   margin-bottom: 18px;
 }
@@ -28,35 +28,39 @@
 /* Primary CTA */
 .ob-primary-btn {
   width: 100%;
-  background: var(--ink);
-  color: var(--bg);
+  background: var(--accent);
+  color: var(--accent-text);
   border: none;
-  border-radius: 16px;
+  border-radius: var(--radius-button);
   padding: 14px 18px;
   font-size: 15px;
   font-weight: 600;
   letter-spacing: -0.01em;
   cursor: pointer;
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
   text-align: center;
+  transition: background 0.15s;
 }
 .ob-primary-btn:disabled {
   opacity: 0.38;
   cursor: not-allowed;
+}
+.ob-primary-btn:active:not(:disabled) {
+  background: var(--accent-hover);
 }
 
 /* Ghost / secondary button */
 .ob-ghost-btn {
   width: 100%;
   background: var(--surface);
-  color: var(--ink);
-  border: 1px solid var(--line);
-  border-radius: 16px;
+  color: var(--ink-primary);
+  border: 1px solid var(--border-hair);
+  border-radius: var(--radius-button);
   padding: 14px 18px;
   font-size: 15px;
   font-weight: 500;
   cursor: pointer;
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
 }
 
 /* Side-by-side button row */
@@ -71,20 +75,20 @@
 /* Skip link */
 .ob-skip {
   font-size: 13px;
-  color: var(--muted);
+  color: var(--ink-tertiary);
   text-align: center;
   padding-top: 10px;
   background: none;
   border: none;
   cursor: pointer;
   width: 100%;
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
 }
 
 /* Underlined text link */
 .ob-link {
   font-size: 13px;
-  color: var(--ink-soft);
+  color: var(--ink-secondary);
   text-align: center;
   padding-top: 12px;
   background: none;
@@ -92,28 +96,32 @@
   cursor: pointer;
   width: 100%;
   text-decoration: underline;
-  text-decoration-color: var(--line);
-  font-family: var(--font-display);
+  text-decoration-color: var(--border-hair);
+  font-family: var(--font-sans);
 }
 
 /* Selectable option card */
 .ob-option {
   background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  padding: 14px 13px;
+  border: 2px solid var(--border-hair);
+  border-radius: var(--radius-card);
+  padding: 16px 18px;
   display: flex;
+  justify-content: space-between;
   align-items: center;
   gap: 11px;
   margin-bottom: 8px;
   cursor: pointer;
   width: 100%;
   text-align: left;
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
+  transition:
+    border-color 0.15s,
+    background 0.15s;
 }
 .ob-option-selected {
-  border-color: var(--ink);
-  box-shadow: 0 0 0 1px var(--ink);
+  border-color: var(--accent);
+  background: var(--accent-bg);
 }
 
 /* Custom radio dot */
@@ -121,32 +129,36 @@
   width: 17px;
   height: 17px;
   border-radius: 50%;
-  border: 1.5px solid var(--muted);
+  border: 1.5px solid var(--border-hair);
   flex-shrink: 0;
   position: relative;
 }
 .ob-option-selected .ob-radio {
-  border-color: var(--ink);
+  border-color: var(--accent);
 }
 .ob-option-selected .ob-radio::after {
   content: '';
   position: absolute;
   inset: 3px;
   border-radius: 50%;
-  background: var(--ink);
+  background: var(--accent);
 }
 
 .ob-option-label {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--ink);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink-primary);
   flex: 1;
+}
+.ob-option-selected .ob-option-label {
+  color: var(--accent);
 }
 .ob-option-sub {
   display: block;
   font-size: 11px;
-  color: var(--muted);
+  color: var(--ink-tertiary);
   margin-top: 2px;
+  font-weight: 400;
 }
 
 /* Code chip (ID / EN in language step) */
@@ -154,8 +166,8 @@
   font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 500;
-  color: var(--ink-soft);
-  background: var(--surface-deep);
+  color: var(--ink-secondary);
+  background: var(--surface-2);
   padding: 3px 6px;
   border-radius: 4px;
   flex-shrink: 0;
@@ -167,25 +179,25 @@
 }
 .ob-field-label {
   font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.8px;
+  font-weight: 700;
+  letter-spacing: 1px;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--ink-tertiary);
   margin-bottom: 6px;
   display: block;
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
 }
 
 /* Plain text / mono input */
 .ob-input {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-hair);
+  border-radius: var(--radius-button);
   padding: 12px;
   font-size: 14px;
-  color: var(--ink);
+  color: var(--ink-primary);
   width: 100%;
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
   display: block;
   box-sizing: border-box;
 }
@@ -203,9 +215,9 @@
 .ob-input-row {
   display: flex;
   align-items: center;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-hair);
+  border-radius: var(--radius-button);
   overflow: hidden;
 }
 .ob-input-row:focus-within {
@@ -216,7 +228,7 @@
   padding: 12px 8px 12px 12px;
   font-size: 13px;
   font-weight: 500;
-  color: var(--ink-soft);
+  color: var(--ink-secondary);
   font-family: var(--font-mono);
   flex-shrink: 0;
   user-select: none;
@@ -226,29 +238,29 @@
   flex: 1;
   padding: 12px 12px 12px 0;
   font-size: 14px;
-  color: var(--ink);
+  color: var(--ink-primary);
   background: none;
   border: none;
   outline: none;
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
   min-width: 0;
 }
 
 /* Select / picker trigger */
 .ob-select-trigger {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-hair);
+  border-radius: var(--radius-button);
   padding: 12px;
   font-size: 14px;
-  color: var(--ink);
+  color: var(--ink-primary);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
   cursor: pointer;
   width: 100%;
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
 }
 .ob-select-trigger:focus {
   outline: none;
@@ -256,7 +268,7 @@
   box-shadow: 0 0 0 1px var(--accent);
 }
 .ob-select-placeholder {
-  color: var(--muted);
+  color: var(--ink-tertiary);
 }
 .ob-select-value {
   font-weight: 500;
@@ -265,7 +277,7 @@
 /* Helper / hint text */
 .ob-hint {
   font-size: 11px;
-  color: var(--muted);
+  color: var(--ink-tertiary);
   line-height: 1.5;
   margin-top: -4px;
   margin-bottom: 14px;
@@ -275,7 +287,7 @@
 /* Inline error */
 .ob-error {
   font-size: 11px;
-  color: var(--bahaya-br);
+  color: var(--signal-danger);
   margin-top: 6px;
   line-height: 1.4;
 }
@@ -285,35 +297,35 @@
   padding-left: 12px;
 }
 
-/* Small inline remove button (✕) — not a full-width ghost CTA */
+/* Small inline remove button (✕) */
 .ob-remove-btn {
   flex-shrink: 0;
   background: none;
-  border: 1px solid var(--line);
-  border-radius: 8px;
+  border: 1px solid var(--border-hair);
+  border-radius: var(--radius-button);
   padding: 6px 8px;
   font-size: 12px;
-  color: var(--muted);
+  color: var(--ink-tertiary);
   cursor: pointer;
   line-height: 1;
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
 }
 .ob-remove-btn:hover {
-  color: var(--bahaya-br);
-  border-color: var(--bahaya-br);
+  color: var(--signal-danger);
+  border-color: var(--signal-danger);
 }
 
 /* Dashed "add another" button */
 .ob-add-line {
   font-size: 13px;
-  color: var(--ink-soft);
+  color: var(--ink-secondary);
   padding: 11px 0;
   text-align: center;
-  border: 1px dashed var(--line);
-  border-radius: 12px;
+  border: 1px dashed var(--border-hair);
+  border-radius: var(--radius-button);
   margin-bottom: 10px;
   background: none;
   cursor: pointer;
   width: 100%;
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
 }
