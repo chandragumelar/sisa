@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useClock } from '@/app/providers/useClock'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
@@ -80,11 +80,15 @@ function getVerdictInfo(
 export function CekDuluPage() {
   const clock = useClock()
   const navigate = useNavigate()
+  const location = useLocation()
   const lang = useLanguage()
   const nowMs = clock.now()
 
   const [data, setData] = useState<PageData | null>(null)
-  const [amountStr, setAmountStr] = useState('')
+  const [amountStr, setAmountStr] = useState(() => {
+    const initial = (location.state as { initialAmount?: number } | null)?.initialAmount
+    return initial ? formatNominalDisplay(parseNominalRaw(String(initial))) : ''
+  })
   const [quickLogOpen, setQuickLogOpen] = useState(false)
 
   useEffect(() => {
@@ -135,13 +139,19 @@ export function CekDuluPage() {
 
   return (
     <div className={styles.page}>
-      <div className={styles.grab} />
-
       <div className={styles.head}>
-        <div>
-          <div className={styles.title}>{t('cek_dulu.title', lang)}</div>
-          <div className={styles.sub}>{t('cek_dulu.sub', lang)}</div>
-        </div>
+        <button className={styles.backBtn} onClick={() => navigate(-1)} aria-label="Kembali">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path
+              d="M10 3L5 8L10 13"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+        <span className={styles.title}>{t('cek_dulu.title', lang)}</span>
         <button
           className={styles.closeBtn}
           onClick={() => navigate(-1)}

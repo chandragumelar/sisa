@@ -335,11 +335,11 @@
 }
 
 .diffPos {
-  color: var(--aman-fg);
+  color: var(--signal-safe);
 }
 
 .diffNeg {
-  color: var(--bahaya-br);
+  color: var(--signal-danger);
 }
 
 /* Inline name edit */
@@ -437,12 +437,12 @@
 
 .errorMsg {
   font-size: 12px;
-  color: var(--bahaya-br);
+  color: var(--signal-danger);
 }
 
 .successMsg {
   font-size: 12px;
-  color: var(--aman-fg);
+  color: var(--signal-safe);
 }
 
 .buyLink {
@@ -493,7 +493,7 @@
 }
 
 .dangerBtn {
-  background: var(--bahaya-br);
+  background: var(--signal-danger);
   color: var(--bg);
   font-size: 13px;
   font-weight: 600;
@@ -505,7 +505,7 @@
 
 .dangerGhostBtn {
   background: none;
-  color: var(--bahaya-br);
+  color: var(--signal-danger);
   font-size: 13px;
   font-weight: 500;
   border: none;

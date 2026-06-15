@@ -30,10 +30,10 @@ import styles from './AndaiPage.module.css'
 type AddKind = AndaiKind
 
 const KIND_RAIL_COLOR: Record<AndaiKind, string> = {
-  beli: 'var(--bahaya-br)',
-  income: 'var(--aman-br)',
-  tagihan: 'var(--mepet-br)',
-  'target-nabung': 'var(--accent)',
+  beli: 'var(--signal-danger-br)',
+  income: 'var(--signal-safe-br)',
+  tagihan: 'var(--signal-caution-br)',
+  'target-nabung': '#bfdbfe',
 }
 
 function kindLabel(kind: AndaiKind, lang: Language): string {

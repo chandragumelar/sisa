@@ -28,7 +28,7 @@
 .rowValueUrgent {
   font-size: 13px;
   font-weight: 500;
-  color: var(--bahaya-br);
+  color: var(--signal-danger);
 }
 
 .payBtn {
@@ -62,7 +62,7 @@
   width: 100%;
   padding: 11px;
   background: none;
-  color: var(--bahaya-br);
+  color: var(--signal-danger);
   border: none;
   border-radius: 12px;
   font-size: 14px;
@@ -72,7 +72,7 @@
 }
 
 .dangerBtn {
-  background: var(--bahaya-br);
+  background: var(--signal-danger);
   color: var(--bg);
   font-size: 13px;
   font-weight: 600;
@@ -137,7 +137,7 @@
 .urgentMeta {
   font-size: 10.5px;
   font-weight: 500;
-  color: var(--bahaya-br);
+  color: var(--signal-danger);
 }
 
 .urgentRight {
