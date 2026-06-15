@@ -1,7 +1,7 @@
 .card {
-  background: var(--bahaya-bg);
-  border: 1px solid var(--bahaya-br);
-  border-left: 3px solid var(--bahaya-br);
+  background: var(--signal-danger-bg);
+  border: 1px solid var(--signal-danger-br);
+  border-left: 3px solid var(--signal-danger-br);
   border-radius: 14px;
   padding: 11px 12px;
   display: flex;
@@ -13,7 +13,7 @@
 
 .icon {
   flex-shrink: 0;
-  color: var(--bahaya-br);
+  color: var(--signal-danger);
   display: inline-flex;
 }
 
@@ -27,5 +27,5 @@
 .chev {
   font-size: 14px;
   font-weight: 500;
-  color: var(--bahaya-br);
+  color: var(--signal-danger);
 }

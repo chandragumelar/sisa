@@ -10,8 +10,8 @@
 }
 
 .cardHigh {
-  background: var(--bahaya-bg);
-  border-color: var(--bahaya-br);
+  background: var(--signal-danger-bg);
+  border-color: var(--signal-danger-br);
 }
 
 .icon {

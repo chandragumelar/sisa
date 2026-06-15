@@ -99,9 +99,9 @@
 
 .savingsWarning {
   font-size: 12px;
-  color: var(--mepet-br);
-  background: rgba(181, 104, 10, 0.08);
-  border: 1px solid rgba(181, 104, 10, 0.2);
+  color: var(--signal-caution);
+  background: var(--signal-caution-bg);
+  border: 1px solid var(--signal-caution-br);
   border-radius: 10px;
   padding: 8px 12px;
   margin-bottom: 12px;

@@ -82,7 +82,7 @@
 
 .warning {
   font-size: 11.5px;
-  color: var(--bahaya-br);
+  color: var(--signal-danger);
   margin-top: 6px;
 }
 

@@ -106,11 +106,11 @@
 }
 
 .diffPos {
-  color: var(--aman-br);
+  color: var(--signal-safe);
 }
 
 .diffNeg {
-  color: var(--bahaya-br);
+  color: var(--signal-danger);
 }
 
 .optionBtn {
@@ -185,7 +185,7 @@
 
 .dangerGhostBtn {
   background: none;
-  color: var(--bahaya-br);
+  color: var(--signal-danger);
   font-size: 13px;
   font-weight: 500;
   border: none;
@@ -197,7 +197,7 @@
 }
 
 .dangerBtn {
-  background: var(--bahaya-br);
+  background: var(--signal-danger);
   color: var(--bg);
   font-size: 13px;
   font-weight: 600;

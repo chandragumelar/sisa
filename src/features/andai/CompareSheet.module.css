@@ -59,7 +59,7 @@
 }
 
 .metricWin {
-  color: var(--aman-fg);
-  background: var(--aman-bg);
+  color: var(--signal-safe);
+  background: var(--signal-safe-bg);
   font-weight: 600;
 }

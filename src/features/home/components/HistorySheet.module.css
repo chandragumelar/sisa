@@ -79,7 +79,7 @@
   font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 500;
-  color: var(--bahaya-br);
+  color: var(--signal-danger);
   white-space: nowrap;
   font-feature-settings: 'tnum';
   flex-shrink: 0;
@@ -89,7 +89,7 @@
   font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 500;
-  color: var(--aman-br);
+  color: var(--signal-safe);
   white-space: nowrap;
   font-feature-settings: 'tnum';
   flex-shrink: 0;
@@ -136,9 +136,9 @@
 .confirmDanger {
   font-size: 11px;
   font-weight: 600;
-  color: var(--bahaya-br);
+  color: var(--signal-danger);
   background: none;
-  border: 1px solid var(--bahaya-br);
+  border: 1px solid var(--signal-danger);
   border-radius: 100px;
   padding: 3px 8px;
   cursor: pointer;

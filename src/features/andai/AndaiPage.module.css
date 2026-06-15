@@ -65,8 +65,8 @@
 /* ── Baseline strip ── */
 .baseline {
   background: var(--surface);
-  border: 1px dashed rgba(133, 127, 115, 0.8);
-  border-radius: 16px;
+  border: 1px solid var(--border-hair);
+  border-radius: var(--radius-card);
   padding: 12px 14px;
   margin-bottom: 16px;
 }
@@ -290,12 +290,12 @@
 
 .saveBtn {
   flex: 1;
-  background: var(--ink);
-  color: var(--bg);
+  background: var(--accent);
+  color: var(--accent-text);
   border: none;
-  border-radius: 16px;
+  border-radius: var(--radius-button);
   padding: 13px;
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
   font-weight: 600;
   font-size: 14px;
   cursor: pointer;
@@ -407,11 +407,11 @@
 .addSubmitBtn {
   width: 100%;
   padding: 14px;
-  background: var(--ink);
-  color: var(--bg);
+  background: var(--accent);
+  color: var(--accent-text);
   border: none;
-  border-radius: 14px;
-  font-family: var(--font-display);
+  border-radius: var(--radius-button);
+  font-family: var(--font-sans);
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;

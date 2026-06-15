@@ -70,10 +70,10 @@ export function TagihanSwipeRow({ tagihan, nowMs, metaText, onPayTap, onRowTap }
 
   const dotColor =
     urgency === 'lewat-tempo' || urgency === 'hari-ini'
-      ? 'var(--bahaya-br)'
+      ? 'var(--signal-danger)'
       : urgency === 'dalam-7-hari'
-        ? 'var(--mepet-br)'
-        : 'var(--line)'
+        ? 'var(--signal-caution)'
+        : 'var(--border-hair)'
 
   return (
     <div className={styles.container}>
