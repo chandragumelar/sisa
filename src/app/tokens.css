@@ -1,5 +1,5 @@
 /* ============================================================
-   SISA — Design Tokens (Light Mode v2 — warm revamp)
+   SISA — Design Tokens (The Grid — Warm Amber)
    Source of truth: design_handoff_sisa_revamp/README.md
    Semantic naming only — never hardcode hex in components.
    Dark mode: swap :root block; components stay untouched.
@@ -7,35 +7,61 @@
 
 :root {
   /* ── Surfaces ─────────────────────────────────────────── */
-  --bg: #f2ede3; /* page canvas — warm cream  */
-  --surface: #faf6ee; /* cards, sheets, list bg    */
-  --surface-deep: #ebe5d7; /* sunken / secondary card   */
+  --canvas: #eceae5; /* page canvas — warm cream      */
+  --surface: #ffffff; /* cards, tiles                  */
+  --surface-2: #e0ddd6; /* secondary / sunken card       */
+  --surface-3: #eae7e0; /* chip bg, inner surface        */
 
   /* ── Ink (text) ───────────────────────────────────────── */
-  --ink: #1a1815; /* primary text, primary CTA */
-  --ink-soft: #48433b; /* body text                 */
-  --muted: #857f73; /* metadata, helper, eyebrow */
+  --ink-primary: #1a1916; /* headings, strong text     */
+  --ink-secondary: #6e6b64; /* body text                 */
+  --ink-tertiary: #9e9a92; /* metadata, helper, eyebrow */
 
   /* ── Borders ──────────────────────────────────────────── */
-  --line: #e2dbcb; /* universal hairline        */
+  --border-hair: #ddd9d2; /* universal hairline          */
+  --border-soft: #d5d1c8; /* slightly heavier            */
 
-  /* ── Accent — Coral (interactive / brand) ─────────────── */
-  --accent: #e4623c; /* CTA, active states, dots  */
+  /* ── Accent — Warm Amber ──────────────────────────────── */
+  --accent: #d97706; /* CTA, active states, brand  */
+  --accent-hover: #b45309;
+  --accent-dim: #92400e;
+  --accent-bg: #fffbeb; /* amber light bg             */
+  --accent-br: #fde68a; /* amber border               */
+  --accent-text: #ffffff; /* text on amber button       */
 
-  /* ── Verdict tones — used INSIDE cards, never full-bleed  */
-  --aman-bg: #e4ebda;
-  --aman-fg: #1f3825;
-  --aman-br: #2d5743;
-
-  --mepet-bg: #f3dbb2;
-  --mepet-fg: #4d3608;
-  --mepet-br: #9c6b14;
-
-  --bahaya-bg: #f3cfbe;
-  --bahaya-fg: #4a1a0b;
-  --bahaya-br: #a8331a;
+  /* ── Signals ──────────────────────────────────────────── */
+  --signal-danger: #dc2626;
+  --signal-danger-bg: #fef2f2;
+  --signal-danger-br: #fecaca;
+  --signal-caution: #ea580c;
+  --signal-caution-bg: #fff7ed;
+  --signal-caution-br: #fed7aa;
+  --signal-safe: #16a34a;
+  --signal-safe-bg: #f0fdf4;
+  --signal-safe-br: #bbf7d0;
 
   /* ── Typography ───────────────────────────────────────── */
-  --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+  --font-sans: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* ── Backward-compatibility aliases ───────────────────── */
+  /* Allows legacy components using old token names to keep working */
+  --bg: var(--canvas);
+  --surface-deep: var(--surface-2);
+  --ink: var(--ink-primary);
+  --ink-soft: var(--ink-secondary);
+  --muted: var(--ink-tertiary);
+  --line: var(--border-hair);
+  --font-display: var(--font-sans);
+
+  /* Verdict aliases (used by BudgetModule + CekDulu existing CSS) */
+  --aman-bg: #f0fdf4;
+  --aman-fg: #14532d;
+  --aman-br: #16a34a;
+  --mepet-bg: #fff7ed;
+  --mepet-fg: #7c2d12;
+  --mepet-br: #ea580c;
+  --bahaya-bg: #fef2f2;
+  --bahaya-fg: #7f1d1d;
+  --bahaya-br: #dc2626;
 }

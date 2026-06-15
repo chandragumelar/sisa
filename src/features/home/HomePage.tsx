@@ -2,8 +2,6 @@ import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useClock } from '@/app/providers/useClock'
 import { useLanguage } from '@/app/providers/useLanguage'
-import { t } from '@/shared/strings/strings'
-import type { Language } from '@/db/database'
 import { getSettings, patchSettings } from '@/db/settings.repository'
 import { getAllWallets } from '@/db/wallets.repository'
 import {
@@ -18,64 +16,20 @@ import {
   getTransactionsByDateRange,
   getTotalNabung,
   deleteTransactionAndRevertBalance,
-  getMonthlyFlows,
   addNabungDeduction,
 } from '@/db/transactions.repository'
+import { t } from '@/shared/strings/strings'
 import type { Settings, Wallet, Tagihan, Goal, Transaction } from '@/db/database'
-
-const DAY_NAMES_ID = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab']
-const DAY_NAMES_EN = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-const MONTH_NAMES_ID = [
-  'Jan',
-  'Feb',
-  'Mar',
-  'Apr',
-  'Mei',
-  'Jun',
-  'Jul',
-  'Agt',
-  'Sep',
-  'Okt',
-  'Nov',
-  'Des',
-]
-const MONTH_NAMES_EN = [
-  'Jan',
-  'Feb',
-  'Mar',
-  'Apr',
-  'May',
-  'Jun',
-  'Jul',
-  'Aug',
-  'Sep',
-  'Oct',
-  'Nov',
-  'Dec',
-]
-
-function formatHeaderSub(nowMs: number, daysUntilPayday: number, lang: Language): string {
-  const d = new Date(nowMs)
-  const dayNames = lang === 'en' ? DAY_NAMES_EN : DAY_NAMES_ID
-  const monthNames = lang === 'en' ? MONTH_NAMES_EN : MONTH_NAMES_ID
-  const dateStr = `${dayNames[d.getDay()]} ${d.getDate()} ${monthNames[d.getMonth()]}`
-  const paydayKey = daysUntilPayday === 1 ? 'home.day_to_payday' : 'home.days_to_payday'
-  const paydayStr = t(paydayKey, lang).replace('{n}', String(daysUntilPayday))
-  return `${dateStr} · ${paydayStr}`
-}
 import {
   calcDailyBudget,
   calcSpentToday,
-  calcYesterdayStats,
   calcDaysUntilPayday,
   calcGoalStatuses,
   getPaydayDate,
 } from './home.utils'
-import { calcUnpaidTagihanTotal, hasUrgentTagihan } from './tagihan.utils'
+import { calcUnpaidTagihanTotal, getTagihanUrgency } from './tagihan.utils'
 import { shouldShowBackupReminder, calcBackupUrgency } from './backup-reminder.utils'
-import { formatCurrency } from '@/shared/utils/formatCurrency'
 import { SaldoModule } from './components/SaldoModule'
-import { NotifCard } from './components/NotifCard'
 import { BudgetModule } from './components/BudgetModule'
 import { TagihanModule } from './components/TagihanModule'
 import { GoalModule } from './components/GoalModule'
@@ -101,10 +55,7 @@ interface HomeData {
   goals: Goal[]
   lastTx: Transaction | undefined
   todayTxs: Transaction[]
-  yesterdayTxs: Transaction[]
   totalNabung: number
-  monthlyIncome: number
-  monthlyExpense: number
 }
 
 interface ToastState {
@@ -123,10 +74,7 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
     goals: [],
     lastTx: undefined,
     todayTxs: [],
-    yesterdayTxs: [],
     totalNabung: 0,
-    monthlyIncome: 0,
-    monthlyExpense: 0,
   })
   const [isLoading, setIsLoading] = useState(true)
   const [tick, setTick] = useState(0)
@@ -137,10 +85,7 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
     let cancelled = false
     const now = new Date(nowMs)
     const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
-    const yesterdayStart = todayStart - 86_400_000
     const tomorrowStart = todayStart + 86_400_000
-    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).getTime()
-    const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 1).getTime()
 
     Promise.all([
       getSettings(),
@@ -148,33 +93,26 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
       getActiveTagihan(),
       getAllGoals(),
       getTransactionsByDateRange(todayStart, tomorrowStart),
-      getTransactionsByDateRange(yesterdayStart, todayStart),
-    ]).then(([settings, wallets, tagihan, goals, todayTxsAll, yesterdayTxsAll]) => {
+    ]).then(([settings, wallets, tagihan, goals, todayTxsAll]) => {
       if (cancelled || !settings) return
       const currency = settings.activeCurrencyMode || settings.primaryCurrency
       const todayTxs = todayTxsAll.filter((tx) => tx.currency === currency)
-      const yesterdayTxs = yesterdayTxsAll.filter((tx) => tx.currency === currency)
-      Promise.all([
-        getTotalNabung(currency),
-        getMonthlyFlows(currency, monthStart, monthEnd),
-        getLastTransaction(currency),
-      ]).then(([totalNabung, { income: monthlyIncome, expense: monthlyExpense }, lastTx]) => {
-        if (!cancelled) {
-          setData({
-            settings,
-            wallets,
-            tagihan,
-            goals,
-            lastTx,
-            todayTxs,
-            yesterdayTxs,
-            totalNabung,
-            monthlyIncome,
-            monthlyExpense,
-          })
-          setIsLoading(false)
-        }
-      })
+      Promise.all([getTotalNabung(currency), getLastTransaction(currency)]).then(
+        ([totalNabung, lastTx]) => {
+          if (!cancelled) {
+            setData({
+              settings,
+              wallets,
+              tagihan,
+              goals,
+              lastTx,
+              todayTxs,
+              totalNabung,
+            })
+            setIsLoading(false)
+          }
+        },
+      )
     })
 
     return () => {
@@ -190,20 +128,8 @@ export function HomePage() {
   const navigate = useNavigate()
   const lang = useLanguage()
   const nowMs = clock.now()
-  const {
-    settings,
-    wallets,
-    tagihan,
-    goals,
-    lastTx,
-    todayTxs,
-    yesterdayTxs,
-    totalNabung,
-    monthlyIncome,
-    monthlyExpense,
-    isLoading,
-    reload,
-  } = useHomeData(nowMs)
+  const { settings, wallets, tagihan, goals, lastTx, todayTxs, totalNabung, isLoading, reload } =
+    useHomeData(nowMs)
 
   const [toast, setToast] = useState<ToastState | null>(null)
   const [markPaidTagihan, setMarkPaidTagihan] = useState<Tagihan | null>(null)
@@ -232,8 +158,7 @@ export function HomePage() {
   const daysUntilPayday = calcDaysUntilPayday(nowMs, settings)
   const dailyBudget = calcDailyBudget(totalSaldo, unpaidTagihanTotal, totalNabung, daysUntilPayday)
   const spentToday = calcSpentToday(todayTxs, nowMs)
-  const { spent: yesterdaySpent, earned: yesterdayEarned } = calcYesterdayStats(yesterdayTxs, nowMs)
-  // backup reminder (8.11)
+  // backup reminder
   const backupDismissedAt = (() => {
     const raw = localStorage.getItem(BACKUP_DISMISS_KEY)
     return raw ? parseInt(raw, 10) : null
@@ -298,10 +223,6 @@ export function HomePage() {
     reload()
   }
 
-  function handleGoalReorder(_newGoals: Goal[]) {
-    reload()
-  }
-
   async function handleCurrencySwitch(cur: string) {
     await patchSettings({ activeCurrencyMode: cur })
     reload()
@@ -310,17 +231,17 @@ export function HomePage() {
   const hasDualCurrency = settings.secondaryCurrency != null
   const currencies = hasDualCurrency ? [settings.primaryCurrency, settings.secondaryCurrency!] : []
 
+  const currencyTagihan = tagihan.filter((tg) => tg.currency === currency)
+  const lewatTempoCount = currencyTagihan.filter(
+    (tg) => tg.isActive && getTagihanUrgency(tg, nowMs) === 'lewat-tempo',
+  ).length
+
   return (
     <div className={styles.shell}>
       <main className={styles.page}>
         {/* Header */}
         <div className={styles.header}>
-          <div className={styles.wordmarkRow}>
-            <span className={styles.wordmark}>SISA</span>
-            <span className={styles.wordmarkSub}>
-              {formatHeaderSub(nowMs, daysUntilPayday, lang)}
-            </span>
-          </div>
+          <span className={styles.wordmark}>SISA</span>
 
           <div className={styles.headerRight}>
             {hasDualCurrency && (
@@ -339,6 +260,12 @@ export function HomePage() {
                   </button>
                 ))}
               </div>
+            )}
+            {lewatTempoCount > 0 && (
+              <button className={styles.urgencyBadge} onClick={() => setUrgentSheetOpen(true)}>
+                <span className={styles.urgencyDot} />
+                <span>{lewatTempoCount} lewat tempo</span>
+              </button>
             )}
             <button
               className={styles.settingsBtn}
@@ -362,7 +289,7 @@ export function HomePage() {
           </div>
         </div>
 
-        {/* Backup reminder (8.11) */}
+        {/* Backup reminder */}
         {showBackupCard && (
           <BackupCard
             urgency={backupUrgency}
@@ -373,87 +300,46 @@ export function HomePage() {
           />
         )}
 
-        {/* Notif */}
-        {hasUrgentTagihan(
-          tagihan.filter((t) => t.currency === currency),
-          nowMs,
-        ) && (
-          <NotifCard
-            tagihan={tagihan.filter((t) => t.currency === currency)}
-            nowMs={nowMs}
-            onClick={() => setUrgentSheetOpen(true)}
+        {/* Bento grid: Saldo + Budget tiles */}
+        <div className={styles.bentoGrid}>
+          <SaldoModule
+            wallets={wallets.filter((w) => w.currency === currency)}
+            currency={currency}
+            unpaidTagihanTotal={unpaidTagihanTotal}
+            totalNabung={totalNabung}
+            onWalletTap={(w) => setEditWallet(w)}
+            onWalletManageTap={() => setWalletSheetOpen(true)}
           />
-        )}
-
-        {/* Saldo */}
-        <SaldoModule
-          wallets={wallets.filter((w) => w.currency === currency)}
-          currency={currency}
-          unpaidTagihanTotal={unpaidTagihanTotal}
-          totalNabung={totalNabung}
-          daysUntilPayday={daysUntilPayday}
-          yesterdaySpent={yesterdaySpent}
-          yesterdayEarned={yesterdayEarned}
-          onWalletTap={(w) => setEditWallet(w)}
-          onAddWalletTap={() => setWalletSheetOpen(true)}
-        />
-
-        {/* Monthly flow cards */}
-        {(monthlyIncome > 0 || monthlyExpense > 0) && (
-          <div className={styles.flowCards}>
-            <div className={styles.flowCard}>
-              <span className={styles.flowLabel}>{t('saldo.income_month', lang)}</span>
-              <span className={styles.flowAmountIn}>
-                {monthlyIncome > 0 ? `+${formatCurrency(monthlyIncome, currency)}` : '—'}
-              </span>
-            </div>
-            <div className={styles.flowCard}>
-              <span className={styles.flowLabel}>{t('saldo.expense_month', lang)}</span>
-              <span className={styles.flowAmountOut}>
-                {monthlyExpense > 0 ? `−${formatCurrency(monthlyExpense, currency)}` : '—'}
-              </span>
-            </div>
-          </div>
-        )}
-
-        <div className={styles.divider} />
-
-        {/* Budget */}
-        <BudgetModule
-          dailyBudget={dailyBudget}
-          spentToday={spentToday}
-          settings={settings}
-          currency={currency}
-          unpaidTagihanTotal={unpaidTagihanTotal}
-          totalSaldo={totalSaldo}
-          nowMs={nowMs}
-        />
-
-        <div className={styles.divider} />
+          <BudgetModule
+            dailyBudget={dailyBudget}
+            spentToday={spentToday}
+            settings={settings}
+            currency={currency}
+            unpaidTagihanTotal={unpaidTagihanTotal}
+            totalSaldo={totalSaldo}
+            totalNabung={totalNabung}
+            nowMs={nowMs}
+          />
+        </div>
 
         {/* Tagihan */}
         <TagihanModule
-          tagihan={tagihan.filter((t) => t.currency === currency)}
+          tagihan={currencyTagihan}
           currency={currency}
           nowMs={nowMs}
-          onPayTap={(t) => setMarkPaidTagihan(t)}
-          onRowTap={(t) => setDetailTagihan(t)}
+          onPayTap={(tg) => setMarkPaidTagihan(tg)}
+          onRowTap={(tg) => setDetailTagihan(tg)}
           onAddTap={() => setTagihanSheetOpen(true)}
         />
-
-        <div className={styles.divider} />
 
         {/* Goal */}
         <GoalModule
           goals={goals.filter((g) => g.currency === currency)}
           totalNabung={totalNabung}
           currency={currency}
-          onReorder={handleGoalReorder}
           onAddTap={() => setGoalSheetOpen(true)}
           onGoalTap={() => setGoalSheetOpen(true)}
         />
-
-        <div className={styles.divider} />
 
         {/* Footer */}
         <FooterCatatan

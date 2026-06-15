@@ -1,209 +1,138 @@
-.wrapper {
-  padding: 0 16px;
+.halfRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
 }
 
-/* Verdict ribbon */
-.ribbon {
-  border-radius: 20px;
-  padding: 14px 18px;
+.card {
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.weekCard {
+  padding: 12px 16px;
+}
+
+.tileLabel {
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--ink-tertiary);
+  margin-bottom: 6px;
+}
+
+.tileNum {
+  font-family: var(--font-mono);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.8px;
+  color: var(--ink-primary);
+  font-feature-settings: 'tnum';
+  margin-bottom: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.progressBar {
+  height: 4px;
+  background: var(--canvas);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 5px;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.tileSub {
+  font-size: 10px;
+  color: var(--ink-tertiary);
+}
+
+.daysBadge {
+  position: absolute;
+  top: 14px;
+  right: 12px;
+  background: var(--surface-3);
+  border-radius: 6px;
+  padding: 3px 7px;
+  font-size: 10px;
+  color: var(--ink-tertiary);
+  font-family: var(--font-mono);
+}
+
+/* Verdict chip */
+.verdictChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border-radius: 6px;
+  padding: 4px 8px;
+  margin-bottom: 5px;
+  border: 1px solid;
+  font-size: 10.5px;
+  font-weight: 600;
+}
+
+.verdictDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.verdict_aman {
+  background: var(--signal-safe-bg);
+  border-color: var(--signal-safe-br);
+  color: var(--signal-safe);
+}
+.verdict_aman .verdictDot {
+  background: var(--signal-safe);
+}
+
+.verdict_ketat {
+  background: var(--signal-caution-bg);
+  border-color: var(--signal-caution-br);
+  color: var(--signal-caution);
+}
+.verdict_ketat .verdictDot {
+  background: var(--signal-caution);
+}
+
+.verdict_bahaya {
+  background: var(--signal-danger-bg);
+  border-color: var(--signal-danger-br);
+  color: var(--signal-danger);
+}
+.verdict_bahaya .verdictDot {
+  background: var(--signal-danger);
+}
+
+/* Tile 4: Budget Minggu */
+.weekInner {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.ribbonAman {
-  background: var(--aman-bg);
-  color: var(--aman-fg);
-  border: 1px solid rgba(31, 56, 37, 0.1);
-}
-
-.ribbonMepet {
-  background: var(--mepet-bg);
-  color: var(--mepet-fg);
-  border: 1px solid rgba(77, 54, 8, 0.1);
-}
-
-.ribbonBahaya {
-  background: var(--bahaya-bg);
-  color: var(--bahaya-fg);
-  border: 1px solid rgba(74, 26, 11, 0.1);
-}
-
-.ribbonEmpty {
-  background: var(--surface-deep);
-  color: var(--ink-soft);
-  border: 1px solid var(--line);
-}
-
-.ribbonLeft {
-  display: flex;
-  flex-direction: column;
-}
-
-.ribbonEyebrow {
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  opacity: 0.7;
-}
-
-.ribbonAmount {
-  font-family: var(--font-display);
-  font-size: 26px;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1;
-  margin-top: 2px;
-}
-
-.ribbonAmountSub {
-  font-size: 14px;
-  opacity: 0.55;
-}
-
-.ribbonRight {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 4px;
-}
-
-.verdictBadge {
-  color: var(--bg);
-  padding: 4px 10px;
-  border-radius: 100px;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  font-family: var(--font-display);
-}
-
-.badgeAman {
-  background: var(--aman-br);
-}
-
-.badgeMepet {
-  background: var(--mepet-br);
-}
-
-.badgeBahaya {
-  background: var(--bahaya-br);
-}
-
-.ribbonMeta {
+.weekNum {
   font-family: var(--font-mono);
-  font-size: 10.5px;
-  opacity: 0.65;
-}
-
-/* Info button */
-.infoRow {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  margin-top: 6px;
-  padding: 0 2px;
-}
-
-.infoDot {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 13px;
-  height: 13px;
-  border: 1px solid var(--ink-soft);
-  border-radius: 50%;
-  font-size: 9px;
-  color: var(--ink-soft);
-  line-height: 1;
-  flex-shrink: 0;
-  background: none;
-  cursor: pointer;
-  padding: 0;
-}
-
-/* Supplemental 2-col grid */
-.grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin-top: 8px;
-}
-
-.card {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  padding: 11px 12px;
-}
-
-.cardLabel {
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-.cardNum {
-  font-family: var(--font-display);
-  font-size: 19px;
+  font-size: 20px;
   font-weight: 700;
-  letter-spacing: -0.03em;
-  margin-top: 3px;
-  font-feature-settings: 'tnum', 'lnum';
-  color: var(--ink);
-  line-height: 1.1;
+  color: var(--ink-primary);
+  font-feature-settings: 'tnum';
 }
 
-.cardNumEmpty {
-  font-size: 19px;
-  font-weight: 600;
-  margin-top: 3px;
-  color: var(--muted);
-  line-height: 1.1;
-}
-
-.cardSub {
+.weekRight {
+  text-align: right;
   font-size: 10px;
-  color: var(--muted);
-  margin-top: 4px;
-}
-
-.statusAman {
-  color: var(--aman-br);
-  font-weight: 500;
-}
-
-.statusKetat {
-  color: var(--mepet-br);
-  font-weight: 500;
-}
-
-.statusBerat {
-  color: var(--bahaya-br);
-  font-weight: 500;
-}
-
-/* Info sheet content */
-.infoContent {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding-bottom: 8px;
-}
-
-.infoContent p {
-  font-size: 13px;
-  color: var(--ink);
-  line-height: 1.55;
-  margin: 0;
-}
-
-.infoNote {
-  font-size: 12px;
-  color: var(--muted);
-  font-style: italic;
+  color: var(--ink-tertiary);
+  line-height: 1.5;
 }

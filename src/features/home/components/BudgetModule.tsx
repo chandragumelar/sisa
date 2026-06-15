@@ -1,17 +1,7 @@
-import { useState } from 'react'
 import type { Settings } from '@/db/database'
-import { BottomSheet } from '@/shared/components/BottomSheet'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
 import { TAGIHAN_BURDEN_LOW, TAGIHAN_BURDEN_HIGH } from '@/constants/budget'
-import { useLanguage } from '@/app/providers/useLanguage'
-import { t } from '@/shared/strings/strings'
-import type { Language } from '@/db/database'
-import {
-  calcDaysUntilPayday,
-  calcWeeklyBudget,
-  getDaysUntilEndOfWeek,
-  getPaydayDate,
-} from '../home.utils'
+import { calcDaysUntilPayday, calcWeeklyBudget, getDaysUntilEndOfWeek } from '../home.utils'
 import styles from './BudgetModule.module.css'
 
 interface Props {
@@ -21,38 +11,21 @@ interface Props {
   currency: string
   unpaidTagihanTotal: number
   totalSaldo: number
+  totalNabung: number
   nowMs: number
 }
 
-type VerdictKey = 'aman' | 'mepet' | 'bahaya'
+type VerdictKey = 'aman' | 'ketat' | 'bahaya'
 
-function getBurdenVerdict(
-  pct: number,
-  lang: Language,
-): { label: string; key: VerdictKey; textClass: string; ribbonClass: string; badgeClass: string } {
-  if (pct < TAGIHAN_BURDEN_LOW)
-    return {
-      label: t('budget.verdict_good', lang),
-      key: 'aman',
-      textClass: styles.statusAman,
-      ribbonClass: styles.ribbonAman,
-      badgeClass: styles.badgeAman,
-    }
-  if (pct < TAGIHAN_BURDEN_HIGH)
-    return {
-      label: t('budget.verdict_ok', lang),
-      key: 'mepet',
-      textClass: styles.statusKetat,
-      ribbonClass: styles.ribbonMepet,
-      badgeClass: styles.badgeMepet,
-    }
-  return {
-    label: t('budget.verdict_tight', lang),
-    key: 'bahaya',
-    textClass: styles.statusBerat,
-    ribbonClass: styles.ribbonBahaya,
-    badgeClass: styles.badgeBahaya,
-  }
+function getBurden(
+  unpaidTagihanTotal: number,
+  totalSaldo: number,
+): { pct: number; key: VerdictKey } | null {
+  if (totalSaldo <= 0) return null
+  const pct = (unpaidTagihanTotal / totalSaldo) * 100
+  const key: VerdictKey =
+    pct < TAGIHAN_BURDEN_LOW ? 'aman' : pct < TAGIHAN_BURDEN_HIGH ? 'ketat' : 'bahaya'
+  return { pct, key }
 }
 
 export function BudgetModule({
@@ -62,121 +35,74 @@ export function BudgetModule({
   currency,
   unpaidTagihanTotal,
   totalSaldo,
+  totalNabung,
   nowMs,
 }: Props) {
-  const lang = useLanguage()
-  const [infoOpen, setInfoOpen] = useState(false)
   const daysUntilPayday = calcDaysUntilPayday(nowMs, settings)
-  const paydayDate = getPaydayDate(nowMs, settings)
   const daysUntilWeekEnd = getDaysUntilEndOfWeek(nowMs)
   const weeklyBudget = calcWeeklyBudget(dailyBudget, daysUntilWeekEnd, daysUntilPayday)
-
   const sisaHariIni = Math.max(0, dailyBudget - spentToday)
+  const paydayBalance = totalSaldo - unpaidTagihanTotal - totalNabung
+  const burden = getBurden(unpaidTagihanTotal, totalSaldo)
 
-  const burdenPct = totalSaldo > 0 ? (unpaidTagihanTotal / totalSaldo) * 100 : null
-  const burden = burdenPct !== null ? getBurdenVerdict(burdenPct, lang) : null
+  const verdictLabel =
+    burden === null
+      ? null
+      : burden.key === 'aman'
+        ? 'AMAN'
+        : burden.key === 'ketat'
+          ? 'KETAT'
+          : 'BAHAYA'
 
-  const ribbonClass = burden ? burden.ribbonClass : styles.ribbonEmpty
-  const badgeClass = burden ? burden.badgeClass : ''
-
-  // Format daily budget for ribbon — show amount without currency prefix for compact display
-  const dailyFmt = formatCurrency(dailyBudget, currency)
-  const sisaFmt = formatCurrency(sisaHariIni, currency)
+  const dailySpentPct = dailyBudget > 0 ? Math.min(100, (spentToday / dailyBudget) * 100) : 0
 
   return (
-    <div className={styles.wrapper}>
-      <div className={`${styles.ribbon} ${ribbonClass}`}>
-        <div className={styles.ribbonLeft}>
-          <span className={styles.ribbonEyebrow}>{t('budget.title', lang)}</span>
-          <div className={styles.ribbonAmount}>
-            {dailyFmt}
-            <span className={styles.ribbonAmountSub}>{t('cek_dulu.daily_unit', lang)}</span>
+    <>
+      {/* Row: Per Hari + Pas Gajian */}
+      <div className={styles.halfRow}>
+        {/* Tile 2: Per Hari */}
+        <div className={styles.card} style={{ position: 'relative' }}>
+          <div className={styles.tileLabel}>per hari</div>
+          <div className={styles.tileNum}>{formatCurrency(dailyBudget, currency)}</div>
+          <div className={styles.progressBar}>
+            <div className={styles.progressFill} style={{ width: `${dailySpentPct}%` }} />
+          </div>
+          <div className={styles.tileSub}>
+            {formatCurrency(spentToday, currency)} terpakai ·{' '}
+            <strong style={{ color: 'var(--ink-primary)' }}>
+              {formatCurrency(sisaHariIni, currency)} sisa
+            </strong>
+          </div>
+          <div className={styles.daysBadge}>{daysUntilPayday} hr</div>
+        </div>
+
+        {/* Tile 3: Pas Gajian */}
+        <div className={styles.card}>
+          <div className={styles.tileLabel}>pas gajian</div>
+          <div className={styles.tileNum}>{formatCurrency(paydayBalance, currency)}</div>
+          {verdictLabel && (
+            <div className={`${styles.verdictChip} ${styles[`verdict_${burden!.key}`]}`}>
+              <span className={styles.verdictDot} />
+              <span>{verdictLabel}</span>
+            </div>
+          )}
+          <div className={styles.tileSub}>prediksi saldo akhir bulan</div>
+        </div>
+      </div>
+
+      {/* Tile 4: Budget Minggu */}
+      <div className={`${styles.card} ${styles.weekCard}`}>
+        <div className={styles.weekInner}>
+          <div>
+            <div className={styles.tileLabel}>budget minggu ini</div>
+            <div className={styles.weekNum}>{formatCurrency(weeklyBudget, currency)}</div>
+          </div>
+          <div className={styles.weekRight}>
+            <div>sampai Minggu</div>
+            <div>{daysUntilWeekEnd} hari lagi</div>
           </div>
         </div>
-        <div className={styles.ribbonRight}>
-          {burden && <span className={`${styles.verdictBadge} ${badgeClass}`}>{burden.label}</span>}
-          <span className={styles.ribbonMeta}>{sisaFmt} sisa</span>
-        </div>
       </div>
-
-      <div className={styles.infoRow}>
-        <button
-          className={styles.infoDot}
-          onClick={() => setInfoOpen(true)}
-          aria-label={t('budget.info_aria', lang)}
-        >
-          i
-        </button>
-      </div>
-
-      <div className={styles.grid}>
-        <div className={styles.card}>
-          <div className={styles.cardLabel}>{t('budget.week_title', lang)}</div>
-          <div className={styles.cardNum}>{formatCurrency(weeklyBudget, currency)}</div>
-          <div className={styles.cardSub}>
-            {t('budget.week_days', lang).replace('{days}', String(daysUntilWeekEnd))}
-          </div>
-        </div>
-
-        <div className={styles.card}>
-          <div className={styles.cardLabel}>{t('budget.bills_title', lang)}</div>
-          {burden !== null ? (
-            <>
-              <div className={styles.cardNum}>{Math.round(burdenPct!)}%</div>
-              <div className={styles.cardSub}>
-                <span className={burden.textClass}>{burden.label}</span>
-              </div>
-            </>
-          ) : (
-            <>
-              <div className={styles.cardNumEmpty}>—</div>
-              <div className={styles.cardSub}>{t('budget.empty_balance', lang)}</div>
-            </>
-          )}
-        </div>
-      </div>
-
-      <BottomSheet
-        isOpen={infoOpen}
-        onClose={() => setInfoOpen(false)}
-        title={t('budget.sheet_title', lang)}
-      >
-        <div className={styles.infoContent}>
-          {lang === 'en' ? (
-            <>
-              <p>
-                <strong>Daily budget</strong> = (Balance − Bills − Savings) ÷ Days until payday.{' '}
-                {t('budget.desc_line', lang)
-                  .replace('{days}', String(daysUntilPayday))
-                  .replace('{date}', String(paydayDate.getDate()))}
-              </p>
-              <p>
-                <strong>Bills vs your money</strong> = Unpaid bills ÷ Total balance × 100%
-              </p>
-              <p className={styles.infoNote}>
-                Bills and savings targets are deducted before splitting across days. Balance
-                includes all active wallets.
-              </p>
-            </>
-          ) : (
-            <>
-              <p>
-                <strong>Budget harian</strong> = (Saldo − Tagihan − Tabungan) ÷ Hari sampai gajian.{' '}
-                {t('budget.desc_line', lang)
-                  .replace('{days}', String(daysUntilPayday))
-                  .replace('{date}', String(paydayDate.getDate()))}
-              </p>
-              <p>
-                <strong>Tagihan vs uangmu</strong> = Tagihan belum dibayar ÷ Total saldo × 100%
-              </p>
-              <p className={styles.infoNote}>
-                Tagihan dan target tabungan dikurangi dulu sebelum dibagi ke hari. Saldo dihitung
-                dari semua dompet aktif.
-              </p>
-            </>
-          )}
-        </div>
-      </BottomSheet>
-    </div>
+    </>
   )
 }
