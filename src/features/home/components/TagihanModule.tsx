@@ -1,11 +1,6 @@
 import type { Tagihan } from '@/db/database'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
-import {
-  rankTagihan,
-  getTagihanUrgency,
-  calcNextOccurrence,
-  isOccurrencePaid,
-} from '../tagihan.utils'
+import { rankTagihan, getTagihanUrgency, calcNextOccurrence } from '../tagihan.utils'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
 import styles from './TagihanModule.module.css'
@@ -19,49 +14,46 @@ interface Props {
   onAddTap?: () => void
 }
 
-const MAX_CHIPS = 5
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des']
+const MAX_REGULAR = 4
 
-function chipMeta(tg: Tagihan, nowMs: number): { text: string; urgent: boolean } {
+function formatDueDate(tg: Tagihan, nowMs: number): string {
   const occ = calcNextOccurrence(tg, nowMs)
-  if (!occ || isOccurrencePaid(tg, occ.getTime()))
-    return { text: `tgl ${tg.dueDay}`, urgent: false }
-  const todayMidnight = new Date(nowMs)
-  todayMidnight.setHours(0, 0, 0, 0)
-  const days = Math.round((occ.getTime() - todayMidnight.getTime()) / 86_400_000)
-  if (days < 0) return { text: `lewat ${Math.abs(days)} hr`, urgent: true }
-  if (days === 0) return { text: 'hari ini', urgent: true }
-  if (days === 1) return { text: 'besok', urgent: false }
-  return { text: `${days} hr lagi`, urgent: false }
+  if (!occ) return `tgl ${tg.dueDay}`
+  return `${occ.getDate()} ${MONTHS[occ.getMonth()]}`
 }
 
-export function TagihanModule({ tagihan, currency, nowMs, onRowTap, onAddTap }: Props) {
+export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap, onAddTap }: Props) {
   const lang = useLanguage()
   const active = tagihan.filter((tg) => tg.isActive)
   const ranked = rankTagihan(active, nowMs)
-  const visible = ranked.slice(0, MAX_CHIPS)
-  const hiddenCount = ranked.length - visible.length
 
-  const urgentCount = active.filter((tg) => {
-    const u = getTagihanUrgency(tg, nowMs)
-    return u === 'lewat-tempo' || u === 'hari-ini'
-  }).length
+  const overdue = ranked.filter((tg) => getTagihanUrgency(tg, nowMs) === 'lewat-tempo')
+  const regular = ranked.filter((tg) => getTagihanUrgency(tg, nowMs) !== 'lewat-tempo')
+  const visibleRegular = regular.slice(0, MAX_REGULAR)
+  const hiddenCount = regular.length - visibleRegular.length
 
   return (
-    <div className={styles.wrapper}>
+    <div className={styles.card}>
       <div className={styles.header}>
-        <span className={styles.label}>{t('tagihan_module.title', lang)}</span>
-        {urgentCount > 0 ? (
-          <span className={styles.urgentMeta}>{urgentCount} belum bayar</span>
-        ) : (
-          active.length > 0 && (
-            <span className={styles.totalMeta}>
-              ±{' '}
-              {formatCurrency(
-                active.reduce((s, tg) => s + tg.nominalEstimate, 0),
-                currency,
-              )}
-            </span>
-          )
+        <div className={styles.headerLeft}>
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 12 12"
+            fill="none"
+            stroke="var(--ink-tertiary)"
+            strokeWidth="1.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <circle cx="6" cy="6" r="4.5" />
+            <path d="M6 3.5V6L7.8 7.8" />
+          </svg>
+          <span className={styles.label}>{t('tagihan_module.title', lang)}</span>
+        </div>
+        {overdue.length > 0 && (
+          <span className={styles.overdueCount}>{overdue.length} lewat tempo</span>
         )}
       </div>
 
@@ -73,39 +65,92 @@ export function TagihanModule({ tagihan, currency, nowMs, onRowTap, onAddTap }: 
           </button>
         </div>
       ) : (
-        <div className={styles.chipRow}>
-          {visible.map((tg) => {
-            const meta = chipMeta(tg, nowMs)
-            const urgent = meta.urgent
-            return (
-              <button
-                key={tg.id}
-                className={`${styles.chip} ${urgent ? styles.chipUrgent : ''}`}
-                onClick={() => onRowTap(tg)}
+        <>
+          {overdue.map((tg) => (
+            <div key={tg.id} className={styles.overdueBlock}>
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 14 14"
+                fill="none"
+                stroke="var(--signal-danger)"
+                strokeWidth="1.3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className={styles.warnIcon}
               >
-                <div className={`${styles.chipName} ${urgent ? styles.chipNameUrgent : ''}`}>
-                  {tg.name}
-                </div>
-                <div className={`${styles.chipMeta} ${urgent ? styles.chipMetaUrgent : ''}`}>
-                  {meta.text}
-                </div>
+                <path d="M7 1.5L1.2 12H12.8L7 1.5Z" />
+                <line x1="7" y1="6" x2="7" y2="8.5" />
+                <circle cx="7" cy="10.5" r="0.65" fill="var(--signal-danger)" stroke="none" />
+              </svg>
+              <div className={styles.overdueInfo}>
+                <div className={styles.overdueName}>{tg.name}</div>
+                <div className={styles.overdueSub}>Lewat tempo — segera bayar</div>
+              </div>
+              <span className={styles.overdueAmt}>
+                {formatCurrency(tg.nominalEstimate, currency)}
+              </span>
+              <button className={styles.bayarBtn} onClick={() => onPayTap(tg)}>
+                Bayar
               </button>
-            )
-          })}
+            </div>
+          ))}
+
+          {visibleRegular.map((tg, i) => (
+            <button
+              key={tg.id}
+              className={styles.row}
+              style={{
+                borderBottom:
+                  i < visibleRegular.length - 1 || hiddenCount > 0
+                    ? '1px solid var(--border-soft)'
+                    : 'none',
+              }}
+              onClick={() => onRowTap(tg)}
+            >
+              <span className={styles.rowDot} />
+              <span className={styles.rowName}>{tg.name}</span>
+              <div className={styles.rowMeta}>
+                <svg
+                  width="11"
+                  height="11"
+                  viewBox="0 0 12 12"
+                  fill="none"
+                  stroke="var(--ink-tertiary)"
+                  strokeWidth="1.2"
+                  strokeLinecap="round"
+                >
+                  <circle cx="6" cy="6" r="4.5" />
+                  <path d="M6 3.5V6L7.8 7.8" />
+                </svg>
+                <span className={styles.rowDate}>{formatDueDate(tg, nowMs)}</span>
+              </div>
+              <span className={styles.rowAmt}>{formatCurrency(tg.nominalEstimate, currency)}</span>
+            </button>
+          ))}
 
           {hiddenCount > 0 && (
-            <button className={`${styles.chip} ${styles.chipMore}`} onClick={onAddTap}>
-              <div className={styles.chipName}>+{hiddenCount} lagi</div>
-              <div className={styles.chipMeta}>lihat semua ›</div>
+            <button className={styles.expandRow} onClick={onAddTap}>
+              <span>+ {hiddenCount} tagihan lagi</span>
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 14 14"
+                fill="none"
+                stroke="var(--accent)"
+                strokeWidth="1.4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M3 5.5L7 9.5L11 5.5" />
+              </svg>
             </button>
           )}
-        </div>
-      )}
 
-      {active.length > 0 && (
-        <button className={styles.addBtn} onClick={onAddTap}>
-          {t('tagihan_module.add', lang)}
-        </button>
+          <button className={styles.addBtn} onClick={onAddTap}>
+            {t('tagihan_module.add', lang)}
+          </button>
+        </>
       )}
     </div>
   )
