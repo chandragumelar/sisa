@@ -1,0 +1,67 @@
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border-hair);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: var(--pad-card);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+}
+
+.month {
+  font-size: 11px;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 7px;
+}
+
+.cell {
+  background: var(--surface-2);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-button);
+  padding: 10px;
+}
+
+.cellIcon {
+  margin-bottom: 7px;
+  display: flex;
+  align-items: center;
+}
+
+.cellValue {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+  line-height: 1;
+  margin-bottom: 4px;
+  font-feature-settings: 'tnum';
+  word-break: break-all;
+}
+
+.cellLabel {
+  font-size: 9px;
+  color: var(--ink-tertiary);
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  font-family: var(--font-sans);
+}

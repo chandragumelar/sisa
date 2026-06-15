@@ -12,28 +12,22 @@ import {
 } from '@/db/tagihan.repository'
 import { getAllGoals, deleteGoal } from '@/db/goals.repository'
 import {
-  getLastTransaction,
-  getTransactionsByDateRange,
   getTotalNabung,
+  getMonthlyFlows,
   deleteTransactionAndRevertBalance,
   addNabungDeduction,
 } from '@/db/transactions.repository'
 import { t } from '@/shared/strings/strings'
-import type { Settings, Wallet, Tagihan, Goal, Transaction } from '@/db/database'
-import {
-  calcDailyBudget,
-  calcSpentToday,
-  calcDaysUntilPayday,
-  calcGoalStatuses,
-  getPaydayDate,
-} from './home.utils'
+import type { Settings, Wallet, Tagihan, Goal } from '@/db/database'
+import { calcDaysUntilPayday, calcGoalStatuses, getPaydayDate } from './home.utils'
 import { calcUnpaidTagihanTotal, getTagihanUrgency } from './tagihan.utils'
 import { shouldShowBackupReminder, calcBackupUrgency } from './backup-reminder.utils'
+import { TAGIHAN_BURDEN_LOW, TAGIHAN_BURDEN_HIGH } from '@/constants/budget'
+import { DecisionHero } from './components/DecisionHero'
 import { SaldoModule } from './components/SaldoModule'
-import { BudgetModule } from './components/BudgetModule'
+import { MonthlyModule } from './components/MonthlyModule'
 import { TagihanModule } from './components/TagihanModule'
 import { GoalModule } from './components/GoalModule'
-import { FooterCatatan } from './components/FooterCatatan'
 import { BottomActionBar } from './components/BottomActionBar'
 import { Toast } from './components/Toast'
 import { MarkPaidSheet } from './components/MarkPaidSheet'
@@ -53,9 +47,9 @@ interface HomeData {
   wallets: Wallet[]
   tagihan: Tagihan[]
   goals: Goal[]
-  lastTx: Transaction | undefined
-  todayTxs: Transaction[]
   totalNabung: number
+  monthlyIncome: number
+  monthlyExpense: number
 }
 
 interface ToastState {
@@ -66,15 +60,25 @@ interface ToastState {
 
 const BACKUP_DISMISS_KEY = 'sisa:backupDismissedAt'
 
+type ConditionKey = 'aman' | 'ketat' | 'bahaya'
+
+function getConditionKey(unpaidTagihanTotal: number, totalSaldo: number): ConditionKey | null {
+  if (totalSaldo <= 0) return null
+  const pct = (unpaidTagihanTotal / totalSaldo) * 100
+  if (pct < TAGIHAN_BURDEN_LOW) return 'aman'
+  if (pct < TAGIHAN_BURDEN_HIGH) return 'ketat'
+  return 'bahaya'
+}
+
 function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: () => void } {
   const [data, setData] = useState<HomeData>({
     settings: null,
     wallets: [],
     tagihan: [],
     goals: [],
-    lastTx: undefined,
-    todayTxs: [],
     totalNabung: 0,
+    monthlyIncome: 0,
+    monthlyExpense: 0,
   })
   const [isLoading, setIsLoading] = useState(true)
   const [tick, setTick] = useState(0)
@@ -84,36 +88,32 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
   useEffect(() => {
     let cancelled = false
     const now = new Date(nowMs)
-    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
-    const tomorrowStart = todayStart + 86_400_000
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).getTime()
+    const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 1).getTime()
 
-    Promise.all([
-      getSettings(),
-      getAllWallets(),
-      getActiveTagihan(),
-      getAllGoals(),
-      getTransactionsByDateRange(todayStart, tomorrowStart),
-    ]).then(([settings, wallets, tagihan, goals, todayTxsAll]) => {
-      if (cancelled || !settings) return
-      const currency = settings.activeCurrencyMode || settings.primaryCurrency
-      const todayTxs = todayTxsAll.filter((tx) => tx.currency === currency)
-      Promise.all([getTotalNabung(currency), getLastTransaction(currency)]).then(
-        ([totalNabung, lastTx]) => {
+    Promise.all([getSettings(), getAllWallets(), getActiveTagihan(), getAllGoals()]).then(
+      ([settings, wallets, tagihan, goals]) => {
+        if (cancelled || !settings) return
+        const currency = settings.activeCurrencyMode || settings.primaryCurrency
+        Promise.all([
+          getTotalNabung(currency),
+          getMonthlyFlows(currency, monthStart, monthEnd),
+        ]).then(([totalNabung, { income: monthlyIncome, expense: monthlyExpense }]) => {
           if (!cancelled) {
             setData({
               settings,
               wallets,
               tagihan,
               goals,
-              lastTx,
-              todayTxs,
               totalNabung,
+              monthlyIncome,
+              monthlyExpense,
             })
             setIsLoading(false)
           }
-        },
-      )
-    })
+        })
+      },
+    )
 
     return () => {
       cancelled = true
@@ -128,8 +128,17 @@ export function HomePage() {
   const navigate = useNavigate()
   const lang = useLanguage()
   const nowMs = clock.now()
-  const { settings, wallets, tagihan, goals, lastTx, todayTxs, totalNabung, isLoading, reload } =
-    useHomeData(nowMs)
+  const {
+    settings,
+    wallets,
+    tagihan,
+    goals,
+    totalNabung,
+    monthlyIncome,
+    monthlyExpense,
+    isLoading,
+    reload,
+  } = useHomeData(nowMs)
 
   const [toast, setToast] = useState<ToastState | null>(null)
   const [markPaidTagihan, setMarkPaidTagihan] = useState<Tagihan | null>(null)
@@ -151,14 +160,13 @@ export function HomePage() {
     .reduce((sum, w) => sum + w.balance, 0)
   const nextPaydayMs = getPaydayDate(nowMs, settings).getTime()
   const unpaidTagihanTotal = calcUnpaidTagihanTotal(
-    tagihan.filter((t) => t.currency === currency),
+    tagihan.filter((tg) => tg.currency === currency),
     nowMs,
     nextPaydayMs,
   )
   const daysUntilPayday = calcDaysUntilPayday(nowMs, settings)
-  const dailyBudget = calcDailyBudget(totalSaldo, unpaidTagihanTotal, totalNabung, daysUntilPayday)
-  const spentToday = calcSpentToday(todayTxs, nowMs)
-  // backup reminder
+  const conditionKey = getConditionKey(unpaidTagihanTotal, totalSaldo)
+
   const backupDismissedAt = (() => {
     const raw = localStorage.getItem(BACKUP_DISMISS_KEY)
     return raw ? parseInt(raw, 10) : null
@@ -206,8 +214,8 @@ export function HomePage() {
     })
   }
 
-  async function handleDeleteTagihan(t: Tagihan) {
-    await deleteTagihan(t.id!)
+  async function handleDeleteTagihan(tg: Tagihan) {
+    await deleteTagihan(tg.id!)
     reload()
   }
 
@@ -275,15 +283,15 @@ export function HomePage() {
               <svg
                 width="14"
                 height="14"
-                viewBox="0 0 16 16"
+                viewBox="0 0 18 18"
                 fill="none"
                 stroke="currentColor"
-                strokeWidth="1.5"
+                strokeWidth="1.4"
                 strokeLinecap="round"
               >
-                <line x1="2" y1="4" x2="14" y2="4" />
-                <line x1="2" y1="8" x2="14" y2="8" />
-                <line x1="2" y1="12" x2="14" y2="12" />
+                <line x1="2.5" y1="4.5" x2="15.5" y2="4.5" />
+                <line x1="2.5" y1="9" x2="15.5" y2="9" />
+                <line x1="5.5" y1="13.5" x2="15.5" y2="13.5" />
               </svg>
             </button>
           </div>
@@ -300,63 +308,55 @@ export function HomePage() {
           />
         )}
 
-        {/* Bento grid: Saldo + Budget tiles */}
-        <div className={styles.bentoGrid}>
+        {/* Cards */}
+        <div className={styles.cards}>
+          <DecisionHero
+            currency={currency}
+            onCekDulu={() => navigate('/cek-dulu')}
+            onAndai={() => navigate('/andai')}
+          />
+
           <SaldoModule
             wallets={wallets.filter((w) => w.currency === currency)}
             currency={currency}
             unpaidTagihanTotal={unpaidTagihanTotal}
             totalNabung={totalNabung}
+            daysUntilPayday={daysUntilPayday}
+            conditionKey={conditionKey}
             onWalletTap={(w) => setEditWallet(w)}
-            onWalletManageTap={() => setWalletSheetOpen(true)}
+            onHistoryTap={() => setHistoryOpen(true)}
           />
-          <BudgetModule
-            dailyBudget={dailyBudget}
-            spentToday={spentToday}
-            settings={settings}
-            currency={currency}
-            unpaidTagihanTotal={unpaidTagihanTotal}
-            totalSaldo={totalSaldo}
+
+          <MonthlyModule
+            income={monthlyIncome}
+            expense={monthlyExpense}
             totalNabung={totalNabung}
+            currency={currency}
             nowMs={nowMs}
           />
+
+          <TagihanModule
+            tagihan={currencyTagihan}
+            currency={currency}
+            nowMs={nowMs}
+            onPayTap={(tg) => setMarkPaidTagihan(tg)}
+            onRowTap={(tg) => setDetailTagihan(tg)}
+            onAddTap={() => setTagihanSheetOpen(true)}
+          />
+
+          <GoalModule
+            goals={goals.filter((g) => g.currency === currency)}
+            totalNabung={totalNabung}
+            currency={currency}
+            onAddTap={() => setGoalSheetOpen(true)}
+            onGoalTap={() => setGoalSheetOpen(true)}
+          />
         </div>
-
-        {/* Tagihan */}
-        <TagihanModule
-          tagihan={currencyTagihan}
-          currency={currency}
-          nowMs={nowMs}
-          onPayTap={(tg) => setMarkPaidTagihan(tg)}
-          onRowTap={(tg) => setDetailTagihan(tg)}
-          onAddTap={() => setTagihanSheetOpen(true)}
-        />
-
-        {/* Goal */}
-        <GoalModule
-          goals={goals.filter((g) => g.currency === currency)}
-          totalNabung={totalNabung}
-          currency={currency}
-          onAddTap={() => setGoalSheetOpen(true)}
-          onGoalTap={() => setGoalSheetOpen(true)}
-        />
-
-        {/* Footer */}
-        <FooterCatatan
-          lastTransaction={lastTx}
-          currency={currency}
-          onShowHistory={() => setHistoryOpen(true)}
-          nowMs={nowMs}
-        />
       </main>
 
-      <BottomActionBar
-        onCatat={() => setQuickLogOpen(true)}
-        onCekDulu={() => navigate('/cek-dulu')}
-        onAndai={() => navigate('/andai')}
-      />
+      <BottomActionBar onCatat={() => setQuickLogOpen(true)} />
 
-      {/* Toast (position: fixed, DOM position irrelevant) */}
+      {/* Toast */}
       {toast && (
         <Toast
           message={toast.message}
@@ -366,7 +366,7 @@ export function HomePage() {
         />
       )}
 
-      {/* Sheets (position: fixed, DOM position irrelevant) */}
+      {/* Sheets */}
       {markPaidTagihan && (
         <MarkPaidSheet
           tagihan={markPaidTagihan}
@@ -386,13 +386,13 @@ export function HomePage() {
           nowMs={nowMs}
           isOpen={!!detailTagihan}
           onClose={() => setDetailTagihan(null)}
-          onPay={(t) => {
+          onPay={(tg) => {
             setDetailTagihan(null)
-            setMarkPaidTagihan(t)
+            setMarkPaidTagihan(tg)
           }}
-          onEdit={(t) => {
+          onEdit={(tg) => {
             setDetailTagihan(null)
-            setEditTagihan(t)
+            setEditTagihan(tg)
             setTagihanSheetOpen(true)
           }}
           onDelete={handleDeleteTagihan}
@@ -400,11 +400,11 @@ export function HomePage() {
       )}
 
       <UrgentTagihanSheet
-        tagihan={tagihan.filter((t) => t.currency === currency)}
+        tagihan={tagihan.filter((tg) => tg.currency === currency)}
         nowMs={nowMs}
         isOpen={urgentSheetOpen}
         onClose={() => setUrgentSheetOpen(false)}
-        onPay={(t) => setMarkPaidTagihan(t)}
+        onPay={(tg) => setMarkPaidTagihan(tg)}
       />
 
       <HistorySheet

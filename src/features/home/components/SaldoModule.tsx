@@ -3,73 +3,103 @@ import { calcSisa } from '@/shared/utils/sisa.utils'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
 import styles from './SaldoModule.module.css'
 
+type ConditionKey = 'aman' | 'ketat' | 'bahaya'
+
 interface Props {
   wallets: Wallet[]
   currency: string
   unpaidTagihanTotal: number
   totalNabung: number
+  daysUntilPayday: number
+  conditionKey: ConditionKey | null
   onWalletTap?: (wallet: Wallet) => void
-  onWalletManageTap?: () => void
+  onHistoryTap?: () => void
 }
 
-function fmtShort(amount: number, currency: string): string {
-  if (currency !== 'IDR') return formatCurrency(amount, currency)
-  if (amount >= 1_000_000) {
-    const jt = amount / 1_000_000
-    return `Rp ${jt % 1 === 0 ? jt.toFixed(0) : jt.toFixed(1).replace('.0', '')}jt`
-  }
-  if (amount >= 1_000) return `Rp ${Math.round(amount / 1_000)}rb`
-  return `Rp ${amount}`
+const CONDITION_LABEL: Record<ConditionKey, string> = {
+  aman: '● Kondisi aman',
+  ketat: '● Kondisi ketat',
+  bahaya: '● Kondisi bahaya',
 }
+
+const CONDITION_COLOR: Record<ConditionKey, string> = {
+  aman: 'var(--signal-safe)',
+  ketat: 'var(--signal-caution)',
+  bahaya: 'var(--signal-danger)',
+}
+
+const WALLET_DOTS = ['#60a5fa', '#34d399', '#c084fc', '#fb923c', '#f472b6']
 
 export function SaldoModule({
   wallets,
   currency,
   unpaidTagihanTotal,
   totalNabung,
+  daysUntilPayday,
+  conditionKey,
   onWalletTap,
-  onWalletManageTap,
+  onHistoryTap,
 }: Props) {
   const total = wallets.reduce((sum, w) => sum + w.balance, 0)
   const sisa = calcSisa(total, unpaidTagihanTotal, totalNabung)
 
-  const [rpPrefix, sisaNum] = (() => {
-    const fmt = formatCurrency(Math.abs(sisa), currency)
-    if (fmt.startsWith('Rp')) return [sisa < 0 ? '−Rp' : 'Rp', fmt.slice(2).trim()]
-    return ['', sisa < 0 ? `−${fmt}` : fmt]
-  })()
-
-  const showSub = unpaidTagihanTotal > 0 || totalNabung > 0
-
   return (
     <div className={styles.card}>
-      <div className={styles.cardHeader}>
-        <span className={styles.label}>saldo bebas</span>
-        <button className={styles.walletLink} onClick={onWalletManageTap}>
-          {wallets.length} dompet ›
-        </button>
+      <div className={styles.topRow}>
+        <div>
+          <div className={styles.label}>Saldo Bebas</div>
+          <div className={styles.heroNum}>{formatCurrency(sisa, currency)}</div>
+        </div>
+        <div className={styles.topRight}>
+          <div className={styles.paydayText}>{daysUntilPayday} hr gajian</div>
+          {conditionKey && (
+            <div className={styles.conditionText} style={{ color: CONDITION_COLOR[conditionKey] }}>
+              {CONDITION_LABEL[conditionKey]}
+            </div>
+          )}
+        </div>
       </div>
 
-      <div className={styles.hero}>
-        <span className={styles.heroRp}>{rpPrefix}</span>
-        <span className={styles.heroNum}>{sisaNum}</span>
+      <div className={styles.divider} />
+
+      <div className={styles.walletList}>
+        {wallets.map((w, i) => (
+          <button
+            key={w.id}
+            className={styles.walletRow}
+            style={{
+              borderBottom: i < wallets.length - 1 ? '1px solid var(--border-soft)' : 'none',
+            }}
+            onClick={() => onWalletTap?.(w)}
+          >
+            <div className={styles.walletLeft}>
+              <span
+                className={styles.walletDot}
+                style={{ background: WALLET_DOTS[i % WALLET_DOTS.length] }}
+              />
+              <span className={styles.walletName}>{w.name}</span>
+            </div>
+            <span className={styles.walletAmt}>{formatCurrency(w.balance, w.currency)}</span>
+          </button>
+        ))}
       </div>
 
-      {showSub && (
-        <div className={styles.sub}>
-          setelah tagihan {fmtShort(unpaidTagihanTotal, currency)} &amp; nabung{' '}
-          {fmtShort(totalNabung, currency)}
+      {(unpaidTagihanTotal > 0 || totalNabung > 0) && (
+        <div className={styles.deductionsRow}>
+          <span className={styles.deductionsText}>setelah tagihan &amp; nabung</span>
+          <span className={styles.deductionsNums}>
+            {unpaidTagihanTotal > 0 && `−${formatCurrency(unpaidTagihanTotal, currency)}`}
+            {unpaidTagihanTotal > 0 && totalNabung > 0 && ' · '}
+            {totalNabung > 0 && `−${formatCurrency(totalNabung, currency)}`}
+          </span>
         </div>
       )}
 
-      {wallets.length > 0 && (
-        <div className={styles.chips}>
-          {wallets.map((w) => (
-            <button key={w.id} className={styles.chip} onClick={() => onWalletTap?.(w)}>
-              <span className={styles.chipName}>{w.name}</span>
-              <span className={styles.chipAmt}>{fmtShort(w.balance, w.currency)}</span>
-            </button>
-          ))}
+      {onHistoryTap && (
+        <div className={styles.historyRow}>
+          <button className={styles.historyLink} onClick={onHistoryTap}>
+            lihat riwayat →
+          </button>
         </div>
       )}
     </div>
