@@ -1,144 +1,97 @@
-.wrapper {
-  padding: 0 16px;
-}
-
 .card {
   background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 22px;
-  padding: 18px 20px;
+  border-radius: 16px;
+  padding: 16px;
 }
 
-.cardTop {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-}
-
-.eyebrow {
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-.metaRight {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--muted);
-}
-
-.heroAmountBtn {
-  display: block;
-  background: none;
-  border: none;
-  padding: 6px 0 0;
-  cursor: pointer;
-  text-align: left;
-  width: 100%;
-}
-
-.heroAmount {
-  font-family: var(--font-display);
-  font-size: 48px;
-  font-weight: 700;
-  letter-spacing: -0.045em;
-  color: var(--ink);
-  line-height: 1;
-  font-feature-settings: 'tnum', 'lnum';
-}
-
-.heroRp {
-  font-size: 22px;
-  font-weight: 600;
-  color: var(--muted);
-  vertical-align: top;
-  line-height: 1.1;
-}
-
-.breakdown {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin-top: 10px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-}
-
-.bkdwnRow {
-  display: flex;
-  justify-content: space-between;
-}
-
-.bkdwnLabel {
-  color: var(--muted);
-}
-
-.bkdwnValue {
-  color: var(--ink-soft);
-}
-
-/* Expanded wallet list */
-.walletDivider {
-  height: 1px;
-  background: var(--line);
-  margin: 12px 0 8px;
-}
-
-.walletRow {
+.cardHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 6px 0;
-  border-bottom: 1px solid var(--line);
-  background: none;
-  border-left: none;
-  border-right: none;
-  border-top: none;
-  width: 100%;
-  cursor: pointer;
-  font-family: var(--font-display);
+  margin-bottom: 4px;
 }
 
-.walletRow:last-of-type {
-  border-bottom: none;
-}
-
-.walletRow:disabled {
-  cursor: default;
-}
-
-.walletName {
-  font-size: 12.5px;
-  color: var(--ink-soft);
-}
-
-.walletAmount {
-  font-family: var(--font-mono);
-  font-size: 12px;
+.label {
+  font-size: 10px;
   font-weight: 500;
-  color: var(--ink);
-  font-feature-settings: 'tnum';
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--ink-tertiary);
 }
 
-.empty {
-  font-size: 12.5px;
-  color: var(--muted);
-  padding: 8px 0;
-  text-align: center;
-}
-
-.addBtn {
-  width: 100%;
-  margin-top: 8px;
-  padding: 8px 0 0;
+.walletLink {
+  font-size: 11px;
+  color: var(--accent);
   background: none;
   border: none;
-  color: var(--accent);
-  font-size: 13px;
-  font-weight: 500;
-  font-family: var(--font-display);
+  padding: 0;
   cursor: pointer;
-  text-align: center;
+  font-family: inherit;
+}
+
+.hero {
+  display: flex;
+  align-items: baseline;
+  gap: 0;
+  margin-bottom: 4px;
+  line-height: 1;
+}
+
+.heroRp {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink-tertiary);
+  margin-right: 2px;
+  line-height: 1;
+  align-self: flex-start;
+  padding-top: 4px;
+}
+
+.heroNum {
+  font-family: var(--font-mono);
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: -1.2px;
+  color: var(--ink-primary);
+  font-feature-settings: 'tnum', 'lnum';
+}
+
+.sub {
+  font-size: 11px;
+  color: var(--ink-tertiary);
+  margin-bottom: 12px;
+}
+
+.chips {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.chip {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--surface-3);
+  border: none;
+  border-radius: 7px;
+  padding: 5px 9px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.chipName {
+  font-size: 10.5px;
+  font-weight: 400;
+  color: var(--ink-secondary);
+  font-family: var(--font-mono);
+}
+
+.chipAmt {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--ink-primary);
+  font-family: var(--font-mono);
 }

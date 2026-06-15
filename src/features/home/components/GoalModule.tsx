@@ -1,7 +1,5 @@
-import { useRef, useState } from 'react'
 import type { Goal } from '@/db/database'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
-import { updateGoalsOrder } from '@/db/goals.repository'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
 import { calcGoalStatuses } from '../home.utils'
@@ -11,92 +9,13 @@ interface Props {
   goals: Goal[]
   totalNabung: number
   currency: string
-  onReorder: (newGoals: Goal[]) => void
+  onReorder?: (newGoals: Goal[]) => void
   onAddTap?: () => void
   onGoalTap?: (goal: Goal) => void
 }
 
-const LONG_PRESS_MS = 300
-const CIRCLE_R = 16
-const CIRCLE_CIRCUMFERENCE = 2 * Math.PI * CIRCLE_R // ≈ 100.53
-
-export function GoalModule({
-  goals,
-  totalNabung,
-  currency,
-  onReorder,
-  onAddTap,
-  onGoalTap,
-}: Props) {
+export function GoalModule({ goals, totalNabung, currency, onAddTap, onGoalTap }: Props) {
   const lang = useLanguage()
-  const [dragging, setDragging] = useState(false)
-  const [dragIndex, setDragIndex] = useState<number | null>(null)
-  const [overIndex, setOverIndex] = useState<number | null>(null)
-  const [localGoals, setLocalGoals] = useState<Goal[]>(goals)
-  const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const pressedIndexRef = useRef<number | null>(null)
-  const dragStartY = useRef(0)
-  const itemHeight = useRef(0)
-
-  if (!dragging && localGoals !== goals) {
-    setLocalGoals(goals)
-  }
-
-  function startLongPress(index: number, e: React.PointerEvent) {
-    pressedIndexRef.current = index
-    const el = e.currentTarget as HTMLElement
-    itemHeight.current = el.getBoundingClientRect().height
-    dragStartY.current = e.clientY
-
-    longPressTimer.current = setTimeout(() => {
-      if (navigator.vibrate) navigator.vibrate(20)
-      setDragging(true)
-      setDragIndex(index)
-      setOverIndex(index)
-      el.setPointerCapture(e.pointerId)
-    }, LONG_PRESS_MS)
-  }
-
-  function cancelLongPress() {
-    if (longPressTimer.current) clearTimeout(longPressTimer.current)
-    longPressTimer.current = null
-  }
-
-  function handlePointerMove(e: React.PointerEvent) {
-    if (!dragging || dragIndex === null || itemHeight.current === 0) return
-    const deltaY = e.clientY - dragStartY.current
-    const shifted = Math.round(deltaY / itemHeight.current)
-    const newOver = Math.max(0, Math.min(localGoals.length - 1, dragIndex + shifted))
-    setOverIndex(newOver)
-  }
-
-  function handlePointerUp() {
-    const wasTap = !dragging
-    const tappedIndex = pressedIndexRef.current
-    pressedIndexRef.current = null
-    cancelLongPress()
-    if (!dragging || dragIndex === null || overIndex === null) {
-      if (wasTap && tappedIndex !== null) {
-        onGoalTap?.(localGoals[tappedIndex])
-      }
-      setDragging(false)
-      setDragIndex(null)
-      setOverIndex(null)
-      return
-    }
-
-    const reordered = [...localGoals]
-    const [moved] = reordered.splice(dragIndex, 1)
-    reordered.splice(overIndex, 0, moved)
-
-    setLocalGoals(reordered)
-    setDragging(false)
-    setDragIndex(null)
-    setOverIndex(null)
-
-    const ids = reordered.map((g) => g.id!)
-    updateGoalsOrder(ids).then(() => onReorder(reordered))
-  }
 
   if (goals.length === 0) {
     return (
@@ -114,92 +33,68 @@ export function GoalModule({
     )
   }
 
-  const displayGoals =
-    dragging && overIndex !== null && dragIndex !== null
-      ? reorder(localGoals, dragIndex, overIndex)
-      : localGoals
-
-  const statuses = calcGoalStatuses(displayGoals, totalNabung)
-  const activeGoal = statuses.find((s) => s.status === 'aktif')
+  const statuses = calcGoalStatuses(goals, totalNabung)
+  const totalSaved = statuses.reduce((sum, s) => sum + s.saved, 0)
 
   return (
     <div className={styles.wrapper}>
       <div className={styles.sectionHeader}>
         <span className={styles.label}>{t('goal.title', lang)}</span>
-      </div>
-      <div className={styles.card}>
-        {statuses.map(({ goal, saved, pct, status }, i) => {
-          const origIndex = localGoals.findIndex((g) => g.id === goal.id)
-          const isDragged = dragging && dragIndex === origIndex
-          const dashFilled = (pct / 100) * CIRCLE_CIRCUMFERENCE
-          return (
-            <div
-              key={goal.id}
-              className={`${styles.row} ${isDragged ? styles.rowDragging : ''}`}
-              onPointerDown={(e) => startLongPress(origIndex, e)}
-              onPointerMove={handlePointerMove}
-              onPointerUp={handlePointerUp}
-              onPointerCancel={() => {
-                cancelLongPress()
-                setDragging(false)
-              }}
-            >
-              <div className={styles.rowLeft}>
-                <div className={styles.rowEyebrow}>nabung untuk · #{i + 1}</div>
-                <div className={styles.rowName}>{goal.name}</div>
-                {status === 'aktif' && (
-                  <div className={styles.rowProgress}>
-                    {formatCurrency(saved, currency)} / {formatCurrency(goal.target, currency)}
-                  </div>
-                )}
-                {status === 'tercapai' && (
-                  <div className={styles.rowStatus}>{t('goal.reached', lang)}</div>
-                )}
-                {status === 'antri' && (
-                  <div className={styles.rowWaiting}>{t('goal.waiting', lang)}</div>
-                )}
-              </div>
-              <svg className={styles.rowCircle} width="40" height="40" viewBox="0 0 40 40">
-                <circle
-                  cx="20"
-                  cy="20"
-                  r={CIRCLE_R}
-                  fill="none"
-                  stroke="var(--line)"
-                  strokeWidth="4"
-                />
-                <circle
-                  cx="20"
-                  cy="20"
-                  r={CIRCLE_R}
-                  fill="none"
-                  stroke="var(--accent)"
-                  strokeWidth="4"
-                  strokeDasharray={`${dashFilled} ${CIRCLE_CIRCUMFERENCE}`}
-                  strokeLinecap="round"
-                  transform="rotate(-90 20 20)"
-                />
-              </svg>
-            </div>
-          )
-        })}
-
-        {activeGoal && (
-          <div className={styles.footerMeta}>
-            {t('goal.reorder_hint', lang).replace('{name}', activeGoal.goal.name)}
-          </div>
+        {totalSaved > 0 && (
+          <span className={styles.totalMeta}>total {formatCurrency(totalSaved, currency)}</span>
         )}
       </div>
-      <button className={styles.addBtn} onClick={onAddTap}>
-        {t('goal.add', lang)}
-      </button>
+
+      <div className={styles.grid}>
+        {statuses.map(({ goal, saved, pct, status }) => {
+          const isWaiting = status === 'antri'
+          return (
+            <button
+              key={goal.id}
+              className={`${styles.card} ${isWaiting ? styles.cardWaiting : ''}`}
+              onClick={() => onGoalTap?.(goal)}
+            >
+              <span
+                className={styles.priorityBadge}
+                style={{ background: isWaiting ? 'var(--ink-tertiary)' : 'var(--ink-primary)' }}
+              >
+                {isWaiting ? 'antri' : status === 'tercapai' ? 'tercapai' : 'aktif'}
+              </span>
+              <div className={`${styles.goalName} ${isWaiting ? styles.goalNameWaiting : ''}`}>
+                {goal.name}
+              </div>
+              {!isWaiting ? (
+                <>
+                  <div className={styles.goalPct}>{Math.round(pct)}%</div>
+                  <div className={styles.goalBar}>
+                    <div
+                      className={styles.goalBarFill}
+                      style={{ width: `${Math.min(100, pct)}%` }}
+                    />
+                  </div>
+                  <div className={styles.goalProgress}>
+                    {formatCurrency(saved, currency)} / {formatCurrency(goal.target, currency)}
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className={styles.goalWaitingText}>nunggu giliran</div>
+                  <div className={styles.goalBar} />
+                  <div className={styles.goalProgress}>
+                    0 / {formatCurrency(goal.target, currency)}
+                  </div>
+                </>
+              )}
+            </button>
+          )
+        })}
+      </div>
+
+      <div className={styles.footer}>
+        <button className={styles.addBtn} onClick={onAddTap}>
+          {t('goal.add', lang)}
+        </button>
+      </div>
     </div>
   )
-}
-
-function reorder<T>(arr: T[], from: number, to: number): T[] {
-  const result = [...arr]
-  const [item] = result.splice(from, 1)
-  result.splice(to, 0, item)
-  return result
 }

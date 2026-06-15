@@ -1,68 +1,64 @@
 .bar {
-  padding: 8px 16px calc(8px + env(safe-area-inset-bottom, 0px));
-  background: transparent;
+  padding: 10px 12px calc(22px + env(safe-area-inset-bottom, 0px));
+  background: var(--canvas);
   flex-shrink: 0;
 }
 
 .container {
-  max-width: 358px;
-  margin: 0 auto;
-  background: var(--ink);
-  border-radius: 22px;
-  padding: 5px;
   display: flex;
-  gap: 4px;
+  gap: 8px;
+  max-width: 390px;
+  margin: 0 auto;
 }
 
 .sideBtn {
-  flex: 1;
-  background: transparent;
-  border: none;
-  border-radius: 18px;
+  width: 64px;
+  flex-shrink: 0;
+  background: var(--surface);
+  border: 1px solid var(--border-hair);
+  border-radius: 13px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0;
-  padding: 10px 8px;
+  gap: 3px;
+  padding: 10px 4px;
   min-height: 48px;
   cursor: pointer;
-  font-family: var(--font-display);
-  color: var(--bg);
+  font-family: var(--font-sans);
 }
 
 .sideLabel {
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  color: var(--bg);
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--ink-primary);
 }
 
 .cekBtn {
-  flex: 1.6;
+  flex: 1;
   background: var(--accent);
   border: none;
-  border-radius: 18px;
+  border-radius: 13px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0;
-  padding: 10px 8px;
+  gap: 2px;
+  padding: 12px;
   min-height: 48px;
   cursor: pointer;
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
+  box-shadow: 0 4px 20px rgba(217, 119, 6, 0.28);
 }
 
 .cekLabel {
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  color: var(--bg);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: #fff;
 }
 
 .cekSub {
-  font-size: 9.5px;
-  color: var(--bg);
-  opacity: 0.75;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.55);
 }

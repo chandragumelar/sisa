@@ -1,5 +1,5 @@
 .wrapper {
-  padding: 0 16px;
+  padding: 0 14px;
 }
 
 .sectionHeader {
@@ -10,96 +10,105 @@
 }
 
 .label {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 500;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.8px;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--ink-tertiary);
+}
+
+.totalMeta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-tertiary);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
 }
 
 .card {
   background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  padding: 0 14px;
-}
-
-.row {
-  padding: 12px 0;
-  border-bottom: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 13px;
+  text-align: left;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
+  flex-direction: column;
 }
 
-.row:last-of-type {
-  border-bottom: none;
+.cardWaiting {
+  opacity: 0.85;
 }
 
-.rowLeft {
-  flex: 1;
-  min-width: 0;
-}
-
-.rowEyebrow {
-  font-size: 11px;
-  color: var(--muted);
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.rowName {
-  font-family: var(--font-display);
-  font-size: 16px;
+.priorityBadge {
+  display: inline-block;
+  font-size: 8px;
   font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--ink);
-  margin-top: 2px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--canvas);
+  padding: 2px 6px;
+  border-radius: 3px;
+  margin-bottom: 8px;
+  align-self: flex-start;
 }
 
-.rowProgress {
+.goalName {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--ink-primary);
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+
+.goalNameWaiting {
+  color: var(--ink-secondary);
+}
+
+.goalPct {
   font-family: var(--font-mono);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 8px;
+  font-feature-settings: 'tnum';
+  line-height: 1;
+}
+
+.goalBar {
+  height: 4px;
+  background: var(--canvas);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.goalBarFill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+.goalProgress {
+  font-size: 10px;
+  color: var(--ink-tertiary);
+  font-family: var(--font-mono);
+}
+
+.goalWaitingText {
   font-size: 11px;
-  color: var(--muted);
-  margin-top: 2px;
-}
-
-.rowStatus {
-  font-size: 10.5px;
-  color: var(--muted);
-  margin-top: 2px;
-}
-
-.rowWaiting {
-  font-size: 10.5px;
-  color: var(--muted);
+  color: var(--ink-tertiary);
   font-style: italic;
-  margin-top: 2px;
+  margin-bottom: 8px;
 }
 
-.rowCircle {
-  flex-shrink: 0;
-}
-
-.rowDragging {
-  opacity: 0.5;
-  background: var(--surface-deep);
-  border-radius: 12px;
-  padding: 12px 14px;
-  margin: 0 -14px;
-}
-
-.footerMeta {
-  font-size: 9.5px;
-  color: var(--muted);
-  font-style: italic;
-  padding: 6px 0 10px;
-  border-top: 1px solid var(--line);
-  margin-top: 4px;
+.footer {
+  margin-top: 10px;
 }
 
 .emptyBlock {
@@ -111,19 +120,18 @@
 
 .emptyText {
   font-size: 12.5px;
-  color: var(--muted);
+  color: var(--ink-tertiary);
   line-height: 1.5;
   margin: 0;
 }
 
 .addBtn {
-  align-self: flex-start;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 500;
   color: var(--accent);
   background: none;
   border: none;
-  padding: 10px 0 0;
+  padding: 0;
   cursor: pointer;
-  font-family: var(--font-display);
+  font-family: inherit;
 }

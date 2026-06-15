@@ -1,9 +1,6 @@
-import { useState } from 'react'
 import type { Wallet } from '@/db/database'
 import { calcSisa } from '@/shared/utils/sisa.utils'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
-import { useLanguage } from '@/app/providers/useLanguage'
-import { t } from '@/shared/strings/strings'
 import styles from './SaldoModule.module.css'
 
 interface Props {
@@ -11,27 +8,18 @@ interface Props {
   currency: string
   unpaidTagihanTotal: number
   totalNabung: number
-  daysUntilPayday: number
-  yesterdaySpent: number
-  yesterdayEarned: number
   onWalletTap?: (wallet: Wallet) => void
-  onAddWalletTap?: () => void
+  onWalletManageTap?: () => void
 }
 
-const SALDO_EXPANDED_KEY = 'sisa:saldoExpanded'
-
-function getExpandedPref(): boolean {
-  try {
-    return localStorage.getItem(SALDO_EXPANDED_KEY) !== 'false'
-  } catch {
-    return true
+function fmtShort(amount: number, currency: string): string {
+  if (currency !== 'IDR') return formatCurrency(amount, currency)
+  if (amount >= 1_000_000) {
+    const jt = amount / 1_000_000
+    return `Rp ${jt % 1 === 0 ? jt.toFixed(0) : jt.toFixed(1).replace('.0', '')}jt`
   }
-}
-
-function splitRp(formatted: string): [string, string] {
-  if (formatted.startsWith('Rp')) return ['Rp', formatted.slice(2)]
-  if (formatted.startsWith('−Rp')) return ['Rp', formatted.slice(3)]
-  return ['', formatted]
+  if (amount >= 1_000) return `Rp ${Math.round(amount / 1_000)}rb`
+  return `Rp ${amount}`
 }
 
 export function SaldoModule({
@@ -39,119 +27,51 @@ export function SaldoModule({
   currency,
   unpaidTagihanTotal,
   totalNabung,
-  daysUntilPayday,
-  yesterdaySpent,
-  yesterdayEarned,
   onWalletTap,
-  onAddWalletTap,
+  onWalletManageTap,
 }: Props) {
-  const lang = useLanguage()
-  const [expanded, setExpanded] = useState(getExpandedPref)
-
   const total = wallets.reduce((sum, w) => sum + w.balance, 0)
   const sisa = calcSisa(total, unpaidTagihanTotal, totalNabung)
-  const [rpPrefix, sisaNum] = splitRp(formatCurrency(sisa, currency))
 
-  let heroSub = ''
-  if (yesterdaySpent > 0) {
-    heroSub = t('saldo.spent_yesterday', lang).replace(
-      '{amount}',
-      formatCurrency(yesterdaySpent, currency),
-    )
-  } else if (yesterdayEarned > 0) {
-    heroSub = t('saldo.income_yesterday', lang).replace(
-      '{amount}',
-      formatCurrency(yesterdayEarned, currency),
-    )
-  }
+  const [rpPrefix, sisaNum] = (() => {
+    const fmt = formatCurrency(Math.abs(sisa), currency)
+    if (fmt.startsWith('Rp')) return [sisa < 0 ? '−Rp' : 'Rp', fmt.slice(2).trim()]
+    return ['', sisa < 0 ? `−${fmt}` : fmt]
+  })()
 
-  function handleToggle() {
-    setExpanded((e) => {
-      const next = !e
-      localStorage.setItem(SALDO_EXPANDED_KEY, String(next))
-      return next
-    })
-  }
-
-  const paydayKey = daysUntilPayday === 1 ? 'home.day_to_payday' : 'home.days_to_payday'
-  const metaRight = t(paydayKey, lang).replace('{n}', String(daysUntilPayday))
+  const showSub = unpaidTagihanTotal > 0 || totalNabung > 0
 
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.card}>
-        <div className={styles.cardTop}>
-          <span className={styles.eyebrow}>{t('saldo.title', lang)}</span>
-          <span className={styles.metaRight}>{metaRight}</span>
-        </div>
-
-        <button
-          className={styles.heroAmountBtn}
-          onClick={handleToggle}
-          aria-expanded={expanded}
-          aria-label={t('saldo.toggle_aria', lang)}
-        >
-          <span className={styles.heroAmount}>
-            <span className={styles.heroRp}>{rpPrefix}</span>
-            {sisaNum}
-          </span>
+    <div className={styles.card}>
+      <div className={styles.cardHeader}>
+        <span className={styles.label}>saldo bebas</span>
+        <button className={styles.walletLink} onClick={onWalletManageTap}>
+          {wallets.length} dompet ›
         </button>
-
-        {heroSub && (
-          <div
-            style={{
-              fontSize: 11,
-              color: 'var(--muted)',
-              fontFamily: 'var(--font-mono)',
-              marginTop: 4,
-            }}
-          >
-            {heroSub}
-          </div>
-        )}
-
-        <div className={styles.breakdown}>
-          <div className={styles.bkdwnRow}>
-            <span className={styles.bkdwnLabel}>{t('saldo.total', lang)}</span>
-            <span className={styles.bkdwnValue}>{formatCurrency(total, currency)}</span>
-          </div>
-          <div className={styles.bkdwnRow}>
-            <span className={styles.bkdwnLabel}>{t('saldo.tagihan', lang)}</span>
-            <span className={styles.bkdwnValue}>
-              {formatCurrency(unpaidTagihanTotal, currency)}
-            </span>
-          </div>
-          <div className={styles.bkdwnRow}>
-            <span className={styles.bkdwnLabel}>{t('saldo.nabung', lang)}</span>
-            <span className={styles.bkdwnValue}>{formatCurrency(totalNabung, currency)}</span>
-          </div>
-        </div>
-
-        {expanded && (
-          <>
-            <div className={styles.walletDivider} />
-            {wallets.length === 0 ? (
-              <div className={styles.empty}>{t('saldo.no_wallets', lang)}</div>
-            ) : (
-              wallets.map((w) => (
-                <button
-                  key={w.id}
-                  className={styles.walletRow}
-                  onClick={() => onWalletTap?.(w)}
-                  disabled={!onWalletTap}
-                >
-                  <span className={styles.walletName}>{w.name}</span>
-                  <span className={styles.walletAmount}>
-                    {formatCurrency(w.balance, w.currency)}
-                  </span>
-                </button>
-              ))
-            )}
-            <button className={styles.addBtn} onClick={onAddWalletTap}>
-              {t('saldo.add_wallet', lang)}
-            </button>
-          </>
-        )}
       </div>
+
+      <div className={styles.hero}>
+        <span className={styles.heroRp}>{rpPrefix}</span>
+        <span className={styles.heroNum}>{sisaNum}</span>
+      </div>
+
+      {showSub && (
+        <div className={styles.sub}>
+          setelah tagihan {fmtShort(unpaidTagihanTotal, currency)} &amp; nabung{' '}
+          {fmtShort(totalNabung, currency)}
+        </div>
+      )}
+
+      {wallets.length > 0 && (
+        <div className={styles.chips}>
+          {wallets.map((w) => (
+            <button key={w.id} className={styles.chip} onClick={() => onWalletTap?.(w)}>
+              <span className={styles.chipName}>{w.name}</span>
+              <span className={styles.chipAmt}>{fmtShort(w.balance, w.currency)}</span>
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
