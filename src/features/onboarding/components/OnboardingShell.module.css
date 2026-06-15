@@ -2,7 +2,7 @@
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  background: var(--bg);
+  background: var(--canvas);
   padding: 0 24px 32px;
   max-width: 390px;
   margin: 0 auto;
@@ -23,15 +23,25 @@
 .segment {
   flex: 1;
   height: 3px;
-  border-radius: 3px;
-  background: var(--line);
+  border-radius: 2px;
+  background: var(--border-hair);
+  transition: background 0.2s;
+}
+
+.segmentDone {
+  flex: 1;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--accent);
+  transition: background 0.2s;
 }
 
 .segmentActive {
-  flex: 1;
+  flex: 2;
   height: 3px;
-  border-radius: 3px;
-  background: var(--ink);
+  border-radius: 2px;
+  background: var(--accent);
+  transition: background 0.2s;
 }
 
 .stepLabel {
