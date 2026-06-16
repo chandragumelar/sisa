@@ -243,15 +243,6 @@ export function CekDuluPage() {
               </span>
             </div>
           )}
-          <div className={styles.insightRow}>
-            <span className={styles.insightDot} />
-            <span>
-              {t('cek_dulu.insight_yearly', lang).replace(
-                '{yearly}',
-                formatCurrency(nominal * 12, currency),
-              )}
-            </span>
-          </div>
         </div>
       )}
 
