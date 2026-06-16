@@ -121,6 +121,8 @@ export type StringKey =
   | 'saldo.income_month'
   | 'saldo.expense_month'
   | 'saldo.add_wallet'
+  | 'saldo.verdict_near_limit'
+  | 'saldo.verdict_below_limit'
   // goal module
   | 'goal.title'
   | 'goal.empty_text'
@@ -407,6 +409,7 @@ export type StringKey =
   | 'settings.section_about'
   | 'settings.made_by'
   | 'settings.contact'
+  | 'settings.email'
   | 'settings.import_preview_title'
   | 'settings.import_preview_wallets'
   | 'settings.import_preview_txs'
@@ -551,6 +554,10 @@ const id: StringDictionary = {
   'saldo.income_month': 'Pemasukan bulan ini',
   'saldo.expense_month': 'Pengeluaran bulan ini',
   'saldo.add_wallet': '+ Tambah dompet',
+  'saldo.verdict_near_limit':
+    '● Mendekati batas aman lo — pertimbangkan kurangi pengeluaran sekarang.',
+  'saldo.verdict_below_limit':
+    '● Saldo bebas lo sudah di bawah batas aman — kurangi pengeluaran segera.',
 
   'goal.title': 'goal tabungan',
   'goal.empty_text':
@@ -681,7 +688,7 @@ const id: StringDictionary = {
   'cek_dulu.buy_label': 'Jadi beli — catat keluar',
   'cek_dulu.buy_sub': 'masuk ke history sebagai pengeluaran',
   'cek_dulu.insight_days':
-    'Harga ini setara {n} hari jatah harian lo — seperti "meminjam" dari {n} hari ke depan sekaligus.',
+    'Harga ini setara {n} hari jatah harian lo — bayangkan sejumlah hari itu sudah "dipesan" duluan oleh pembelian ini.',
   'cek_dulu.insight_portion':
     'Pembelian ini makan {pct}% dari total sisa lo sampai gajian. Semakin besar angkanya, semakin sempit ruang gerak untuk kebutuhan lain bulan ini.',
   'cek_dulu.insight_recovery':
@@ -728,7 +735,7 @@ const id: StringDictionary = {
   'andai.compare_sisa': 'sisa operasional',
   'andai.compare_tabungan': 'total tabungan',
   'andai.insight_days':
-    'Skenario ini menggerus {n} hari jatah harian lo. Kalau semua ini kejadian, {n} hari ke depan sudah "terpakai" duluan.',
+    'Skenario ini menggerus {n} hari jatah harian lo — kalau semua ini kejadian, sejumlah hari itu sudah habis sebelum dimulai.',
   'andai.insight_portion':
     'Efek bersih skenario ini mengambil {pct}% dari total sisa lo sampai gajian. Semakin besar angkanya, semakin sempit ruang gerak untuk kebutuhan lain.',
   'andai.insight_recovery':
@@ -845,7 +852,8 @@ const id: StringDictionary = {
   'settings.delete_sub': 'tidak bisa di-undo',
   'settings.section_about': 'tentang',
   'settings.made_by': 'dibuat oleh',
-  'settings.contact': 'kontak',
+  'settings.contact': 'twitter',
+  'settings.email': 'email',
   'settings.import_preview_title': 'Import backup',
   'settings.import_preview_wallets': 'dompet',
   'settings.import_preview_txs': 'transaksi',
@@ -990,6 +998,9 @@ const en: StringDictionary = {
   'saldo.income_month': 'Income this month',
   'saldo.expense_month': 'Spending this month',
   'saldo.add_wallet': '+ Add wallet',
+  'saldo.verdict_near_limit':
+    '● Approaching your safety floor — consider pulling back on spending.',
+  'saldo.verdict_below_limit': '● Your free balance is below your safety floor — cut spending now.',
 
   'goal.title': 'savings goals',
   'goal.empty_text':
@@ -1120,7 +1131,7 @@ const en: StringDictionary = {
   'cek_dulu.buy_label': 'Go ahead — log as expense',
   'cek_dulu.buy_sub': 'records to history as an expense',
   'cek_dulu.insight_days':
-    'This costs {n} days of your daily budget — like borrowing from {n} future days all at once.',
+    'This costs {n} days of your daily budget — imagine those days already claimed before they even start.',
   'cek_dulu.insight_portion':
     'This purchase takes {pct}% of your remaining balance until payday. The bigger that number, the less wiggle room you have for everything else this month.',
   'cek_dulu.insight_recovery':
@@ -1167,7 +1178,7 @@ const en: StringDictionary = {
   'andai.compare_sisa': 'operating balance',
   'andai.compare_tabungan': 'total savings',
   'andai.insight_days':
-    'This scenario burns through {n} days of your daily budget. If all of this happens, those {n} days are already spoken for.',
+    'This scenario burns through {n} days of your daily budget — if all of this happens, those days are gone before they start.',
   'andai.insight_portion':
     'The net effect of this scenario takes {pct}% of your remaining balance until payday. The bigger that number, the less room you have for everything else.',
   'andai.insight_recovery':
@@ -1284,7 +1295,8 @@ const en: StringDictionary = {
   'settings.delete_sub': 'cannot be undone',
   'settings.section_about': 'about',
   'settings.made_by': 'made by',
-  'settings.contact': 'contact',
+  'settings.contact': 'twitter',
+  'settings.email': 'email',
   'settings.import_preview_title': 'Import backup',
   'settings.import_preview_wallets': 'wallets',
   'settings.import_preview_txs': 'transactions',

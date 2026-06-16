@@ -18,11 +18,12 @@ import {
   addNabungDeduction,
 } from '@/db/transactions.repository'
 import { t } from '@/shared/strings/strings'
-import type { Settings, Wallet, Tagihan, Goal } from '@/db/database'
+import type { Language, Settings, Wallet, Tagihan, Goal } from '@/db/database'
 import { calcDaysUntilPayday, calcGoalStatuses, getPaydayDate } from './home.utils'
 import { calcUnpaidTagihanTotal, getTagihanUrgency } from './tagihan.utils'
 import { shouldShowBackupReminder, calcBackupUrgency } from './backup-reminder.utils'
-import { TAGIHAN_BURDEN_LOW, TAGIHAN_BURDEN_HIGH } from '@/constants/budget'
+import { calcSisa } from '@/shared/utils/sisa.utils'
+import { BRAND_STUDIO_WITH_COLLAB } from '@/constants/brand'
 import { DecisionHero } from './components/DecisionHero'
 import { SaldoModule } from './components/SaldoModule'
 import { MonthlyModule } from './components/MonthlyModule'
@@ -59,15 +60,22 @@ interface ToastState {
 }
 
 const BACKUP_DISMISS_KEY = 'sisa:backupDismissedAt'
+const NEAR_LIMIT_MARGIN = 0.2 // 20% above min balance = "approaching"
 
-type ConditionKey = 'aman' | 'ketat' | 'bahaya'
+function getConditionInfo(
+  settings: Settings,
+  sisa: number,
+  lang: Language,
+): { label: string; color: string } | null {
+  const { incomeType, freelanceMinBalance } = settings
+  if (incomeType === 'tetap' || freelanceMinBalance == null || freelanceMinBalance <= 0) return null
 
-function getConditionKey(unpaidTagihanTotal: number, totalSaldo: number): ConditionKey | null {
-  if (totalSaldo <= 0) return null
-  const pct = (unpaidTagihanTotal / totalSaldo) * 100
-  if (pct < TAGIHAN_BURDEN_LOW) return 'aman'
-  if (pct < TAGIHAN_BURDEN_HIGH) return 'ketat'
-  return 'bahaya'
+  const nearThreshold = freelanceMinBalance * (1 + NEAR_LIMIT_MARGIN)
+  if (sisa > nearThreshold) return null
+  if (sisa > freelanceMinBalance) {
+    return { label: t('saldo.verdict_near_limit', lang), color: 'var(--signal-caution)' }
+  }
+  return { label: t('saldo.verdict_below_limit', lang), color: 'var(--signal-danger)' }
 }
 
 function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: () => void } {
@@ -165,7 +173,8 @@ export function HomePage() {
     nextPaydayMs,
   )
   const daysUntilPayday = calcDaysUntilPayday(nowMs, settings)
-  const conditionKey = getConditionKey(unpaidTagihanTotal, totalSaldo)
+  const sisa = calcSisa(totalSaldo, unpaidTagihanTotal, totalNabung)
+  const condition = getConditionInfo(settings, sisa, lang)
 
   const backupDismissedAt = (() => {
     const raw = localStorage.getItem(BACKUP_DISMISS_KEY)
@@ -249,7 +258,10 @@ export function HomePage() {
       <main className={styles.page}>
         {/* Header */}
         <div className={styles.header}>
-          <span className={styles.wordmark}>SISA</span>
+          <div className={styles.wordmark}>
+            <span className={styles.wordmarkName}>sisa</span>
+            <span className={styles.wordmarkBy}>by {BRAND_STUDIO_WITH_COLLAB}</span>
+          </div>
 
           <div className={styles.headerRight}>
             {hasDualCurrency && (
@@ -322,9 +334,11 @@ export function HomePage() {
             unpaidTagihanTotal={unpaidTagihanTotal}
             totalNabung={totalNabung}
             daysUntilPayday={daysUntilPayday}
-            conditionKey={conditionKey}
+            conditionLabel={condition?.label ?? null}
+            conditionColor={condition?.color ?? null}
             onWalletTap={(w) => setEditWallet(w)}
             onHistoryTap={() => setHistoryOpen(true)}
+            onAddWalletTap={() => setWalletSheetOpen(true)}
           />
 
           <MonthlyModule

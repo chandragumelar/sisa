@@ -22,6 +22,7 @@ import {
   downloadFile,
 } from './backup.utils'
 import type { ImportPreview } from './backup.utils'
+import { BRAND_STUDIO_WITH_COLLAB, BRAND_TWITTER, BRAND_EMAIL } from '@/constants/brand'
 import styles from './SettingsPage.module.css'
 
 interface PageData {
@@ -282,17 +283,27 @@ export function SettingsPage() {
       <div className={styles.card}>
         <div className={styles.row}>
           <span className={styles.rowLabel}>{t('settings.made_by', lang)}</span>
-          <span className={styles.rowSub}>Chandra Gumelar</span>
+          <span className={styles.rowSub}>{BRAND_STUDIO_WITH_COLLAB}</span>
         </div>
         <div className={styles.divider} />
         <a
           className={styles.linkRow}
-          href="https://twitter.com/win32_icang"
+          href={`https://twitter.com/${BRAND_TWITTER.replace('@', '')}`}
           target="_blank"
           rel="noreferrer"
         >
           <span className={styles.rowLabel}>{t('settings.contact', lang)}</span>
-          <span className={styles.rowSub}>@win32_icang</span>
+          <span className={styles.rowSub}>{BRAND_TWITTER}</span>
+        </a>
+        <div className={styles.divider} />
+        <a
+          className={styles.linkRow}
+          href={`mailto:${BRAND_EMAIL}`}
+          target="_blank"
+          rel="noreferrer"
+        >
+          <span className={styles.rowLabel}>{t('settings.email', lang)}</span>
+          <span className={styles.rowSub}>{BRAND_EMAIL}</span>
         </a>
       </div>
 
