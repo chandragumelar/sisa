@@ -75,6 +75,7 @@ export function CekDuluPage() {
   const currency = settings.primaryCurrency
 
   const nominal = parseInt(parseNominalRaw(amountStr), 10) || 0
+  const inputFontSize = amountStr.length > 11 ? 26 : amountStr.length > 8 ? 36 : 48
   const result = calcCekDulu({
     nominal,
     totalSaldo,
@@ -119,6 +120,7 @@ export function CekDuluPage() {
             placeholder="0"
             value={amountStr}
             onChange={(e) => setAmountStr(formatNominalDisplay(parseNominalRaw(e.target.value)))}
+            style={{ fontSize: inputFontSize }}
             autoFocus
           />
           <span className={styles.nominalCaret} />
@@ -241,6 +243,15 @@ export function CekDuluPage() {
               </span>
             </div>
           )}
+          <div className={styles.insightRow}>
+            <span className={styles.insightDot} />
+            <span>
+              {t('cek_dulu.insight_yearly', lang).replace(
+                '{yearly}',
+                formatCurrency(nominal * 12, currency),
+              )}
+            </span>
+          </div>
         </div>
       )}
 

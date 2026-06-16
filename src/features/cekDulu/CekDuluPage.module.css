@@ -100,8 +100,8 @@
   background: none;
   outline: none;
   padding: 0;
-  min-width: 40px;
-  max-width: 240px;
+  flex: 1;
+  min-width: 0;
   line-height: 1;
   caret-color: transparent;
   font-feature-settings: 'tnum', 'lnum';

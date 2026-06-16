@@ -62,16 +62,6 @@
   color: var(--ink-tertiary);
 }
 
-/* hide number input arrows */
-.input::-webkit-outer-spin-button,
-.input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-.input[type='number'] {
-  -moz-appearance: textfield;
-}
-
 .cekBtn {
   width: 100%;
   background: var(--accent);

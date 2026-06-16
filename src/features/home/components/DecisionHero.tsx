@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
 import styles from './DecisionHero.module.css'
 
 interface Props {
@@ -15,11 +16,12 @@ function currencySymbol(currency: string): string {
 }
 
 export function DecisionHero({ currency, onCekDulu, onAndai }: Props) {
-  const [rawAmount, setRawAmount] = useState('')
+  const [amountStr, setAmountStr] = useState('')
 
   function handleSubmit() {
-    const val = parseFloat(rawAmount.replace(/[^0-9.]/g, ''))
-    onCekDulu(isNaN(val) ? undefined : val)
+    const raw = parseNominalRaw(amountStr)
+    const val = parseInt(raw, 10)
+    onCekDulu(isNaN(val) || val === 0 ? undefined : val)
   }
 
   return (
@@ -35,11 +37,11 @@ export function DecisionHero({ currency, onCekDulu, onAndai }: Props) {
         <span className={styles.currencySymbol}>{currencySymbol(currency)}</span>
         <input
           className={styles.input}
-          type="number"
-          inputMode="decimal"
+          type="text"
+          inputMode="numeric"
           placeholder="Berapa harganya?"
-          value={rawAmount}
-          onChange={(e) => setRawAmount(e.target.value)}
+          value={amountStr}
+          onChange={(e) => setAmountStr(formatNominalDisplay(parseNominalRaw(e.target.value)))}
           onKeyDown={(e) => {
             if (e.key === 'Enter') handleSubmit()
           }}
