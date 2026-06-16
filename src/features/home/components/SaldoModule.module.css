@@ -34,6 +34,20 @@
   font-feature-settings: 'tnum', 'lnum';
 }
 
+.heroNumAlert {
+  animation: numPulse 2.4s ease-in-out infinite;
+}
+
+@keyframes numPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
 .topRight {
   text-align: right;
   flex-shrink: 0;
@@ -133,6 +147,22 @@
   flex-shrink: 0;
   margin-left: 8px;
   white-space: nowrap;
+}
+
+.addWalletBtn {
+  background: none;
+  border: 1px dashed var(--border-hair);
+  border-radius: var(--radius-button);
+  padding: 7px 0;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+  cursor: pointer;
+  margin-top: 6px;
+  width: 100%;
+  text-align: center;
+  letter-spacing: 0.02em;
 }
 
 .historyRow {

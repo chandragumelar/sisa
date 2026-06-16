@@ -3,7 +3,7 @@ import { calcSisa } from '@/shared/utils/sisa.utils'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
 import styles from './SaldoModule.module.css'
 
-type ConditionKey = 'aman' | 'ketat' | 'bahaya'
+const WALLET_DOTS = ['#60a5fa', '#34d399', '#c084fc', '#fb923c', '#f472b6']
 
 interface Props {
   wallets: Wallet[]
@@ -11,24 +11,12 @@ interface Props {
   unpaidTagihanTotal: number
   totalNabung: number
   daysUntilPayday: number
-  conditionKey: ConditionKey | null
+  conditionLabel: string | null
+  conditionColor: string | null
   onWalletTap?: (wallet: Wallet) => void
   onHistoryTap?: () => void
+  onAddWalletTap?: () => void
 }
-
-const CONDITION_LABEL: Record<ConditionKey, string> = {
-  aman: '● Kondisi aman',
-  ketat: '● Kondisi ketat',
-  bahaya: '● Kondisi bahaya',
-}
-
-const CONDITION_COLOR: Record<ConditionKey, string> = {
-  aman: 'var(--signal-safe)',
-  ketat: 'var(--signal-caution)',
-  bahaya: 'var(--signal-danger)',
-}
-
-const WALLET_DOTS = ['#60a5fa', '#34d399', '#c084fc', '#fb923c', '#f472b6']
 
 export function SaldoModule({
   wallets,
@@ -36,9 +24,11 @@ export function SaldoModule({
   unpaidTagihanTotal,
   totalNabung,
   daysUntilPayday,
-  conditionKey,
+  conditionLabel,
+  conditionColor,
   onWalletTap,
   onHistoryTap,
+  onAddWalletTap,
 }: Props) {
   const total = wallets.reduce((sum, w) => sum + w.balance, 0)
   const sisa = calcSisa(total, unpaidTagihanTotal, totalNabung)
@@ -48,13 +38,17 @@ export function SaldoModule({
       <div className={styles.topRow}>
         <div>
           <div className={styles.label}>Saldo Bebas</div>
-          <div className={styles.heroNum}>{formatCurrency(sisa, currency)}</div>
+          <div
+            className={conditionLabel ? `${styles.heroNum} ${styles.heroNumAlert}` : styles.heroNum}
+          >
+            {formatCurrency(sisa, currency)}
+          </div>
         </div>
         <div className={styles.topRight}>
           <div className={styles.paydayText}>{daysUntilPayday} hr gajian</div>
-          {conditionKey && (
-            <div className={styles.conditionText} style={{ color: CONDITION_COLOR[conditionKey] }}>
-              {CONDITION_LABEL[conditionKey]}
+          {conditionLabel && (
+            <div className={styles.conditionText} style={{ color: conditionColor ?? undefined }}>
+              {conditionLabel}
             </div>
           )}
         </div>
@@ -82,6 +76,12 @@ export function SaldoModule({
             <span className={styles.walletAmt}>{formatCurrency(w.balance, w.currency)}</span>
           </button>
         ))}
+
+        {onAddWalletTap && (
+          <button className={styles.addWalletBtn} onClick={onAddWalletTap}>
+            + tambah dompet
+          </button>
+        )}
       </div>
 
       {(unpaidTagihanTotal > 0 || totalNabung > 0) && (
