@@ -468,14 +468,15 @@ const id: StringDictionary = {
   'ob.step2.err_invalid': 'kode ga valid, cek email lo lagi',
   'ob.step2.err_other': 'terjadi kesalahan, coba lagi',
 
-  'ob.step3.heading': 'SISA bukan tracker',
-  'ob.step3.body1': 'app jawab satu hal: aman ga gue beli ini sekarang?',
-  'ob.step3.body2': 'Data lo di HP lo, bukan cloud.',
+  'ob.step3.heading': 'Data lo, ga kemana-mana.',
+  'ob.step3.body1': 'Catat duit, andai skenario, cek sebelum beli.',
+  'ob.step3.body2': 'Ga ada akun. Ga ada server. Kami ga tau lo siapa.',
   'ob.step3.next': 'Lanjut',
   'ob.step3.skip': 'Lewati ›',
 
   'ob.step4a.heading': 'Tipe pemasukan lo',
-  'ob.step4a.sub': 'Ini buat ngitung kapan duit masuk.',
+  'ob.step4a.sub':
+    'SISA pakai ini untuk ngitung jatah harian lo dan prediksi saldo saat gajian. Cuma tersimpan di HP lo.',
   'ob.step4a.tetap_label': 'Gaji tetap',
   'ob.step4a.tetap_sub': 'Masuk tanggal yang sama tiap bulan',
   'ob.step4a.freelance_label': 'Freelance / tidak tetap',
@@ -487,9 +488,12 @@ const id: StringDictionary = {
   'ob.step4b.heading_tetap': 'Tanggal gajian',
   'ob.step4b.heading_mix': 'Detail pemasukan',
   'ob.step4b.heading_freelance': 'Batas aman saldo',
-  'ob.step4b.sub_tetap': 'Tiap tanggal berapa gaji lo masuk?',
-  'ob.step4b.sub_mix': 'Tanggal gajian tetap lo, kalau ada.',
-  'ob.step4b.sub_freelance': 'Berapa saldo minimal yang bikin lo merasa aman?',
+  'ob.step4b.sub_tetap':
+    'SISA hitung mundur dari tanggal ini — biar jatah harian lo presisi, bukan tebak-tebakan.',
+  'ob.step4b.sub_mix':
+    'Kalau ada gaji tetap, isi tanggalnya. Income lain bisa dicatat manual nanti.',
+  'ob.step4b.sub_freelance':
+    'Karena nggak ada tanggal gajian pasti, SISA pakai ini sebagai patokan aman. Lo yang tentuin angkanya.',
   'ob.step4b.payday_label': 'Tanggal gajian',
   'ob.step4b.payday_placeholder': 'Pilih tanggal…',
   'ob.step4b.payday_day': 'Tanggal {d}',
@@ -898,14 +902,15 @@ const en: StringDictionary = {
   'ob.step2.err_invalid': 'invalid key — double-check your email',
   'ob.step2.err_other': 'something went wrong, try again',
 
-  'ob.step3.heading': "SISA isn't a tracker",
-  'ob.step3.body1': 'One question: can I buy this right now?',
-  'ob.step3.body2': 'Your data stays on your phone, not the cloud.',
+  'ob.step3.heading': 'Your data goes nowhere.',
+  'ob.step3.body1': 'Log expenses, run what-ifs, check before you buy.',
+  'ob.step3.body2': 'No account. No server. We have no idea who you are.',
   'ob.step3.next': 'Next',
   'ob.step3.skip': 'Skip ›',
 
   'ob.step4a.heading': 'Your income type',
-  'ob.step4a.sub': 'Helps us know when money comes in.',
+  'ob.step4a.sub':
+    'SISA uses this to calculate your daily budget and predict your balance at payday. Stays on your device.',
   'ob.step4a.tetap_label': 'Fixed salary',
   'ob.step4a.tetap_sub': 'Same date every month',
   'ob.step4a.freelance_label': 'Freelance / irregular',
@@ -917,9 +922,12 @@ const en: StringDictionary = {
   'ob.step4b.heading_tetap': 'Payday date',
   'ob.step4b.heading_mix': 'Income details',
   'ob.step4b.heading_freelance': 'Safe balance floor',
-  'ob.step4b.sub_tetap': 'Which day does your pay arrive?',
-  'ob.step4b.sub_mix': 'Your fixed payday, if you have one.',
-  'ob.step4b.sub_freelance': 'What balance feels safe to you?',
+  'ob.step4b.sub_tetap':
+    'SISA counts down from this date — so your daily budget is exact, not a guess.',
+  'ob.step4b.sub_mix':
+    'If you have a fixed payday, set it here. Other income can be logged manually later.',
+  'ob.step4b.sub_freelance':
+    "Since there's no fixed payday, SISA uses this as your safety floor. You set the number.",
   'ob.step4b.payday_label': 'Payday',
   'ob.step4b.payday_placeholder': 'Choose a date…',
   'ob.step4b.payday_day': 'Day {d}',
