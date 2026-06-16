@@ -300,6 +300,33 @@ export function AndaiPage() {
             />
           </div>
 
+          <div className={styles.insightList}>
+            {result.daysEquivalent > 0 && (
+              <div className={styles.insightRow}>
+                <span className={styles.insightDot} />
+                <span>
+                  {t('andai.insight_days', lang).replace('{n}', String(result.daysEquivalent))}
+                </span>
+              </div>
+            )}
+            {result.portionPct > 0 && (
+              <div className={styles.insightRow}>
+                <span className={styles.insightDot} />
+                <span>
+                  {t('andai.insight_portion', lang).replace('{pct}', String(result.portionPct))}
+                </span>
+              </div>
+            )}
+            {result.recoveryDays > 0 && (
+              <div className={styles.insightRow}>
+                <span className={styles.insightDot} />
+                <span>
+                  {t('andai.insight_recovery', lang).replace('{n}', String(result.recoveryDays))}
+                </span>
+              </div>
+            )}
+          </div>
+
           <div className={styles.actions}>
             {savedScenarios.length >= 2 && (
               <button

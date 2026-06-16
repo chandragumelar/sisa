@@ -26,6 +26,9 @@ export interface AndaiResult {
   sisaAfter: number
   nabungBefore: number
   nabungAfter: number
+  daysEquivalent: number
+  portionPct: number
+  recoveryDays: number
 }
 
 export function calcAndai(items: AndaiItem[], baseline: AndaiBaseline): AndaiResult {
@@ -65,6 +68,13 @@ export function calcAndai(items: AndaiItem[], baseline: AndaiBaseline): AndaiRes
   const sisaBefore = calcSisa(totalSaldo, unpaidTagihanTotal, totalNabung)
   const sisaAfter = calcSisa(afterSaldo, afterUnpaidTagihan, afterNabung)
 
+  const sisaDelta = sisaBefore - sisaAfter
+  const nabungDelta = totalNabung - afterNabung
+  const daysEquivalent = sisaDelta > 0 && dailyBudget > 0 ? Math.ceil(sisaDelta / dailyBudget) : 0
+  const portionPct =
+    sisaDelta > 0 && sisaBefore > 0 ? Math.round((sisaDelta / sisaBefore) * 100) : 0
+  const recoveryDays = nabungDelta > 0 && dailyBudget > 0 ? Math.ceil(nabungDelta / dailyBudget) : 0
+
   return {
     dailyBefore: dailyBudget,
     dailyAfter: afterDailyBudget,
@@ -72,6 +82,9 @@ export function calcAndai(items: AndaiItem[], baseline: AndaiBaseline): AndaiRes
     sisaAfter,
     nabungBefore: totalNabung,
     nabungAfter: afterNabung,
+    daysEquivalent,
+    portionPct,
+    recoveryDays,
   }
 }
 

@@ -251,7 +251,6 @@ export type StringKey =
   | 'cek_dulu.insight_days'
   | 'cek_dulu.insight_portion'
   | 'cek_dulu.insight_recovery'
-  | 'cek_dulu.insight_yearly'
   // andai page
   | 'andai.title'
   | 'andai.sub'
@@ -293,6 +292,9 @@ export type StringKey =
   | 'andai.compare_daily'
   | 'andai.compare_sisa'
   | 'andai.compare_tabungan'
+  | 'andai.insight_days'
+  | 'andai.insight_portion'
+  | 'andai.insight_recovery'
   // profil – goals
   | 'profil.goals_title_list'
   | 'profil.goals_title_edit'
@@ -684,8 +686,6 @@ const id: StringDictionary = {
     'Pembelian ini makan {pct}% dari total sisa lo sampai gajian. Semakin besar angkanya, semakin sempit ruang gerak untuk kebutuhan lain bulan ini.',
   'cek_dulu.insight_recovery':
     'Pembelian ini nyentuh tabungan lo. Butuh sekitar {n} hari nabung konsisten buat balik ke posisi sekarang — pastiin ini worth it dulu.',
-  'cek_dulu.insight_yearly':
-    'Kalau ini jadi pengeluaran rutin tiap bulan, setahun lo habis {yearly} untuk hal yang sama.',
 
   'andai.title': 'Andai',
   'andai.sub': 'skenario hipotetis',
@@ -727,6 +727,12 @@ const id: StringDictionary = {
   'andai.compare_daily': 'jatah harian',
   'andai.compare_sisa': 'sisa operasional',
   'andai.compare_tabungan': 'total tabungan',
+  'andai.insight_days':
+    'Skenario ini menggerus {n} hari jatah harian lo. Kalau semua ini kejadian, {n} hari ke depan sudah "terpakai" duluan.',
+  'andai.insight_portion':
+    'Efek bersih skenario ini mengambil {pct}% dari total sisa lo sampai gajian. Semakin besar angkanya, semakin sempit ruang gerak untuk kebutuhan lain.',
+  'andai.insight_recovery':
+    'Skenario ini mengurangi tabungan lo. Butuh sekitar {n} hari nabung konsisten untuk balik ke posisi sekarang — timbang lagi apakah worth it.',
 
   'profil.goals_title_list': 'Goal tabungan',
   'profil.goals_title_edit': 'Edit goal',
@@ -1119,8 +1125,6 @@ const en: StringDictionary = {
     'This purchase takes {pct}% of your remaining balance until payday. The bigger that number, the less wiggle room you have for everything else this month.',
   'cek_dulu.insight_recovery':
     "This dips into your savings. It'll take around {n} days of consistent saving to get back to where you are now — make sure it's worth it.",
-  'cek_dulu.insight_yearly':
-    "If this became a monthly expense, you'd spend {yearly} on the same thing in a year.",
 
   'andai.title': 'What If',
   'andai.sub': 'hypothetical scenarios',
@@ -1162,6 +1166,12 @@ const en: StringDictionary = {
   'andai.compare_daily': 'daily budget',
   'andai.compare_sisa': 'operating balance',
   'andai.compare_tabungan': 'total savings',
+  'andai.insight_days':
+    'This scenario burns through {n} days of your daily budget. If all of this happens, those {n} days are already spoken for.',
+  'andai.insight_portion':
+    'The net effect of this scenario takes {pct}% of your remaining balance until payday. The bigger that number, the less room you have for everything else.',
+  'andai.insight_recovery':
+    "This scenario reduces your savings. Getting back to where you are now takes around {n} days of consistent saving — weigh whether it's worth it.",
 
   'profil.goals_title_list': 'Savings goals',
   'profil.goals_title_edit': 'Edit goal',

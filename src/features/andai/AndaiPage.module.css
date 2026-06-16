@@ -233,6 +233,36 @@
   overflow: hidden;
 }
 
+.insightList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 16px;
+  background: var(--surface-deep);
+  border-radius: var(--radius-card);
+  border: 1px solid var(--line);
+  margin-top: 8px;
+}
+
+.insightRow {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--ink-secondary);
+  line-height: 1.4;
+}
+
+.insightDot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--ink-tertiary);
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+
 .resRow {
   display: flex;
   justify-content: space-between;
