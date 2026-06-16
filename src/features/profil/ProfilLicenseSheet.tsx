@@ -52,7 +52,7 @@ export function ProfilLicenseSheet({ isOpen, onClose, license, nowMs, onUpdate }
           <div className={styles.licenseCard}>
             <div className={styles.licenseRow}>
               <span className={styles.licenseKey}>{t('profil.license_status_label', lang)}</span>
-              <span className={styles.tierBadge}>{t('profil.license_active', lang)}</span>
+              <span className={styles.statusBadge}>{t('profil.license_active', lang)}</span>
             </div>
             <div className={styles.licenseRow}>
               <span className={styles.licenseKey}>{t('profil.license_expires_label', lang)}</span>
