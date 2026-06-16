@@ -251,6 +251,7 @@ export type StringKey =
   | 'cek_dulu.insight_days'
   | 'cek_dulu.insight_portion'
   | 'cek_dulu.insight_recovery'
+  | 'cek_dulu.insight_yearly'
   // andai page
   | 'andai.title'
   | 'andai.sub'
@@ -677,9 +678,14 @@ const id: StringDictionary = {
   'cek_dulu.close_btn': 'Tutup',
   'cek_dulu.buy_label': 'Jadi beli — catat keluar',
   'cek_dulu.buy_sub': 'masuk ke history sebagai pengeluaran',
-  'cek_dulu.insight_days': 'Setara {n} hari jatah harian lo.',
-  'cek_dulu.insight_portion': '{pct}% dari sisa lo bulan ini.',
-  'cek_dulu.insight_recovery': 'Butuh ~{n} hari nabung untuk pulih ke level tabungan sekarang.',
+  'cek_dulu.insight_days':
+    'Harga ini setara {n} hari jatah harian lo — seperti "meminjam" dari {n} hari ke depan sekaligus.',
+  'cek_dulu.insight_portion':
+    'Pembelian ini makan {pct}% dari total sisa lo sampai gajian. Semakin besar angkanya, semakin sempit ruang gerak untuk kebutuhan lain bulan ini.',
+  'cek_dulu.insight_recovery':
+    'Pembelian ini nyentuh tabungan lo. Butuh sekitar {n} hari nabung konsisten buat balik ke posisi sekarang — pastiin ini worth it dulu.',
+  'cek_dulu.insight_yearly':
+    'Kalau ini jadi pengeluaran rutin tiap bulan, setahun lo habis {yearly} untuk hal yang sama.',
 
   'andai.title': 'Andai',
   'andai.sub': 'skenario hipotetis',
@@ -1107,9 +1113,14 @@ const en: StringDictionary = {
   'cek_dulu.close_btn': 'Close',
   'cek_dulu.buy_label': 'Go ahead — log as expense',
   'cek_dulu.buy_sub': 'records to history as an expense',
-  'cek_dulu.insight_days': 'Equivalent to {n} days of your daily budget.',
-  'cek_dulu.insight_portion': '{pct}% of your remaining balance this month.',
-  'cek_dulu.insight_recovery': 'Takes ~{n} days of saving to recover to current level.',
+  'cek_dulu.insight_days':
+    'This costs {n} days of your daily budget — like borrowing from {n} future days all at once.',
+  'cek_dulu.insight_portion':
+    'This purchase takes {pct}% of your remaining balance until payday. The bigger that number, the less wiggle room you have for everything else this month.',
+  'cek_dulu.insight_recovery':
+    "This dips into your savings. It'll take around {n} days of consistent saving to get back to where you are now — make sure it's worth it.",
+  'cek_dulu.insight_yearly':
+    "If this became a monthly expense, you'd spend {yearly} on the same thing in a year.",
 
   'andai.title': 'What If',
   'andai.sub': 'hypothetical scenarios',
