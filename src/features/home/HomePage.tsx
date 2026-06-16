@@ -312,7 +312,7 @@ export function HomePage() {
         <div className={styles.cards}>
           <DecisionHero
             currency={currency}
-            onCekDulu={() => navigate('/cek-dulu')}
+            onCekDulu={(amount) => navigate('/cek-dulu', { state: { initialAmount: amount } })}
             onAndai={() => navigate('/andai')}
           />
 

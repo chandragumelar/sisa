@@ -7,13 +7,12 @@ import { getSettings } from '@/db/settings.repository'
 import { getAllWallets } from '@/db/wallets.repository'
 import { getActiveTagihan } from '@/db/tagihan.repository'
 import { getTotalNabung } from '@/db/transactions.repository'
-import type { Settings, Wallet, Language } from '@/db/database'
+import type { Settings, Wallet } from '@/db/database'
 import { calcDaysUntilPayday, getPaydayDate } from '@/features/home/home.utils'
 import { calcUnpaidTagihanTotal } from '@/features/home/tagihan.utils'
 import { formatCurrency, getCurrencySymbol } from '@/shared/utils/formatCurrency'
 import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
 import { calcCekDulu } from './cekDulu.utils'
-import type { CekDuluResult } from './cekDulu.utils'
 import { QuickLogSheet } from '@/features/quickLog/QuickLogSheet'
 import styles from './CekDuluPage.module.css'
 
@@ -24,57 +23,6 @@ interface PageData {
   unpaidTagihanTotal: number
   daysUntilPayday: number
   totalNabung: number
-}
-
-interface VerdictInfo {
-  verdictClass: string
-  chipClass: string
-  chipLabel: string
-  wordKey: 'budget.verdict_good' | 'budget.verdict_ok' | 'budget.verdict_tight'
-  explainKey:
-    | 'cek_dulu.verdict_explain_good'
-    | 'cek_dulu.verdict_explain_ok'
-    | 'cek_dulu.verdict_explain_tight'
-  absPct: number
-}
-
-function getVerdictInfo(
-  result: CekDuluResult,
-  nominal: number,
-  lang: Language,
-): VerdictInfo | null {
-  if (nominal === 0 || result.dailyBefore === 0) return null
-  const deltaPct = ((result.dailyAfter - result.dailyBefore) / result.dailyBefore) * 100
-  const absPct = Math.abs(Math.round(deltaPct))
-  const chipLabel = `−${absPct}%${t('cek_dulu.daily_unit', lang)}`
-  if (result.showTabunganRow || deltaPct <= -50) {
-    return {
-      verdictClass: styles.verdictBahaya,
-      chipClass: styles.chipBahaya,
-      chipLabel,
-      wordKey: 'budget.verdict_tight',
-      explainKey: 'cek_dulu.verdict_explain_tight',
-      absPct,
-    }
-  }
-  if (deltaPct <= -20) {
-    return {
-      verdictClass: styles.verdictMepet,
-      chipClass: styles.chipMepet,
-      chipLabel,
-      wordKey: 'budget.verdict_ok',
-      explainKey: 'cek_dulu.verdict_explain_ok',
-      absPct,
-    }
-  }
-  return {
-    verdictClass: styles.verdictAman,
-    chipClass: styles.chipAman,
-    chipLabel,
-    wordKey: 'budget.verdict_good',
-    explainKey: 'cek_dulu.verdict_explain_good',
-    absPct,
-  }
 }
 
 export function CekDuluPage() {
@@ -135,8 +83,6 @@ export function CekDuluPage() {
     totalNabung,
   })
 
-  const verdictInfo = getVerdictInfo(result, nominal, lang)
-
   return (
     <div className={styles.page}>
       <div className={styles.head}>
@@ -183,24 +129,6 @@ export function CekDuluPage() {
             .replace('{amount}', formatCurrency(totalSaldo, currency))}
         </div>
       </div>
-
-      {/* Verdict card */}
-      {verdictInfo && (
-        <div className={`${styles.verdictCard} ${verdictInfo.verdictClass}`}>
-          <div className={styles.verdictTop}>
-            <div>
-              <div className={styles.verdictEyebrow}>VERDICT</div>
-              <div className={styles.verdictWord}>{t(verdictInfo.wordKey, lang)}.</div>
-            </div>
-            <span className={`${styles.verdictChip} ${verdictInfo.chipClass}`}>
-              {verdictInfo.chipLabel}
-            </span>
-          </div>
-          <div className={styles.verdictExplain}>
-            {t(verdictInfo.explainKey, lang).replace('{pct}', String(verdictInfo.absPct))}
-          </div>
-        </div>
-      )}
 
       {/* Comparison frame */}
       <div className={styles.cmpFrame}>
@@ -286,7 +214,35 @@ export function CekDuluPage() {
         )}
       </div>
 
-      {nominal > 0 && <div className={styles.growHint}>{t('cek_dulu.grow_hint', lang)}</div>}
+      {/* Insights */}
+      {nominal > 0 && (
+        <div className={styles.insightList}>
+          {result.daysEquivalent > 0 && (
+            <div className={styles.insightRow}>
+              <span className={styles.insightDot} />
+              <span>
+                {t('cek_dulu.insight_days', lang).replace('{n}', String(result.daysEquivalent))}
+              </span>
+            </div>
+          )}
+          {result.portionPct > 0 && (
+            <div className={styles.insightRow}>
+              <span className={styles.insightDot} />
+              <span>
+                {t('cek_dulu.insight_portion', lang).replace('{pct}', String(result.portionPct))}
+              </span>
+            </div>
+          )}
+          {result.recoveryDays > 0 && (
+            <div className={styles.insightRow}>
+              <span className={styles.insightDot} />
+              <span>
+                {t('cek_dulu.insight_recovery', lang).replace('{n}', String(result.recoveryDays))}
+              </span>
+            </div>
+          )}
+        </div>
+      )}
 
       <div className={styles.srcLine}>
         <span>{t('cek_dulu.src_label', lang)}</span>
