@@ -30,6 +30,11 @@ export interface CekDuluResult {
   nabungBefore: number
   nabungAfter: number
   nabungDrawn: number
+
+  // Insights
+  daysEquivalent: number // ceil(nominal / dailyBefore) — opportunity cost in days
+  portionPct: number // round(nominal / availableOp * 100) — % of sisa bulan ini
+  recoveryDays: number // ceil(nabungDrawn / dailyBefore) — days of saving to recover; 0 if no tabungan drawn
 }
 
 export function calcCekDulu(input: CekDuluInput): CekDuluResult {
@@ -44,6 +49,10 @@ export function calcCekDulu(input: CekDuluInput): CekDuluResult {
   const nabungDrawn = Math.max(0, Math.min(totalNabung, nominal - availableOp))
   const afterNabung = totalNabung - nabungDrawn
 
+  const daysEquivalent = nominal > 0 && dailyBudget > 0 ? Math.ceil(nominal / dailyBudget) : 0
+  const portionPct = nominal > 0 && availableOp > 0 ? Math.round((nominal / availableOp) * 100) : 0
+  const recoveryDays = nabungDrawn > 0 && dailyBudget > 0 ? Math.ceil(nabungDrawn / dailyBudget) : 0
+
   return {
     dailyBefore: dailyBudget,
     dailyAfter: afterDailyBudget,
@@ -57,5 +66,9 @@ export function calcCekDulu(input: CekDuluInput): CekDuluResult {
     nabungBefore: totalNabung,
     nabungAfter: afterNabung,
     nabungDrawn,
+
+    daysEquivalent,
+    portionPct,
+    recoveryDays,
   }
 }

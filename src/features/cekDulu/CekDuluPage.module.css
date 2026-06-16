@@ -145,83 +145,32 @@
 }
 
 /* ── Verdict card ── */
-.verdictCard {
-  border-radius: var(--radius-card);
-  padding: 16px 18px;
-}
-
-.verdictAman {
-  background: var(--signal-safe-bg);
-  color: var(--signal-safe);
-  border: 1px solid var(--signal-safe-br);
-}
-
-.verdictMepet {
-  background: var(--signal-caution-bg);
-  color: var(--signal-caution);
-  border: 1px solid var(--signal-caution-br);
-}
-
-.verdictBahaya {
-  background: var(--signal-danger-bg);
-  color: var(--signal-danger);
-  border: 1px solid var(--signal-danger-br);
-}
-
-.verdictTop {
+.insightList {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 16px;
+  background: var(--surface-deep);
+  border-radius: var(--radius-card);
+  border: 1px solid var(--line);
+}
+
+.insightRow {
+  display: flex;
+  align-items: baseline;
   gap: 8px;
-}
-
-.verdictEyebrow {
-  font-family: var(--font-sans);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 1.1px;
-  text-transform: uppercase;
-  opacity: 0.7;
-}
-
-.verdictWord {
-  font-family: var(--font-sans);
-  font-size: 26px;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1;
-  margin-top: 4px;
-}
-
-.verdictChip {
-  border-radius: 100px;
-  padding: 4px 10px;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  color: #fff;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-.chipAman {
-  background: var(--signal-safe);
-}
-
-.chipMepet {
-  background: var(--signal-caution);
-}
-
-.chipBahaya {
-  background: var(--signal-danger);
-}
-
-.verdictExplain {
   font-family: var(--font-sans);
   font-size: 13px;
-  opacity: 0.8;
+  color: var(--ink-secondary);
   line-height: 1.4;
+}
+
+.insightDot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--ink-tertiary);
+  flex-shrink: 0;
   margin-top: 6px;
 }
 
@@ -339,13 +288,6 @@
 }
 
 /* ── Footer lines ── */
-.growHint {
-  text-align: center;
-  font-size: 10px;
-  color: var(--ink-tertiary);
-  font-style: italic;
-}
-
 .srcLine {
   display: flex;
   justify-content: space-between;

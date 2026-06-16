@@ -106,9 +106,6 @@ export type StringKey =
   | 'budget.week_title'
   | 'budget.week_days'
   | 'budget.bills_title'
-  | 'budget.verdict_good'
-  | 'budget.verdict_ok'
-  | 'budget.verdict_tight'
   | 'budget.empty_balance'
   | 'budget.sheet_title'
   // saldo module
@@ -246,15 +243,14 @@ export type StringKey =
   | 'cek_dulu.new_flag'
   | 'cek_dulu.tabungan_label'
   | 'cek_dulu.tabungan_note'
-  | 'cek_dulu.grow_hint'
   | 'cek_dulu.src_label'
   | 'cek_dulu.src_wallets'
   | 'cek_dulu.close_btn'
   | 'cek_dulu.buy_label'
   | 'cek_dulu.buy_sub'
-  | 'cek_dulu.verdict_explain_good'
-  | 'cek_dulu.verdict_explain_ok'
-  | 'cek_dulu.verdict_explain_tight'
+  | 'cek_dulu.insight_days'
+  | 'cek_dulu.insight_portion'
+  | 'cek_dulu.insight_recovery'
   // andai page
   | 'andai.title'
   | 'andai.sub'
@@ -537,9 +533,6 @@ const id: StringDictionary = {
   'budget.week_title': 'budget minggu ini',
   'budget.week_days': 'sampai minggu · {days} hari',
   'budget.bills_title': 'tagihan vs uangmu',
-  'budget.verdict_good': 'masih sehat',
-  'budget.verdict_ok': 'lumayan',
-  'budget.verdict_tight': 'berat',
   'budget.empty_balance': 'saldo kosong',
   'budget.sheet_title': 'Cara hitung budget',
 
@@ -679,15 +672,14 @@ const id: StringDictionary = {
   'cek_dulu.new_flag': 'baru muncul',
   'cek_dulu.tabungan_label': 'tabungan kepotong',
   'cek_dulu.tabungan_note': 'Buat nutupin, {amount} ketarik dari tabungan.',
-  'cek_dulu.grow_hint': 'baris nambah otomatis pas pengeluaran makin dalam',
   'cek_dulu.src_label': 'dihitung dari saldo total',
   'cek_dulu.src_wallets': '{n} dompet · {amount}',
   'cek_dulu.close_btn': 'Tutup',
   'cek_dulu.buy_label': 'Jadi beli — catat keluar',
   'cek_dulu.buy_sub': 'masuk ke history sebagai pengeluaran',
-  'cek_dulu.verdict_explain_good': 'jatah harian turun {pct}% — masih oke sampai gajian.',
-  'cek_dulu.verdict_explain_ok': 'jatah harian turun {pct}% — perhatikan pengeluaranmu ya.',
-  'cek_dulu.verdict_explain_tight': 'jatah harian turun {pct}% — cukup berat sampai gajian.',
+  'cek_dulu.insight_days': 'Setara {n} hari jatah harian lo.',
+  'cek_dulu.insight_portion': '{pct}% dari sisa lo bulan ini.',
+  'cek_dulu.insight_recovery': 'Butuh ~{n} hari nabung untuk pulih ke level tabungan sekarang.',
 
   'andai.title': 'Andai',
   'andai.sub': 'skenario hipotetis',
@@ -971,9 +963,6 @@ const en: StringDictionary = {
   'budget.week_title': "this week's budget",
   'budget.week_days': 'until weekend · {days} days',
   'budget.bills_title': 'bills vs your money',
-  'budget.verdict_good': 'looking good',
-  'budget.verdict_ok': 'manageable',
-  'budget.verdict_tight': 'tight',
   'budget.empty_balance': 'empty balance',
   'budget.sheet_title': 'How budget is calculated',
 
@@ -1113,15 +1102,14 @@ const en: StringDictionary = {
   'cek_dulu.new_flag': 'newly visible',
   'cek_dulu.tabungan_label': 'savings dip',
   'cek_dulu.tabungan_note': 'To cover this, {amount} would come from savings.',
-  'cek_dulu.grow_hint': 'rows appear as spending cuts deeper',
   'cek_dulu.src_label': 'calculated from total balance',
   'cek_dulu.src_wallets': '{n} wallets · {amount}',
   'cek_dulu.close_btn': 'Close',
   'cek_dulu.buy_label': 'Go ahead — log as expense',
   'cek_dulu.buy_sub': 'records to history as an expense',
-  'cek_dulu.verdict_explain_good': 'daily budget drops {pct}% — still fine until payday.',
-  'cek_dulu.verdict_explain_ok': 'daily budget drops {pct}% — watch your spending carefully.',
-  'cek_dulu.verdict_explain_tight': 'daily budget drops {pct}% — quite tight until payday.',
+  'cek_dulu.insight_days': 'Equivalent to {n} days of your daily budget.',
+  'cek_dulu.insight_portion': '{pct}% of your remaining balance this month.',
+  'cek_dulu.insight_recovery': 'Takes ~{n} days of saving to recover to current level.',
 
   'andai.title': 'What If',
   'andai.sub': 'hypothetical scenarios',
