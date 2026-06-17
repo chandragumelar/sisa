@@ -27,6 +27,7 @@ export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap, on
   const lang = useLanguage()
   const active = tagihan.filter((tg) => tg.isActive)
   const ranked = rankTagihan(active, nowMs)
+  const total = active.reduce((sum, tg) => sum + tg.nominalEstimate, 0)
 
   const overdue = ranked.filter((tg) => getTagihanUrgency(tg, nowMs) === 'lewat-tempo')
   const regular = ranked.filter((tg) => getTagihanUrgency(tg, nowMs) !== 'lewat-tempo')
@@ -52,8 +53,8 @@ export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap, on
           </svg>
           <span className={styles.label}>{t('tagihan_module.title', lang)}</span>
         </div>
-        {overdue.length > 0 && (
-          <span className={styles.overdueCount}>{overdue.length} lewat tempo</span>
+        {active.length > 0 && (
+          <span className={styles.totalAmt}>{formatCurrency(total, currency)}</span>
         )}
       </div>
 

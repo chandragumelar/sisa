@@ -28,11 +28,13 @@
   font-family: var(--font-sans);
 }
 
-.overdueCount {
-  font-size: 11px;
+.totalAmt {
+  font-family: var(--font-mono);
+  font-size: 13px;
   font-weight: 700;
-  color: var(--signal-danger);
-  font-family: var(--font-sans);
+  color: var(--ink-primary);
+  font-feature-settings: 'tnum';
+  letter-spacing: -0.3px;
 }
 
 /* ── Overdue block ────────────────────────────────────── */
