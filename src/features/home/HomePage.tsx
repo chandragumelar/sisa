@@ -24,7 +24,7 @@ import { calcUnpaidTagihanTotal, getTagihanUrgency } from './tagihan.utils'
 import { shouldShowBackupReminder, calcBackupUrgency } from './backup-reminder.utils'
 import { calcSisa } from '@/shared/utils/sisa.utils'
 import { BRAND_STUDIO_WITH_COLLAB } from '@/constants/brand'
-import { DecisionHero } from './components/DecisionHero'
+import { CekDuluCard } from './components/CekDuluCard'
 import { SaldoModule } from './components/SaldoModule'
 import { MonthlyModule } from './components/MonthlyModule'
 import { TagihanModule } from './components/TagihanModule'
@@ -337,10 +337,16 @@ export function HomePage() {
 
         {/* Cards */}
         <div className={styles.cards}>
-          <DecisionHero
+          <CekDuluCard
             currency={currency}
+            walletCount={wallets.filter((w) => w.currency === currency).length}
+            tagihanCount={currencyTagihan.length}
+            sisa={sisa}
+            unpaidTagihanTotal={unpaidTagihanTotal}
             onCekDulu={(amount) => navigate('/cek-dulu', { state: { initialAmount: amount } })}
             onAndai={() => navigate('/andai')}
+            onAddTagihan={() => setTagihanSheetOpen(true)}
+            onAddWallet={() => setWalletSheetOpen(true)}
           />
 
           <SaldoModule

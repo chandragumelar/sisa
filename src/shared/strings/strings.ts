@@ -191,6 +191,24 @@ export type StringKey =
   | 'decision.cek_btn'
   | 'decision.andai_prefix'
   | 'decision.andai_link'
+  // cek dulu adaptive card states
+  | 'cek.empty.heading'
+  | 'cek.empty.body'
+  | 'cek.empty.cta'
+  | 'cek.badge_estimasi'
+  | 'cek.badge_akurat'
+  | 'cek.section_label'
+  | 'cek.item_tagihan'
+  | 'cek.item_wallet'
+  | 'cek.item_tabungan'
+  | 'cek.done_tagihan'
+  | 'cek.need_fill'
+  | 'cek.optional'
+  | 'cek.disclaimer'
+  | 'cek.row_sisa'
+  | 'cek.row_tagihan'
+  | 'cek.andai_warning'
+  | 'cek.cta_add'
   // history sheet
   | 'history.title'
   | 'history.filter_all'
@@ -660,6 +678,25 @@ const id: StringDictionary = {
   'decision.cek_btn': 'Cek sekarang',
   'decision.andai_prefix': 'atau',
   'decision.andai_link': 'simulasi dengan Andai →',
+
+  'cek.empty.heading': 'Yuk, kenali kondisi keuanganmu',
+  'cek.empty.body':
+    'Isi data tagihan dan wallet dulu — nanti card ini bisa nunjukin kondisi keuanganmu dan simulasi andai-andai.',
+  'cek.empty.cta': 'Tambah tagihan pertama',
+  'cek.badge_estimasi': 'ESTIMASI',
+  'cek.badge_akurat': 'AKURAT',
+  'cek.section_label': 'KELENGKAPAN DATA',
+  'cek.item_tagihan': 'Tagihan',
+  'cek.item_wallet': 'Wallet',
+  'cek.item_tabungan': 'Tabungan',
+  'cek.done_tagihan': '{n} tagihan ditambahkan',
+  'cek.need_fill': 'Perlu diisi',
+  'cek.optional': 'opsional',
+  'cek.disclaimer': 'Estimasi belum akurat — lengkapi data {item}',
+  'cek.row_sisa': 'Sisa gaji estimasi',
+  'cek.row_tagihan': 'Tagihan tetap',
+  'cek.andai_warning': 'Aktif setelah {item} diisi',
+  'cek.cta_add': 'Tambah {item} sekarang',
 
   'history.title': 'Riwayat',
   'history.filter_all': 'Semua',
@@ -1134,6 +1171,25 @@ const en: StringDictionary = {
   'decision.cek_btn': 'Check now',
   'decision.andai_prefix': 'or',
   'decision.andai_link': 'simulate with Andai →',
+
+  'cek.empty.heading': 'Get to know your finances',
+  'cek.empty.body':
+    'Add your bills and wallet first — then this card can show your financial condition and run what-if simulations.',
+  'cek.empty.cta': 'Add your first bill',
+  'cek.badge_estimasi': 'ESTIMATE',
+  'cek.badge_akurat': 'ACCURATE',
+  'cek.section_label': 'DATA COMPLETENESS',
+  'cek.item_tagihan': 'Bills',
+  'cek.item_wallet': 'Wallet',
+  'cek.item_tabungan': 'Savings',
+  'cek.done_tagihan': '{n} bills added',
+  'cek.need_fill': 'Needs setup',
+  'cek.optional': 'optional',
+  'cek.disclaimer': 'Estimate may be off — add your {item} data',
+  'cek.row_sisa': 'Est. remaining',
+  'cek.row_tagihan': 'Fixed bills',
+  'cek.andai_warning': 'Available after {item} is set up',
+  'cek.cta_add': 'Add {item} now',
 
   'history.title': 'History',
   'history.filter_all': 'All',
