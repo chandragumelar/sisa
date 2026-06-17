@@ -8,9 +8,9 @@ const STEP_PROGRESS: Record<OnboardingStep, number> = {
   installGuide: 1,
   license: 2,
   mentalModel: 3,
-  incomeType: 4,
-  incomeDetail: 4,
-  currency: 5,
+  currency: 4,
+  incomeType: 5,
+  incomeDetail: 5,
   wallet: 6,
   currency2: 6,
 }
@@ -31,12 +31,12 @@ export function getNextStep(
     case 'license':
       return 'mentalModel'
     case 'mentalModel':
+      return 'currency'
+    case 'currency':
       return 'incomeType'
     case 'incomeType':
       return 'incomeDetail'
     case 'incomeDetail':
-      return 'currency'
-    case 'currency':
       return 'wallet'
     case 'wallet':
       return 'currency2'

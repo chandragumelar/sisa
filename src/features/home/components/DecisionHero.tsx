@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { useLanguage } from '@/app/providers/useLanguage'
+import { t } from '@/shared/strings/strings'
 import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
 import styles from './DecisionHero.module.css'
 
@@ -16,6 +18,7 @@ function currencySymbol(currency: string): string {
 }
 
 export function DecisionHero({ currency, onCekDulu, onAndai }: Props) {
+  const lang = useLanguage()
   const [amountStr, setAmountStr] = useState('')
 
   function handleSubmit() {
@@ -26,11 +29,11 @@ export function DecisionHero({ currency, onCekDulu, onAndai }: Props) {
 
   return (
     <div className={styles.card}>
-      <div className={styles.eyebrow}>Cek Dulu</div>
+      <div className={styles.eyebrow}>{t('actions.cek_label', lang)}</div>
       <div className={styles.heading}>
-        Aman beli
+        {t('decision.heading_line1', lang)}
         <br />
-        sekarang?
+        {t('decision.heading_line2', lang)}
       </div>
 
       <div className={styles.inputWrapper}>
@@ -39,7 +42,7 @@ export function DecisionHero({ currency, onCekDulu, onAndai }: Props) {
           className={styles.input}
           type="text"
           inputMode="numeric"
-          placeholder="Berapa harganya?"
+          placeholder={t('decision.input_placeholder', lang)}
           value={amountStr}
           onChange={(e) => setAmountStr(formatNominalDisplay(parseNominalRaw(e.target.value)))}
           onKeyDown={(e) => {
@@ -49,7 +52,7 @@ export function DecisionHero({ currency, onCekDulu, onAndai }: Props) {
       </div>
 
       <button className={styles.cekBtn} onClick={handleSubmit}>
-        <span>Cek sekarang</span>
+        <span>{t('decision.cek_btn', lang)}</span>
         <svg
           width="13"
           height="13"
@@ -65,9 +68,9 @@ export function DecisionHero({ currency, onCekDulu, onAndai }: Props) {
       </button>
 
       <div className={styles.andaiRow}>
-        <span className={styles.andaiText}>atau </span>
+        <span className={styles.andaiText}>{t('decision.andai_prefix', lang)} </span>
         <button className={styles.andaiLink} onClick={onAndai}>
-          simulasi dengan Andai →
+          {t('decision.andai_link', lang)}
         </button>
       </div>
     </div>

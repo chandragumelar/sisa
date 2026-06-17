@@ -87,6 +87,7 @@ export function OnboardingPage() {
       {step === 'incomeDetail' && (
         <Step4bIncomeDetail
           incomeType={data.incomeType ?? 'tetap'}
+          currency={data.primaryCurrency ?? 'IDR'}
           onNext={({ incomeDay, freelanceMinBalance }) =>
             advance({ incomeDay, freelanceMinBalance })
           }
