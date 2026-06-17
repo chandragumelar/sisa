@@ -1,3 +1,9 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .card {
   background: var(--surface);
   border: 1px solid var(--border-hair);
@@ -6,12 +12,12 @@
   padding: var(--pad-card);
 }
 
-.topRow {
+/* ── Header row ──────────────────────────────────────────── */
+.headerRow {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  gap: 12px;
-  margin-bottom: 12px;
+  align-items: center;
+  margin-bottom: 6px;
 }
 
 .label {
@@ -21,9 +27,22 @@
   text-transform: uppercase;
   color: var(--ink-tertiary);
   font-family: var(--font-sans);
-  margin-bottom: 4px;
 }
 
+.paydayPill {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px 4px 8px;
+  border: 1px solid var(--border-hair);
+  border-radius: 999px;
+  font-size: 11px;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+  white-space: nowrap;
+}
+
+/* ── Hero amount ─────────────────────────────────────────── */
 .heroNum {
   font-family: var(--font-mono);
   font-size: 32px;
@@ -32,6 +51,7 @@
   letter-spacing: -1px;
   line-height: 1.05;
   font-feature-settings: 'tnum', 'lnum';
+  margin-bottom: 10px;
 }
 
 .heroNumAlert {
@@ -48,20 +68,7 @@
   }
 }
 
-.topRight {
-  text-align: right;
-  flex-shrink: 1;
-  max-width: 52%;
-}
-
-.paydayText {
-  font-size: 10px;
-  color: var(--ink-tertiary);
-  font-family: var(--font-sans);
-  margin-bottom: 3px;
-  white-space: nowrap;
-}
-
+/* ── Condition verdict ───────────────────────────────────── */
 .conditionText {
   font-size: 11px;
   font-weight: 600;
@@ -69,15 +76,10 @@
   white-space: normal;
   word-break: break-word;
   line-height: 1.4;
+  margin-bottom: 10px;
 }
 
-.divider {
-  height: 1px;
-  background: var(--border-soft);
-  margin: 0 -16px;
-  margin-bottom: 11px;
-}
-
+/* ── Wallet rows ─────────────────────────────────────────── */
 .walletList {
   display: flex;
   flex-direction: column;
@@ -127,59 +129,72 @@
   font-feature-settings: 'tnum';
 }
 
-.deductionsRow {
+/* ── Footer ──────────────────────────────────────────────── */
+.divider {
+  height: 1px;
+  background: var(--border-soft);
+  margin: 10px -16px 12px;
+}
+
+.footer {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding-top: 10px;
-  margin-top: 10px;
-  border-top: 1px solid var(--border-soft);
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.footerLeft {
+  flex: 1;
+}
+
+.footerRight {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+  flex-shrink: 0;
 }
 
 .deductionsText {
-  font-size: 10px;
+  font-size: 12px;
   color: var(--ink-tertiary);
   font-family: var(--font-sans);
-  white-space: nowrap;
+  line-height: 1.45;
 }
 
 .deductionsNums {
-  font-size: 10px;
-  color: var(--ink-tertiary);
-  font-family: var(--font-sans);
-  flex-shrink: 0;
-  margin-left: 8px;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink-primary);
+  font-feature-settings: 'tnum';
+  letter-spacing: -0.4px;
   white-space: nowrap;
 }
 
-.addWalletBtn {
-  background: none;
-  border: 1px dashed var(--border-hair);
-  border-radius: var(--radius-button);
-  padding: 7px 0;
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--ink-tertiary);
-  font-family: var(--font-sans);
-  cursor: pointer;
-  margin-top: 6px;
-  width: 100%;
-  text-align: center;
-  letter-spacing: 0.02em;
-}
-
-.historyRow {
-  text-align: right;
-  margin-top: 6px;
-}
-
 .historyLink {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--accent);
-  font-weight: 500;
+  font-weight: 600;
   background: none;
   border: none;
   padding: 0;
   cursor: pointer;
   font-family: var(--font-sans);
+}
+
+/* ── Add wallet — ghost card below main card ─────────────── */
+.addWalletBtn {
+  background: none;
+  border: 1px dashed var(--border-hair);
+  border-radius: var(--radius-card);
+  padding: 12px 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+  letter-spacing: 0.02em;
 }
