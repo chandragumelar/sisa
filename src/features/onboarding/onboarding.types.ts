@@ -1,4 +1,4 @@
-import type { IncomeType, Language } from '@/db/database'
+import type { IncomeFrequency, IncomeType, Language } from '@/db/database'
 
 export type OnboardingStep =
   | 'language'
@@ -20,6 +20,8 @@ export interface WalletInput {
 export interface OnboardingAccumulated {
   language: Language | null
   incomeType: IncomeType | null
+  incomeFrequency: IncomeFrequency | null
+  incomeAnchorDate: number | null
   incomeDay: number | null
   freelanceMinBalance: string
   primaryCurrency: string | null
@@ -30,6 +32,8 @@ export interface OnboardingAccumulated {
 export const INITIAL_ACCUMULATED: OnboardingAccumulated = {
   language: null,
   incomeType: null,
+  incomeFrequency: null,
+  incomeAnchorDate: null,
   incomeDay: null,
   freelanceMinBalance: '',
   primaryCurrency: null,

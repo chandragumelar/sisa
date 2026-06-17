@@ -68,6 +68,8 @@ describe('buildSettings', () => {
   const base: CompletedOnboardingData = {
     language: 'id',
     incomeType: 'tetap',
+    incomeFrequency: 'bulanan',
+    incomeAnchorDate: null,
     incomeDay: 25,
     freelanceMinBalance: null,
     primaryCurrency: 'IDR',

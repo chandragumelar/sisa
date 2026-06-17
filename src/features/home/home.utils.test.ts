@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import type { Settings, Goal, Transaction } from '@/db/database'
 import {
   calcDaysUntilPayday,
+  getPaydayDate,
   calcDailyBudget,
   getDaysUntilEndOfWeek,
   calcWeeklyBudget,
@@ -10,6 +11,8 @@ import {
   calcYesterdayStats,
   calcGoalStatuses,
 } from './home.utils'
+
+const DAY_MS = 86_400_000
 
 // ─── Fixtures ─────────────────────────────────────────────────────────────────
 
@@ -22,6 +25,8 @@ function makeSettings(overrides: Partial<Settings> = {}): Settings {
     language: 'id',
     theme: 'system',
     incomeType: 'tetap',
+    incomeFrequency: 'bulanan',
+    incomeAnchorDate: null,
     incomeDay: 25,
     freelanceMinBalance: null,
     primaryCurrency: 'IDR',
@@ -120,6 +125,149 @@ describe('calcDaysUntilPayday', () => {
     const febNow = new Date('2025-02-10T12:00:00Z').getTime()
     // today(10) <= incomeDay(31) → payday = Math.min(31, 28) = Feb 28 → 18 days
     expect(calcDaysUntilPayday(febNow, makeSettings({ incomeDay: 31 }))).toBe(18)
+  })
+})
+
+// ─── calcDaysUntilPayday — mingguan ───────────────────────────────────────────
+
+describe('calcDaysUntilPayday — mingguan', () => {
+  // NOW = Jan 10 (Wed). anchor = Jan 7 (Sun) → diffDays=3, mod=3, daysToNext=4 → payday Jan 14
+  const anchor7 = new Date('2024-01-07T12:00:00Z').getTime()
+
+  it('anchor 3 days ago → 4 days to next payday', () => {
+    expect(
+      calcDaysUntilPayday(
+        NOW_MS,
+        makeSettings({ incomeFrequency: 'mingguan', incomeAnchorDate: anchor7 }),
+      ),
+    ).toBe(4)
+  })
+
+  it('today is exactly the cycle day (mod=0) → jumps full cycle (7 days)', () => {
+    // anchor = Jan 10 = today → mod=0 → daysToNext=7 → payday Jan 17
+    expect(
+      calcDaysUntilPayday(
+        NOW_MS,
+        makeSettings({ incomeFrequency: 'mingguan', incomeAnchorDate: NOW_MS }),
+      ),
+    ).toBe(7)
+  })
+
+  it('anchor in the future → payday is anchor day itself', () => {
+    // anchor = Jan 13 (Sat), today = Jan 10 (Wed)
+    // diffDays = -3, mod = ((-3%7)+7)%7 = 4, daysToNext = 7-4 = 3 → payday Jan 13
+    const anchor13 = new Date('2024-01-13T12:00:00Z').getTime()
+    expect(
+      calcDaysUntilPayday(
+        NOW_MS,
+        makeSettings({ incomeFrequency: 'mingguan', incomeAnchorDate: anchor13 }),
+      ),
+    ).toBe(3)
+  })
+
+  it('weekend behavior applies to weekly payday', () => {
+    // anchor=Jan 7 (Sun), payday=Jan 14 (Sun) → maju-jumat → Jan 12 (Fri) → 2 days
+    expect(
+      calcDaysUntilPayday(
+        NOW_MS,
+        makeSettings({
+          incomeFrequency: 'mingguan',
+          incomeAnchorDate: anchor7,
+          weekendBehavior: 'maju-jumat',
+        }),
+      ),
+    ).toBe(2)
+  })
+})
+
+// ─── calcDaysUntilPayday — 2mingguan ──────────────────────────────────────────
+
+describe('calcDaysUntilPayday — 2mingguan', () => {
+  // NOW = Jan 10 (Wed). anchor+N means today is N days after anchor.
+
+  it('anchor+0 (today=cycle day) → 14 (full cycle, not 0)', () => {
+    // anchor=Jan 10, diffDays=0, mod=0 → daysToNext=14
+    expect(
+      calcDaysUntilPayday(
+        NOW_MS,
+        makeSettings({ incomeFrequency: '2mingguan', incomeAnchorDate: NOW_MS }),
+      ),
+    ).toBe(14)
+  })
+
+  it('anchor+5 → 9 days', () => {
+    // anchor=Jan 5, diffDays=5, mod=5, daysToNext=9
+    const anchor = new Date('2024-01-05T12:00:00Z').getTime()
+    expect(
+      calcDaysUntilPayday(
+        NOW_MS,
+        makeSettings({ incomeFrequency: '2mingguan', incomeAnchorDate: anchor }),
+      ),
+    ).toBe(9)
+  })
+
+  it('anchor+13 → 1 day', () => {
+    // anchor=Dec 28 2023, diffDays=13, mod=13, daysToNext=1
+    const anchor = new Date('2023-12-28T12:00:00Z').getTime()
+    expect(
+      calcDaysUntilPayday(
+        NOW_MS,
+        makeSettings({ incomeFrequency: '2mingguan', incomeAnchorDate: anchor }),
+      ),
+    ).toBe(1)
+  })
+
+  it('anchor+14 → 14 (full cycle again, not 0)', () => {
+    // anchor=Dec 27 2023, diffDays=14, mod=14%14=0 → daysToNext=14
+    const anchor = new Date('2023-12-27T12:00:00Z').getTime()
+    expect(
+      calcDaysUntilPayday(
+        NOW_MS,
+        makeSettings({ incomeFrequency: '2mingguan', incomeAnchorDate: anchor }),
+      ),
+    ).toBe(14)
+  })
+})
+
+// ─── getPaydayDate + calcDaysUntilPayday consistency ──────────────────────────
+
+describe('getPaydayDate + calcDaysUntilPayday consistency', () => {
+  it('monthly + weekend: both agree on adjusted date', () => {
+    // Jan 18 (Thu), incomeDay=20 → Jan 20 (Sat) → maju-jumat → Jan 19 (Fri)
+    const thuNow = new Date('2024-01-18T12:00:00Z').getTime()
+    const settings = makeSettings({ incomeDay: 20, weekendBehavior: 'maju-jumat' })
+    const payday = getPaydayDate(thuNow, settings)
+    const days = calcDaysUntilPayday(thuNow, settings)
+    expect(payday.getDate()).toBe(19)
+    expect(days).toBe(1)
+  })
+
+  it('weekly: getPaydayDate and calcDaysUntilPayday agree', () => {
+    const anchor = new Date('2024-01-07T12:00:00Z').getTime()
+    const settings = makeSettings({ incomeFrequency: 'mingguan', incomeAnchorDate: anchor })
+    const payday = getPaydayDate(NOW_MS, settings)
+    const days = calcDaysUntilPayday(NOW_MS, settings)
+    const todayStart = new Date(2024, 0, 10).getTime()
+    const paydayStart = new Date(
+      payday.getFullYear(),
+      payday.getMonth(),
+      payday.getDate(),
+    ).getTime()
+    expect(Math.max(1, Math.round((paydayStart - todayStart) / DAY_MS))).toBe(days)
+  })
+
+  it('biweekly: getPaydayDate and calcDaysUntilPayday agree', () => {
+    const anchor = new Date('2024-01-05T12:00:00Z').getTime()
+    const settings = makeSettings({ incomeFrequency: '2mingguan', incomeAnchorDate: anchor })
+    const payday = getPaydayDate(NOW_MS, settings)
+    const days = calcDaysUntilPayday(NOW_MS, settings)
+    const todayStart = new Date(2024, 0, 10).getTime()
+    const paydayStart = new Date(
+      payday.getFullYear(),
+      payday.getMonth(),
+      payday.getDate(),
+    ).getTime()
+    expect(Math.max(1, Math.round((paydayStart - todayStart) / DAY_MS))).toBe(days)
   })
 })
 

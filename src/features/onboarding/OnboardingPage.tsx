@@ -53,6 +53,8 @@ export function OnboardingPage() {
     const settings = buildSettings({
       language,
       incomeType,
+      incomeFrequency: final.incomeFrequency ?? 'bulanan',
+      incomeAnchorDate: final.incomeAnchorDate,
       incomeDay: final.incomeDay,
       freelanceMinBalance: final.freelanceMinBalance
         ? parseWalletBalance(final.freelanceMinBalance)
@@ -88,8 +90,8 @@ export function OnboardingPage() {
         <Step4bIncomeDetail
           incomeType={data.incomeType ?? 'tetap'}
           currency={data.primaryCurrency ?? 'IDR'}
-          onNext={({ incomeDay, freelanceMinBalance }) =>
-            advance({ incomeDay, freelanceMinBalance })
+          onNext={({ incomeDay, freelanceMinBalance, incomeFrequency, incomeAnchorDate }) =>
+            advance({ incomeDay, freelanceMinBalance, incomeFrequency, incomeAnchorDate })
           }
         />
       )}

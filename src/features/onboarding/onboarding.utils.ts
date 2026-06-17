@@ -1,4 +1,4 @@
-import type { Settings, Wallet, IncomeType, Language } from '@/db/database'
+import type { Settings, Wallet, IncomeFrequency, IncomeType, Language } from '@/db/database'
 import type { OnboardingStep, WalletInput } from './onboarding.types'
 
 export const TOTAL_PROGRESS_DOTS = 6
@@ -48,6 +48,8 @@ export function getNextStep(
 export interface CompletedOnboardingData {
   language: Language
   incomeType: IncomeType
+  incomeFrequency: IncomeFrequency
+  incomeAnchorDate: number | null
   incomeDay: number | null
   freelanceMinBalance: number | null
   primaryCurrency: string
@@ -60,6 +62,8 @@ export function buildSettings(data: CompletedOnboardingData): Settings {
     language: data.language,
     theme: 'system',
     incomeType: data.incomeType,
+    incomeFrequency: data.incomeFrequency,
+    incomeAnchorDate: data.incomeAnchorDate,
     incomeDay: data.incomeDay,
     freelanceMinBalance: data.freelanceMinBalance,
     primaryCurrency: data.primaryCurrency,

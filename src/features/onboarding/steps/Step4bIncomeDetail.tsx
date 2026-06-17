@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { IncomeType } from '@/db/database'
+import type { IncomeFrequency, IncomeType } from '@/db/database'
 import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
 import { getCurrencySymbol } from '@/shared/utils/formatCurrency'
 import { useLanguage } from '@/app/providers/useLanguage'
@@ -8,26 +8,47 @@ import { t } from '@/shared/strings/strings'
 interface Props {
   incomeType: IncomeType
   currency?: string
-  onNext: (data: { incomeDay: number | null; freelanceMinBalance: string }) => void
+  onNext: (data: {
+    incomeDay: number | null
+    freelanceMinBalance: string
+    incomeFrequency: IncomeFrequency
+    incomeAnchorDate: number | null
+  }) => void
 }
 
 const DAY_OPTIONS = Array.from({ length: 31 }, (_, i) => i + 1)
 
+function parseDateInputToMs(dateStr: string): number | null {
+  if (!dateStr) return null
+  const [y, m, d] = dateStr.split('-').map(Number)
+  return new Date(y, m - 1, d).getTime()
+}
+
 export function Step4bIncomeDetail({ incomeType, currency = 'IDR', onNext }: Props) {
   const lang = useLanguage()
+  const [incomeFrequency, setIncomeFrequency] = useState<IncomeFrequency>('bulanan')
   const [incomeDay, setIncomeDay] = useState<number | null>(null)
+  const [anchorDateStr, setAnchorDateStr] = useState('')
   const [minBalance, setMinBalance] = useState('')
 
   const isTetap = incomeType === 'tetap'
   const isMix = incomeType === 'mix'
   const isFreelance = incomeType === 'freelance'
+  const hasCycle = isTetap || isMix
+  const isWeekly = incomeFrequency === 'mingguan' || incomeFrequency === '2mingguan'
 
-  const canProceed = isFreelance ? true : incomeDay !== null
+  const canProceed = (() => {
+    if (isFreelance) return true
+    if (isWeekly) return anchorDateStr !== ''
+    return incomeDay !== null
+  })()
 
   function handleNext() {
     onNext({
-      incomeDay: incomeDay,
+      incomeDay: isWeekly ? null : incomeDay,
       freelanceMinBalance: parseNominalRaw(minBalance),
+      incomeFrequency,
+      incomeAnchorDate: isWeekly ? parseDateInputToMs(anchorDateStr) : null,
     })
   }
 
@@ -48,7 +69,26 @@ export function Step4bIncomeDetail({ incomeType, currency = 'IDR', onNext }: Pro
             : t('ob.step4b.sub_freelance', lang)}
       </p>
 
-      {(isTetap || isMix) && (
+      {hasCycle && (
+        <div className="ob-field">
+          <div className="ob-field-label">{t('ob.step4b.freq_label', lang)}</div>
+          <select
+            className="ob-input"
+            value={incomeFrequency}
+            onChange={(e) => {
+              setIncomeFrequency(e.target.value as IncomeFrequency)
+              setIncomeDay(null)
+              setAnchorDateStr('')
+            }}
+          >
+            <option value="bulanan">{t('ob.step4b.freq_bulanan', lang)}</option>
+            <option value="mingguan">{t('ob.step4b.freq_mingguan', lang)}</option>
+            <option value="2mingguan">{t('ob.step4b.freq_2mingguan', lang)}</option>
+          </select>
+        </div>
+      )}
+
+      {hasCycle && !isWeekly && (
         <div className="ob-field">
           <div className="ob-field-label">{t('ob.step4b.payday_label', lang)}</div>
           <select
@@ -63,6 +103,19 @@ export function Step4bIncomeDetail({ incomeType, currency = 'IDR', onNext }: Pro
               </option>
             ))}
           </select>
+        </div>
+      )}
+
+      {hasCycle && isWeekly && (
+        <div className="ob-field">
+          <div className="ob-field-label">{t('ob.step4b.anchor_label', lang)}</div>
+          <input
+            className="ob-input"
+            type="date"
+            value={anchorDateStr}
+            onChange={(e) => setAnchorDateStr(e.target.value)}
+          />
+          <div className="ob-hint">{t('ob.step4b.anchor_hint', lang)}</div>
         </div>
       )}
 

@@ -87,4 +87,29 @@ export function applyMigrations(db: Dexie): void {
           }
         })
     })
+
+  // v4: settings gains incomeFrequency + incomeAnchorDate.
+  // Upgrade sets defaults for existing users: 'bulanan' + null (preserves old monthly behavior).
+  db.version(4)
+    .stores({
+      transactions: '++id, walletId, date, type, currency',
+      wallets: '++id, currency, order',
+      tagihan: '++id, currency, isActive',
+      goals: '++id, currency, order',
+      settings: 'id',
+      license: 'id',
+      meta: 'key',
+      savedScenarios: '++id, savedAt',
+    })
+    .upgrade((tx) => {
+      return tx
+        .table('settings')
+        .toCollection()
+        .modify((row) => {
+          if (row.incomeFrequency == null) {
+            row.incomeFrequency = 'bulanan'
+            row.incomeAnchorDate = null
+          }
+        })
+    })
 }
