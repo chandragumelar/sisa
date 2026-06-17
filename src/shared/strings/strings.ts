@@ -126,11 +126,23 @@ export type StringKey =
   // goal module
   | 'goal.title'
   | 'goal.empty_text'
+  | 'goal.empty_title'
+  | 'goal.empty_hint'
   | 'goal.saving'
   | 'goal.reached'
   | 'goal.waiting'
   | 'goal.add'
   | 'goal.reorder_hint'
+  | 'goal.reorder_hint_new'
+  | 'goal.menabung'
+  | 'goal.status_belum'
+  | 'goal.status_sedang'
+  | 'goal.prioritas'
+  | 'goal.antrian_label'
+  | 'goal.not_saved'
+  | 'goal.toast_title'
+  | 'goal.toast_cta'
+  | 'goal.toast_dismiss'
   // tagihan module
   | 'tagihan_module.title'
   | 'tagihan_module.empty_text'
@@ -559,14 +571,26 @@ const id: StringDictionary = {
   'saldo.verdict_below_limit':
     '● Saldo bebas lo sudah di bawah batas aman — kurangi pengeluaran segera.',
 
-  'goal.title': 'goal tabungan',
+  'goal.title': 'mimpi lo',
   'goal.empty_text':
-    'Tentukan target nabung — emergency fund, liburan, gadget — supaya lo tau lagi nabung buat apa.',
+    'misal: laptop 20jt, liburan Bali, dana darurat — supaya lo tau lagi nabung buat apa.',
+  'goal.empty_title': 'Tulis mimpi lo di sini',
+  'goal.empty_hint': 'Lalu menabung di tab Menabung — mimpi paling atas otomatis terisi duluan.',
   'goal.saving': 'menabung →',
   'goal.reached': 'tercapai ✓',
   'goal.waiting': 'nunggu giliran',
-  'goal.add': '+ Tambah goal',
+  'goal.add': '+ Catat mimpi baru',
   'goal.reorder_hint': 'nabung lagi: {name} · tahan & geser untuk ganti urutan',
+  'goal.reorder_hint_new': 'Geser mimpi untuk atur urutan',
+  'goal.menabung': 'Menabung',
+  'goal.status_belum': 'belum menabung',
+  'goal.status_sedang': 'sedang ditabung',
+  'goal.prioritas': 'prioritas',
+  'goal.antrian_label': 'antrian',
+  'goal.not_saved': 'Belum ada yang ditabung',
+  'goal.toast_title': 'Mimpi tercatat!',
+  'goal.toast_cta': 'Mulai menabung sekarang',
+  'goal.toast_dismiss': 'Nanti saja',
 
   'tagihan_module.title': 'tagihan bulan ini',
   'tagihan_module.empty_text':
@@ -1002,14 +1026,25 @@ const en: StringDictionary = {
     '● Approaching your safety floor — consider pulling back on spending.',
   'saldo.verdict_below_limit': '● Your free balance is below your safety floor — cut spending now.',
 
-  'goal.title': 'savings goals',
-  'goal.empty_text':
-    "Set a savings target — emergency fund, vacation, gadget — so you know what you're saving for.",
+  'goal.title': 'your dreams',
+  'goal.empty_text': "e.g. laptop, Bali trip, emergency fund — so you know what you're saving for.",
+  'goal.empty_title': 'Write your dreams here',
+  'goal.empty_hint': 'Then save in the Save tab — the top dream fills first automatically.',
   'goal.saving': 'saving →',
   'goal.reached': 'reached ✓',
   'goal.waiting': 'in queue',
-  'goal.add': '+ Add goal',
+  'goal.add': '+ Add new dream',
   'goal.reorder_hint': 'saving to: {name} · hold & drag to reorder',
+  'goal.reorder_hint_new': 'Drag to reorder',
+  'goal.menabung': 'Save',
+  'goal.status_belum': 'not saving yet',
+  'goal.status_sedang': 'currently saving',
+  'goal.prioritas': 'priority',
+  'goal.antrian_label': 'queue',
+  'goal.not_saved': 'Nothing saved yet',
+  'goal.toast_title': 'Dream saved!',
+  'goal.toast_cta': 'Start saving now',
+  'goal.toast_dismiss': 'Maybe later',
 
   'tagihan_module.title': 'bills this month',
   'tagihan_module.empty_text':
