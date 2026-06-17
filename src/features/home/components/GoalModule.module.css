@@ -37,11 +37,26 @@
 
 /* ── Drag visual states ───────────────────────────────── */
 .itemDragging {
-  opacity: 0.35;
+  opacity: 0.9;
+  transform: scale(1.025) translateY(-2px);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.11),
+    0 2px 8px rgba(0, 0, 0, 0.07);
+  border-radius: 10px;
+  background: var(--surface);
+  position: relative;
+  z-index: 5;
 }
 
 .itemDragOver {
-  border-top: 2px solid var(--accent) !important;
+  /* inset shadow = top indicator line, no layout shift */
+  box-shadow: inset 0 3px 0 0 var(--accent);
+  border-radius: 4px;
+}
+
+/* Grabbing cursor across whole card while drag active */
+.cardDragging * {
+  cursor: grabbing !important;
 }
 
 /* ── Priority goal block ──────────────────────────────── */
