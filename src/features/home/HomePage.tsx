@@ -10,7 +10,7 @@ import {
   revertTagihanPayment,
   deleteTagihan,
 } from '@/db/tagihan.repository'
-import { getAllGoals, deleteGoal } from '@/db/goals.repository'
+import { getAllGoals, deleteGoal, updateGoalsOrder } from '@/db/goals.repository'
 import {
   getTotalNabung,
   getMonthlyFlows,
@@ -379,6 +379,7 @@ export function HomePage() {
             currency={currency}
             onAddTap={() => setGoalSheetOpen(true)}
             onGoalTap={() => setGoalSheetOpen(true)}
+            onReorder={(ids) => updateGoalsOrder(ids).then(reload)}
             onNabungTap={() => {
               setQuickLogInitialMode('nabung')
               setQuickLogOpen(true)

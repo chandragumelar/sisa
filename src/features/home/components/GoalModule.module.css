@@ -22,23 +22,40 @@
   font-family: var(--font-sans);
 }
 
+/* ── Drag handle ──────────────────────────────────────── */
+.dragHandle {
+  font-size: 15px;
+  color: var(--ink-tertiary);
+  flex-shrink: 0;
+  opacity: 0.45;
+  line-height: 1;
+  touch-action: none;
+  cursor: grab;
+  user-select: none;
+  padding: 4px 4px 4px 0;
+}
+
+/* ── Drag visual states ───────────────────────────────── */
+.itemDragging {
+  opacity: 0.35;
+}
+
+.itemDragOver {
+  border-top: 2px solid var(--accent) !important;
+}
+
 /* ── Priority goal block ──────────────────────────────── */
-.priorityBlock {
+.priorityWrap {
   display: flex;
   flex-direction: column;
   padding: 12px 0;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-family: inherit;
-  text-align: left;
-  width: 100%;
+  transition: opacity 0.1s;
 }
 
 .priorityTop {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 8px;
   margin-bottom: 6px;
 }
 
@@ -49,6 +66,7 @@
   text-transform: uppercase;
   color: var(--ink-tertiary);
   font-family: var(--font-sans);
+  flex: 1;
 }
 
 .statusSaving {
@@ -65,6 +83,20 @@
   border-radius: 999px;
   padding: 2px 9px;
   font-family: var(--font-sans);
+  flex-shrink: 0;
+}
+
+/* Inner tappable area of priority block */
+.priorityContent {
+  display: flex;
+  flex-direction: column;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  width: 100%;
 }
 
 .priorityName {
@@ -133,21 +165,23 @@
   display: flex;
   align-items: center;
   padding: 9px 0;
+  gap: 6px;
+  transition: opacity 0.1s;
+}
+
+/* Inner tappable area of queue item */
+.queueContent {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
   background: none;
   border: none;
+  padding: 0;
   cursor: pointer;
   font-family: inherit;
   text-align: left;
-  width: 100%;
   gap: 10px;
-}
-
-.dragHandle {
-  font-size: 15px;
-  color: var(--ink-tertiary);
-  flex-shrink: 0;
-  opacity: 0.45;
-  line-height: 1;
 }
 
 .queueInfo {
