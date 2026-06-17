@@ -2,6 +2,8 @@ import { useState } from 'react'
 import type { Wallet } from '@/db/database'
 import { calcSisa } from '@/shared/utils/sisa.utils'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
+import { useLanguage } from '@/app/providers/useLanguage'
+import { t } from '@/shared/strings/strings'
 import { BottomSheet } from '@/shared/components/BottomSheet'
 import styles from './SaldoModule.module.css'
 
@@ -32,6 +34,7 @@ export function SaldoModule({
   onHistoryTap,
   onAddWalletTap,
 }: Props) {
+  const lang = useLanguage()
   const [infoOpen, setInfoOpen] = useState(false)
   const total = wallets.reduce((sum, w) => sum + w.balance, 0)
   const sisa = calcSisa(total, unpaidTagihanTotal, totalNabung)
@@ -43,7 +46,7 @@ export function SaldoModule({
           {/* Header row: label + info btn on left, payday pill on right */}
           <div className={styles.headerRow}>
             <div className={styles.labelGroup}>
-              <span className={styles.label}>Saldo Bebas</span>
+              <span className={styles.label}>{t('home.saldo_bebas', lang)}</span>
               <button
                 className={styles.infoBtn}
                 onClick={() => setInfoOpen(true)}
@@ -77,7 +80,12 @@ export function SaldoModule({
                 <circle cx="6" cy="6" r="4.5" />
                 <path d="M6 3.5V6L7.8 7.8" />
               </svg>
-              <span>{daysUntilPayday} hri menuju gajian</span>
+              <span>
+                {(daysUntilPayday === 1
+                  ? t('home.day_to_payday', lang)
+                  : t('home.days_to_payday', lang)
+                ).replace('{n}', String(daysUntilPayday))}
+              </span>
             </div>
           </div>
 
@@ -123,7 +131,7 @@ export function SaldoModule({
             <>
               <div className={styles.divider} />
               <button className={styles.historyLink} onClick={onHistoryTap}>
-                lihat riwayat →
+                {t('home.history_link', lang)}
               </button>
             </>
           )}
@@ -132,7 +140,7 @@ export function SaldoModule({
         {/* Add wallet — outside card, ghost card style */}
         {onAddWalletTap && (
           <button className={styles.addWalletBtn} onClick={onAddWalletTap}>
-            + tambah dompet
+            {t('saldo.add_wallet', lang)}
           </button>
         )}
       </div>

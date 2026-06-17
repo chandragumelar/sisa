@@ -1,3 +1,5 @@
+import { useLanguage } from '@/app/providers/useLanguage'
+import { t } from '@/shared/strings/strings'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
 import styles from './MonthlyModule.module.css'
 
@@ -9,15 +11,16 @@ interface Props {
   nowMs: number
 }
 
-const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des']
-
 export function MonthlyModule({ income, expense, totalNabung, currency, nowMs }: Props) {
-  const now = new Date(nowMs)
-  const monthLabel = `${MONTHS[now.getMonth()]} ${now.getFullYear()}`
+  const lang = useLanguage()
+  const locale = lang === 'en' ? 'en-US' : 'id-ID'
+  const monthLabel = new Intl.DateTimeFormat(locale, { month: 'short', year: 'numeric' }).format(
+    new Date(nowMs),
+  )
 
   const items = [
     {
-      label: 'Pemasukan',
+      label: t('home.income_label', lang),
       value: income,
       colorVar: 'var(--signal-safe)',
       icon: (
@@ -40,7 +43,7 @@ export function MonthlyModule({ income, expense, totalNabung, currency, nowMs }:
       ),
     },
     {
-      label: 'Pengeluaran',
+      label: t('home.expense_label', lang),
       value: expense,
       colorVar: 'var(--signal-danger)',
       icon: (
@@ -63,7 +66,7 @@ export function MonthlyModule({ income, expense, totalNabung, currency, nowMs }:
       ),
     },
     {
-      label: 'Tabungan',
+      label: t('home.savings_label', lang),
       value: totalNabung,
       colorVar: 'var(--accent)',
       icon: (
@@ -93,7 +96,7 @@ export function MonthlyModule({ income, expense, totalNabung, currency, nowMs }:
   return (
     <div className={styles.card}>
       <div className={styles.header}>
-        <span className={styles.label}>Bulan Ini</span>
+        <span className={styles.label}>{t('home.monthly_title', lang)}</span>
         <span className={styles.month}>{monthLabel}</span>
       </div>
       <div className={styles.list}>

@@ -17,10 +17,10 @@ describe('getProgressCount', () => {
   it('language → 1', () => expect(getProgressCount('language')).toBe(1))
   it('license → 2', () => expect(getProgressCount('license')).toBe(2))
   it('mentalModel → 3', () => expect(getProgressCount('mentalModel')).toBe(3))
-  it('incomeType → 4', () => expect(getProgressCount('incomeType')).toBe(4))
-  it('incomeDetail → 4 (same dot as incomeType)', () =>
-    expect(getProgressCount('incomeDetail')).toBe(4))
-  it('currency → 5', () => expect(getProgressCount('currency')).toBe(5))
+  it('currency → 4', () => expect(getProgressCount('currency')).toBe(4))
+  it('incomeType → 5', () => expect(getProgressCount('incomeType')).toBe(5))
+  it('incomeDetail → 5 (same dot as incomeType)', () =>
+    expect(getProgressCount('incomeDetail')).toBe(5))
   it('wallet → 6', () => expect(getProgressCount('wallet')).toBe(6))
   it('currency2 → 6 (same dot as wallet)', () => expect(getProgressCount('currency2')).toBe(6))
   it('max filled equals TOTAL_PROGRESS_DOTS', () => {
@@ -41,17 +41,17 @@ describe('getNextStep', () => {
   it('license → mentalModel', () => {
     expect(getNextStep('license', null)).toBe('mentalModel')
   })
-  it('mentalModel → incomeType', () => {
-    expect(getNextStep('mentalModel', null)).toBe('incomeType')
+  it('mentalModel → currency', () => {
+    expect(getNextStep('mentalModel', null)).toBe('currency')
+  })
+  it('currency → incomeType', () => {
+    expect(getNextStep('currency', 'tetap')).toBe('incomeType')
   })
   it('incomeType → incomeDetail', () => {
     expect(getNextStep('incomeType', 'tetap')).toBe('incomeDetail')
   })
-  it('incomeDetail → currency', () => {
-    expect(getNextStep('incomeDetail', 'tetap')).toBe('currency')
-  })
-  it('currency → wallet', () => {
-    expect(getNextStep('currency', 'tetap')).toBe('wallet')
+  it('incomeDetail → wallet', () => {
+    expect(getNextStep('incomeDetail', 'tetap')).toBe('wallet')
   })
   it('wallet → currency2 (always)', () => {
     expect(getNextStep('wallet', 'tetap')).toBe('currency2')

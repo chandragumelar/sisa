@@ -35,7 +35,7 @@ export function BottomActionBar({ onCatat }: Props) {
           <line x1="8" y1="3" x2="8" y2="13" />
           <line x1="3" y1="8" x2="13" y2="8" />
         </svg>
-        <span>Catat pengeluaran / pemasukan</span>
+        <span>{t('actions.log_full_label', lang)}</span>
       </button>
     </div>
   )

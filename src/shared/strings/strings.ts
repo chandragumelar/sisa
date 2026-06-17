@@ -177,6 +177,14 @@ export type StringKey =
   | 'actions.cek_sub'
   | 'actions.andai_aria'
   | 'actions.andai_label'
+  | 'actions.log_full_label'
+  // decision hero card
+  | 'decision.heading_line1'
+  | 'decision.heading_line2'
+  | 'decision.input_placeholder'
+  | 'decision.cek_btn'
+  | 'decision.andai_prefix'
+  | 'decision.andai_link'
   // history sheet
   | 'history.title'
   | 'history.filter_all'
@@ -230,6 +238,12 @@ export type StringKey =
   | 'home.toast_keluar'
   | 'home.days_to_payday'
   | 'home.day_to_payday'
+  | 'home.saldo_bebas'
+  | 'home.history_link'
+  | 'home.monthly_title'
+  | 'home.income_label'
+  | 'home.expense_label'
+  | 'home.savings_label'
   // quick log sheet
   | 'quick_log.mode_keluar'
   | 'quick_log.mode_masuk'
@@ -626,6 +640,14 @@ const id: StringDictionary = {
   'actions.cek_sub': 'aman ga gue beli ini?',
   'actions.andai_aria': 'Andai',
   'actions.andai_label': 'Andai',
+  'actions.log_full_label': 'Catat pengeluaran / pemasukan',
+
+  'decision.heading_line1': 'Aman beli',
+  'decision.heading_line2': 'sekarang?',
+  'decision.input_placeholder': 'Berapa harganya?',
+  'decision.cek_btn': 'Cek sekarang',
+  'decision.andai_prefix': 'atau',
+  'decision.andai_link': 'simulasi dengan Andai →',
 
   'history.title': 'Riwayat',
   'history.filter_all': 'Semua',
@@ -679,6 +701,12 @@ const id: StringDictionary = {
   'home.toast_keluar': 'Pengeluaran dicatat',
   'home.days_to_payday': '{n} hari ke gajian',
   'home.day_to_payday': '{n} hari ke gajian',
+  'home.saldo_bebas': 'Saldo Bebas',
+  'home.history_link': 'lihat riwayat →',
+  'home.monthly_title': 'Bulan Ini',
+  'home.income_label': 'Pemasukan',
+  'home.expense_label': 'Pengeluaran',
+  'home.savings_label': 'Tabungan',
 
   'quick_log.mode_keluar': 'keluar',
   'quick_log.mode_masuk': 'masuk',
@@ -1080,6 +1108,14 @@ const en: StringDictionary = {
   'actions.cek_sub': 'can I buy this right now?',
   'actions.andai_aria': 'What If',
   'actions.andai_label': 'What If',
+  'actions.log_full_label': 'Log expense / income',
+
+  'decision.heading_line1': 'Safe to',
+  'decision.heading_line2': 'buy now?',
+  'decision.input_placeholder': 'How much is it?',
+  'decision.cek_btn': 'Check now',
+  'decision.andai_prefix': 'or',
+  'decision.andai_link': 'simulate with Andai →',
 
   'history.title': 'History',
   'history.filter_all': 'All',
@@ -1133,6 +1169,12 @@ const en: StringDictionary = {
   'home.toast_keluar': 'Expense logged',
   'home.days_to_payday': '{n} days to payday',
   'home.day_to_payday': '{n} day to payday',
+  'home.saldo_bebas': 'Free Balance',
+  'home.history_link': 'view history →',
+  'home.monthly_title': 'This Month',
+  'home.income_label': 'Income',
+  'home.expense_label': 'Expense',
+  'home.savings_label': 'Savings',
 
   'quick_log.mode_keluar': 'out',
   'quick_log.mode_masuk': 'in',
