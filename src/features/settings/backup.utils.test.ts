@@ -9,6 +9,8 @@ const SETTINGS: BackupData['settings'] = {
   language: 'id',
   theme: 'light',
   incomeType: 'tetap',
+  incomeFrequency: 'bulanan',
+  incomeAnchorDate: null,
   incomeDay: 25,
   freelanceMinBalance: null,
   primaryCurrency: 'IDR',
