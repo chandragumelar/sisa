@@ -45,7 +45,7 @@ export function SaldoModule({
           </div>
         </div>
         <div className={styles.topRight}>
-          <div className={styles.paydayText}>{daysUntilPayday} hr gajian</div>
+          <div className={styles.paydayText}>{daysUntilPayday} hri menuju gajian</div>
           {conditionLabel && (
             <div className={styles.conditionText} style={{ color: conditionColor ?? undefined }}>
               {conditionLabel}
@@ -86,7 +86,7 @@ export function SaldoModule({
 
       {(unpaidTagihanTotal > 0 || totalNabung > 0) && (
         <div className={styles.deductionsRow}>
-          <span className={styles.deductionsText}>setelah tagihan &amp; nabung</span>
+          <span className={styles.deductionsText}>setelah dikurangi tagihan &amp; nabung</span>
           <span className={styles.deductionsNums}>
             {unpaidTagihanTotal > 0 && `−${formatCurrency(unpaidTagihanTotal, currency)}`}
             {unpaidTagihanTotal > 0 && totalNabung > 0 && ' · '}

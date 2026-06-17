@@ -96,16 +96,24 @@ export function MonthlyModule({ income, expense, totalNabung, currency, nowMs }:
         <span className={styles.label}>Bulan Ini</span>
         <span className={styles.month}>{monthLabel}</span>
       </div>
-      <div className={styles.grid}>
-        {items.map((item) => (
-          <div key={item.label} className={styles.cell}>
-            <div className={styles.cellIcon} style={{ color: item.colorVar }}>
-              {item.icon}
+      <div className={styles.list}>
+        {items.map((item, i) => (
+          <div
+            key={item.label}
+            className={styles.row}
+            style={{
+              borderBottom: i < items.length - 1 ? '1px solid var(--border-soft)' : 'none',
+            }}
+          >
+            <div className={styles.rowLeft}>
+              <span className={styles.rowIcon} style={{ color: item.colorVar }}>
+                {item.icon}
+              </span>
+              <span className={styles.rowLabel}>{item.label}</span>
             </div>
-            <div className={styles.cellValue} style={{ color: item.colorVar }}>
+            <span className={styles.rowValue} style={{ color: item.colorVar }}>
               {formatCurrency(item.value, currency)}
-            </div>
-            <div className={styles.cellLabel}>{item.label}</div>
+            </span>
           </div>
         ))}
       </div>

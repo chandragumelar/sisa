@@ -28,40 +28,44 @@
   font-family: var(--font-sans);
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 7px;
+.list {
+  display: flex;
+  flex-direction: column;
 }
 
-.cell {
-  background: var(--surface-2);
-  border: 1px solid var(--border-soft);
-  border-radius: var(--radius-button);
-  padding: 10px;
-}
-
-.cellIcon {
-  margin-bottom: 7px;
+.row {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  padding: 9px 0;
+  gap: 8px;
 }
 
-.cellValue {
+.rowLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rowIcon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.rowLabel {
+  font-size: 13px;
+  color: var(--ink-secondary);
+  font-family: var(--font-sans);
+}
+
+.rowValue {
   font-family: var(--font-mono);
   font-size: 14px;
   font-weight: 700;
   letter-spacing: -0.4px;
   line-height: 1;
-  margin-bottom: 4px;
+  flex-shrink: 0;
   font-feature-settings: 'tnum';
-  word-break: break-all;
-}
-
-.cellLabel {
-  font-size: 9px;
-  color: var(--ink-tertiary);
-  letter-spacing: 0.7px;
-  text-transform: uppercase;
-  font-family: var(--font-sans);
+  white-space: nowrap;
 }
