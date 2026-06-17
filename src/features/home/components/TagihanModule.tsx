@@ -36,6 +36,7 @@ export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap, on
 
   return (
     <div className={styles.card}>
+      {/* Header */}
       <div className={styles.header}>
         <div className={styles.headerLeft}>
           <svg
@@ -53,10 +54,9 @@ export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap, on
           </svg>
           <span className={styles.label}>{t('tagihan_module.title', lang)}</span>
         </div>
-        {active.length > 0 && (
-          <span className={styles.totalAmt}>{formatCurrency(total, currency)}</span>
-        )}
       </div>
+
+      <div className={styles.headerDivider} />
 
       {active.length === 0 ? (
         <div className={styles.emptyBlock}>
@@ -67,6 +67,7 @@ export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap, on
         </div>
       ) : (
         <>
+          {/* Overdue blocks */}
           {overdue.map((tg) => (
             <div key={tg.id} className={styles.overdueBlock}>
               <svg
@@ -97,6 +98,7 @@ export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap, on
             </div>
           ))}
 
+          {/* Regular rows — 2-col: name+date left, amount right */}
           {visibleRegular.map((tg, i) => (
             <button
               key={tg.id}
@@ -109,22 +111,9 @@ export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap, on
               }}
               onClick={() => onRowTap(tg)}
             >
-              <span className={styles.rowDot} />
-              <span className={styles.rowName}>{tg.name}</span>
-              <div className={styles.rowMeta}>
-                <svg
-                  width="11"
-                  height="11"
-                  viewBox="0 0 12 12"
-                  fill="none"
-                  stroke="var(--ink-tertiary)"
-                  strokeWidth="1.2"
-                  strokeLinecap="round"
-                >
-                  <circle cx="6" cy="6" r="4.5" />
-                  <path d="M6 3.5V6L7.8 7.8" />
-                </svg>
-                <span className={styles.rowDate}>{formatDueDate(tg, nowMs)}</span>
+              <div className={styles.rowInfo}>
+                <span className={styles.rowName}>{tg.name}</span>
+                <span className={styles.rowDate}>jatuh tempo {formatDueDate(tg, nowMs)}</span>
               </div>
               <span className={styles.rowAmt}>{formatCurrency(tg.nominalEstimate, currency)}</span>
             </button>
@@ -147,6 +136,12 @@ export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap, on
               </svg>
             </button>
           )}
+
+          {/* Total zone — tinted, struk-style */}
+          <div className={styles.totalZone}>
+            <span className={styles.totalLabel}>Total</span>
+            <span className={styles.totalNum}>{formatCurrency(total, currency)}</span>
+          </div>
 
           <button className={styles.addBtn} onClick={onAddTap}>
             {t('tagihan_module.add', lang)}

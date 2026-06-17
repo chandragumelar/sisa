@@ -6,9 +6,9 @@
   padding: var(--pad-card);
 }
 
+/* ── Header ───────────────────────────────────────────── */
 .header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
 }
@@ -28,13 +28,10 @@
   font-family: var(--font-sans);
 }
 
-.totalAmt {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--ink-primary);
-  font-feature-settings: 'tnum';
-  letter-spacing: -0.3px;
+.headerDivider {
+  height: 1px;
+  background: var(--border-soft);
+  margin: 0 -16px 0;
 }
 
 /* ── Overdue block ────────────────────────────────────── */
@@ -43,7 +40,7 @@
   border: 1px solid var(--signal-danger-br);
   border-radius: var(--radius-button);
   padding: 10px 12px;
-  margin-bottom: 11px;
+  margin-top: 11px;
   display: flex;
   align-items: center;
   gap: 9px;
@@ -98,32 +95,32 @@
   flex-shrink: 0;
 }
 
-/* ── Regular rows ─────────────────────────────────────── */
+/* ── Regular rows — 2-col ─────────────────────────────── */
 .row {
   display: flex;
   align-items: center;
-  padding: 9px 0;
+  justify-content: space-between;
+  padding: 12px 0;
   background: none;
   border: none;
   cursor: pointer;
   font-family: inherit;
   text-align: left;
   width: 100%;
-  gap: 0;
+  gap: 12px;
 }
 
-.rowDot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--ink-tertiary);
-  margin-right: 11px;
-  flex-shrink: 0;
+.rowInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
 }
 
 .rowName {
-  flex: 1;
-  font-size: 13px;
+  font-size: 14px;
+  font-weight: 600;
   color: var(--ink-primary);
   font-family: var(--font-sans);
   white-space: nowrap;
@@ -131,34 +128,24 @@
   text-overflow: ellipsis;
 }
 
-.rowMeta {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  margin-right: 12px;
-  flex-shrink: 0;
-}
-
 .rowDate {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--ink-tertiary);
   font-family: var(--font-sans);
-  min-width: 40px;
-  text-align: right;
 }
 
 .rowAmt {
   font-family: var(--font-mono);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--ink-primary);
   flex-shrink: 0;
-  min-width: 48px;
   text-align: right;
   font-feature-settings: 'tnum';
+  white-space: nowrap;
 }
 
-/* ── Expand + add ─────────────────────────────────────── */
+/* ── Expand ───────────────────────────────────────────── */
 .expandRow {
   display: flex;
   align-items: center;
@@ -166,7 +153,6 @@
   gap: 5px;
   padding: 10px 0;
   border-top: 1px solid var(--border-soft);
-  margin-top: 0;
   background: none;
   border-left: none;
   border-right: none;
@@ -179,8 +165,39 @@
   font-weight: 600;
 }
 
+/* ── Total zone — tinted strip ────────────────────────── */
+.totalZone {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 -16px;
+  padding: 12px 16px;
+  background: var(--surface-2);
+  border-top: 1px solid var(--border-soft);
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.totalLabel {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+}
+
+.totalNum {
+  font-family: var(--font-mono);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ink-primary);
+  font-feature-settings: 'tnum';
+  letter-spacing: -0.5px;
+}
+
+/* ── Empty + add ──────────────────────────────────────── */
 .emptyBlock {
-  padding: 4px 0 4px;
+  padding: 12px 0 4px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -195,12 +212,12 @@
 
 .addBtn {
   display: block;
-  font-size: 12px;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 700;
   color: var(--accent);
   background: none;
   border: none;
-  padding: 8px 0 0;
+  padding: 12px 0 0;
   cursor: pointer;
   font-family: inherit;
 }
