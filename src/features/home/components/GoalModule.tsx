@@ -141,7 +141,7 @@ export function GoalModule({
 
   return (
     <>
-      <div className={styles.card}>
+      <div className={dragIdx !== null ? `${styles.card} ${styles.cardDragging}` : styles.card}>
         <div className={styles.header}>
           <span className={styles.label}>{t('goal.title', lang)}</span>
         </div>
