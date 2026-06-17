@@ -66,6 +66,12 @@ export type StringKey =
   | 'ob.step4b.payday_label'
   | 'ob.step4b.payday_placeholder'
   | 'ob.step4b.payday_day'
+  | 'ob.step4b.freq_label'
+  | 'ob.step4b.freq_bulanan'
+  | 'ob.step4b.freq_mingguan'
+  | 'ob.step4b.freq_2mingguan'
+  | 'ob.step4b.anchor_label'
+  | 'ob.step4b.anchor_hint'
   | 'ob.step4b.min_balance_optional'
   | 'ob.step4b.min_balance_required'
   | 'ob.step4b.min_balance_hint'
@@ -522,6 +528,12 @@ const id: StringDictionary = {
     'Kalau ada gaji tetap, isi tanggalnya. Income lain bisa dicatat manual nanti.',
   'ob.step4b.sub_freelance':
     'Karena nggak ada tanggal gajian pasti, SISA pakai ini sebagai patokan aman. Lo yang tentuin angkanya.',
+  'ob.step4b.freq_label': 'Frekuensi gajian',
+  'ob.step4b.freq_bulanan': 'Bulanan',
+  'ob.step4b.freq_mingguan': 'Mingguan',
+  'ob.step4b.freq_2mingguan': '2 Mingguan',
+  'ob.step4b.anchor_label': 'Tanggal patokan siklus gajian',
+  'ob.step4b.anchor_hint': 'Pilih salah satu tanggal gajian kamu — jadwal dihitung dari sini',
   'ob.step4b.payday_label': 'Tanggal gajian',
   'ob.step4b.payday_placeholder': 'Pilih tanggal…',
   'ob.step4b.payday_day': 'Tanggal {d}',
@@ -992,6 +1004,12 @@ const en: StringDictionary = {
     'If you have a fixed payday, set it here. Other income can be logged manually later.',
   'ob.step4b.sub_freelance':
     "Since there's no fixed payday, SISA uses this as your safety floor. You set the number.",
+  'ob.step4b.freq_label': 'Pay frequency',
+  'ob.step4b.freq_bulanan': 'Monthly',
+  'ob.step4b.freq_mingguan': 'Weekly',
+  'ob.step4b.freq_2mingguan': 'Biweekly',
+  'ob.step4b.anchor_label': 'Reference payday date',
+  'ob.step4b.anchor_hint': 'Pick any of your payday dates — the cycle is calculated from this',
   'ob.step4b.payday_label': 'Payday',
   'ob.step4b.payday_placeholder': 'Choose a date…',
   'ob.step4b.payday_day': 'Day {d}',

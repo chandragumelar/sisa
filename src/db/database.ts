@@ -17,6 +17,7 @@ export type TagihanFrequency =
   | '3bulanan'
   | 'tahunan'
 export type IncomeType = 'tetap' | 'freelance' | 'mix'
+export type IncomeFrequency = 'mingguan' | '2mingguan' | 'bulanan'
 export type WeekendBehavior = 'maju-jumat' | 'mundur-senin' | 'tetap' | 'tidak-konsisten'
 export type Theme = 'light' | 'dark' | 'system'
 export type Language = 'id' | 'en'
@@ -94,6 +95,8 @@ export interface Settings {
   primaryCurrency: string // ISO 4217
   secondaryCurrency: string | null
   activeCurrencyMode: string // current currency context (Pro: one of the two currencies)
+  incomeFrequency: IncomeFrequency // 'bulanan' for existing users (migration default)
+  incomeAnchorDate: number | null // epoch ms; reference date for weekly/biweekly cycle
   weekendBehavior: WeekendBehavior | null // null until first payday falls on a weekend
   onboardingCompleted: boolean
   lastExportedAt: number | null // epoch ms; drives backup reminder cadence
