@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useClock } from '@/app/providers/useClock'
 import { useLanguage } from '@/app/providers/useLanguage'
@@ -159,6 +159,21 @@ export function HomePage() {
   const [tagihanSheetOpen, setTagihanSheetOpen] = useState(false)
   const [goalSheetOpen, setGoalSheetOpen] = useState(false)
   const [walletSheetOpen, setWalletSheetOpen] = useState(false)
+  const [quickLogInitialMode, setQuickLogInitialMode] = useState<QuickLogMode | undefined>(
+    undefined,
+  )
+  const [showGoalToast, setShowGoalToast] = useState(false)
+  const [firstGoalName, setFirstGoalName] = useState('')
+  const prevGoalsLengthRef = useRef<number | null>(null)
+
+  useEffect(() => {
+    const prev = prevGoalsLengthRef.current
+    if (prev === 0 && goals.length === 1) {
+      setFirstGoalName(goals[0].name)
+      setShowGoalToast(true)
+    }
+    prevGoalsLengthRef.current = goals.length
+  }, [goals])
 
   if (isLoading || !settings) return null
 
@@ -364,6 +379,18 @@ export function HomePage() {
             currency={currency}
             onAddTap={() => setGoalSheetOpen(true)}
             onGoalTap={() => setGoalSheetOpen(true)}
+            onNabungTap={() => {
+              setQuickLogInitialMode('nabung')
+              setQuickLogOpen(true)
+            }}
+            showGoalToast={showGoalToast}
+            newGoalName={firstGoalName}
+            onGoalToastNabung={() => {
+              setShowGoalToast(false)
+              setQuickLogInitialMode('nabung')
+              setQuickLogOpen(true)
+            }}
+            onGoalToastDismiss={() => setShowGoalToast(false)}
           />
         </div>
       </main>
@@ -486,12 +513,16 @@ export function HomePage() {
 
       <QuickLogSheet
         isOpen={quickLogOpen}
-        onClose={() => setQuickLogOpen(false)}
+        onClose={() => {
+          setQuickLogOpen(false)
+          setQuickLogInitialMode(undefined)
+        }}
         wallets={wallets}
         currency={currency}
         totalNabung={totalNabung}
         nowMs={nowMs}
         onCommit={handleQuickLogCommit}
+        initialMode={quickLogInitialMode}
       />
     </div>
   )
