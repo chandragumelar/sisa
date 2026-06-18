@@ -341,12 +341,17 @@ export function HomePage() {
             currency={currency}
             walletCount={wallets.filter((w) => w.currency === currency).length}
             tagihanCount={currencyTagihan.length}
+            hasNabung={totalNabung > 0}
             sisa={sisa}
             unpaidTagihanTotal={unpaidTagihanTotal}
             onCekDulu={(amount) => navigate('/cek-dulu', { state: { initialAmount: amount } })}
             onAndai={() => navigate('/andai')}
             onAddTagihan={() => setTagihanSheetOpen(true)}
             onAddWallet={() => setWalletSheetOpen(true)}
+            onNabungTap={() => {
+              setQuickLogInitialMode('nabung')
+              setQuickLogOpen(true)
+            }}
           />
 
           <SaldoModule

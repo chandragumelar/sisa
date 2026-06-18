@@ -129,6 +129,15 @@ export type StringKey =
   | 'saldo.add_wallet'
   | 'saldo.verdict_near_limit'
   | 'saldo.verdict_below_limit'
+  | 'saldo.formula_title'
+  | 'saldo.formula_intro'
+  | 'saldo.formula_total_wallets'
+  | 'saldo.formula_bills_label'
+  | 'saldo.formula_bills_sublabel'
+  | 'saldo.formula_savings_label'
+  | 'saldo.formula_savings_sublabel'
+  | 'saldo.formula_total_label'
+  | 'saldo.formula_note'
   // goal module
   | 'goal.title'
   | 'goal.empty_text'
@@ -209,6 +218,7 @@ export type StringKey =
   | 'cek.row_tagihan'
   | 'cek.andai_warning'
   | 'cek.cta_add'
+  | 'cek.nabung_cta'
   // history sheet
   | 'history.title'
   | 'history.filter_all'
@@ -614,6 +624,17 @@ const id: StringDictionary = {
     '● Mendekati batas aman lo — pertimbangkan kurangi pengeluaran sekarang.',
   'saldo.verdict_below_limit':
     '● Saldo bebas lo sudah di bawah batas aman — kurangi pengeluaran segera.',
+  'saldo.formula_title': 'Dari mana angka ini?',
+  'saldo.formula_intro':
+    'Saldo bebas bukan cuma saldo di dompet lo. Ada yang udah "dipesan" duluan.',
+  'saldo.formula_total_wallets': 'Total saldo semua dompet',
+  'saldo.formula_bills_label': 'Tagihan bulan ini yang belum lunas',
+  'saldo.formula_bills_sublabel': '(dipesan buat bayar)',
+  'saldo.formula_savings_label': 'Dana yang lagi ditabung',
+  'saldo.formula_savings_sublabel': '(diendapkan, bukan buat dipakai)',
+  'saldo.formula_total_label': 'Saldo Bebas',
+  'saldo.formula_note':
+    'Ini angka yang beneran bisa lo pakai sekarang — bukan sekedar sisa di rekening.',
 
   'goal.title': 'mimpi lo',
   'goal.empty_text':
@@ -697,6 +718,7 @@ const id: StringDictionary = {
   'cek.row_tagihan': 'Tagihan tetap',
   'cek.andai_warning': 'Aktif setelah {item} diisi',
   'cek.cta_add': 'Tambah {item} sekarang',
+  'cek.nabung_cta': 'Catat tabungan',
 
   'history.title': 'Riwayat',
   'history.filter_all': 'Semua',
@@ -1108,6 +1130,17 @@ const en: StringDictionary = {
   'saldo.verdict_near_limit':
     '● Approaching your safety floor — consider pulling back on spending.',
   'saldo.verdict_below_limit': '● Your free balance is below your safety floor — cut spending now.',
+  'saldo.formula_title': 'Where does this number come from?',
+  'saldo.formula_intro':
+    "Free balance isn't just what's in your wallets. Some of it is already spoken for.",
+  'saldo.formula_total_wallets': 'Total balance across all wallets',
+  'saldo.formula_bills_label': 'Unpaid bills this month',
+  'saldo.formula_bills_sublabel': '(reserved for payment)',
+  'saldo.formula_savings_label': 'Money currently being saved',
+  'saldo.formula_savings_sublabel': '(set aside, not for spending)',
+  'saldo.formula_total_label': 'Free Balance',
+  'saldo.formula_note':
+    "This is what you can actually spend right now — not just what's left in your account.",
 
   'goal.title': 'your dreams',
   'goal.empty_text': "e.g. laptop, Bali trip, emergency fund — so you know what you're saving for.",
@@ -1190,6 +1223,7 @@ const en: StringDictionary = {
   'cek.row_tagihan': 'Fixed bills',
   'cek.andai_warning': 'Available after {item} is set up',
   'cek.cta_add': 'Add {item} now',
+  'cek.nabung_cta': 'Log savings',
 
   'history.title': 'History',
   'history.filter_all': 'All',

@@ -149,23 +149,23 @@ export function SaldoModule({
       <BottomSheet
         isOpen={infoOpen}
         onClose={() => setInfoOpen(false)}
-        title="Dari mana angka ini?"
+        title={t('saldo.formula_title', lang)}
       >
-        <p className={styles.formulaIntro}>
-          Saldo bebas bukan cuma saldo di dompet lo. Ada yang udah "dipesan" duluan.
-        </p>
+        <p className={styles.formulaIntro}>{t('saldo.formula_intro', lang)}</p>
 
         <div className={styles.formulaRows}>
           <div className={styles.formulaRow}>
-            <span className={styles.formulaLabel}>Total saldo semua dompet</span>
+            <span className={styles.formulaLabel}>{t('saldo.formula_total_wallets', lang)}</span>
             <span className={styles.formulaAmt}>{formatCurrency(total, currency)}</span>
           </div>
 
           {unpaidTagihanTotal > 0 && (
             <div className={styles.formulaRow}>
               <span className={styles.formulaLabel}>
-                Tagihan bulan ini yang belum lunas
-                <span className={styles.formulaSubLabel}>(dipesan buat bayar)</span>
+                {t('saldo.formula_bills_label', lang)}
+                <span className={styles.formulaSubLabel}>
+                  {t('saldo.formula_bills_sublabel', lang)}
+                </span>
               </span>
               <span className={`${styles.formulaAmt} ${styles.formulaAmtMinus}`}>
                 − {formatCurrency(unpaidTagihanTotal, currency)}
@@ -176,8 +176,10 @@ export function SaldoModule({
           {totalNabung > 0 && (
             <div className={styles.formulaRow}>
               <span className={styles.formulaLabel}>
-                Dana yang lagi ditabung
-                <span className={styles.formulaSubLabel}>(diendapkan, bukan buat dipakai)</span>
+                {t('saldo.formula_savings_label', lang)}
+                <span className={styles.formulaSubLabel}>
+                  {t('saldo.formula_savings_sublabel', lang)}
+                </span>
               </span>
               <span className={`${styles.formulaAmt} ${styles.formulaAmtMinus}`}>
                 − {formatCurrency(totalNabung, currency)}
@@ -186,14 +188,12 @@ export function SaldoModule({
           )}
 
           <div className={`${styles.formulaRow} ${styles.formulaRowTotal}`}>
-            <span className={styles.formulaTotalLabel}>Saldo Bebas</span>
+            <span className={styles.formulaTotalLabel}>{t('saldo.formula_total_label', lang)}</span>
             <span className={styles.formulaTotalAmt}>{formatCurrency(sisa, currency)}</span>
           </div>
         </div>
 
-        <p className={styles.formulaNote}>
-          Ini angka yang beneran bisa lo pakai sekarang — bukan sekedar sisa di rekening.
-        </p>
+        <p className={styles.formulaNote}>{t('saldo.formula_note', lang)}</p>
       </BottomSheet>
     </>
   )
