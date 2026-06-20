@@ -6,6 +6,7 @@ import { applyTheme } from '@/shared/utils/theme'
 import { applyLanguage } from '@/shared/utils/language'
 import { UpdateBanner } from './UpdateBanner'
 import { LanguageProvider } from './providers/LanguageProvider'
+import { SharedProfileProvider } from '@/features/shared-profile/SharedProfileContext'
 
 export function App() {
   useEffect(() => {
@@ -19,8 +20,10 @@ export function App() {
 
   return (
     <LanguageProvider>
-      <RouterProvider router={router} />
-      <UpdateBanner />
+      <SharedProfileProvider>
+        <RouterProvider router={router} />
+        <UpdateBanner />
+      </SharedProfileProvider>
     </LanguageProvider>
   )
 }

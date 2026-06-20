@@ -4,6 +4,10 @@ import { OnboardingPage } from '@/features/onboarding/OnboardingPage'
 import { CekDuluPage } from '@/features/cekDulu/CekDuluPage'
 import { AndaiPage } from '@/features/andai/AndaiPage'
 import { SettingsPage } from '@/features/settings/SettingsPage'
+import { AjakPasanganPage } from '@/features/shared-profile/AjakPasanganPage'
+import { GabungKodePage } from '@/features/shared-profile/GabungKodePage'
+import { BerbagiKeamananPage } from '@/features/shared-profile/BerbagiKeamananPage'
+import { PulihkanPage } from '@/features/shared-profile/PulihkanPage'
 import { RequireOnboarding, RequireSetupPending } from './guards'
 
 export const router = createBrowserRouter([
@@ -44,6 +48,38 @@ export const router = createBrowserRouter([
     element: (
       <RequireOnboarding>
         <SettingsPage />
+      </RequireOnboarding>
+    ),
+  },
+  {
+    path: '/ajak-pasangan',
+    element: (
+      <RequireOnboarding>
+        <AjakPasanganPage />
+      </RequireOnboarding>
+    ),
+  },
+  {
+    path: '/gabung-kode',
+    element: (
+      <RequireOnboarding>
+        <GabungKodePage />
+      </RequireOnboarding>
+    ),
+  },
+  {
+    path: '/berbagi-keamanan',
+    element: (
+      <RequireOnboarding>
+        <BerbagiKeamananPage />
+      </RequireOnboarding>
+    ),
+  },
+  {
+    path: '/pulihkan',
+    element: (
+      <RequireOnboarding>
+        <PulihkanPage />
       </RequireOnboarding>
     ),
   },

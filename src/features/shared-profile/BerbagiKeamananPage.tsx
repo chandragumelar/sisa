@@ -1,0 +1,195 @@
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useSharedProfileCtx } from './SharedProfileContext'
+import styles from './BerbagiKeamananPage.module.css'
+
+export function BerbagiKeamananPage() {
+  const navigate = useNavigate()
+  const { status, profile, members, anonymousId, disconnect } = useSharedProfileCtx()
+  const [disconnecting, setDisconnecting] = useState(false)
+  const [confirmDisconnect, setConfirmDisconnect] = useState(false)
+
+  async function handleDisconnect() {
+    setDisconnecting(true)
+    await disconnect()
+    navigate('/')
+  }
+
+  if (status === 'loading') return null
+
+  return (
+    <div className={styles.page}>
+      <div className={styles.header}>
+        <button className={styles.backBtn} onClick={() => navigate(-1)} aria-label="Kembali">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+          >
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+        </button>
+        <div className={styles.title}>Berbagi &amp; Keamanan</div>
+      </div>
+
+      {status === 'connected' && (
+        <>
+          {/* Connected profile card */}
+          <div className={styles.card}>
+            <div className={styles.cardLabel}>PROFIL TERHUBUNG</div>
+            <div className={styles.profileName}>
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="var(--accent)"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+              </svg>
+              {profile?.name ?? 'Profil Bersama'}
+            </div>
+            <div className={styles.memberCount}>{members.length} perangkat aktif</div>
+
+            <div className={styles.memberCards}>
+              {members.map((member) => {
+                const isMe = member.anonymous_id === anonymousId
+                return (
+                  <div
+                    key={member.id}
+                    className={`${styles.memberCard} ${isMe ? styles.memberCardMe : ''}`}
+                  >
+                    <div
+                      className={`${styles.memberAvatar} ${isMe ? styles.memberAvatarMe : styles.memberAvatarPartner}`}
+                    >
+                      {member.display_name.slice(0, 1).toUpperCase()}
+                    </div>
+                    <div className={styles.memberName}>{member.display_name}</div>
+                    <div className={styles.memberSub}>
+                      {isMe ? 'Perangkat ini' : 'Perangkat partner'}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+
+            {members.length >= (profile?.max_devices ?? 2) && (
+              <div className={styles.fullWarning}>
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="var(--signal-caution)"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                >
+                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                  <line x1="12" y1="9" x2="12" y2="13" />
+                  <line x1="12" y1="17" x2="12.01" y2="17" />
+                </svg>
+                <span>
+                  Maksimal {profile?.max_devices ?? 2} perangkat. Untuk menambah perangkat lain,
+                  putuskan salah satu dulu.
+                </span>
+              </div>
+            )}
+
+            <button className={styles.disconnectBtn} onClick={() => setConfirmDisconnect(true)}>
+              Putuskan koneksi...
+            </button>
+          </div>
+
+          {/* Security section */}
+          <div className={styles.card}>
+            <div className={styles.cardLabel}>KODE PEMULIHAN</div>
+            <div className={styles.securityRow}>
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="var(--signal-safe)"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              </svg>
+              <span className={styles.securityText}>Profil terlindungi via kode pemulihan</span>
+            </div>
+            <div className={styles.securityHint}>
+              Jika ganti HP, buka SISA dan pilih &ldquo;Pulihkan Profil Lama&rdquo; lalu masukkan
+              kode yang sudah kamu simpan.
+            </div>
+          </div>
+
+          {/* Disconnect confirmation overlay */}
+          {confirmDisconnect && (
+            <div className={styles.confirmOverlay} onClick={() => setConfirmDisconnect(false)}>
+              <div className={styles.confirmSheet} onClick={(e) => e.stopPropagation()}>
+                <div className={styles.confirmHandle} />
+                <div className={styles.confirmTitle}>Putuskan koneksi?</div>
+                <div className={styles.confirmDesc}>
+                  Perangkat ini akan keluar dari profil bersama. Data yang sudah ada tidak hilang,
+                  tapi tidak akan sync lagi.
+                </div>
+                <button
+                  className={styles.btnDanger}
+                  onClick={handleDisconnect}
+                  disabled={disconnecting}
+                >
+                  {disconnecting ? 'Memutuskan...' : 'Ya, Putuskan'}
+                </button>
+                <button className={styles.btnGhost} onClick={() => setConfirmDisconnect(false)}>
+                  Batal
+                </button>
+              </div>
+            </div>
+          )}
+        </>
+      )}
+
+      {status === 'solo' && (
+        <div className={styles.soloState}>
+          <div className={styles.soloIcon}>
+            <svg
+              width="32"
+              height="32"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="var(--ink-tertiary)"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            >
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+          </div>
+          <div className={styles.soloTitle}>Belum terhubung</div>
+          <div className={styles.soloDesc}>
+            Ajak pasangan untuk kelola keuangan bersama, atau pulihkan profil lama di perangkat
+            baru.
+          </div>
+          <button className={styles.btnPrimary} onClick={() => navigate('/ajak-pasangan')}>
+            Ajak Pasangan
+          </button>
+          <button className={styles.btnSecondary} onClick={() => navigate('/gabung-kode')}>
+            Gabung dengan Kode
+          </button>
+          <button className={styles.btnGhost} onClick={() => navigate('/pulihkan')}>
+            Pulihkan Profil Lama
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
