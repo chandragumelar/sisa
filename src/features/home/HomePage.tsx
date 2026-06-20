@@ -41,6 +41,7 @@ import { ProfilGoalSheet } from '@/features/profil/ProfilGoalSheet'
 import { ProfilWalletsSheet } from '@/features/profil/ProfilWalletsSheet'
 import { QuickLogSheet } from '@/features/quickLog/QuickLogSheet'
 import type { QuickLogMode } from '@/features/quickLog/quickLog.utils'
+import { BerbagiKeamananSection } from '@/features/shared-profile/components/BerbagiKeamananSection'
 import styles from './HomePage.module.css'
 
 interface HomeData {
@@ -404,6 +405,8 @@ export function HomePage() {
             }}
             onGoalToastDismiss={() => setShowGoalToast(false)}
           />
+
+          <BerbagiKeamananSection />
         </div>
       </main>
 

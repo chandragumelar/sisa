@@ -1,0 +1,319 @@
+.page {
+  min-height: 100dvh;
+  background: var(--canvas);
+  padding: 6px 20px calc(40px + env(safe-area-inset-bottom));
+  max-width: 390px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 4px 0 14px;
+}
+
+.backBtn {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface);
+  border: 1px solid var(--border-hair);
+  border-radius: 14px;
+  cursor: pointer;
+  flex-shrink: 0;
+  color: var(--ink);
+}
+
+.title {
+  font-family: var(--font-sans);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--ink-primary);
+}
+
+/* ── Card ──────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border-radius: var(--radius-card);
+  padding: var(--pad-card);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cardLabel {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--ink-tertiary);
+  text-transform: uppercase;
+}
+
+.profileName {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-sans);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--ink-primary);
+  letter-spacing: -0.02em;
+}
+
+.memberCount {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--ink-tertiary);
+  margin-top: -6px;
+}
+
+/* ── Member cards ──────────────────────────────────── */
+.memberCards {
+  display: flex;
+  gap: 10px;
+}
+
+.memberCard {
+  flex: 1;
+  border: 1.5px solid var(--border-hair);
+  border-radius: 12px;
+  padding: 14px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.memberCardMe {
+  border-color: var(--accent-br);
+  background: var(--accent-bg);
+}
+
+.memberAvatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-sans);
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.memberAvatarMe {
+  background: var(--accent);
+}
+.memberAvatarPartner {
+  background: var(--signal-safe);
+}
+
+.memberName {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-primary);
+}
+
+.memberSub {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  color: var(--ink-tertiary);
+}
+
+/* ── Warnings + actions ──────────────────────────── */
+.fullWarning {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: var(--signal-caution-bg);
+  border: 1px solid var(--signal-caution-br);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--signal-caution);
+  line-height: 1.4;
+}
+
+.disconnectBtn {
+  background: none;
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--signal-danger);
+  cursor: pointer;
+  padding: 4px 0;
+  text-align: left;
+  font-weight: 600;
+}
+
+/* ── Security info ──────────────────────────────── */
+.securityRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.securityText {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--signal-safe);
+}
+
+.securityHint {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--ink-tertiary);
+  line-height: 1.5;
+}
+
+/* ── Disconnect confirmation ──────────────────── */
+.confirmOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.confirmSheet {
+  background: var(--surface);
+  border-radius: 22px 22px 0 0;
+  padding: 12px 22px calc(24px + env(safe-area-inset-bottom, 0px));
+  max-width: 390px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.confirmHandle {
+  width: 36px;
+  height: 4px;
+  background: rgba(133, 127, 115, 0.4);
+  border-radius: 100px;
+  margin: 0 auto 8px;
+}
+
+.confirmTitle {
+  font-family: var(--font-sans);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink-primary);
+}
+
+.confirmDesc {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--ink-secondary);
+  line-height: 1.5;
+}
+
+/* ── Solo state ──────────────────────────────── */
+.soloState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 14px;
+  padding-top: 20px;
+}
+
+.soloIcon {
+  width: 72px;
+  height: 72px;
+  background: var(--surface-2);
+  border-radius: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.soloTitle {
+  font-family: var(--font-sans);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--ink-primary);
+}
+
+.soloDesc {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--ink-secondary);
+  line-height: 1.5;
+  max-width: 280px;
+}
+
+/* ── Buttons ─────────────────────────────────── */
+.btnPrimary {
+  width: 100%;
+  padding: 14px;
+  background: var(--accent);
+  color: var(--accent-text);
+  border: none;
+  border-radius: var(--radius-button);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btnSecondary {
+  width: 100%;
+  padding: 13px;
+  background: var(--surface);
+  border: 1px solid var(--border-hair);
+  border-radius: var(--radius-button);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-primary);
+  cursor: pointer;
+}
+
+.btnDanger {
+  width: 100%;
+  padding: 13px;
+  background: var(--signal-danger);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-button);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btnDanger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btnGhost {
+  background: none;
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--ink-secondary);
+  cursor: pointer;
+  padding: 10px;
+  text-align: center;
+  width: 100%;
+}

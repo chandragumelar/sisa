@@ -1,0 +1,337 @@
+.page {
+  min-height: 100dvh;
+  background: var(--canvas);
+  padding: 6px 20px calc(40px + env(safe-area-inset-bottom));
+  max-width: 390px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 4px 0 24px;
+}
+
+.backBtn {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface);
+  border: 1px solid var(--border-hair);
+  border-radius: 14px;
+  cursor: pointer;
+  flex-shrink: 0;
+  color: var(--ink);
+}
+
+.title {
+  font-family: var(--font-sans);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--ink-primary);
+}
+
+.subtitle {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--ink-tertiary);
+  margin-top: 1px;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.bodyCenter {
+  align-items: center;
+  text-align: center;
+  padding-top: 20px;
+}
+
+.desc {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--ink-secondary);
+  line-height: 1.5;
+}
+
+/* ── Code Input ──────────────────────────────────────── */
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.inputLabel {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--ink-tertiary);
+  text-transform: uppercase;
+}
+
+.inputRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.inputPrefix {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink-tertiary);
+  flex-shrink: 0;
+}
+
+.charInput {
+  width: 48px;
+  height: 54px;
+  border: 2px solid var(--border-hair);
+  border-radius: 10px;
+  background: var(--surface);
+  font-family: var(--font-mono);
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--ink-primary);
+  text-align: center;
+  text-transform: uppercase;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.charInput:focus {
+  border-color: var(--accent);
+}
+
+.charInputFilled {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+}
+
+.pasteBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--accent);
+  cursor: pointer;
+  padding: 0;
+}
+
+/* ── Confirm Screen ──────────────────────────────────── */
+.confirmAvatars {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-sans);
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.avatarYou {
+  background: var(--accent);
+}
+.avatarPartner {
+  background: var(--signal-safe);
+}
+
+.avatarPlus {
+  font-family: var(--font-sans);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ink-tertiary);
+}
+
+.confirmTitle {
+  font-family: var(--font-sans);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--ink-primary);
+}
+
+.confirmDesc {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--ink-secondary);
+  line-height: 1.5;
+}
+
+.confirmList {
+  background: var(--surface);
+  border-radius: var(--radius-card);
+  padding: 16px;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.confirmListLabel {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--ink-tertiary);
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.confirmItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--ink-primary);
+}
+
+.confirmWarning {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: var(--signal-caution-bg);
+  border: 1px solid var(--signal-caution-br);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--signal-caution);
+  line-height: 1.4;
+}
+
+.confirmActions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ── Success Screen ──────────────────────────────────── */
+.successAvatars {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.successArrow {
+  font-size: 20px;
+  color: var(--ink-tertiary);
+}
+
+.successTitle {
+  font-family: var(--font-sans);
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--ink-primary);
+}
+
+.successDesc {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--ink-secondary);
+  line-height: 1.5;
+  max-width: 280px;
+}
+
+/* ── Error Screen ──────────────────────────────────── */
+.errorIcon {
+  width: 64px;
+  height: 64px;
+  background: var(--signal-danger-bg);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.errorTitle {
+  font-family: var(--font-sans);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--ink-primary);
+}
+
+.errorDesc {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--ink-secondary);
+  line-height: 1.5;
+  max-width: 280px;
+}
+
+/* ── Buttons ─────────────────────────────────────────── */
+.btnPrimary {
+  width: 100%;
+  padding: 14px;
+  background: var(--accent);
+  color: var(--accent-text);
+  border: none;
+  border-radius: var(--radius-button);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: -0.01em;
+}
+
+.btnPrimary:disabled,
+.btnDisabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btnGhost {
+  background: none;
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--ink-secondary);
+  cursor: pointer;
+  padding: 10px;
+  text-align: center;
+  width: 100%;
+}
+
+.footerHint {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--ink-tertiary);
+  text-align: center;
+}
+
+.linkBtn {
+  background: none;
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--accent);
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
