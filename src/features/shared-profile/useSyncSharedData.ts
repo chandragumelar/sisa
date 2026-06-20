@@ -349,7 +349,9 @@ export function useSyncSharedData({
           filter: `profile_id=eq.${profileId}`,
         },
         (payload) =>
-          handleRealtimeWallet(payload as { new: ProfileWallet; old: Partial<ProfileWallet> }),
+          handleRealtimeWallet(
+            payload as unknown as { new: ProfileWallet; old: Partial<ProfileWallet> },
+          ),
       )
       .on(
         'postgres_changes',
@@ -360,7 +362,9 @@ export function useSyncSharedData({
           filter: `profile_id=eq.${profileId}`,
         },
         (payload) =>
-          handleRealtimeWallet(payload as { new: ProfileWallet; old: Partial<ProfileWallet> }),
+          handleRealtimeWallet(
+            payload as unknown as { new: ProfileWallet; old: Partial<ProfileWallet> },
+          ),
       )
       .on(
         'postgres_changes',
@@ -370,7 +374,7 @@ export function useSyncSharedData({
           table: 'profile_tagihan',
           filter: `profile_id=eq.${profileId}`,
         },
-        (payload) => handleRealtimeTagihan(payload as { new: ProfileTagihan }),
+        (payload) => handleRealtimeTagihan(payload as unknown as { new: ProfileTagihan }),
       )
       .on(
         'postgres_changes',
@@ -380,7 +384,7 @@ export function useSyncSharedData({
           table: 'profile_tagihan',
           filter: `profile_id=eq.${profileId}`,
         },
-        (payload) => handleRealtimeTagihan(payload as { new: ProfileTagihan }),
+        (payload) => handleRealtimeTagihan(payload as unknown as { new: ProfileTagihan }),
       )
       .on(
         'postgres_changes',
@@ -390,7 +394,7 @@ export function useSyncSharedData({
           table: 'profile_goals',
           filter: `profile_id=eq.${profileId}`,
         },
-        (payload) => handleRealtimeGoal(payload as { new: ProfileGoal }),
+        (payload) => handleRealtimeGoal(payload as unknown as { new: ProfileGoal }),
       )
       .on(
         'postgres_changes',
@@ -400,7 +404,7 @@ export function useSyncSharedData({
           table: 'profile_goals',
           filter: `profile_id=eq.${profileId}`,
         },
-        (payload) => handleRealtimeGoal(payload as { new: ProfileGoal }),
+        (payload) => handleRealtimeGoal(payload as unknown as { new: ProfileGoal }),
       )
       .subscribe()
 
