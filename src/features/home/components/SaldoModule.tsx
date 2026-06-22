@@ -14,14 +14,13 @@ interface Props {
   currency: string
   sisaPeriode: number
   jatahHarian: number | null
-  anggaranOperasional: number
   pemasukanPeriode: number
   uangMengendap: number
   mode: BudgetMode
   shortfall: number
-  hariPeriode: number
   unpaidTagihanTotal: number
   totalNabung: number
+  spentThisPeriode: number
   daysUntilPayday: number
   nextPaydayMs: number
   conditionLabel: string | null
@@ -36,14 +35,13 @@ export function SaldoModule({
   currency,
   sisaPeriode,
   jatahHarian,
-  anggaranOperasional,
   pemasukanPeriode,
   uangMengendap,
   mode,
   shortfall,
-  hariPeriode,
   unpaidTagihanTotal,
   totalNabung,
+  spentThisPeriode,
   daysUntilPayday,
   nextPaydayMs,
   conditionLabel,
@@ -56,28 +54,24 @@ export function SaldoModule({
   const [expanded, setExpanded] = useState(false)
   const [walletExpanded, setWalletExpanded] = useState(false)
   const [jatahTooltipOpen, setJatahTooltipOpen] = useState(false)
-  const [anggaranTooltipOpen, setAnggaranTooltipOpen] = useState(false)
+  const [mengendapTooltipOpen, setMengendapTooltipOpen] = useState(false)
 
   const totalSaldo = wallets.reduce((sum, w) => sum + w.balance, 0)
-  const effectiveMode = mode
-  const hariTerlewat = Math.max(0, hariPeriode - daysUntilPayday)
   const nextPaydayDate = new Date(nextPaydayMs)
   const paydayLabel = `${nextPaydayDate.getDate()} ${nextPaydayDate.toLocaleString(lang === 'en' ? 'en-US' : 'id-ID', { month: 'short' })} ${nextPaydayDate.getFullYear()}`
 
   return (
     <>
       <div className={styles.wrapper}>
+        {/* ── Card 1: SISA ── */}
         <div
-          className={
-            effectiveMode === 'bertahan' ? `${styles.card} ${styles.cardBertahan}` : styles.card
-          }
+          className={mode === 'bertahan' ? `${styles.card} ${styles.cardBertahan}` : styles.card}
         >
-          {/* ── Header row ── */}
           <div className={styles.headerRow}>
             <span className={styles.label}>{t('home.saldo_bebas', lang)}</span>
-            {effectiveMode === 'bertahan' ? (
+            {mode === 'bertahan' ? (
               <span className={styles.badgeBertahan}>{t('saldo.mode_bertahan_badge', lang)}</span>
-            ) : effectiveMode === 'hari-terakhir' ? (
+            ) : mode === 'hari-terakhir' ? (
               <span className={styles.badgeHariTerakhir}>
                 {t('saldo.mode_hariterakhir_badge', lang)}
               </span>
@@ -106,8 +100,8 @@ export function SaldoModule({
             )}
           </div>
 
-          {/* ── Mode: Bertahan ── */}
-          {effectiveMode === 'bertahan' && (
+          {/* Mode: Bertahan */}
+          {mode === 'bertahan' && (
             <div className={styles.bertahanBody}>
               <p className={styles.bertahanMsg}>{t('saldo.mode_bertahan_msg', lang)}</p>
               <div className={styles.shortfallBox}>
@@ -127,8 +121,8 @@ export function SaldoModule({
             </div>
           )}
 
-          {/* ── Mode: Hari Terakhir ── */}
-          {effectiveMode === 'hari-terakhir' && (
+          {/* Mode: Hari Terakhir */}
+          {mode === 'hari-terakhir' && (
             <>
               <div className={styles.heroSublabel}>
                 {t('saldo.mode_hariterakhir_sub_label', lang)}
@@ -138,52 +132,25 @@ export function SaldoModule({
             </>
           )}
 
-          {/* ── Mode: Normal (hero) ── */}
-          {effectiveMode === 'normal' && (
+          {/* Mode: Normal — Sisa hero */}
+          {mode === 'normal' && (
             <>
-              <div className={styles.heroLabelRow}>
-                <span className={styles.heroLabel}>{t('saldo.jatah_harian_label', lang)}</span>
-                <button
-                  className={styles.tooltipBtn}
-                  onClick={() => setJatahTooltipOpen(true)}
-                  aria-label="Info jatah harian"
+              <div className={styles.heroNum}>{formatCurrency(sisaPeriode, currency)}</div>
+              {conditionLabel && (
+                <span
+                  className={styles.conditionBadge}
+                  style={{ color: conditionColor ?? undefined }}
                 >
-                  <svg
-                    width="13"
-                    height="13"
-                    viewBox="0 0 12 12"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.3"
-                  >
-                    <circle cx="6" cy="6" r="5" />
-                    <line x1="6" y1="5.5" x2="6" y2="8.5" strokeLinecap="round" />
-                    <circle cx="6" cy="3.4" r="0.75" fill="currentColor" stroke="none" />
-                  </svg>
-                </button>
-                {conditionLabel && (
-                  <span
-                    className={styles.conditionBadge}
-                    style={{ color: conditionColor ?? undefined }}
-                  >
-                    {conditionLabel}
-                  </span>
-                )}
-              </div>
-              <div className={styles.heroNum}>
-                {formatCurrency(jatahHarian ?? 0, currency)}
-                <span className={styles.heroUnit}>/hari</span>
-              </div>
+                  {conditionLabel}
+                </span>
+              )}
               <div className={styles.heroSub}>
-                {formatCurrency(sisaPeriode, currency)}
-                <span className={styles.heroSubSep}>·</span>
                 {(daysUntilPayday === 1
                   ? t('home.day_to_payday', lang)
                   : t('home.days_to_payday', lang)
                 ).replace('{n}', String(daysUntilPayday))}
               </div>
 
-              {/* Expand / collapse rincian */}
               <button className={styles.expandBtn} onClick={() => setExpanded((v) => !v)}>
                 <span className={styles.expandChevron}>{expanded ? '∧' : '∨'}</span>
                 {expanded ? t('saldo.collapse_btn', lang) : t('saldo.expand_btn', lang)}
@@ -210,100 +177,129 @@ export function SaldoModule({
                       minus
                     />
                   )}
+                  {spentThisPeriode > 0 && (
+                    <RincianRow
+                      label={t('saldo.rincian_udah_kepakai', lang)}
+                      value={formatCurrency(spentThisPeriode, currency)}
+                      minus
+                    />
+                  )}
                   <RincianRow
                     label={t('saldo.rincian_anggaran', lang)}
-                    value={formatCurrency(anggaranOperasional, currency)}
-                    bold
-                    infoBtn={() => setAnggaranTooltipOpen(true)}
-                  />
-                  <div className={styles.rincianMeta}>
-                    {t('saldo.rincian_hari_periode', lang).replace('{n}', String(hariPeriode))}
-                  </div>
-                  <RincianRow
-                    label={t('saldo.rincian_jatah', lang)}
-                    value={`${formatCurrency(jatahHarian ?? 0, currency)}/hari`}
+                    value={formatCurrency(sisaPeriode, currency)}
                     bold
                   />
-                  <div className={styles.rincianProgress}>
-                    {t('saldo.rincian_udah_jalan', lang)
-                      .replace('{x}', String(hariTerlewat))
-                      .replace('{amount}', formatCurrency(sisaPeriode, currency))}
-                  </div>
                 </div>
               )}
             </>
           )}
+        </div>
 
-          {/* ── Lapis 3: Konteks ── */}
-          <div className={styles.konteks}>
-            <button className={styles.konteksRow} onClick={() => setWalletExpanded((v) => !v)}>
-              <span className={styles.konteksLabel}>{t('saldo.total_saldo_label', lang)}</span>
-              <span className={styles.konteksVal}>
-                {formatCurrency(totalSaldo, currency)}
-                <span className={styles.konteksArrow}>{walletExpanded ? ' ∧' : ' >'}</span>
-              </span>
-            </button>
-
-            {walletExpanded && (
-              <div className={styles.walletList}>
-                {wallets.map((w, i) => (
-                  <button
-                    key={w.id}
-                    className={styles.walletRow}
-                    style={{
-                      borderBottom:
-                        i < wallets.length - 1 ? '1px solid var(--border-soft)' : 'none',
-                    }}
-                    onClick={() => onWalletTap?.(w)}
-                  >
-                    <div className={styles.walletLeft}>
-                      <span
-                        className={styles.walletDot}
-                        style={{ background: WALLET_DOTS[i % WALLET_DOTS.length] }}
-                      />
-                      <span className={styles.walletName}>{w.name}</span>
-                    </div>
-                    <span className={styles.walletAmt}>
-                      {formatCurrency(w.balance, w.currency)}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            )}
-
-            <div className={styles.konteksRow}>
-              <span className={styles.konteksLabel}>
+        {/* ── Card 2: JATAH HARIAN (hidden in bertahan — no daily budget available) ── */}
+        {mode !== 'bertahan' && (
+          <div className={styles.card}>
+            <div className={styles.headerRow}>
+              <span className={styles.label}>{t('saldo.jatah_harian_label', lang)}</span>
+              <button
+                className={styles.tooltipBtn}
+                onClick={() => setJatahTooltipOpen(true)}
+                aria-label="Info jatah harian"
+              >
                 <svg
-                  width="10"
-                  height="10"
+                  width="13"
+                  height="13"
                   viewBox="0 0 12 12"
                   fill="none"
                   stroke="currentColor"
-                  strokeWidth="1.5"
-                  className={styles.lockIcon}
+                  strokeWidth="1.3"
                 >
-                  <rect x="2.5" y="5.5" width="7" height="5" rx="1" />
-                  <path d="M4 5.5V4a2 2 0 0 1 4 0v1.5" strokeLinecap="round" />
+                  <circle cx="6" cy="6" r="5" />
+                  <line x1="6" y1="5.5" x2="6" y2="8.5" strokeLinecap="round" />
+                  <circle cx="6" cy="3.4" r="0.75" fill="currentColor" stroke="none" />
                 </svg>
-                {t('saldo.uang_mengendap_label', lang)}
-                <span className={styles.konteksSubLabel}>
-                  {t('saldo.uang_mengendap_sub', lang)}
-                </span>
-              </span>
-              <span className={styles.konteksValMuted}>
-                {formatCurrency(uangMengendap, currency)}
-              </span>
+              </button>
             </div>
-
-            {onHistoryTap && (
-              <>
-                <div className={styles.divider} />
-                <button className={styles.historyLink} onClick={onHistoryTap}>
-                  {t('home.history_link', lang)}
-                </button>
-              </>
-            )}
+            <div className={styles.heroNum}>
+              {formatCurrency(jatahHarian ?? 0, currency)}
+              <span className={styles.heroUnit}>/hari</span>
+            </div>
           </div>
+        )}
+
+        {/* ── Card 3: TOTAL SALDO ── */}
+        <div className={styles.card}>
+          <button className={styles.konteksRow} onClick={() => setWalletExpanded((v) => !v)}>
+            <span className={styles.label}>{t('saldo.total_saldo_label', lang)}</span>
+            <span className={styles.konteksVal}>
+              {formatCurrency(totalSaldo, currency)}
+              <span className={styles.konteksArrow}>{walletExpanded ? ' ∧' : ' >'}</span>
+            </span>
+          </button>
+
+          {walletExpanded && (
+            <div className={styles.konteks}>
+              <div className={styles.konteksRow} style={{ cursor: 'default' }}>
+                <span className={styles.konteksLabel}>{t('saldo.sisa_periode_label', lang)}</span>
+                <span className={styles.konteksVal}>{formatCurrency(sisaPeriode, currency)}</span>
+              </div>
+              <button className={styles.konteksRow} onClick={() => setMengendapTooltipOpen(true)}>
+                <span className={styles.konteksLabel}>
+                  <svg
+                    width="10"
+                    height="10"
+                    viewBox="0 0 12 12"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    className={styles.lockIcon}
+                  >
+                    <rect x="2.5" y="5.5" width="7" height="5" rx="1" />
+                    <path d="M4 5.5V4a2 2 0 0 1 4 0v1.5" strokeLinecap="round" />
+                  </svg>
+                  {t('saldo.uang_mengendap_label', lang)}
+                </span>
+                <span className={styles.konteksValMuted}>
+                  {formatCurrency(uangMengendap, currency)}
+                </span>
+              </button>
+
+              {wallets.length > 0 && (
+                <div className={styles.walletList}>
+                  {wallets.map((w, i) => (
+                    <button
+                      key={w.id}
+                      className={styles.walletRow}
+                      style={{
+                        borderBottom:
+                          i < wallets.length - 1 ? '1px solid var(--border-soft)' : 'none',
+                      }}
+                      onClick={() => onWalletTap?.(w)}
+                    >
+                      <div className={styles.walletLeft}>
+                        <span
+                          className={styles.walletDot}
+                          style={{ background: WALLET_DOTS[i % WALLET_DOTS.length] }}
+                        />
+                        <span className={styles.walletName}>{w.name}</span>
+                      </div>
+                      <span className={styles.walletAmt}>
+                        {formatCurrency(w.balance, w.currency)}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {onHistoryTap && (
+            <>
+              <div className={styles.divider} />
+              <button className={styles.historyLink} onClick={onHistoryTap}>
+                {t('home.history_link', lang)}
+              </button>
+            </>
+          )}
         </div>
 
         {onAddWalletTap && (
@@ -313,7 +309,6 @@ export function SaldoModule({
         )}
       </div>
 
-      {/* Tooltip sheets */}
       <BottomSheet
         isOpen={jatahTooltipOpen}
         onClose={() => setJatahTooltipOpen(false)}
@@ -322,11 +317,11 @@ export function SaldoModule({
         <p className={styles.tooltipBody}>{t('saldo.jatah_harian_tooltip', lang)}</p>
       </BottomSheet>
       <BottomSheet
-        isOpen={anggaranTooltipOpen}
-        onClose={() => setAnggaranTooltipOpen(false)}
-        title={t('saldo.rincian_anggaran', lang)}
+        isOpen={mengendapTooltipOpen}
+        onClose={() => setMengendapTooltipOpen(false)}
+        title={t('saldo.uang_mengendap_label', lang)}
       >
-        <p className={styles.tooltipBody}>{t('saldo.anggaran_tooltip', lang)}</p>
+        <p className={styles.tooltipBody}>{t('saldo.uang_mengendap_tooltip', lang)}</p>
       </BottomSheet>
     </>
   )
@@ -337,35 +332,15 @@ function RincianRow({
   value,
   minus,
   bold,
-  infoBtn,
 }: {
   label: string
   value: string
   minus?: boolean
   bold?: boolean
-  infoBtn?: () => void
 }) {
   return (
     <div className={`${styles.rincianRow} ${bold ? styles.rincianRowBold : ''}`}>
-      <span className={styles.rincianLabel}>
-        {label}
-        {infoBtn && (
-          <button className={styles.tooltipBtn} onClick={infoBtn} aria-label="Info">
-            <svg
-              width="11"
-              height="11"
-              viewBox="0 0 12 12"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.3"
-            >
-              <circle cx="6" cy="6" r="5" />
-              <line x1="6" y1="5.5" x2="6" y2="8.5" strokeLinecap="round" />
-              <circle cx="6" cy="3.4" r="0.75" fill="currentColor" stroke="none" />
-            </svg>
-          </button>
-        )}
-      </span>
+      <span className={styles.rincianLabel}>{label}</span>
       <span className={`${styles.rincianVal} ${minus ? styles.rincianValMinus : ''}`}>{value}</span>
     </div>
   )
