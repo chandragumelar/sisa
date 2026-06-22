@@ -1,14 +1,14 @@
-// Row visibility thresholds (AC 6.3):
+// Row visibility thresholds:
 //   Row 1 (jatah harian)      — always
 //   Row 2 (sisa gajian)       — nominal > dailyBudget (exceeds one day's allocation)
-//   Row 3 (tabungan kepotong) — nominal > availableOp (exceeds full sisa)
-
-import { calcSisa } from '@/shared/utils/sisa.utils'
+//   Row 3 (tabungan kepotong) — nominal > sisaPeriode (exceeds full remaining)
 
 export interface CekDuluInput {
   nominal: number
-  totalSaldo: number
-  unpaidTagihanTotal: number
+  /** Live remaining operational budget this period (from calcBudgetPeriode.sisaPeriode). */
+  sisaPeriode: number
+  /** Effective daily: sisaPeriode ÷ daysUntilPayday. Null on hari-gajian. */
+  dailyBudget: number | null
   daysUntilPayday: number
   totalNabung: number
 }
@@ -19,46 +19,45 @@ export interface CekDuluResult {
   dailyAfter: number
   dailyDelta: number
 
-  // Row 2 — sisa pas gajian (appears when nominal > dailyBudget)
+  // Row 2 — sisa operasional (appears when nominal > dailyBudget)
   showSisaRow: boolean
-  // "sisa" here = total sisa, not the calcSisaPasGajian formula
   sisaBefore: number
   sisaAfter: number
 
-  // Row 3 — tabungan kepotong (appears when nominal > availableOp)
+  // Row 3 — tabungan kepotong (appears when nominal > sisaPeriode)
   showTabunganRow: boolean
   nabungBefore: number
   nabungAfter: number
   nabungDrawn: number
 
   // Insights
-  daysEquivalent: number // ceil(nominal / dailyBefore) — opportunity cost in days
-  portionPct: number // round(nominal / availableOp * 100) — % of sisa bulan ini
-  recoveryDays: number // ceil(nabungDrawn / dailyBefore) — days of saving to recover; 0 if no tabungan drawn
+  daysEquivalent: number // ceil(nominal / dailyBefore)
+  portionPct: number // round(nominal / sisaPeriode * 100)
+  recoveryDays: number // ceil(nabungDrawn / dailyBefore); 0 if no savings drawn
 }
 
 export function calcCekDulu(input: CekDuluInput): CekDuluResult {
-  const { nominal, totalSaldo, unpaidTagihanTotal, daysUntilPayday, totalNabung } = input
+  const { nominal, sisaPeriode, dailyBudget, daysUntilPayday, totalNabung } = input
 
-  const availableOp = Math.max(0, calcSisa(totalSaldo, unpaidTagihanTotal, totalNabung))
-  const dailyBudget = daysUntilPayday > 0 && availableOp > 0 ? availableOp / daysUntilPayday : 0
+  const availableOp = Math.max(0, sisaPeriode)
+  const daily = dailyBudget !== null ? dailyBudget : 0
 
   const afterAvailableOp = availableOp - nominal
-  const afterDailyBudget = daysUntilPayday > 0 ? Math.max(0, afterAvailableOp / daysUntilPayday) : 0
+  const afterDaily = daysUntilPayday > 0 ? Math.max(0, afterAvailableOp / daysUntilPayday) : 0
 
   const nabungDrawn = Math.max(0, Math.min(totalNabung, nominal - availableOp))
   const afterNabung = totalNabung - nabungDrawn
 
-  const daysEquivalent = nominal > 0 && dailyBudget > 0 ? Math.ceil(nominal / dailyBudget) : 0
+  const daysEquivalent = nominal > 0 && daily > 0 ? Math.ceil(nominal / daily) : 0
   const portionPct = nominal > 0 && availableOp > 0 ? Math.round((nominal / availableOp) * 100) : 0
-  const recoveryDays = nabungDrawn > 0 && dailyBudget > 0 ? Math.ceil(nabungDrawn / dailyBudget) : 0
+  const recoveryDays = nabungDrawn > 0 && daily > 0 ? Math.ceil(nabungDrawn / daily) : 0
 
   return {
-    dailyBefore: dailyBudget,
-    dailyAfter: afterDailyBudget,
-    dailyDelta: afterDailyBudget - dailyBudget,
+    dailyBefore: daily,
+    dailyAfter: afterDaily,
+    dailyDelta: afterDaily - daily,
 
-    showSisaRow: nominal > dailyBudget,
+    showSisaRow: nominal > daily,
     sisaBefore: availableOp,
     sisaAfter: afterAvailableOp,
 

@@ -2,15 +2,15 @@ import { describe, it, expect } from 'vitest'
 import { calcCekDulu } from './cekDulu.utils'
 import type { CekDuluInput } from './cekDulu.utils'
 
-// Self-consistent baseline (sisa paradigm):
-//   totalSaldo=5jt, unpaidTagihan=1jt, totalNabung=3jt → availableOp=1jt
-//   daysUntilPayday=20 → dailyBudget = 1jt/20 = 50rb
+// Self-consistent baseline:
+//   sisaPeriode=1jt (= anggaranOperasional − spentThisPeriode from calcBudgetPeriode)
+//   dailyBudget=50rb (= 1jt/20)
 //   Row 2 (showSisaRow) threshold: nominal > 50rb
 //   Row 3 (showTabunganRow) threshold: nominal > 1jt
 const BASE: CekDuluInput = {
   nominal: 0,
-  totalSaldo: 5_000_000,
-  unpaidTagihanTotal: 1_000_000,
+  sisaPeriode: 1_000_000,
+  dailyBudget: 50_000,
   daysUntilPayday: 20,
   totalNabung: 3_000_000,
 }
@@ -22,7 +22,7 @@ describe('calcCekDulu — nominal 0', () => {
     expect(r.dailyDelta).toBe(0)
   })
 
-  it('dailyBefore computed from sisa (saldo − tagihan − nabung)', () => {
+  it('dailyBefore equals passed dailyBudget', () => {
     const r = calcCekDulu({ ...BASE, nominal: 0 })
     expect(r.dailyBefore).toBe(50_000) // 1jt / 20
   })
@@ -35,7 +35,7 @@ describe('calcCekDulu — nominal 0', () => {
 
   it('nabung unchanged', () => {
     const r = calcCekDulu({ ...BASE, nominal: 0 })
-    expect(r.nabungAfter).toBe(BASE.totalNabung)
+    expect(r.nabungAfter).toBe(3_000_000)
     expect(r.nabungDrawn).toBe(0)
   })
 })
@@ -58,7 +58,7 @@ describe('calcCekDulu — nominal < daily budget (small purchase)', () => {
   it('nabung untouched', () => {
     const r = calcCekDulu(input)
     expect(r.nabungDrawn).toBe(0)
-    expect(r.nabungAfter).toBe(BASE.totalNabung)
+    expect(r.nabungAfter).toBe(3_000_000)
   })
 })
 
@@ -75,7 +75,7 @@ describe('calcCekDulu — nominal > daily budget but < availableOp (row 2 only)'
     const r = calcCekDulu(input)
     expect(r.showTabunganRow).toBe(false)
     expect(r.nabungDrawn).toBe(0)
-    expect(r.nabungAfter).toBe(BASE.totalNabung)
+    expect(r.nabungAfter).toBe(3_000_000)
   })
 
   it('daily after is lower', () => {
@@ -138,7 +138,8 @@ describe('calcCekDulu — nominal > totalSaldo + totalNabung (extreme)', () => {
 
 describe('calcCekDulu — edge: daysUntilPayday = 0', () => {
   it('daily is 0 (avoid divide-by-zero)', () => {
-    const r = calcCekDulu({ ...BASE, daysUntilPayday: 0, nominal: 100_000 })
+    // On hari-gajian, caller passes dailyBudget: null → calcCekDulu treats as 0
+    const r = calcCekDulu({ ...BASE, dailyBudget: null, daysUntilPayday: 0, nominal: 100_000 })
     expect(r.dailyBefore).toBe(0)
     expect(r.dailyAfter).toBe(0)
     expect(isNaN(r.dailyBefore)).toBe(false)
@@ -158,15 +159,16 @@ describe('calcCekDulu — boundary: nominal exactly equals availableOp', () => {
   })
 })
 
-describe('calcCekDulu — edge: no tagihan and no nabung → sisa equals saldo', () => {
-  it('availableOp equals saldo, daily reflects full saldo', () => {
+describe('calcCekDulu — edge: no tagihan and no nabung → sisa equals pemasukan', () => {
+  it('availableOp equals sisaPeriode, daily reflects full period budget', () => {
     const r = calcCekDulu({
       ...BASE,
-      unpaidTagihanTotal: 0,
+      sisaPeriode: 5_000_000,
+      dailyBudget: 250_000, // 5jt / 20
       totalNabung: 0,
       nominal: 0,
     })
-    expect(r.dailyBefore).toBe(250_000) // 5jt / 20
+    expect(r.dailyBefore).toBe(250_000)
     expect(r.showSisaRow).toBe(false)
     expect(r.showTabunganRow).toBe(false)
   })

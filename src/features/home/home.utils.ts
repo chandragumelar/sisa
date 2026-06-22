@@ -1,6 +1,6 @@
 import type { Settings, Goal, Transaction } from '@/db/database'
 
-// ─── Payday ──────────────────────────────────────────────────────────────────
+// ─── Shared ───────────────────────────────────────────────────────────────────
 
 const DAY_MS = 86_400_000
 
@@ -68,39 +68,64 @@ export function calcDaysUntilPayday(nowMs: number, settings: Settings): number {
   return Math.max(1, Math.round((startOfDay(payday).getTime() - todayStart) / DAY_MS))
 }
 
-// ─── Budget ───────────────────────────────────────────────────────────────────
+// ─── Period ───────────────────────────────────────────────────────────────────
 
-export function calcDailyBudget(
-  totalSaldo: number,
-  unpaidTagihanTotal: number,
-  totalNabung: number,
-  daysUntilPayday: number,
-): number {
-  const available = totalSaldo - unpaidTagihanTotal - totalNabung
-  if (available <= 0 || daysUntilPayday <= 0) return 0
-  return available / daysUntilPayday
+/**
+ * Returns the date the current pay period started (the most recent payday).
+ * Weekend adjustment is intentionally skipped — this is a window boundary for
+ * transaction aggregation, not a displayed payday date.
+ */
+export function getPeriodStartDate(nowMs: number, settings: Settings): Date {
+  const now = new Date(nowMs)
+  const today = now.getDate()
+  const month = now.getMonth()
+  const year = now.getFullYear()
+
+  if (settings.incomeType === 'freelance') {
+    return new Date(year, month, 1)
+  }
+
+  const frequency = settings.incomeFrequency ?? 'bulanan'
+
+  if (frequency === 'mingguan' || frequency === '2mingguan') {
+    const cycle = frequency === 'mingguan' ? 7 : 14
+    const anchor = settings.incomeAnchorDate ?? nowMs
+    const nowMidnight = startOfDay(now).getTime()
+    const anchorMidnight = startOfDay(new Date(anchor)).getTime()
+    const diffDays = Math.round((nowMidnight - anchorMidnight) / DAY_MS)
+    const daysIntoCycle = ((diffDays % cycle) + cycle) % cycle
+    return new Date(nowMidnight - daysIntoCycle * DAY_MS)
+  }
+
+  // Monthly
+  const incomeDay = settings.incomeDay ?? 25
+  if (today >= incomeDay) {
+    const lastDay = new Date(year, month + 1, 0).getDate()
+    return new Date(year, month, Math.min(incomeDay, lastDay))
+  }
+  const prevMonth = month === 0 ? 11 : month - 1
+  const prevYear = month === 0 ? year - 1 : year
+  const lastDay = new Date(prevYear, prevMonth + 1, 0).getDate()
+  return new Date(prevYear, prevMonth, Math.min(incomeDay, lastDay))
 }
 
-export function getDaysUntilEndOfWeek(nowMs: number): number {
-  const dow = new Date(nowMs).getDay() // 0=Sun; week = Mon–Sun
-  return dow === 0 ? 1 : 8 - dow
-}
+/**
+ * Total calendar days in the current pay period.
+ * For monthly this equals (next payday − period start) in days.
+ */
+export function calcHariPeriode(nowMs: number, settings: Settings): number {
+  if (settings.incomeType === 'freelance') {
+    const now = new Date(nowMs)
+    return new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate()
+  }
 
-export function calcWeeklyBudget(
-  dailyBudget: number,
-  daysUntilWeekEnd: number,
-  daysUntilPayday: number,
-): number {
-  return dailyBudget * Math.min(daysUntilWeekEnd, daysUntilPayday)
-}
+  const frequency = settings.incomeFrequency ?? 'bulanan'
+  if (frequency === 'mingguan') return 7
+  if (frequency === '2mingguan') return 14
 
-export function calcSisaPasGajian(
-  totalSaldo: number,
-  dailyBudget: number,
-  daysUntilPayday: number,
-  unpaidTagihanTotal: number,
-): number {
-  return totalSaldo - dailyBudget * daysUntilPayday - unpaidTagihanTotal
+  const periodStart = getPeriodStartDate(nowMs, settings)
+  const nextPayday = getPaydayDate(nowMs, settings)
+  return Math.round((nextPayday.getTime() - periodStart.getTime()) / DAY_MS)
 }
 
 export function calcSpentToday(transactions: Transaction[], nowMs: number): number {

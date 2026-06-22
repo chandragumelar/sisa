@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import type { Wallet } from '@/db/database'
-import { calcSisa } from '@/shared/utils/sisa.utils'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
@@ -12,6 +11,7 @@ const WALLET_DOTS = ['#60a5fa', '#34d399', '#c084fc', '#fb923c', '#f472b6']
 interface Props {
   wallets: Wallet[]
   currency: string
+  sisa: number
   unpaidTagihanTotal: number
   totalNabung: number
   daysUntilPayday: number
@@ -25,6 +25,7 @@ interface Props {
 export function SaldoModule({
   wallets,
   currency,
+  sisa,
   unpaidTagihanTotal,
   totalNabung,
   daysUntilPayday,
@@ -37,7 +38,6 @@ export function SaldoModule({
   const lang = useLanguage()
   const [infoOpen, setInfoOpen] = useState(false)
   const total = wallets.reduce((sum, w) => sum + w.balance, 0)
-  const sisa = calcSisa(total, unpaidTagihanTotal, totalNabung)
 
   return (
     <>

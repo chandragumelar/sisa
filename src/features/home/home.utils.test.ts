@@ -3,10 +3,8 @@ import type { Settings, Goal, Transaction } from '@/db/database'
 import {
   calcDaysUntilPayday,
   getPaydayDate,
-  calcDailyBudget,
-  getDaysUntilEndOfWeek,
-  calcWeeklyBudget,
-  calcSisaPasGajian,
+  getPeriodStartDate,
+  calcHariPeriode,
   calcSpentToday,
   calcYesterdayStats,
   calcGoalStatuses,
@@ -271,86 +269,102 @@ describe('getPaydayDate + calcDaysUntilPayday consistency', () => {
   })
 })
 
-// ─── calcDailyBudget ──────────────────────────────────────────────────────────
+// ─── getPeriodStartDate ───────────────────────────────────────────────────────
 
-describe('calcDailyBudget', () => {
-  it('normal case', () => {
-    // saldo 4.730.000, tagihan 1.000.000, savings 500.000, days 15
-    // (4730000 - 1000000 - 500000) / 15 = 215.333...
-    expect(calcDailyBudget(4_730_000, 1_000_000, 500_000, 15)).toBeCloseTo(215_333, -1)
+describe('getPeriodStartDate', () => {
+  // NOW_MS = Jan 10 2024 (Wednesday)
+
+  it('freelance → 1st of current month', () => {
+    const d = getPeriodStartDate(NOW_MS, makeSettings({ incomeType: 'freelance' }))
+    expect(d.getFullYear()).toBe(2024)
+    expect(d.getMonth()).toBe(0) // January
+    expect(d.getDate()).toBe(1)
   })
 
-  it('saldo 0 → returns 0', () => {
-    expect(calcDailyBudget(0, 0, 0, 15)).toBe(0)
+  it('monthly tetap, today < incomeDay → last month incomeDay', () => {
+    // today=10, incomeDay=25 → period started Dec 25
+    const d = getPeriodStartDate(NOW_MS, makeSettings({ incomeDay: 25 }))
+    expect(d.getFullYear()).toBe(2023)
+    expect(d.getMonth()).toBe(11) // December
+    expect(d.getDate()).toBe(25)
   })
 
-  it('tagihan > saldo → returns 0 (no negative budget)', () => {
-    expect(calcDailyBudget(100_000, 500_000, 0, 10)).toBe(0)
+  it('monthly tetap, today >= incomeDay → this month incomeDay', () => {
+    // today=10, incomeDay=5 → period started Jan 5
+    const d = getPeriodStartDate(NOW_MS, makeSettings({ incomeDay: 5 }))
+    expect(d.getFullYear()).toBe(2024)
+    expect(d.getMonth()).toBe(0)
+    expect(d.getDate()).toBe(5)
   })
 
-  it('daysUntilPayday = 0 → returns 0 (guards division by zero)', () => {
-    expect(calcDailyBudget(1_000_000, 0, 0, 0)).toBe(0)
+  it('monthly tetap, today === incomeDay → today is period start', () => {
+    // today=10, incomeDay=10 → period started Jan 10 (today)
+    const d = getPeriodStartDate(NOW_MS, makeSettings({ incomeDay: 10 }))
+    expect(d.getDate()).toBe(10)
+    expect(d.getMonth()).toBe(0)
   })
 
-  it('no tagihan, no savings → saldo / days', () => {
-    expect(calcDailyBudget(3_000_000, 0, 0, 10)).toBe(300_000)
-  })
-})
-
-// ─── getDaysUntilEndOfWeek ────────────────────────────────────────────────────
-
-describe('getDaysUntilEndOfWeek', () => {
-  // Week = Mon–Sun inclusive; returns days from today through Sunday inclusive
-  it('Wednesday → 5 days (Wed–Sun)', () => {
-    expect(getDaysUntilEndOfWeek(NOW_MS)).toBe(5) // Jan 10 = Wednesday
+  it('weekly, 3 days into cycle → start is 3 days ago', () => {
+    // anchor=Jan 7 (Sun), today=Jan 10 → diffDays=3, daysIntoCycle=3 → start=Jan 7
+    const anchor = new Date('2024-01-07T12:00:00Z').getTime()
+    const d = getPeriodStartDate(
+      NOW_MS,
+      makeSettings({ incomeFrequency: 'mingguan', incomeAnchorDate: anchor }),
+    )
+    expect(d.getDate()).toBe(7)
   })
 
-  it('Sunday → 1 (today is the last day of the week)', () => {
-    const sun = new Date('2024-01-07T12:00:00Z').getTime() // Sunday
-    expect(getDaysUntilEndOfWeek(sun)).toBe(1)
-  })
-
-  it('Saturday → 2 (Sat + Sun)', () => {
-    const sat = new Date('2024-01-13T12:00:00Z').getTime()
-    expect(getDaysUntilEndOfWeek(sat)).toBe(2)
-  })
-
-  it('Monday → 7 (full Mon–Sun week)', () => {
-    const mon = new Date('2024-01-08T12:00:00Z').getTime() // Monday Jan 8
-    expect(getDaysUntilEndOfWeek(mon)).toBe(7)
-  })
-})
-
-// ─── calcWeeklyBudget ─────────────────────────────────────────────────────────
-
-describe('calcWeeklyBudget', () => {
-  it('uncapped — weekEnd days < daysUntilPayday', () => {
-    expect(calcWeeklyBudget(200_000, 4, 10)).toBe(800_000) // min(4,10)=4
-  })
-
-  it('capped by payday — payday sooner than end of week', () => {
-    expect(calcWeeklyBudget(200_000, 5, 2)).toBe(400_000) // min(5,2)=2
-  })
-
-  it('dailyBudget 0 → 0', () => {
-    expect(calcWeeklyBudget(0, 4, 10)).toBe(0)
+  it('biweekly, 5 days into cycle → start is 5 days ago', () => {
+    // anchor=Jan 5, today=Jan 10 → diffDays=5, daysIntoCycle=5 → start=Jan 5
+    const anchor = new Date('2024-01-05T12:00:00Z').getTime()
+    const d = getPeriodStartDate(
+      NOW_MS,
+      makeSettings({ incomeFrequency: '2mingguan', incomeAnchorDate: anchor }),
+    )
+    expect(d.getDate()).toBe(5)
   })
 })
 
-// ─── calcSisaPasGajian ────────────────────────────────────────────────────────
+// ─── calcHariPeriode ──────────────────────────────────────────────────────────
 
-describe('calcSisaPasGajian', () => {
-  it('normal — positive remainder', () => {
-    // 4.730.000 - (178.000 × 15) - 1.000.000 = 1.060.000
-    expect(calcSisaPasGajian(4_730_000, 178_000, 15, 1_000_000)).toBe(1_060_000)
+describe('calcHariPeriode', () => {
+  it('freelance January → 31', () => {
+    expect(calcHariPeriode(NOW_MS, makeSettings({ incomeType: 'freelance' }))).toBe(31)
   })
 
-  it('tagihan > saldo → negative (ketat)', () => {
-    expect(calcSisaPasGajian(500_000, 50_000, 10, 1_000_000)).toBe(-1_000_000)
+  it('freelance February 2024 (leap year) → 29', () => {
+    const febMs = new Date('2024-02-10T12:00:00Z').getTime()
+    expect(calcHariPeriode(febMs, makeSettings({ incomeType: 'freelance' }))).toBe(29)
   })
 
-  it('saldo 0 → deeply negative', () => {
-    expect(calcSisaPasGajian(0, 100_000, 10, 200_000)).toBe(-1_200_000)
+  it('freelance February 2025 (non-leap) → 28', () => {
+    const febMs = new Date('2025-02-10T12:00:00Z').getTime()
+    expect(calcHariPeriode(febMs, makeSettings({ incomeType: 'freelance' }))).toBe(28)
+  })
+
+  it('weekly → always 7', () => {
+    const anchor = new Date('2024-01-07T12:00:00Z').getTime()
+    expect(
+      calcHariPeriode(
+        NOW_MS,
+        makeSettings({ incomeFrequency: 'mingguan', incomeAnchorDate: anchor }),
+      ),
+    ).toBe(7)
+  })
+
+  it('biweekly → always 14', () => {
+    const anchor = new Date('2024-01-05T12:00:00Z').getTime()
+    expect(
+      calcHariPeriode(
+        NOW_MS,
+        makeSettings({ incomeFrequency: '2mingguan', incomeAnchorDate: anchor }),
+      ),
+    ).toBe(14)
+  })
+
+  it('monthly tetap, incomeDay=25, today=Jan 10 → periodStart=Dec 25, nextPayday=Jan 25 → 31 days', () => {
+    // Dec 25 to Jan 25 = 31 days
+    expect(calcHariPeriode(NOW_MS, makeSettings({ incomeDay: 25 }))).toBe(31)
   })
 })
 

@@ -108,6 +108,42 @@ export async function getRecentTransactions(limit = 100): Promise<Transaction[]>
   return db.transactions.orderBy('date').reverse().limit(limit).toArray()
 }
 
+/**
+ * Aggregate income and expense for a pay period [periodStartMs, nowMs].
+ * Used as inputs for calcBudgetPeriode.
+ *
+ * income       = sum of masuk amounts in window
+ * expense      = sum of abs(keluar + tagihan) amounts in window, excluding isFromSavings
+ * spentToday   = expense subset where date >= today midnight
+ */
+export async function getPeriodFlows(
+  currency: string,
+  periodStartMs: number,
+  nowMs: number,
+): Promise<{ income: number; expense: number; spentToday: number }> {
+  const d = new Date(nowMs)
+  const todayStart = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime()
+
+  const txs = await db.transactions
+    .where('date')
+    .between(periodStartMs, nowMs, true, true)
+    .filter((t) => t.currency === currency && !t.isEarmark)
+    .toArray()
+
+  const income = txs.filter((t) => t.type === 'masuk').reduce((s, t) => s + t.amount, 0)
+
+  const isOperationalSpend = (t: (typeof txs)[number]) =>
+    (t.type === 'keluar' || t.type === 'tagihan') && !t.isFromSavings
+
+  const expense = txs.filter(isOperationalSpend).reduce((s, t) => s + Math.abs(t.amount), 0)
+
+  const spentToday = txs
+    .filter((t) => t.date >= todayStart && isOperationalSpend(t))
+    .reduce((s, t) => s + Math.abs(t.amount), 0)
+
+  return { income, expense, spentToday }
+}
+
 export async function getMonthlyFlows(
   currency: string,
   monthStartMs: number,
