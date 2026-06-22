@@ -139,7 +139,13 @@ export function AndaiPage() {
             totalSaldo,
             useSaldoFloor: s.incomeType === 'freelance',
           })
-          const bl = buildAndaiBaseline(budget.sisaPeriode, totalNabung, s, nowMs)
+          const bl = buildAndaiBaseline(
+            budget.sisaPeriode,
+            totalNabung,
+            budget.uangMengendap,
+            s,
+            nowMs,
+          )
           setBaseline(bl)
           setCurrency(currency)
 
@@ -265,6 +271,10 @@ export function AndaiPage() {
             <span className={styles.blKey}>{t('andai.baseline_tabungan', lang)}</span>
             <span className={styles.blVal}>{formatCurrency(baseline.totalNabung, currency)}</span>
           </div>
+          <div className={styles.baselineCell}>
+            <span className={styles.blKey}>{t('andai.baseline_mengendap', lang)}</span>
+            <span className={styles.blVal}>{formatCurrency(baseline.uangMengendap, currency)}</span>
+          </div>
         </div>
       </div>
 
@@ -350,6 +360,9 @@ export function AndaiPage() {
                   {t('andai.insight_recovery', lang).replace('{n}', String(result.recoveryDays))}
                 </span>
               </div>
+            )}
+            {items.some((i) => i.kind === 'income') && (
+              <div className={styles.incomeDisclaimer}>{t('andai.income_disclaimer', lang)}</div>
             )}
           </div>
 

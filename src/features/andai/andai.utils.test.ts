@@ -10,6 +10,7 @@ const BASELINE: AndaiBaseline = {
   dailyBudget: 200_000,
   daysUntilPayday: 20,
   totalNabung: 0,
+  uangMengendap: 500_000,
 }
 
 function item(kind: AndaiItem['kind'], amount: number, desc = ''): AndaiItem {
@@ -147,6 +148,7 @@ describe('calcAndai — sisa correctness (repro: saldo 8jt, purchases 5jt → si
     dailyBudget: 400_000, // 8jt / 20
     daysUntilPayday: 20,
     totalNabung: 0,
+    uangMengendap: 0,
   }
 
   it('no items: sisa before equals sisaPeriode when no tagihan/nabung', () => {

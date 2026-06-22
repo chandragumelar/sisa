@@ -4,6 +4,7 @@
   gap: 8px;
 }
 
+/* ── Card base ───────────────────────────────────────────── */
 .card {
   background: var(--surface);
   border: 1px solid var(--border-hair);
@@ -12,18 +13,22 @@
   padding: var(--pad-card);
 }
 
+.cardBertahan {
+  border-color: var(--signal-danger);
+  background: color-mix(in srgb, var(--signal-danger) 5%, var(--surface));
+}
+
+.cardHariGajian {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 6%, var(--surface));
+}
+
 /* ── Header row ──────────────────────────────────────────── */
 .headerRow {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 6px;
-}
-
-.labelGroup {
-  display: flex;
-  align-items: center;
-  gap: 5px;
+  margin-bottom: 10px;
 }
 
 .label {
@@ -33,23 +38,6 @@
   text-transform: uppercase;
   color: var(--ink-tertiary);
   font-family: var(--font-sans);
-}
-
-.infoBtn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  color: var(--ink-tertiary);
-  opacity: 0.6;
-  line-height: 1;
-}
-
-.infoBtn:active {
-  opacity: 1;
 }
 
 .paydayPill {
@@ -65,7 +53,66 @@
   white-space: nowrap;
 }
 
-/* ── Hero amount ─────────────────────────────────────────── */
+/* ── Mode badges ─────────────────────────────────────────── */
+.badgeBertahan {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+  color: var(--signal-danger);
+  font-family: var(--font-sans);
+  padding: 3px 8px;
+  border: 1px solid var(--signal-danger);
+  border-radius: 999px;
+  opacity: 0.85;
+}
+
+.badgeHariGajian {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-family: var(--font-sans);
+  padding: 3px 8px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+}
+
+.badgeHariTerakhir {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+  color: var(--signal-caution);
+  font-family: var(--font-sans);
+  padding: 3px 8px;
+  border: 1px solid var(--signal-caution);
+  border-radius: 999px;
+}
+
+/* ── Hero (normal + hari-terakhir) ───────────────────────── */
+.heroLabelRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.heroLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-secondary);
+  font-family: var(--font-sans);
+}
+
+.heroSublabel {
+  font-size: 12px;
+  color: var(--ink-secondary);
+  font-family: var(--font-sans);
+  margin-bottom: 4px;
+}
+
 .heroNum {
   font-family: var(--font-mono);
   font-size: 32px;
@@ -74,45 +121,237 @@
   letter-spacing: -1px;
   line-height: 1.05;
   font-feature-settings: 'tnum', 'lnum';
+  margin-bottom: 6px;
+}
+
+.heroUnit {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--ink-tertiary);
+  letter-spacing: 0;
+  margin-left: 2px;
+}
+
+.heroSub {
+  font-size: 13px;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+  display: flex;
+  align-items: center;
+  gap: 6px;
   margin-bottom: 10px;
 }
 
-.heroNumAlert {
-  animation: numPulse 2.4s ease-in-out infinite;
+.heroSubSep {
+  opacity: 0.4;
 }
 
-@keyframes numPulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.55;
-  }
-}
-
-/* ── Condition verdict ───────────────────────────────────── */
-.conditionText {
+.conditionBadge {
   font-size: 11px;
   font-weight: 600;
   font-family: var(--font-sans);
-  white-space: normal;
-  word-break: break-word;
-  line-height: 1.4;
-  margin-bottom: 10px;
+  margin-left: auto;
 }
 
-/* ── Wallet rows ─────────────────────────────────────────── */
+/* ── Tooltip button ──────────────────────────────────────── */
+.tooltipBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--ink-tertiary);
+  opacity: 0.55;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.tooltipBtn:active {
+  opacity: 1;
+}
+
+.tooltipBody {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink-secondary);
+  font-family: var(--font-sans);
+  margin: 0;
+}
+
+/* ── Expand / collapse ───────────────────────────────────── */
+.expandBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 8px 0 4px;
+  font-size: 12px;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+  cursor: pointer;
+  letter-spacing: 0.01em;
+}
+
+.expandChevron {
+  font-size: 10px;
+  opacity: 0.5;
+}
+
+/* ── Rincian (expanded formula) ──────────────────────────── */
+.rincian {
+  border-top: 1px solid var(--border-soft);
+  padding-top: 12px;
+  margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rincianRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.rincianRowBold .rincianLabel,
+.rincianRowBold .rincianVal {
+  font-weight: 700;
+  color: var(--ink-primary);
+}
+
+.rincianLabel {
+  font-size: 12px;
+  color: var(--ink-secondary);
+  font-family: var(--font-sans);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.rincianVal {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-primary);
+  font-feature-settings: 'tnum';
+  white-space: nowrap;
+}
+
+.rincianValMinus {
+  color: var(--signal-danger);
+}
+
+.rincianMeta {
+  font-size: 11px;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+  text-align: right;
+  font-style: italic;
+}
+
+.rincianProgress {
+  font-size: 12px;
+  color: var(--accent);
+  font-family: var(--font-sans);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  border-radius: 6px;
+  padding: 7px 10px;
+  margin-top: 2px;
+}
+
+/* ── Konteks (layer 3) ───────────────────────────────────── */
+.konteks {
+  border-top: 1px solid var(--border-soft);
+  margin-top: 12px;
+  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.konteksRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  font-family: inherit;
+  text-align: left;
+}
+
+.konteksLabel {
+  font-size: 12px;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex: 1;
+  min-width: 0;
+}
+
+.konteksSubLabel {
+  font-size: 10px;
+  color: var(--ink-tertiary);
+  opacity: 0.6;
+  font-style: italic;
+}
+
+.lockIcon {
+  flex-shrink: 0;
+  opacity: 0.5;
+}
+
+.konteksVal {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-primary);
+  font-feature-settings: 'tnum';
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.konteksValMuted {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-tertiary);
+  font-feature-settings: 'tnum';
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.konteksArrow {
+  font-size: 10px;
+  color: var(--ink-tertiary);
+  margin-left: 3px;
+  opacity: 0.5;
+}
+
+/* ── Wallet list (inside konteks) ────────────────────────── */
 .walletList {
   display: flex;
   flex-direction: column;
+  margin: 0 0 4px;
+  border: 1px solid var(--border-soft);
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .walletRow {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 0;
+  padding: 10px 12px;
   background: none;
   border: none;
   cursor: pointer;
@@ -128,8 +367,8 @@
 }
 
 .walletDot {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   flex-shrink: 0;
 }
@@ -152,11 +391,11 @@
   font-feature-settings: 'tnum';
 }
 
-/* ── Footer — history link only ──────────────────────────── */
+/* ── Divider + history link ──────────────────────────────── */
 .divider {
   height: 1px;
   background: var(--border-soft);
-  margin: 10px -16px 10px;
+  margin: 6px 0 6px;
 }
 
 .historyLink {
@@ -165,12 +404,12 @@
   font-weight: 600;
   background: none;
   border: none;
-  padding: 0;
+  padding: 4px 0;
   cursor: pointer;
   font-family: var(--font-sans);
 }
 
-/* ── Add wallet — ghost card below main card ─────────────── */
+/* ── Add wallet ghost card ───────────────────────────────── */
 .addWalletBtn {
   background: none;
   border: 1px dashed var(--border-hair);
@@ -186,93 +425,182 @@
   letter-spacing: 0.02em;
 }
 
-/* ── Formula sheet content ───────────────────────────────── */
-.formulaIntro {
-  font-size: 14px;
-  color: var(--ink-secondary);
-  line-height: 1.5;
-  margin: 0 0 16px;
-  font-family: var(--font-sans);
-}
-
-.formulaRows {
+/* ── Mode: Bertahan ──────────────────────────────────────── */
+.bertahanBody {
   display: flex;
   flex-direction: column;
-  border: 1px solid var(--border-hair);
-  border-radius: 10px;
-  overflow: hidden;
-  margin-bottom: 14px;
+  gap: 10px;
 }
 
-.formulaRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 12px 14px;
-  border-bottom: 1px solid var(--border-soft);
-}
-
-.formulaRow:last-child {
-  border-bottom: none;
-}
-
-.formulaLabel {
+.bertahanMsg {
   font-size: 13px;
   color: var(--ink-secondary);
   font-family: var(--font-sans);
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  flex: 1;
+  line-height: 1.5;
+  margin: 0;
 }
 
-.formulaSubLabel {
+.shortfallBox {
+  border: 1px solid var(--signal-danger);
+  border-radius: 10px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: color-mix(in srgb, var(--signal-danger) 5%, transparent);
+}
+
+.shortfallMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.shortfallLabel {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--signal-danger);
+  font-family: var(--font-sans);
+}
+
+.shortfallAmanMulai {
+  font-size: 10px;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+  text-align: right;
+  line-height: 1.4;
+}
+
+.shortfallDate {
+  font-weight: 600;
+  color: var(--ink-secondary);
+}
+
+.shortfallAmount {
+  font-family: var(--font-mono);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--signal-danger);
+  letter-spacing: -0.5px;
+  font-feature-settings: 'tnum';
+}
+
+.bertahanNote {
   font-size: 11px;
   color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+  margin: 0;
   font-style: italic;
 }
 
-.formulaAmt {
+/* ── Mode: Hari Gajian ───────────────────────────────────── */
+.hariGajianBody {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hariGajianHeading {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ink-primary);
+  font-family: var(--font-sans);
+  margin: 0;
+}
+
+.hariGajianSub {
+  font-size: 13px;
+  color: var(--ink-secondary);
+  font-family: var(--font-sans);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.hariGajianBtns {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.btnConfirmNo {
+  flex: 1;
+  padding: 12px 0;
+  border: 1px solid var(--border-hair);
+  border-radius: 10px;
+  background: var(--surface);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-secondary);
+  font-family: var(--font-sans);
+  cursor: pointer;
+}
+
+.btnConfirmYes {
+  flex: 2;
+  padding: 12px 0;
+  border: none;
+  border-radius: 10px;
+  background: var(--accent);
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  font-family: var(--font-sans);
+  cursor: pointer;
+}
+
+.ringkasanDivider {
+  height: 1px;
+  background: var(--border-soft);
+  margin: 8px 0 6px;
+}
+
+.ringkasanLabel {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+  margin-bottom: 4px;
+}
+
+.ringkasanRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+}
+
+.ringkasanKey {
+  font-size: 13px;
+  color: var(--ink-secondary);
+  font-family: var(--font-sans);
+}
+
+.ringkasanVal {
   font-family: var(--font-mono);
   font-size: 13px;
   font-weight: 600;
   color: var(--ink-primary);
   font-feature-settings: 'tnum';
-  white-space: nowrap;
-  flex-shrink: 0;
 }
 
-.formulaAmtMinus {
-  color: var(--signal-danger);
-}
-
-.formulaRowTotal {
-  background: var(--surface-2);
-}
-
-.formulaTotalLabel {
+.ringkasanValGreen {
+  font-family: var(--font-mono);
   font-size: 13px;
   font-weight: 700;
-  color: var(--ink-primary);
-  font-family: var(--font-sans);
-}
-
-.formulaTotalAmt {
-  font-family: var(--font-mono);
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--ink-primary);
+  color: var(--signal-safe);
   font-feature-settings: 'tnum';
-  white-space: nowrap;
-  flex-shrink: 0;
 }
 
-.formulaNote {
+/* ── Mode: Hari Terakhir ─────────────────────────────────── */
+.hariterakhirNote {
   font-size: 12px;
   color: var(--ink-tertiary);
-  line-height: 1.5;
-  margin: 0;
   font-family: var(--font-sans);
-  text-align: center;
+  line-height: 1.5;
+  margin: 6px 0 0;
+  font-style: italic;
 }
