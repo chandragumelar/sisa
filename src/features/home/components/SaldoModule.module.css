@@ -18,11 +18,6 @@
   background: color-mix(in srgb, var(--signal-danger) 5%, var(--surface));
 }
 
-.cardHariGajian {
-  border-color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 6%, var(--surface));
-}
-
 /* ── Header row ──────────────────────────────────────────── */
 .headerRow {
   display: flex;
@@ -65,18 +60,6 @@
   border: 1px solid var(--signal-danger);
   border-radius: 999px;
   opacity: 0.85;
-}
-
-.badgeHariGajian {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.9px;
-  text-transform: uppercase;
-  color: var(--accent);
-  font-family: var(--font-sans);
-  padding: 3px 8px;
-  border: 1px solid var(--accent);
-  border-radius: 999px;
 }
 
 .badgeHariTerakhir {
@@ -246,25 +229,7 @@
   color: var(--signal-danger);
 }
 
-.rincianMeta {
-  font-size: 11px;
-  color: var(--ink-tertiary);
-  font-family: var(--font-sans);
-  text-align: right;
-  font-style: italic;
-}
-
-.rincianProgress {
-  font-size: 12px;
-  color: var(--accent);
-  font-family: var(--font-sans);
-  background: color-mix(in srgb, var(--accent) 10%, transparent);
-  border-radius: 6px;
-  padding: 7px 10px;
-  margin-top: 2px;
-}
-
-/* ── Konteks (layer 3) ───────────────────────────────────── */
+/* ── Konteks (Card 3 expanded body) ─────────────────────── */
 .konteks {
   border-top: 1px solid var(--border-soft);
   margin-top: 12px;
@@ -493,106 +458,6 @@
   font-family: var(--font-sans);
   margin: 0;
   font-style: italic;
-}
-
-/* ── Mode: Hari Gajian ───────────────────────────────────── */
-.hariGajianBody {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.hariGajianHeading {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--ink-primary);
-  font-family: var(--font-sans);
-  margin: 0;
-}
-
-.hariGajianSub {
-  font-size: 13px;
-  color: var(--ink-secondary);
-  font-family: var(--font-sans);
-  line-height: 1.5;
-  margin: 0;
-}
-
-.hariGajianBtns {
-  display: flex;
-  gap: 8px;
-  margin-top: 4px;
-}
-
-.btnConfirmNo {
-  flex: 1;
-  padding: 12px 0;
-  border: 1px solid var(--border-hair);
-  border-radius: 10px;
-  background: var(--surface);
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--ink-secondary);
-  font-family: var(--font-sans);
-  cursor: pointer;
-}
-
-.btnConfirmYes {
-  flex: 2;
-  padding: 12px 0;
-  border: none;
-  border-radius: 10px;
-  background: var(--accent);
-  font-size: 14px;
-  font-weight: 700;
-  color: #fff;
-  font-family: var(--font-sans);
-  cursor: pointer;
-}
-
-.ringkasanDivider {
-  height: 1px;
-  background: var(--border-soft);
-  margin: 8px 0 6px;
-}
-
-.ringkasanLabel {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--ink-tertiary);
-  font-family: var(--font-sans);
-  margin-bottom: 4px;
-}
-
-.ringkasanRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 5px 0;
-}
-
-.ringkasanKey {
-  font-size: 13px;
-  color: var(--ink-secondary);
-  font-family: var(--font-sans);
-}
-
-.ringkasanVal {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--ink-primary);
-  font-feature-settings: 'tnum';
-}
-
-.ringkasanValGreen {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--signal-safe);
-  font-feature-settings: 'tnum';
 }
 
 /* ── Mode: Hari Terakhir ─────────────────────────────────── */

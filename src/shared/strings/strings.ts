@@ -178,6 +178,9 @@ export type StringKey =
   | 'saldo.total_saldo_label'
   | 'saldo.uang_mengendap_label'
   | 'saldo.uang_mengendap_sub'
+  | 'saldo.rincian_udah_kepakai'
+  | 'saldo.sisa_periode_label'
+  | 'saldo.uang_mengendap_tooltip'
   // saldo module — mode: bertahan
   | 'saldo.mode_bertahan_badge'
   | 'saldo.mode_bertahan_msg'
@@ -728,21 +731,25 @@ const id: StringDictionary = {
   'saldo.formula_note': 'Ini anggaran yang beneran bisa lo pakai — bukan sekedar sisa di rekening.',
   'saldo.jatah_harian_label': 'Jatah Harian',
   'saldo.jatah_harian_tooltip':
-    'Anggaran Operasional dibagi jumlah hari periode — ini yang boleh lo pakai per hari. Fixed di awal periode, bukan berubah tiap hari.',
+    'Dibagi dari sisa awal periode — ini yang boleh lo pakai per hari. Fixed, bukan berubah tiap hari.',
   'saldo.anggaran_tooltip':
     'Pemasukan periode dikurangi tagihan belum bayar dan target nabung. Ini uang yang "bebas" untuk operasional harian.',
   'saldo.expand_btn': 'kok bisa segini?',
   'saldo.collapse_btn': 'sembunyikan',
-  'saldo.rincian_pemasukan': 'Pemasukan periode',
+  'saldo.rincian_pemasukan': 'Gajian',
   'saldo.rincian_tagihan': '− Tagihan belum bayar',
-  'saldo.rincian_nabung': '− Target nabung',
-  'saldo.rincian_anggaran': '= Anggaran Operasional',
+  'saldo.rincian_nabung': '− Udah ditabung',
+  'saldo.rincian_anggaran': '= Sisa sekarang',
   'saldo.rincian_hari_periode': '+ {n} hari periode',
   'saldo.rincian_jatah': '= Jatah Harian',
   'saldo.rincian_udah_jalan': 'Udah jalan {x} hari → sisa {amount}',
   'saldo.total_saldo_label': 'Total Saldo',
   'saldo.uang_mengendap_label': 'Uang Mengendap',
   'saldo.uang_mengendap_sub': 'di luar periode ini',
+  'saldo.rincian_udah_kepakai': '− Udah kepakai',
+  'saldo.sisa_periode_label': 'Sisa periode ini',
+  'saldo.uang_mengendap_tooltip':
+    'Saldo nganggur yang sebaiknya jangan dipakai buat operasional. Aman, tetap punya lo.',
   'saldo.mode_bertahan_badge': 'MODE BERTAHAN',
   'saldo.mode_bertahan_msg':
     'Uangmu sudah ter-booking habis sampai gajian — ini yang harus lo tutup:',
@@ -900,7 +907,7 @@ const id: StringDictionary = {
   'home.toast_keluar': 'Pengeluaran dicatat',
   'home.days_to_payday': '{n} hari ke gajian',
   'home.day_to_payday': '{n} hari ke gajian',
-  'home.saldo_bebas': 'Anggaran Operasional',
+  'home.saldo_bebas': 'Sisa',
   'home.history_link': 'lihat riwayat →',
   'home.monthly_title': 'Bulan Ini',
   'home.income_label': 'Pemasukan',
@@ -1303,21 +1310,24 @@ const en: StringDictionary = {
     "This is your actual spending budget — not just what's left in your account.",
   'saldo.jatah_harian_label': 'Daily Budget',
   'saldo.jatah_harian_tooltip':
-    'Operating Budget divided by days in the period — this is your daily allowance. Fixed at the start of the period, not recalculated daily.',
+    'Divided from the starting balance of this period — your daily allowance. Fixed at the start, not recalculated daily.',
   'saldo.anggaran_tooltip':
     'Period income minus unpaid bills and savings targets. This is your free money for daily operations.',
   'saldo.expand_btn': 'how is this calculated?',
   'saldo.collapse_btn': 'hide',
-  'saldo.rincian_pemasukan': 'Period income',
+  'saldo.rincian_pemasukan': 'Income',
   'saldo.rincian_tagihan': '− Unpaid bills',
-  'saldo.rincian_nabung': '− Savings target',
-  'saldo.rincian_anggaran': '= Operating Budget',
+  'saldo.rincian_nabung': '− Already saved',
+  'saldo.rincian_anggaran': '= Left now',
   'saldo.rincian_hari_periode': '+ {n} days in period',
   'saldo.rincian_jatah': '= Daily Budget',
   'saldo.rincian_udah_jalan': '{x} days in → {amount} left',
   'saldo.total_saldo_label': 'Total Balance',
   'saldo.uang_mengendap_label': 'Parked Money',
   'saldo.uang_mengendap_sub': 'outside this period',
+  'saldo.rincian_udah_kepakai': '− Already spent',
+  'saldo.sisa_periode_label': 'Period balance',
+  'saldo.uang_mengendap_tooltip': 'Idle balance — safe to leave alone, not for daily spending.',
   'saldo.mode_bertahan_badge': 'SURVIVAL MODE',
   'saldo.mode_bertahan_msg':
     "Your money is fully booked until payday — here's what you need to cover:",
@@ -1473,7 +1483,7 @@ const en: StringDictionary = {
   'home.toast_keluar': 'Expense logged',
   'home.days_to_payday': '{n} days to payday',
   'home.day_to_payday': '{n} day to payday',
-  'home.saldo_bebas': 'Operating Budget',
+  'home.saldo_bebas': 'Left',
   'home.history_link': 'view history →',
   'home.monthly_title': 'This Month',
   'home.income_label': 'Income',

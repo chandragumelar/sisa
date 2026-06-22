@@ -71,6 +71,7 @@ interface HomeData {
   shortfall: number
   pemasukanPeriode: number
   hariPeriode: number
+  spentThisPeriode: number
 }
 
 interface ToastState {
@@ -115,6 +116,7 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
     shortfall: 0,
     pemasukanPeriode: 0,
     hariPeriode: 0,
+    spentThisPeriode: 0,
   })
   const [isLoading, setIsLoading] = useState(true)
   const [tick, setTick] = useState(0)
@@ -197,6 +199,7 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
                 shortfall: budget.shortfall,
                 pemasukanPeriode: budget.pemasukanPeriode,
                 hariPeriode: budget.hariPeriode,
+                spentThisPeriode: expense,
               })
               setIsLoading(false)
             }
@@ -228,12 +231,11 @@ export function HomePage() {
     monthlyExpense,
     sisaPeriode,
     jatahHarian,
-    anggaranOperasional,
     uangMengendap,
     mode,
     shortfall,
     pemasukanPeriode,
-    hariPeriode,
+    spentThisPeriode,
     isLoading,
     reload,
   } = useHomeData(nowMs)
@@ -465,14 +467,13 @@ export function HomePage() {
             currency={currency}
             sisaPeriode={sisaPeriode}
             jatahHarian={jatahHarian}
-            anggaranOperasional={anggaranOperasional}
             pemasukanPeriode={pemasukanPeriode}
             uangMengendap={uangMengendap}
             mode={mode}
             shortfall={shortfall}
-            hariPeriode={hariPeriode}
             unpaidTagihanTotal={unpaidTagihanTotal}
             totalNabung={totalNabung}
+            spentThisPeriode={spentThisPeriode}
             daysUntilPayday={daysUntilPayday}
             nextPaydayMs={nextPaydayMs}
             conditionLabel={condition?.label ?? null}
