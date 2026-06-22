@@ -25,6 +25,7 @@ export interface OnboardingAccumulated {
   incomeAnchorDate: number | null
   incomeDay: number | null
   freelanceMinBalance: string
+  fixedIncome: string
   avgIncome: string
   avgIncomeBasis: IncomeFrequency
   /** null = hari pertama (gaji belum pernah masuk), number = epoch ms of last confirmed payday */
@@ -41,6 +42,7 @@ export const INITIAL_ACCUMULATED: OnboardingAccumulated = {
   incomeAnchorDate: null,
   incomeDay: null,
   freelanceMinBalance: '',
+  fixedIncome: '',
   avgIncome: '',
   avgIncomeBasis: 'bulanan',
   lastPaydayConfirmed: null,

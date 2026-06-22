@@ -78,15 +78,28 @@ export type StringKey =
   | 'ob.step4b.avg_income_label'
   | 'ob.step4b.avg_income_basis_label'
   | 'ob.step4b.avg_income_hint'
+  | 'ob.step4b.fixed_income_label_tetap'
+  | 'ob.step4b.fixed_income_label_mix'
+  | 'ob.step4b.fixed_income_hint'
   | 'ob.step4b.next'
-  // onboarding step payConfirm
+  // onboarding step payConfirm (3-option: preset / picker / first-time)
   | 'ob.payConfirm.heading'
   | 'ob.payConfirm.sub'
-  | 'ob.payConfirm.yes'
-  | 'ob.payConfirm.yes_sub'
-  | 'ob.payConfirm.no'
-  | 'ob.payConfirm.no_sub'
+  | 'ob.payConfirm.preset_prefix'
+  | 'ob.payConfirm.picker_label'
+  | 'ob.payConfirm.first_label'
+  | 'ob.payConfirm.first_sub'
   | 'ob.payConfirm.next'
+  // home — transisi periode banner (H-2)
+  | 'home.transisi_heading'
+  | 'home.transisi_sub'
+  | 'home.transisi_btn'
+  | 'home.transisi_popup_heading'
+  | 'home.transisi_popup_body'
+  | 'home.transisi_popup_date_label'
+  | 'home.transisi_popup_nominal_label'
+  | 'home.transisi_popup_confirm'
+  | 'home.transisi_popup_cancel'
   // onboarding step 4c
   | 'ob.step4c.heading'
   | 'ob.step4c.sub'
@@ -625,15 +638,29 @@ const id: StringDictionary = {
   'ob.step4b.avg_income_basis_label': 'Per',
   'ob.step4b.avg_income_hint':
     'Estimasi aja — SISA tetap jaga pakai batas saldo aman biar nggak nabrak.',
+  'ob.step4b.fixed_income_label_tetap': 'Berapa pemasukan lo per periode?',
+  'ob.step4b.fixed_income_label_mix': 'Berapa gaji tetap lo per periode?',
+  'ob.step4b.fixed_income_hint': 'Disimpan lokal di device lo aja, bukan ke server.',
   'ob.step4b.next': 'Lanjut',
 
-  'ob.payConfirm.heading': 'Gaji periode ini udah masuk?',
-  'ob.payConfirm.sub': 'SISA butuh tau biar angka jatah harian lo akurat.',
-  'ob.payConfirm.yes': 'Udah masuk',
-  'ob.payConfirm.yes_sub': 'Periode baru dimulai, jatah harian di-reset',
-  'ob.payConfirm.no': 'Belum / ini hari pertama',
-  'ob.payConfirm.no_sub': 'SISA pakai saldo sekarang sebagai patokan',
+  'ob.payConfirm.heading': 'Kapan terakhir lo nerima gaji?',
+  'ob.payConfirm.sub': 'Dari sini SISA bisa hitung jatah harian yang akurat.',
+  'ob.payConfirm.preset_prefix': 'Sekitar',
+  'ob.payConfirm.picker_label': 'Pilih tanggal lain',
+  'ob.payConfirm.first_label': 'Belum pernah, ini gajian pertama',
+  'ob.payConfirm.first_sub': 'SISA pakai saldo sekarang sebagai patokan',
   'ob.payConfirm.next': 'Lanjut',
+
+  'home.transisi_heading': 'Gajian bentar lagi?',
+  'home.transisi_sub': 'Konfirmasi saat gaji masuk biar jatah harian periode baru bisa dihitung.',
+  'home.transisi_btn': 'Udah gajian',
+  'home.transisi_popup_heading': 'Mulai periode baru?',
+  'home.transisi_popup_body':
+    'Gaji bulan ini dianggap sudah masuk. Jatah harian dihitung ulang dari awal.',
+  'home.transisi_popup_date_label': 'Gajian tanggal',
+  'home.transisi_popup_nominal_label': 'Nominal gaji',
+  'home.transisi_popup_confirm': 'Ya, mulai periode baru',
+  'home.transisi_popup_cancel': 'Batal',
 
   'ob.step4c.heading': 'Mata uang utama',
   'ob.step4c.sub': 'Semua nominal akan ditampilkan dalam mata uang ini.',
@@ -1186,15 +1213,29 @@ const en: StringDictionary = {
   'ob.step4b.avg_income_label': 'Average income',
   'ob.step4b.avg_income_basis_label': 'Per',
   'ob.step4b.avg_income_hint': 'Estimate is fine — SISA still guards with your safe balance floor.',
+  'ob.step4b.fixed_income_label_tetap': 'How much do you earn per period?',
+  'ob.step4b.fixed_income_label_mix': 'How much is your fixed salary per period?',
+  'ob.step4b.fixed_income_hint': 'Saved locally on your device only.',
   'ob.step4b.next': 'Next',
 
-  'ob.payConfirm.heading': 'Has your salary arrived?',
-  'ob.payConfirm.sub': 'SISA needs to know so your daily budget is accurate.',
-  'ob.payConfirm.yes': "Yes, it's in",
-  'ob.payConfirm.yes_sub': 'New period starts, daily budget resets',
-  'ob.payConfirm.no': 'Not yet / first day',
-  'ob.payConfirm.no_sub': 'SISA uses your current balance as the baseline',
+  'ob.payConfirm.heading': 'When did you last get paid?',
+  'ob.payConfirm.sub': 'This helps SISA calculate your daily budget accurately.',
+  'ob.payConfirm.preset_prefix': 'Around',
+  'ob.payConfirm.picker_label': 'Choose a different date',
+  'ob.payConfirm.first_label': 'Never — this is my first payday',
+  'ob.payConfirm.first_sub': 'SISA uses your current balance as the baseline',
   'ob.payConfirm.next': 'Next',
+
+  'home.transisi_heading': 'Payday coming up?',
+  'home.transisi_sub': 'Confirm when your salary arrives so your new daily budget is accurate.',
+  'home.transisi_btn': 'Salary received',
+  'home.transisi_popup_heading': 'Start new period?',
+  'home.transisi_popup_body':
+    'Your salary is marked as received. Daily budget resets from the beginning.',
+  'home.transisi_popup_date_label': 'Payday date',
+  'home.transisi_popup_nominal_label': 'Salary amount',
+  'home.transisi_popup_confirm': 'Yes, start new period',
+  'home.transisi_popup_cancel': 'Cancel',
 
   'ob.step4c.heading': 'Primary currency',
   'ob.step4c.sub': 'All amounts will show in this currency.',

@@ -126,7 +126,13 @@ export function AndaiPage() {
           let effectivePemasukan = income
           if (hariPertama) {
             effectivePemasukan = totalSaldo
-          } else if (s.incomeType === 'freelance' && s.avgIncome && s.avgIncomeBasis) {
+          } else if (income === 0 && s.fixedIncome && s.fixedIncome > 0) {
+            effectivePemasukan = s.fixedIncome
+          } else if (
+            (s.incomeType === 'freelance' || s.incomeType === 'mix') &&
+            s.avgIncome &&
+            s.avgIncomeBasis
+          ) {
             effectivePemasukan = calcPemasukanFromAvg(s.avgIncome, s.avgIncomeBasis, hariPeriode)
           }
           const budget = calcBudgetPeriode({
