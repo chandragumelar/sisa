@@ -51,68 +51,13 @@ export function GoalModule({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [goals.length])
 
-  // Drag state — refs avoid stale closures in document listeners
-  const [dragIdx, setDragIdx] = useState<number | null>(null)
-  const [overIdx, setOverIdx] = useState<number | null>(null)
-  const overIdxRef = useRef<number | null>(null)
-  const dragIdxRef = useRef<number | null>(null)
-  const rowRefs = useRef<(HTMLElement | null)[]>([])
-  const didDragRef = useRef(false)
-
-  // Document-level pointer listeners during drag
-  useEffect(() => {
-    if (dragIdx === null) return
-
-    function onMove(e: PointerEvent) {
-      let next = 0
-      rowRefs.current.forEach((el, i) => {
-        if (!el) return
-        const { top, height } = el.getBoundingClientRect()
-        if (e.clientY > top + height / 2) next = i
-      })
-      const clamped = Math.max(0, Math.min((rowRefs.current.length ?? 1) - 1, next))
-      overIdxRef.current = clamped
-      setOverIdx(clamped)
-    }
-
-    function onUp() {
-      const from = dragIdxRef.current
-      const to = overIdxRef.current
-      if (from !== null && to !== null && from !== to) {
-        const newIds = [...localIdsRef.current]
-        const [moved] = newIds.splice(from, 1)
-        newIds.splice(to, 0, moved)
-        localIdsRef.current = newIds
-        setLocalIds(newIds)
-        onReorder?.(newIds)
-        didDragRef.current = true
-      }
-      dragIdxRef.current = null
-      overIdxRef.current = null
-      setDragIdx(null)
-      setOverIdx(null)
-    }
-
-    document.addEventListener('pointermove', onMove)
-    document.addEventListener('pointerup', onUp)
-    document.addEventListener('pointercancel', onUp)
-    return () => {
-      document.removeEventListener('pointermove', onMove)
-      document.removeEventListener('pointerup', onUp)
-      document.removeEventListener('pointercancel', onUp)
-    }
-  }, [dragIdx, onReorder])
-
-  function startDrag(idx: number, e: React.PointerEvent<HTMLElement>) {
-    e.preventDefault()
-    e.stopPropagation()
-    dragIdxRef.current = idx
-    overIdxRef.current = idx
-    setDragIdx(idx)
-    setOverIdx(idx)
-    didDragRef.current = false
-    // Capture so move/up fire on this element even when pointer leaves
-    e.currentTarget.setPointerCapture(e.pointerId)
+  function moveGoal(from: number, to: number) {
+    const newIds = [...localIdsRef.current]
+    const [moved] = newIds.splice(from, 1)
+    newIds.splice(to, 0, moved)
+    localIdsRef.current = newIds
+    setLocalIds(newIds)
+    onReorder?.(newIds)
   }
 
   if (goals.length === 0) {
@@ -138,10 +83,11 @@ export function GoalModule({
     .map((id) => goals.find((g) => g.id === id))
     .filter((g): g is Goal => !!g)
   const statuses = calcGoalStatuses(orderedGoals, totalNabung)
+  const last = statuses.length - 1
 
   return (
     <>
-      <div className={dragIdx !== null ? `${styles.card} ${styles.cardDragging}` : styles.card}>
+      <div className={styles.card}>
         <div className={styles.header}>
           <span className={styles.label}>{t('goal.title', lang)}</span>
         </div>
@@ -149,65 +95,54 @@ export function GoalModule({
         {statuses.map(({ goal, saved, pct }, idx) => {
           const isPriority = idx === 0
           const isSaving = saved > 0
-          const isDragging = dragIdx === idx
-          const isDragOver = overIdx === idx && dragIdx !== null && dragIdx !== idx
+          const isFirst = idx === 0
+          const isLast = idx === last
 
           if (isPriority) {
             return (
-              <div
-                key={goal.id}
-                ref={(el) => {
-                  rowRefs.current[idx] = el
-                }}
-                className={[
-                  styles.priorityWrap,
-                  isDragging ? styles.itemDragging : '',
-                  isDragOver ? styles.itemDragOver : '',
-                ]
-                  .filter(Boolean)
-                  .join(' ')}
-              >
-                <div className={styles.priorityTop}>
-                  <span className={styles.dragHandle} onPointerDown={(e) => startDrag(idx, e)}>
-                    ≡
-                  </span>
-                  <span
-                    className={
-                      isSaving ? `${styles.statusLabel} ${styles.statusSaving}` : styles.statusLabel
-                    }
-                  >
-                    {isSaving ? t('goal.status_sedang', lang) : t('goal.status_belum', lang)}
-                  </span>
-                  <span className={styles.prioritasBadge}>{t('goal.prioritas', lang)}</span>
+              <div key={goal.id} className={styles.priorityWrap}>
+                <div className={styles.priorityMain}>
+                  <div className={styles.priorityBody}>
+                    <div className={styles.priorityTop}>
+                      <span
+                        className={
+                          isSaving
+                            ? `${styles.statusLabel} ${styles.statusSaving}`
+                            : styles.statusLabel
+                        }
+                      >
+                        {isSaving ? t('goal.status_sedang', lang) : t('goal.status_belum', lang)}
+                      </span>
+                      <span className={styles.prioritasBadge}>{t('goal.prioritas', lang)}</span>
+                    </div>
+                    <button className={styles.priorityContent} onClick={() => onGoalTap?.(goal)}>
+                      <div className={styles.priorityName}>{goal.name}</div>
+                      <div className={styles.goalBar}>
+                        <div
+                          className={styles.goalBarFill}
+                          style={{ width: `${Math.min(100, pct)}%` }}
+                        />
+                      </div>
+                      <div className={styles.progressRow}>
+                        <span className={styles.progressLeft}>
+                          {isSaving
+                            ? `${formatCurrency(saved, currency)} sudah ditabung`
+                            : t('goal.not_saved', lang)}
+                        </span>
+                        <span className={styles.progressRight}>
+                          {pct}% dari {formatCurrency(goal.target, currency)}
+                        </span>
+                      </div>
+                    </button>
+                  </div>
+                  <ArrowCol
+                    idx={idx}
+                    isFirst={isFirst}
+                    isLast={isLast}
+                    onUp={() => moveGoal(idx, idx - 1)}
+                    onDown={() => moveGoal(idx, idx + 1)}
+                  />
                 </div>
-                <button
-                  className={styles.priorityContent}
-                  onClick={() => {
-                    if (didDragRef.current) {
-                      didDragRef.current = false
-                      return
-                    }
-                    onGoalTap?.(goal)
-                  }}
-                >
-                  <div className={styles.priorityName}>{goal.name}</div>
-                  <div className={styles.goalBar}>
-                    <div
-                      className={styles.goalBarFill}
-                      style={{ width: `${Math.min(100, pct)}%` }}
-                    />
-                  </div>
-                  <div className={styles.progressRow}>
-                    <span className={styles.progressLeft}>
-                      {isSaving
-                        ? `${formatCurrency(saved, currency)} sudah ditabung`
-                        : t('goal.not_saved', lang)}
-                    </span>
-                    <span className={styles.progressRight}>
-                      {pct}% dari {formatCurrency(goal.target, currency)}
-                    </span>
-                  </div>
-                </button>
               </div>
             )
           }
@@ -228,39 +163,25 @@ export function GoalModule({
                 </div>
               )}
               <div
-                ref={(el) => {
-                  rowRefs.current[idx] = el
-                }}
-                className={[
-                  styles.queueRow,
-                  isDragging ? styles.itemDragging : '',
-                  isDragOver ? styles.itemDragOver : '',
-                ]
-                  .filter(Boolean)
-                  .join(' ')}
+                className={styles.queueRow}
                 style={{
-                  borderBottom: idx < statuses.length - 1 ? '1px solid var(--border-soft)' : 'none',
+                  borderBottom: idx < last ? '1px solid var(--border-soft)' : 'none',
                 }}
               >
-                <span className={styles.dragHandle} onPointerDown={(e) => startDrag(idx, e)}>
-                  ≡
-                </span>
-                <button
-                  className={styles.queueContent}
-                  onClick={() => {
-                    if (didDragRef.current) {
-                      didDragRef.current = false
-                      return
-                    }
-                    onGoalTap?.(goal)
-                  }}
-                >
+                <button className={styles.queueContent} onClick={() => onGoalTap?.(goal)}>
                   <div className={styles.queueInfo}>
                     <span className={styles.queueName}>{goal.name}</span>
                     <span className={styles.queueSub}>{subtext}</span>
                   </div>
                   <span className={styles.queueAmt}>{formatCurrency(goal.target, currency)}</span>
                 </button>
+                <ArrowCol
+                  idx={idx}
+                  isFirst={isFirst}
+                  isLast={isLast}
+                  onUp={() => moveGoal(idx, idx - 1)}
+                  onDown={() => moveGoal(idx, idx + 1)}
+                />
               </div>
             </div>
           )
@@ -300,5 +221,64 @@ export function GoalModule({
         </div>
       )}
     </>
+  )
+}
+
+function ArrowCol({
+  idx,
+  isFirst,
+  isLast,
+  onUp,
+  onDown,
+}: {
+  idx: number
+  isFirst: boolean
+  isLast: boolean
+  onUp: () => void
+  onDown: () => void
+}) {
+  // idx kept for potential future use (aria-label)
+  void idx
+  return (
+    <div className={styles.arrowCol}>
+      <button
+        className={styles.arrowBtn}
+        onClick={onUp}
+        disabled={isFirst}
+        aria-label="Geser ke atas"
+      >
+        <svg
+          width="12"
+          height="12"
+          viewBox="0 0 12 12"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M2 8L6 4L10 8" />
+        </svg>
+      </button>
+      <button
+        className={styles.arrowBtn}
+        onClick={onDown}
+        disabled={isLast}
+        aria-label="Geser ke bawah"
+      >
+        <svg
+          width="12"
+          height="12"
+          viewBox="0 0 12 12"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M2 4L6 8L10 4" />
+        </svg>
+      </button>
+    </div>
   )
 }

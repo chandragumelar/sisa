@@ -210,7 +210,6 @@ export type StringKey =
   | 'goal.reached'
   | 'goal.waiting'
   | 'goal.add'
-  | 'goal.reorder_hint'
   | 'goal.reorder_hint_new'
   | 'goal.menabung'
   | 'goal.status_belum'
@@ -780,8 +779,7 @@ const id: StringDictionary = {
   'goal.reached': 'tercapai ✓',
   'goal.waiting': 'nunggu giliran',
   'goal.add': '+ Catat mimpi baru',
-  'goal.reorder_hint': 'nabung lagi: {name} · tahan & geser untuk ganti urutan',
-  'goal.reorder_hint_new': 'Geser mimpi untuk atur urutan',
+  'goal.reorder_hint_new': 'Pakai ↑↓ untuk atur urutan mimpi',
   'goal.menabung': 'Menabung',
   'goal.status_belum': 'belum menabung',
   'goal.status_sedang': 'sedang ditabung',
@@ -1010,7 +1008,7 @@ const id: StringDictionary = {
   'profil.goals_title_edit': 'Edit goal',
   'profil.goals_title_add': 'Tambah goal',
   'profil.goals_empty': 'Belum ada goal.',
-  'profil.goals_reorder_hint': 'Urutan goal diatur di Home lewat drag-drop.',
+  'profil.goals_reorder_hint': 'Atur urutan goal di Home pakai tombol ↑↓.',
   'profil.goals_name_label': 'nama goal',
   'profil.goals_name_placeholder': 'e.g. Emergency fund, Liburan',
   'profil.goals_target_label': 'target nominal',
@@ -1356,8 +1354,7 @@ const en: StringDictionary = {
   'goal.reached': 'reached ✓',
   'goal.waiting': 'in queue',
   'goal.add': '+ Add new dream',
-  'goal.reorder_hint': 'saving to: {name} · hold & drag to reorder',
-  'goal.reorder_hint_new': 'Drag to reorder',
+  'goal.reorder_hint_new': 'Use ↑↓ to reorder dreams',
   'goal.menabung': 'Save',
   'goal.status_belum': 'not saving yet',
   'goal.status_sedang': 'currently saving',
@@ -1586,7 +1583,7 @@ const en: StringDictionary = {
   'profil.goals_title_edit': 'Edit goal',
   'profil.goals_title_add': 'Add goal',
   'profil.goals_empty': 'No goals yet.',
-  'profil.goals_reorder_hint': 'Goal order is set on Home via drag-drop.',
+  'profil.goals_reorder_hint': 'Set goal order on Home using ↑↓ buttons.',
   'profil.goals_name_label': 'goal name',
   'profil.goals_name_placeholder': 'e.g. Emergency fund, Vacation',
   'profil.goals_target_label': 'target amount',
