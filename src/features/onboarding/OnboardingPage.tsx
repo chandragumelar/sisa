@@ -12,6 +12,7 @@ import { Step2License } from './steps/Step2License'
 import { Step3MentalModel } from './steps/Step3MentalModel'
 import { Step4aIncomeType } from './steps/Step4aIncomeType'
 import { Step4bIncomeDetail } from './steps/Step4bIncomeDetail'
+import { StepPayConfirm } from './steps/StepPayConfirm'
 import { Step4cCurrency } from './steps/Step4cCurrency'
 import { Step4dWallet } from './steps/Step4dWallet'
 import { Step4eCurrency2 } from './steps/Step4eCurrency2'
@@ -26,6 +27,7 @@ import {
   getNextStep,
   parseWalletBalance,
 } from './onboarding.utils'
+import { getPaydayDate } from '@/features/home/home.utils'
 export function OnboardingPage() {
   const navigate = useNavigate()
   const clock = useClock()
@@ -49,6 +51,7 @@ export function OnboardingPage() {
     const language = final.language ?? 'id'
     const incomeType = final.incomeType ?? 'tetap'
     const primaryCurrency = final.primaryCurrency ?? 'IDR'
+    const avgIncomeNum = final.avgIncome ? parseWalletBalance(final.avgIncome) : null
 
     const settings = buildSettings({
       language,
@@ -59,6 +62,9 @@ export function OnboardingPage() {
       freelanceMinBalance: final.freelanceMinBalance
         ? parseWalletBalance(final.freelanceMinBalance)
         : null,
+      avgIncome: avgIncomeNum && avgIncomeNum > 0 ? avgIncomeNum : null,
+      avgIncomeBasis: avgIncomeNum && avgIncomeNum > 0 ? final.avgIncomeBasis : null,
+      lastPaydayConfirmed: final.lastPaydayConfirmed,
       primaryCurrency,
       secondaryCurrency: final.secondaryCurrency,
     })
@@ -90,9 +96,35 @@ export function OnboardingPage() {
         <Step4bIncomeDetail
           incomeType={data.incomeType ?? 'tetap'}
           currency={data.primaryCurrency ?? 'IDR'}
-          onNext={({ incomeDay, freelanceMinBalance, incomeFrequency, incomeAnchorDate }) =>
-            advance({ incomeDay, freelanceMinBalance, incomeFrequency, incomeAnchorDate })
+          onNext={({
+            incomeDay,
+            freelanceMinBalance,
+            incomeFrequency,
+            incomeAnchorDate,
+            avgIncome,
+            avgIncomeBasis,
+          }) =>
+            advance({
+              incomeDay,
+              freelanceMinBalance,
+              incomeFrequency,
+              incomeAnchorDate,
+              avgIncome,
+              avgIncomeBasis,
+            })
           }
+        />
+      )}
+      {step === 'payConfirm' && (
+        <StepPayConfirm
+          paydayMs={getPaydayDate(clock.now(), {
+            incomeType: data.incomeType ?? 'tetap',
+            incomeFrequency: data.incomeFrequency ?? 'bulanan',
+            incomeAnchorDate: data.incomeAnchorDate,
+            incomeDay: data.incomeDay,
+            weekendBehavior: null,
+          } as import('@/db/database').Settings).getTime()}
+          onNext={(lastPaydayConfirmed) => advance({ lastPaydayConfirmed })}
         />
       )}
       {step === 'currency' && (

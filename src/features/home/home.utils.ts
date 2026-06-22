@@ -71,11 +71,10 @@ export function calcDaysUntilPayday(nowMs: number, settings: Settings): number {
 // ─── Period ───────────────────────────────────────────────────────────────────
 
 /**
- * Returns the date the current pay period started (the most recent payday).
- * Weekend adjustment is intentionally skipped — this is a window boundary for
- * transaction aggregation, not a displayed payday date.
+ * Calendar-only period start — never uses lastPaydayConfirmed.
+ * Used internally and by needsPaydayConfirmation to detect unconfirmed periods.
  */
-export function getPeriodStartDate(nowMs: number, settings: Settings): Date {
+function getCalendarPeriodStartDate(nowMs: number, settings: Settings): Date {
   const now = new Date(nowMs)
   const today = now.getDate()
   const month = now.getMonth()
@@ -107,6 +106,56 @@ export function getPeriodStartDate(nowMs: number, settings: Settings): Date {
   const prevYear = month === 0 ? year - 1 : year
   const lastDay = new Date(prevYear, prevMonth + 1, 0).getDate()
   return new Date(prevYear, prevMonth, Math.min(incomeDay, lastDay))
+}
+
+/**
+ * Returns the date the current pay period started.
+ * When lastPaydayConfirmed is set and falls within the current calendar period,
+ * it is used as the period start (salary may arrive a day or two after payday).
+ */
+export function getPeriodStartDate(nowMs: number, settings: Settings): Date {
+  const calStart = getCalendarPeriodStartDate(nowMs, settings)
+  if (settings.lastPaydayConfirmed != null && settings.lastPaydayConfirmed >= calStart.getTime()) {
+    return new Date(settings.lastPaydayConfirmed)
+  }
+  return calStart
+}
+
+/**
+ * True when a tetap/mix user has entered a new calendar period but not yet
+ * confirmed that their salary arrived. Freelance never needs confirmation.
+ */
+export function needsPaydayConfirmation(nowMs: number, settings: Settings): boolean {
+  if (settings.incomeType === 'freelance') return false
+  const calStart = getCalendarPeriodStartDate(nowMs, settings)
+  const confirmedThisPeriod =
+    settings.lastPaydayConfirmed != null && settings.lastPaydayConfirmed >= calStart.getTime()
+  return !confirmedThisPeriod
+}
+
+/**
+ * True when user has never confirmed a payday and has no income transactions.
+ * In this mode pemasukanPeriode should be set to totalSaldo instead.
+ */
+export function isHariPertamaMode(
+  lastPaydayConfirmed: number | null,
+  incomeFromPeriod: number,
+): boolean {
+  return lastPaydayConfirmed == null && incomeFromPeriod === 0
+}
+
+/**
+ * Normalize a per-basis average income to the current pay period.
+ * basis: the period the user entered the average for.
+ * hariPeriode: actual days in current period.
+ */
+export function calcPemasukanFromAvg(
+  avgIncome: number,
+  basis: 'mingguan' | '2mingguan' | 'bulanan',
+  hariPeriode: number,
+): number {
+  const basisDays = basis === 'mingguan' ? 7 : basis === '2mingguan' ? 14 : 30
+  return (avgIncome / basisDays) * hariPeriode
 }
 
 /**

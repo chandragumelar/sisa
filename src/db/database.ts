@@ -100,6 +100,9 @@ export interface Settings {
   weekendBehavior: WeekendBehavior | null // null until first payday falls on a weekend
   onboardingCompleted: boolean
   lastExportedAt: number | null // epoch ms; drives backup reminder cadence
+  lastPaydayConfirmed: number | null // epoch ms of last confirmed payday; null = hari pertama
+  avgIncome: number | null // freelance/mix: estimated income per avgIncomeBasis period
+  avgIncomeBasis: IncomeFrequency | null // period basis for avgIncome
 }
 
 // Singleton row — always id=1. Use db.license.put({ id: 1, ... }).

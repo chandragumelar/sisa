@@ -11,6 +11,7 @@ const STEP_PROGRESS: Record<OnboardingStep, number> = {
   currency: 4,
   incomeType: 5,
   incomeDetail: 5,
+  payConfirm: 5,
   wallet: 6,
   currency2: 6,
 }
@@ -21,7 +22,7 @@ export function getProgressCount(step: OnboardingStep): number {
 
 export function getNextStep(
   current: OnboardingStep,
-  _incomeType: IncomeType | null,
+  incomeType: IncomeType | null,
 ): OnboardingStep | 'done' {
   switch (current) {
     case 'language':
@@ -37,6 +38,9 @@ export function getNextStep(
     case 'incomeType':
       return 'incomeDetail'
     case 'incomeDetail':
+      // tetap/mix need payConfirm; freelance goes straight to wallet
+      return incomeType === 'freelance' ? 'wallet' : 'payConfirm'
+    case 'payConfirm':
       return 'wallet'
     case 'wallet':
       return 'currency2'
@@ -52,6 +56,9 @@ export interface CompletedOnboardingData {
   incomeAnchorDate: number | null
   incomeDay: number | null
   freelanceMinBalance: number | null
+  avgIncome: number | null
+  avgIncomeBasis: IncomeFrequency | null
+  lastPaydayConfirmed: number | null
   primaryCurrency: string
   secondaryCurrency: string | null
 }
@@ -66,6 +73,9 @@ export function buildSettings(data: CompletedOnboardingData): Settings {
     incomeAnchorDate: data.incomeAnchorDate,
     incomeDay: data.incomeDay,
     freelanceMinBalance: data.freelanceMinBalance,
+    avgIncome: data.avgIncome,
+    avgIncomeBasis: data.avgIncomeBasis,
+    lastPaydayConfirmed: data.lastPaydayConfirmed,
     primaryCurrency: data.primaryCurrency,
     secondaryCurrency: data.secondaryCurrency,
     activeCurrencyMode: data.primaryCurrency,

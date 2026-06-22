@@ -16,7 +16,13 @@ import {
 } from '@/db/scenarios.repository'
 import type { SavedScenario } from '@/db/database'
 import { calcUnpaidTagihanTotal } from '@/features/home/tagihan.utils'
-import { getPaydayDate, getPeriodStartDate, calcHariPeriode } from '@/features/home/home.utils'
+import {
+  getPaydayDate,
+  getPeriodStartDate,
+  calcHariPeriode,
+  isHariPertamaMode,
+  calcPemasukanFromAvg,
+} from '@/features/home/home.utils'
 import { calcBudgetPeriode } from '@/shared/utils/budget.utils'
 import { formatCurrency, getCurrencySymbol } from '@/shared/utils/formatCurrency'
 import { calcAndai, buildAndaiBaseline } from './andai.utils'
@@ -116,8 +122,15 @@ export function AndaiPage() {
           getPeriodFlows(currency, periodStartMs, nowMs),
         ]).then(([totalNabung, { income, expense, spentToday }]) => {
           if (cancelled) return
+          const hariPertama = isHariPertamaMode(s.lastPaydayConfirmed, income)
+          let effectivePemasukan = income
+          if (hariPertama) {
+            effectivePemasukan = totalSaldo
+          } else if (s.incomeType === 'freelance' && s.avgIncome && s.avgIncomeBasis) {
+            effectivePemasukan = calcPemasukanFromAvg(s.avgIncome, s.avgIncomeBasis, hariPeriode)
+          }
           const budget = calcBudgetPeriode({
-            pemasukanPeriode: income,
+            pemasukanPeriode: effectivePemasukan,
             unpaidTagihanTotal,
             targetTabungan: totalNabung,
             hariPeriode,

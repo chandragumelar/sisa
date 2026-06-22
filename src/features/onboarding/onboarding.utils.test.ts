@@ -50,8 +50,17 @@ describe('getNextStep', () => {
   it('incomeType → incomeDetail', () => {
     expect(getNextStep('incomeType', 'tetap')).toBe('incomeDetail')
   })
-  it('incomeDetail → wallet', () => {
-    expect(getNextStep('incomeDetail', 'tetap')).toBe('wallet')
+  it('incomeDetail + freelance → wallet (skip payConfirm)', () => {
+    expect(getNextStep('incomeDetail', 'freelance')).toBe('wallet')
+  })
+  it('incomeDetail + tetap → payConfirm', () => {
+    expect(getNextStep('incomeDetail', 'tetap')).toBe('payConfirm')
+  })
+  it('incomeDetail + mix → payConfirm', () => {
+    expect(getNextStep('incomeDetail', 'mix')).toBe('payConfirm')
+  })
+  it('payConfirm → wallet', () => {
+    expect(getNextStep('payConfirm', 'tetap')).toBe('wallet')
   })
   it('wallet → currency2 (always)', () => {
     expect(getNextStep('wallet', 'tetap')).toBe('currency2')
@@ -72,6 +81,9 @@ describe('buildSettings', () => {
     incomeAnchorDate: null,
     incomeDay: 25,
     freelanceMinBalance: null,
+    avgIncome: null,
+    avgIncomeBasis: null,
+    lastPaydayConfirmed: null,
     primaryCurrency: 'IDR',
     secondaryCurrency: null,
   }
@@ -109,6 +121,23 @@ describe('buildSettings', () => {
     const s = buildSettings({ ...base, secondaryCurrency: 'USD' })
     expect(s.secondaryCurrency).toBe('USD')
     expect(s.activeCurrencyMode).toBe('IDR')
+  })
+
+  it('avgIncome and avgIncomeBasis are passed through', () => {
+    const s = buildSettings({ ...base, avgIncome: 5_000_000, avgIncomeBasis: 'bulanan' })
+    expect(s.avgIncome).toBe(5_000_000)
+    expect(s.avgIncomeBasis).toBe('bulanan')
+  })
+
+  it('lastPaydayConfirmed=null stored as null', () => {
+    const s = buildSettings({ ...base, lastPaydayConfirmed: null })
+    expect(s.lastPaydayConfirmed).toBeNull()
+  })
+
+  it('lastPaydayConfirmed epoch ms stored correctly', () => {
+    const epoch = new Date('2024-01-10T12:00:00Z').getTime()
+    const s = buildSettings({ ...base, lastPaydayConfirmed: epoch })
+    expect(s.lastPaydayConfirmed).toBe(epoch)
   })
 })
 
