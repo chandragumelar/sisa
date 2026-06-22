@@ -8,6 +8,9 @@ import {
   calcSpentToday,
   calcYesterdayStats,
   calcGoalStatuses,
+  needsPaydayConfirmation,
+  isHariPertamaMode,
+  calcPemasukanFromAvg,
 } from './home.utils'
 
 const DAY_MS = 86_400_000
@@ -27,6 +30,9 @@ function makeSettings(overrides: Partial<Settings> = {}): Settings {
     incomeAnchorDate: null,
     incomeDay: 25,
     freelanceMinBalance: null,
+    avgIncome: null,
+    avgIncomeBasis: null,
+    lastPaydayConfirmed: null,
     primaryCurrency: 'IDR',
     secondaryCurrency: null,
     activeCurrencyMode: 'IDR',
@@ -322,6 +328,140 @@ describe('getPeriodStartDate', () => {
       makeSettings({ incomeFrequency: '2mingguan', incomeAnchorDate: anchor }),
     )
     expect(d.getDate()).toBe(5)
+  })
+})
+
+// ─── getPeriodStartDate — lastPaydayConfirmed override ────────────────────────
+
+describe('getPeriodStartDate — lastPaydayConfirmed', () => {
+  it('lastPaydayConfirmed within current calendar period → used as period start', () => {
+    // today=Jan 10, incomeDay=25 → calendarPeriodStart=Dec 25
+    // lastPaydayConfirmed=Jan 5 → Jan 5 >= Dec 25 → use Jan 5
+    const confirmedMs = new Date('2024-01-05T12:00:00Z').getTime()
+    const d = getPeriodStartDate(
+      NOW_MS,
+      makeSettings({ incomeDay: 25, lastPaydayConfirmed: confirmedMs }),
+    )
+    expect(d.getDate()).toBe(5)
+    expect(d.getMonth()).toBe(0)
+    expect(d.getFullYear()).toBe(2024)
+  })
+
+  it('lastPaydayConfirmed from previous calendar period → falls back to calendar start', () => {
+    // today=Jan 10, incomeDay=25 → calendarPeriodStart=Dec 25
+    // lastPaydayConfirmed=Dec 1 → Dec 1 < Dec 25 → ignore, use Dec 25
+    const oldConfirm = new Date('2023-12-01T12:00:00Z').getTime()
+    const d = getPeriodStartDate(
+      NOW_MS,
+      makeSettings({ incomeDay: 25, lastPaydayConfirmed: oldConfirm }),
+    )
+    expect(d.getDate()).toBe(25)
+    expect(d.getMonth()).toBe(11) // December
+  })
+
+  it('lastPaydayConfirmed = null → uses calendar period start', () => {
+    const d = getPeriodStartDate(NOW_MS, makeSettings({ incomeDay: 25, lastPaydayConfirmed: null }))
+    expect(d.getDate()).toBe(25)
+    expect(d.getMonth()).toBe(11) // December
+  })
+})
+
+// ─── needsPaydayConfirmation ──────────────────────────────────────────────────
+
+describe('needsPaydayConfirmation', () => {
+  // NOW_MS = Jan 10 2024, incomeDay=25 → calendarPeriodStart = Dec 25
+
+  it('tetap with no confirmed payday this period → true', () => {
+    expect(
+      needsPaydayConfirmation(
+        NOW_MS,
+        makeSettings({ incomeType: 'tetap', lastPaydayConfirmed: null }),
+      ),
+    ).toBe(true)
+  })
+
+  it('tetap with old confirmation (prev period) → true', () => {
+    const oldConfirm = new Date('2023-12-01T12:00:00Z').getTime()
+    expect(
+      needsPaydayConfirmation(
+        NOW_MS,
+        makeSettings({ incomeType: 'tetap', lastPaydayConfirmed: oldConfirm }),
+      ),
+    ).toBe(true)
+  })
+
+  it('tetap with confirmation this period → false', () => {
+    const confirmedMs = new Date('2024-01-05T12:00:00Z').getTime()
+    expect(
+      needsPaydayConfirmation(
+        NOW_MS,
+        makeSettings({ incomeType: 'tetap', lastPaydayConfirmed: confirmedMs }),
+      ),
+    ).toBe(false)
+  })
+
+  it('mix same as tetap — no confirmation → true', () => {
+    expect(
+      needsPaydayConfirmation(
+        NOW_MS,
+        makeSettings({ incomeType: 'mix', lastPaydayConfirmed: null }),
+      ),
+    ).toBe(true)
+  })
+
+  it('freelance → always false (no payday to confirm)', () => {
+    expect(
+      needsPaydayConfirmation(
+        NOW_MS,
+        makeSettings({ incomeType: 'freelance', lastPaydayConfirmed: null }),
+      ),
+    ).toBe(false)
+  })
+})
+
+// ─── isHariPertamaMode ────────────────────────────────────────────────────────
+
+describe('isHariPertamaMode', () => {
+  it('lastPaydayConfirmed=null and income=0 → true', () => {
+    expect(isHariPertamaMode(null, 0)).toBe(true)
+  })
+
+  it('lastPaydayConfirmed=null but income>0 → false', () => {
+    expect(isHariPertamaMode(null, 100_000)).toBe(false)
+  })
+
+  it('lastPaydayConfirmed set and income=0 → false', () => {
+    expect(isHariPertamaMode(NOW_MS, 0)).toBe(false)
+  })
+
+  it('lastPaydayConfirmed set and income>0 → false', () => {
+    expect(isHariPertamaMode(NOW_MS, 500_000)).toBe(false)
+  })
+})
+
+// ─── calcPemasukanFromAvg ─────────────────────────────────────────────────────
+
+describe('calcPemasukanFromAvg', () => {
+  it('bulanan 30-day basis, 15 hari period → half', () => {
+    // avg=3_000_000/month, hariPeriode=15 → 3_000_000/30*15 = 1_500_000
+    expect(calcPemasukanFromAvg(3_000_000, 'bulanan', 15)).toBe(1_500_000)
+  })
+
+  it('mingguan 7-day basis, 7 hari period → exact avg', () => {
+    expect(calcPemasukanFromAvg(700_000, 'mingguan', 7)).toBe(700_000)
+  })
+
+  it('2mingguan 14-day basis, 14 hari period → exact avg', () => {
+    expect(calcPemasukanFromAvg(1_400_000, '2mingguan', 14)).toBe(1_400_000)
+  })
+
+  it('bulanan, full 31-day period → slightly over avg', () => {
+    // 3_000_000/30*31 = 3_100_000
+    expect(calcPemasukanFromAvg(3_000_000, 'bulanan', 31)).toBeCloseTo(3_100_000)
+  })
+
+  it('zero avgIncome → 0', () => {
+    expect(calcPemasukanFromAvg(0, 'bulanan', 30)).toBe(0)
   })
 })
 

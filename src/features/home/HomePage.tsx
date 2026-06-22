@@ -26,6 +26,9 @@ import {
   getPaydayDate,
   getPeriodStartDate,
   calcHariPeriode,
+  needsPaydayConfirmation,
+  isHariPertamaMode,
+  calcPemasukanFromAvg,
 } from './home.utils'
 import { calcUnpaidTagihanTotal, getTagihanUrgency } from './tagihan.utils'
 import { shouldShowBackupReminder, calcBackupUrgency } from './backup-reminder.utils'
@@ -49,7 +52,10 @@ import { ProfilWalletsSheet } from '@/features/profil/ProfilWalletsSheet'
 import { QuickLogSheet } from '@/features/quickLog/QuickLogSheet'
 import type { QuickLogMode } from '@/features/quickLog/quickLog.utils'
 import { BerbagiKeamananSection } from '@/features/shared-profile/components/BerbagiKeamananSection'
+import { PaydayConfirmCard } from './components/PaydayConfirmCard'
 import styles from './HomePage.module.css'
+
+const PAYDAY_DECLINE_KEY = 'sisa:paydayDeclinedOn'
 
 interface HomeData {
   settings: Settings | null
@@ -136,8 +142,23 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
             { income, expense, spentToday },
           ]) => {
             if (!cancelled) {
+              const hariPertama = isHariPertamaMode(settings.lastPaydayConfirmed, income)
+              let effectivePemasukan = income
+              if (hariPertama) {
+                effectivePemasukan = totalSaldoForCalc
+              } else if (
+                settings.incomeType === 'freelance' &&
+                settings.avgIncome &&
+                settings.avgIncomeBasis
+              ) {
+                effectivePemasukan = calcPemasukanFromAvg(
+                  settings.avgIncome,
+                  settings.avgIncomeBasis,
+                  hariPeriode,
+                )
+              }
               const budget = calcBudgetPeriode({
-                pemasukanPeriode: income,
+                pemasukanPeriode: effectivePemasukan,
                 unpaidTagihanTotal: unpaidForCalc,
                 targetTabungan: totalNabung,
                 hariPeriode,
@@ -235,6 +256,21 @@ export function HomePage() {
   })()
   const showBackupCard = shouldShowBackupReminder(settings.lastExportedAt, backupDismissedAt, nowMs)
   const backupUrgency = calcBackupUrgency(settings.lastExportedAt, nowMs)
+
+  const todayDateStr = new Date(nowMs).toISOString().slice(0, 10)
+  const paydayDeclinedOn = localStorage.getItem(PAYDAY_DECLINE_KEY)
+  const showPaydayConfirm =
+    needsPaydayConfirmation(nowMs, settings) && paydayDeclinedOn !== todayDateStr
+
+  async function handlePaydayConfirm() {
+    await patchSettings({ lastPaydayConfirmed: nowMs })
+    reload()
+  }
+
+  function handlePaydayDecline() {
+    localStorage.setItem(PAYDAY_DECLINE_KEY, todayDateStr)
+    reload()
+  }
 
   function dismissToast() {
     setToast(null)
@@ -371,6 +407,11 @@ export function HomePage() {
               reload()
             }}
           />
+        )}
+
+        {/* Payday confirmation prompt */}
+        {showPaydayConfirm && (
+          <PaydayConfirmCard onYes={handlePaydayConfirm} onNo={handlePaydayDecline} />
         )}
 
         {/* Cards */}

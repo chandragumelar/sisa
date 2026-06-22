@@ -13,6 +13,8 @@ import {
   getPaydayDate,
   getPeriodStartDate,
   calcHariPeriode,
+  isHariPertamaMode,
+  calcPemasukanFromAvg,
 } from '@/features/home/home.utils'
 import { calcUnpaidTagihanTotal } from '@/features/home/tagihan.utils'
 import { calcBudgetPeriode } from '@/shared/utils/budget.utils'
@@ -70,8 +72,23 @@ export function CekDuluPage() {
           getPeriodFlows(currency, periodStartMs, nowMs),
         ]).then(([totalNabung, { income, expense, spentToday }]) => {
           if (cancelled) return
+          const hariPertama = isHariPertamaMode(settings.lastPaydayConfirmed, income)
+          let effectivePemasukan = income
+          if (hariPertama) {
+            effectivePemasukan = totalSaldo
+          } else if (
+            settings.incomeType === 'freelance' &&
+            settings.avgIncome &&
+            settings.avgIncomeBasis
+          ) {
+            effectivePemasukan = calcPemasukanFromAvg(
+              settings.avgIncome,
+              settings.avgIncomeBasis,
+              hariPeriode,
+            )
+          }
           const budget = calcBudgetPeriode({
-            pemasukanPeriode: income,
+            pemasukanPeriode: effectivePemasukan,
             unpaidTagihanTotal,
             targetTabungan: totalNabung,
             hariPeriode,

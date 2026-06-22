@@ -75,7 +75,18 @@ export type StringKey =
   | 'ob.step4b.min_balance_optional'
   | 'ob.step4b.min_balance_required'
   | 'ob.step4b.min_balance_hint'
+  | 'ob.step4b.avg_income_label'
+  | 'ob.step4b.avg_income_basis_label'
+  | 'ob.step4b.avg_income_hint'
   | 'ob.step4b.next'
+  // onboarding step payConfirm
+  | 'ob.payConfirm.heading'
+  | 'ob.payConfirm.sub'
+  | 'ob.payConfirm.yes'
+  | 'ob.payConfirm.yes_sub'
+  | 'ob.payConfirm.no'
+  | 'ob.payConfirm.no_sub'
+  | 'ob.payConfirm.next'
   // onboarding step 4c
   | 'ob.step4c.heading'
   | 'ob.step4c.sub'
@@ -278,6 +289,10 @@ export type StringKey =
   | 'home.income_label'
   | 'home.expense_label'
   | 'home.savings_label'
+  | 'home.payday_confirm_title'
+  | 'home.payday_confirm_sub'
+  | 'home.payday_confirm_yes'
+  | 'home.payday_confirm_no'
   // quick log sheet
   | 'quick_log.mode_keluar'
   | 'quick_log.mode_masuk'
@@ -568,7 +583,19 @@ const id: StringDictionary = {
   'ob.step4b.min_balance_optional': 'Minimum saldo aman (opsional)',
   'ob.step4b.min_balance_required': 'Minimum saldo aman',
   'ob.step4b.min_balance_hint': 'SISA akan kasih peringatan kalau saldo lo di bawah angka ini.',
+  'ob.step4b.avg_income_label': 'Rata-rata pemasukan',
+  'ob.step4b.avg_income_basis_label': 'Per',
+  'ob.step4b.avg_income_hint':
+    'Estimasi aja — SISA tetap jaga pakai batas saldo aman biar nggak nabrak.',
   'ob.step4b.next': 'Lanjut',
+
+  'ob.payConfirm.heading': 'Gaji periode ini udah masuk?',
+  'ob.payConfirm.sub': 'SISA butuh tau biar angka jatah harian lo akurat.',
+  'ob.payConfirm.yes': 'Udah masuk',
+  'ob.payConfirm.yes_sub': 'Periode baru dimulai, jatah harian di-reset',
+  'ob.payConfirm.no': 'Belum / ini hari pertama',
+  'ob.payConfirm.no_sub': 'SISA pakai saldo sekarang sebagai patokan',
+  'ob.payConfirm.next': 'Lanjut',
 
   'ob.step4c.heading': 'Mata uang utama',
   'ob.step4c.sub': 'Semua nominal akan ditampilkan dalam mata uang ini.',
@@ -778,6 +805,10 @@ const id: StringDictionary = {
   'home.income_label': 'Pemasukan',
   'home.expense_label': 'Pengeluaran',
   'home.savings_label': 'Tabungan',
+  'home.payday_confirm_title': 'Gaji udah masuk?',
+  'home.payday_confirm_sub': 'Kalau udah, SISA reset jatah harian dari sekarang.',
+  'home.payday_confirm_yes': 'Udah masuk',
+  'home.payday_confirm_no': 'Belum',
 
   'quick_log.mode_keluar': 'keluar',
   'quick_log.mode_masuk': 'masuk',
@@ -1075,7 +1106,18 @@ const en: StringDictionary = {
   'ob.step4b.min_balance_optional': 'Safe balance floor (optional)',
   'ob.step4b.min_balance_required': 'Safe balance floor',
   'ob.step4b.min_balance_hint': 'SISA will warn you when your balance drops below this.',
+  'ob.step4b.avg_income_label': 'Average income',
+  'ob.step4b.avg_income_basis_label': 'Per',
+  'ob.step4b.avg_income_hint': 'Estimate is fine — SISA still guards with your safe balance floor.',
   'ob.step4b.next': 'Next',
+
+  'ob.payConfirm.heading': 'Has your salary arrived?',
+  'ob.payConfirm.sub': 'SISA needs to know so your daily budget is accurate.',
+  'ob.payConfirm.yes': "Yes, it's in",
+  'ob.payConfirm.yes_sub': 'New period starts, daily budget resets',
+  'ob.payConfirm.no': 'Not yet / first day',
+  'ob.payConfirm.no_sub': 'SISA uses your current balance as the baseline',
+  'ob.payConfirm.next': 'Next',
 
   'ob.step4c.heading': 'Primary currency',
   'ob.step4c.sub': 'All amounts will show in this currency.',
@@ -1283,6 +1325,10 @@ const en: StringDictionary = {
   'home.income_label': 'Income',
   'home.expense_label': 'Expense',
   'home.savings_label': 'Savings',
+  'home.payday_confirm_title': 'Did your salary arrive?',
+  'home.payday_confirm_sub': 'If yes, SISA resets your daily budget from now.',
+  'home.payday_confirm_yes': "Yes, it's in",
+  'home.payday_confirm_no': 'Not yet',
 
   'quick_log.mode_keluar': 'out',
   'quick_log.mode_masuk': 'in',

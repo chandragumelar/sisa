@@ -7,6 +7,7 @@ export type OnboardingStep =
   | 'mentalModel'
   | 'incomeType'
   | 'incomeDetail'
+  | 'payConfirm'
   | 'currency'
   | 'wallet'
   | 'currency2'
@@ -24,6 +25,10 @@ export interface OnboardingAccumulated {
   incomeAnchorDate: number | null
   incomeDay: number | null
   freelanceMinBalance: string
+  avgIncome: string
+  avgIncomeBasis: IncomeFrequency
+  /** null = hari pertama (gaji belum pernah masuk), number = epoch ms of last confirmed payday */
+  lastPaydayConfirmed: number | null
   primaryCurrency: string | null
   wallets: WalletInput[]
   secondaryCurrency: string | null
@@ -36,6 +41,9 @@ export const INITIAL_ACCUMULATED: OnboardingAccumulated = {
   incomeAnchorDate: null,
   incomeDay: null,
   freelanceMinBalance: '',
+  avgIncome: '',
+  avgIncomeBasis: 'bulanan',
+  lastPaydayConfirmed: null,
   primaryCurrency: null,
   wallets: [{ id: crypto.randomUUID(), name: '', balance: '' }],
   secondaryCurrency: null,

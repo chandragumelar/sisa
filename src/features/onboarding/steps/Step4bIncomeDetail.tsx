@@ -13,6 +13,8 @@ interface Props {
     freelanceMinBalance: string
     incomeFrequency: IncomeFrequency
     incomeAnchorDate: number | null
+    avgIncome: string
+    avgIncomeBasis: IncomeFrequency
   }) => void
 }
 
@@ -30,6 +32,8 @@ export function Step4bIncomeDetail({ incomeType, currency = 'IDR', onNext }: Pro
   const [incomeDay, setIncomeDay] = useState<number | null>(null)
   const [anchorDateStr, setAnchorDateStr] = useState('')
   const [minBalance, setMinBalance] = useState('')
+  const [avgIncome, setAvgIncome] = useState('')
+  const [avgIncomeBasis, setAvgIncomeBasis] = useState<IncomeFrequency>('bulanan')
 
   const isTetap = incomeType === 'tetap'
   const isMix = incomeType === 'mix'
@@ -49,6 +53,8 @@ export function Step4bIncomeDetail({ incomeType, currency = 'IDR', onNext }: Pro
       freelanceMinBalance: parseNominalRaw(minBalance),
       incomeFrequency,
       incomeAnchorDate: isWeekly ? parseDateInputToMs(anchorDateStr) : null,
+      avgIncome: parseNominalRaw(avgIncome),
+      avgIncomeBasis,
     })
   }
 
@@ -138,6 +144,39 @@ export function Step4bIncomeDetail({ incomeType, currency = 'IDR', onNext }: Pro
             />
           </div>
           {isFreelance && <div className="ob-hint">{t('ob.step4b.min_balance_hint', lang)}</div>}
+        </div>
+      )}
+
+      {(isFreelance || isMix) && (
+        <div className="ob-field">
+          <div className="ob-field-label">{t('ob.step4b.avg_income_label', lang)}</div>
+          <div className="ob-input-row">
+            <span className="ob-input-prefix">{getCurrencySymbol(currency)}</span>
+            <input
+              className="ob-input ob-input-bare"
+              type="text"
+              inputMode="numeric"
+              placeholder="5.000.000"
+              value={avgIncome}
+              onChange={(e) => setAvgIncome(formatNominalDisplay(parseNominalRaw(e.target.value)))}
+            />
+          </div>
+          <div className="ob-input-row" style={{ marginTop: 8 }}>
+            <span className="ob-field-label" style={{ marginBottom: 0, marginRight: 8 }}>
+              {t('ob.step4b.avg_income_basis_label', lang)}
+            </span>
+            <select
+              className="ob-input"
+              style={{ flex: 1 }}
+              value={avgIncomeBasis}
+              onChange={(e) => setAvgIncomeBasis(e.target.value as IncomeFrequency)}
+            >
+              <option value="bulanan">{t('ob.step4b.freq_bulanan', lang)}</option>
+              <option value="mingguan">{t('ob.step4b.freq_mingguan', lang)}</option>
+              <option value="2mingguan">{t('ob.step4b.freq_2mingguan', lang)}</option>
+            </select>
+          </div>
+          <div className="ob-hint">{t('ob.step4b.avg_income_hint', lang)}</div>
         </div>
       )}
 
