@@ -239,15 +239,10 @@ export function SaldoModule({
           {walletExpanded && (
             <div className={styles.konteks}>
               <div className={styles.konteksRow} style={{ cursor: 'default' }}>
-                <span className={styles.konteksLabel}>
-                  {t('saldo.sisa_periode_label', lang)}
-                </span>
+                <span className={styles.konteksLabel}>{t('saldo.sisa_periode_label', lang)}</span>
                 <span className={styles.konteksVal}>{formatCurrency(sisaPeriode, currency)}</span>
               </div>
-              <button
-                className={styles.konteksRow}
-                onClick={() => setMengendapTooltipOpen(true)}
-              >
+              <button className={styles.konteksRow} onClick={() => setMengendapTooltipOpen(true)}>
                 <span className={styles.konteksLabel}>
                   <svg
                     width="10"
