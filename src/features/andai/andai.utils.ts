@@ -15,6 +15,7 @@ export interface AndaiBaseline {
   dailyBudget: number
   daysUntilPayday: number
   totalNabung: number
+  uangMengendap: number
 }
 
 export interface AndaiResult {
@@ -83,6 +84,7 @@ export function calcAndai(items: AndaiItem[], baseline: AndaiBaseline): AndaiRes
 export function buildAndaiBaseline(
   sisaPeriode: number,
   totalNabung: number,
+  uangMengendap: number,
   settings: Settings,
   nowMs: number,
 ): AndaiBaseline {
@@ -93,5 +95,6 @@ export function buildAndaiBaseline(
     dailyBudget,
     daysUntilPayday,
     totalNabung,
+    uangMengendap,
   }
 }

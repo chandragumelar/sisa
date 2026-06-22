@@ -263,6 +263,14 @@
   margin-top: 6px;
 }
 
+.incomeDisclaimer {
+  font-size: 11px;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+  font-style: italic;
+  margin-top: 4px;
+}
+
 .resRow {
   display: flex;
   justify-content: space-between;

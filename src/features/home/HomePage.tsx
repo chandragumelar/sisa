@@ -32,7 +32,7 @@ import {
 } from './home.utils'
 import { calcUnpaidTagihanTotal, getTagihanUrgency } from './tagihan.utils'
 import { shouldShowBackupReminder, calcBackupUrgency } from './backup-reminder.utils'
-import { calcBudgetPeriode } from '@/shared/utils/budget.utils'
+import { calcBudgetPeriode, type BudgetMode } from '@/shared/utils/budget.utils'
 import { BRAND_STUDIO_WITH_COLLAB } from '@/constants/brand'
 import { CekDuluCard } from './components/CekDuluCard'
 import { SaldoModule } from './components/SaldoModule'
@@ -52,7 +52,6 @@ import { ProfilWalletsSheet } from '@/features/profil/ProfilWalletsSheet'
 import { QuickLogSheet } from '@/features/quickLog/QuickLogSheet'
 import type { QuickLogMode } from '@/features/quickLog/quickLog.utils'
 import { BerbagiKeamananSection } from '@/features/shared-profile/components/BerbagiKeamananSection'
-import { PaydayConfirmCard } from './components/PaydayConfirmCard'
 import styles from './HomePage.module.css'
 
 const PAYDAY_DECLINE_KEY = 'sisa:paydayDeclinedOn'
@@ -66,6 +65,13 @@ interface HomeData {
   monthlyIncome: number
   monthlyExpense: number
   sisaPeriode: number
+  jatahHarian: number | null
+  anggaranOperasional: number
+  uangMengendap: number
+  mode: BudgetMode
+  shortfall: number
+  pemasukanPeriode: number
+  hariPeriode: number
 }
 
 interface ToastState {
@@ -103,6 +109,13 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
     monthlyIncome: 0,
     monthlyExpense: 0,
     sisaPeriode: 0,
+    jatahHarian: null,
+    anggaranOperasional: 0,
+    uangMengendap: 0,
+    mode: 'normal',
+    shortfall: 0,
+    pemasukanPeriode: 0,
+    hariPeriode: 0,
   })
   const [isLoading, setIsLoading] = useState(true)
   const [tick, setTick] = useState(0)
@@ -176,6 +189,13 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
                 monthlyIncome,
                 monthlyExpense,
                 sisaPeriode: budget.sisaPeriode,
+                jatahHarian: budget.jatahHarian,
+                anggaranOperasional: budget.anggaranOperasional,
+                uangMengendap: budget.uangMengendap,
+                mode: budget.mode,
+                shortfall: budget.shortfall,
+                pemasukanPeriode: budget.pemasukanPeriode,
+                hariPeriode: budget.hariPeriode,
               })
               setIsLoading(false)
             }
@@ -206,6 +226,13 @@ export function HomePage() {
     monthlyIncome,
     monthlyExpense,
     sisaPeriode,
+    jatahHarian,
+    anggaranOperasional,
+    uangMengendap,
+    mode,
+    shortfall,
+    pemasukanPeriode,
+    hariPeriode,
     isLoading,
     reload,
   } = useHomeData(nowMs)
@@ -247,8 +274,7 @@ export function HomePage() {
     nextPaydayMs,
   )
   const daysUntilPayday = calcDaysUntilPayday(nowMs, settings)
-  const sisa = sisaPeriode
-  const condition = getConditionInfo(settings, sisa, lang)
+  const condition = getConditionInfo(settings, sisaPeriode, lang)
 
   const backupDismissedAt = (() => {
     const raw = localStorage.getItem(BACKUP_DISMISS_KEY)
@@ -409,11 +435,6 @@ export function HomePage() {
           />
         )}
 
-        {/* Payday confirmation prompt */}
-        {showPaydayConfirm && (
-          <PaydayConfirmCard onYes={handlePaydayConfirm} onNo={handlePaydayDecline} />
-        )}
-
         {/* Cards */}
         <div className={styles.cards}>
           <CekDuluCard
@@ -421,7 +442,7 @@ export function HomePage() {
             walletCount={wallets.filter((w) => w.currency === currency).length}
             tagihanCount={currencyTagihan.length}
             hasNabung={totalNabung > 0}
-            sisa={sisa}
+            sisa={sisaPeriode}
             unpaidTagihanTotal={unpaidTagihanTotal}
             onCekDulu={(amount) => navigate('/cek-dulu', { state: { initialAmount: amount } })}
             onAndai={() => navigate('/andai')}
@@ -436,12 +457,23 @@ export function HomePage() {
           <SaldoModule
             wallets={wallets.filter((w) => w.currency === currency)}
             currency={currency}
-            sisa={sisa}
+            sisaPeriode={sisaPeriode}
+            jatahHarian={jatahHarian}
+            anggaranOperasional={anggaranOperasional}
+            pemasukanPeriode={pemasukanPeriode}
+            uangMengendap={uangMengendap}
+            mode={mode}
+            shortfall={shortfall}
+            hariPeriode={hariPeriode}
             unpaidTagihanTotal={unpaidTagihanTotal}
             totalNabung={totalNabung}
             daysUntilPayday={daysUntilPayday}
+            nextPaydayMs={nextPaydayMs}
             conditionLabel={condition?.label ?? null}
             conditionColor={condition?.color ?? null}
+            showPaydayPrompt={showPaydayConfirm}
+            onPaydayConfirm={handlePaydayConfirm}
+            onPaydayDecline={handlePaydayDecline}
             onWalletTap={(w) => setEditWallet(w)}
             onHistoryTap={() => setHistoryOpen(true)}
             onAddWalletTap={() => setWalletSheetOpen(true)}

@@ -10,6 +10,7 @@ const BASELINE: AndaiBaseline = {
   dailyBudget: 200_000,
   daysUntilPayday: 20,
   totalNabung: 0,
+  uangMengendap: 500_000,
 }
 
 function item(kind: AndaiItem['kind'], amount: number, desc = ''): AndaiItem {

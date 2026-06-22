@@ -149,6 +149,42 @@ export type StringKey =
   | 'saldo.formula_savings_sublabel'
   | 'saldo.formula_total_label'
   | 'saldo.formula_note'
+  // saldo module — 3-layer redesign
+  | 'saldo.jatah_harian_label'
+  | 'saldo.jatah_harian_tooltip'
+  | 'saldo.anggaran_tooltip'
+  | 'saldo.expand_btn'
+  | 'saldo.collapse_btn'
+  | 'saldo.rincian_pemasukan'
+  | 'saldo.rincian_tagihan'
+  | 'saldo.rincian_nabung'
+  | 'saldo.rincian_anggaran'
+  | 'saldo.rincian_hari_periode'
+  | 'saldo.rincian_jatah'
+  | 'saldo.rincian_udah_jalan'
+  | 'saldo.total_saldo_label'
+  | 'saldo.uang_mengendap_label'
+  | 'saldo.uang_mengendap_sub'
+  // saldo module — mode: bertahan
+  | 'saldo.mode_bertahan_badge'
+  | 'saldo.mode_bertahan_msg'
+  | 'saldo.mode_bertahan_shortfall_label'
+  | 'saldo.mode_bertahan_aman_mulai'
+  | 'saldo.mode_bertahan_note'
+  // saldo module — mode: hari gajian
+  | 'saldo.mode_harigajian_badge'
+  | 'saldo.mode_harigajian_heading'
+  | 'saldo.mode_harigajian_sub'
+  | 'saldo.mode_harigajian_yes'
+  | 'saldo.mode_harigajian_no'
+  | 'saldo.mode_harigajian_ringkasan'
+  | 'saldo.mode_harigajian_sisa_anggaran'
+  | 'saldo.mode_harigajian_total_saldo'
+  | 'saldo.mode_harigajian_uang_mengendap'
+  // saldo module — mode: hari terakhir
+  | 'saldo.mode_hariterakhir_badge'
+  | 'saldo.mode_hariterakhir_sub_label'
+  | 'saldo.mode_hariterakhir_note'
   // goal module
   | 'goal.title'
   | 'goal.empty_text'
@@ -372,6 +408,8 @@ export type StringKey =
   | 'andai.insight_days'
   | 'andai.insight_portion'
   | 'andai.insight_recovery'
+  | 'andai.baseline_mengendap'
+  | 'andai.income_disclaimer'
   // profil – goals
   | 'profil.goals_title_list'
   | 'profil.goals_title_edit'
@@ -568,7 +606,7 @@ const id: StringDictionary = {
   'ob.step4b.sub_tetap':
     'SISA hitung mundur dari tanggal ini — biar jatah harian lo presisi, bukan tebak-tebakan.',
   'ob.step4b.sub_mix':
-    'Kalau ada gaji tetap, isi tanggalnya. Income lain bisa dicatat manual nanti.',
+    'Kalau ada gaji tetap, isi tanggalnya. Pemasukan lain bisa dicatat manual nanti.',
   'ob.step4b.sub_freelance':
     'Karena nggak ada tanggal gajian pasti, SISA pakai ini sebagai patokan aman. Lo yang tentuin angkanya.',
   'ob.step4b.freq_label': 'Frekuensi gajian',
@@ -650,18 +688,54 @@ const id: StringDictionary = {
   'saldo.verdict_near_limit':
     '● Mendekati batas aman lo — pertimbangkan kurangi pengeluaran sekarang.',
   'saldo.verdict_below_limit':
-    '● Saldo bebas lo sudah di bawah batas aman — kurangi pengeluaran segera.',
+    '● Anggaran lo sudah di bawah batas aman — kurangi pengeluaran segera.',
   'saldo.formula_title': 'Dari mana angka ini?',
   'saldo.formula_intro':
-    'Saldo bebas bukan cuma saldo di dompet lo. Ada yang udah "dipesan" duluan.',
+    'Anggaran Operasional bukan cuma saldo di dompet lo. Ada yang udah "dipesan" duluan.',
   'saldo.formula_total_wallets': 'Total saldo semua dompet',
-  'saldo.formula_bills_label': 'Tagihan bulan ini yang belum lunas',
+  'saldo.formula_bills_label': 'Tagihan yang belum lunas di periode ini',
   'saldo.formula_bills_sublabel': '(dipesan buat bayar)',
   'saldo.formula_savings_label': 'Dana yang lagi ditabung',
   'saldo.formula_savings_sublabel': '(diendapkan, bukan buat dipakai)',
-  'saldo.formula_total_label': 'Saldo Bebas',
-  'saldo.formula_note':
-    'Ini angka yang beneran bisa lo pakai sekarang — bukan sekedar sisa di rekening.',
+  'saldo.formula_total_label': 'Anggaran Operasional',
+  'saldo.formula_note': 'Ini anggaran yang beneran bisa lo pakai — bukan sekedar sisa di rekening.',
+  'saldo.jatah_harian_label': 'Jatah Harian',
+  'saldo.jatah_harian_tooltip':
+    'Anggaran Operasional dibagi jumlah hari periode — ini yang boleh lo pakai per hari. Fixed di awal periode, bukan berubah tiap hari.',
+  'saldo.anggaran_tooltip':
+    'Pemasukan periode dikurangi tagihan belum bayar dan target nabung. Ini uang yang "bebas" untuk operasional harian.',
+  'saldo.expand_btn': 'kok bisa segini?',
+  'saldo.collapse_btn': 'sembunyikan',
+  'saldo.rincian_pemasukan': 'Pemasukan periode',
+  'saldo.rincian_tagihan': '− Tagihan belum bayar',
+  'saldo.rincian_nabung': '− Target nabung',
+  'saldo.rincian_anggaran': '= Anggaran Operasional',
+  'saldo.rincian_hari_periode': '+ {n} hari periode',
+  'saldo.rincian_jatah': '= Jatah Harian',
+  'saldo.rincian_udah_jalan': 'Udah jalan {x} hari → sisa {amount}',
+  'saldo.total_saldo_label': 'Total Saldo',
+  'saldo.uang_mengendap_label': 'Uang Mengendap',
+  'saldo.uang_mengendap_sub': 'di luar periode ini',
+  'saldo.mode_bertahan_badge': 'MODE BERTAHAN',
+  'saldo.mode_bertahan_msg':
+    'Uangmu sudah ter-booking habis sampai gajian — ini yang harus lo tutup:',
+  'saldo.mode_bertahan_shortfall_label': 'KEKURANGAN',
+  'saldo.mode_bertahan_aman_mulai': 'Aman mulai',
+  'saldo.mode_bertahan_note': 'Tagihan + target nabung melebihi pemasukan periode ini.',
+  'saldo.mode_harigajian_badge': 'Hari Gajian',
+  'saldo.mode_harigajian_heading': 'Gaji udah masuk?',
+  'saldo.mode_harigajian_sub':
+    'Konfirmasi dulu biar jatah harian lo bisa dihitung untuk periode baru.',
+  'saldo.mode_harigajian_yes': 'Sudah, konfirmasi',
+  'saldo.mode_harigajian_no': 'Belum',
+  'saldo.mode_harigajian_ringkasan': 'RINGKASAN PERIODE LALU',
+  'saldo.mode_harigajian_sisa_anggaran': 'Sisa anggaran',
+  'saldo.mode_harigajian_total_saldo': 'Total Saldo',
+  'saldo.mode_harigajian_uang_mengendap': 'Uang Mengendap',
+  'saldo.mode_hariterakhir_badge': 'Hari terakhir',
+  'saldo.mode_hariterakhir_sub_label': 'Sisa hari ini',
+  'saldo.mode_hariterakhir_note':
+    'Ini hari terakhir periode. Besok periode baru dimulai dan jatah harian dihitung ulang.',
 
   'goal.title': 'mimpi lo',
   'goal.empty_text':
@@ -799,7 +873,7 @@ const id: StringDictionary = {
   'home.toast_keluar': 'Pengeluaran dicatat',
   'home.days_to_payday': '{n} hari ke gajian',
   'home.day_to_payday': '{n} hari ke gajian',
-  'home.saldo_bebas': 'Saldo Bebas',
+  'home.saldo_bebas': 'Anggaran Operasional',
   'home.history_link': 'lihat riwayat →',
   'home.monthly_title': 'Bulan Ini',
   'home.income_label': 'Pemasukan',
@@ -832,11 +906,11 @@ const id: StringDictionary = {
   'cek_dulu.col_after': 'kalau beli',
   'cek_dulu.daily_label': 'jatah harian sampai gajian',
   'cek_dulu.daily_unit': '/hari',
-  'cek_dulu.sisa_label': 'sisa operasional',
+  'cek_dulu.sisa_label': 'anggaran operasional',
   'cek_dulu.new_flag': 'baru muncul',
   'cek_dulu.tabungan_label': 'tabungan kepotong',
   'cek_dulu.tabungan_note': 'Buat nutupin, {amount} ketarik dari tabungan.',
-  'cek_dulu.src_label': 'dihitung dari saldo total',
+  'cek_dulu.src_label': 'dihitung dari anggaran operasional',
   'cek_dulu.src_wallets': '{n} dompet · {amount}',
   'cek_dulu.close_btn': 'Tutup',
   'cek_dulu.buy_label': 'Jadi beli — catat keluar',
@@ -852,17 +926,17 @@ const id: StringDictionary = {
   'andai.sub': 'skenario hipotetis',
   'andai.back_aria': 'Kembali',
   'andai.baseline_label': 'sekarang · tanpa diandai',
-  'andai.baseline_saldo': 'saldo operasional',
+  'andai.baseline_saldo': 'anggaran operasional',
   'andai.baseline_tabungan': 'total tabungan',
   'andai.stack_label': 'andai...',
   'andai.remove_aria': 'Hapus',
   'andai.kind_beli': 'beli',
-  'andai.kind_income': 'income',
+  'andai.kind_income': 'pemasukan',
   'andai.kind_tagihan': 'tagihan',
   'andai.kind_target_nabung': 'target nabung',
   'andai.result_label': 'kalau semua ini kejadian',
   'andai.result_daily': 'jatah harian sampai gajian',
-  'andai.result_sisa': 'sisa operasional',
+  'andai.result_sisa': 'anggaran operasional',
   'andai.result_tabungan': 'total tabungan',
   'andai.reset': 'Reset',
   'andai.save': 'Simpan',
@@ -886,8 +960,11 @@ const id: StringDictionary = {
   'andai.save_sheet_submit': 'Simpan',
   'andai.compare_sheet_title': 'Banding skenario',
   'andai.compare_daily': 'jatah harian',
-  'andai.compare_sisa': 'sisa operasional',
+  'andai.compare_sisa': 'anggaran operasional',
   'andai.compare_tabungan': 'total tabungan',
+  'andai.baseline_mengendap': 'uang mengendap',
+  'andai.income_disclaimer':
+    '* Pemasukan di Andai diasumsikan langsung tersedia, bukan prediksi tanggal.',
   'andai.insight_days':
     'Skenario ini menggerus {n} hari jatah harian lo — kalau semua ini kejadian, sejumlah hari itu sudah habis sebelum dimulai.',
   'andai.insight_portion':
@@ -924,7 +1001,7 @@ const id: StringDictionary = {
   'profil.wallets_add_more': '+ Tambah dompet',
 
   'profil.income_title': 'Profil keuangan',
-  'profil.income_type_label': 'tipe income',
+  'profil.income_type_label': 'tipe pemasukan',
   'profil.income_type_tetap': 'tetap',
   'profil.income_type_freelance': 'freelance',
   'profil.income_type_mix': 'campuran',
@@ -1171,18 +1248,54 @@ const en: StringDictionary = {
   'saldo.add_wallet': '+ Add wallet',
   'saldo.verdict_near_limit':
     '● Approaching your safety floor — consider pulling back on spending.',
-  'saldo.verdict_below_limit': '● Your free balance is below your safety floor — cut spending now.',
+  'saldo.verdict_below_limit': '● Your budget is below your safety floor — cut spending now.',
   'saldo.formula_title': 'Where does this number come from?',
   'saldo.formula_intro':
-    "Free balance isn't just what's in your wallets. Some of it is already spoken for.",
+    "Operating Budget isn't just what's in your wallets. Some of it is already spoken for.",
   'saldo.formula_total_wallets': 'Total balance across all wallets',
-  'saldo.formula_bills_label': 'Unpaid bills this month',
+  'saldo.formula_bills_label': 'Unpaid bills in this period',
   'saldo.formula_bills_sublabel': '(reserved for payment)',
   'saldo.formula_savings_label': 'Money currently being saved',
   'saldo.formula_savings_sublabel': '(set aside, not for spending)',
-  'saldo.formula_total_label': 'Free Balance',
+  'saldo.formula_total_label': 'Operating Budget',
   'saldo.formula_note':
-    "This is what you can actually spend right now — not just what's left in your account.",
+    "This is your actual spending budget — not just what's left in your account.",
+  'saldo.jatah_harian_label': 'Daily Budget',
+  'saldo.jatah_harian_tooltip':
+    'Operating Budget divided by days in the period — this is your daily allowance. Fixed at the start of the period, not recalculated daily.',
+  'saldo.anggaran_tooltip':
+    'Period income minus unpaid bills and savings targets. This is your free money for daily operations.',
+  'saldo.expand_btn': 'how is this calculated?',
+  'saldo.collapse_btn': 'hide',
+  'saldo.rincian_pemasukan': 'Period income',
+  'saldo.rincian_tagihan': '− Unpaid bills',
+  'saldo.rincian_nabung': '− Savings target',
+  'saldo.rincian_anggaran': '= Operating Budget',
+  'saldo.rincian_hari_periode': '+ {n} days in period',
+  'saldo.rincian_jatah': '= Daily Budget',
+  'saldo.rincian_udah_jalan': '{x} days in → {amount} left',
+  'saldo.total_saldo_label': 'Total Balance',
+  'saldo.uang_mengendap_label': 'Parked Money',
+  'saldo.uang_mengendap_sub': 'outside this period',
+  'saldo.mode_bertahan_badge': 'SURVIVAL MODE',
+  'saldo.mode_bertahan_msg':
+    "Your money is fully booked until payday — here's what you need to cover:",
+  'saldo.mode_bertahan_shortfall_label': 'SHORTFALL',
+  'saldo.mode_bertahan_aman_mulai': 'Safe from',
+  'saldo.mode_bertahan_note': "Bills + savings targets exceed this period's income.",
+  'saldo.mode_harigajian_badge': 'Payday',
+  'saldo.mode_harigajian_heading': 'Did your salary arrive?',
+  'saldo.mode_harigajian_sub': 'Confirm so your daily budget can be calculated for the new period.',
+  'saldo.mode_harigajian_yes': 'Yes, confirm',
+  'saldo.mode_harigajian_no': 'Not yet',
+  'saldo.mode_harigajian_ringkasan': 'LAST PERIOD SUMMARY',
+  'saldo.mode_harigajian_sisa_anggaran': 'Budget left',
+  'saldo.mode_harigajian_total_saldo': 'Total Balance',
+  'saldo.mode_harigajian_uang_mengendap': 'Parked Money',
+  'saldo.mode_hariterakhir_badge': 'Last day',
+  'saldo.mode_hariterakhir_sub_label': 'Left today',
+  'saldo.mode_hariterakhir_note':
+    'Last day of the period. Tomorrow a new period starts and the daily budget resets.',
 
   'goal.title': 'your dreams',
   'goal.empty_text': "e.g. laptop, Bali trip, emergency fund — so you know what you're saving for.",
@@ -1319,7 +1432,7 @@ const en: StringDictionary = {
   'home.toast_keluar': 'Expense logged',
   'home.days_to_payday': '{n} days to payday',
   'home.day_to_payday': '{n} day to payday',
-  'home.saldo_bebas': 'Free Balance',
+  'home.saldo_bebas': 'Operating Budget',
   'home.history_link': 'view history →',
   'home.monthly_title': 'This Month',
   'home.income_label': 'Income',
@@ -1352,11 +1465,11 @@ const en: StringDictionary = {
   'cek_dulu.col_after': 'if you buy',
   'cek_dulu.daily_label': 'daily budget until payday',
   'cek_dulu.daily_unit': '/day',
-  'cek_dulu.sisa_label': 'operating balance',
+  'cek_dulu.sisa_label': 'operating budget',
   'cek_dulu.new_flag': 'newly visible',
   'cek_dulu.tabungan_label': 'savings dip',
   'cek_dulu.tabungan_note': 'To cover this, {amount} would come from savings.',
-  'cek_dulu.src_label': 'calculated from total balance',
+  'cek_dulu.src_label': 'calculated from operating budget',
   'cek_dulu.src_wallets': '{n} wallets · {amount}',
   'cek_dulu.close_btn': 'Close',
   'cek_dulu.buy_label': 'Go ahead — log as expense',
@@ -1372,7 +1485,7 @@ const en: StringDictionary = {
   'andai.sub': 'hypothetical scenarios',
   'andai.back_aria': 'Back',
   'andai.baseline_label': 'now · no changes',
-  'andai.baseline_saldo': 'operating balance',
+  'andai.baseline_saldo': 'operating budget',
   'andai.baseline_tabungan': 'total savings',
   'andai.stack_label': 'what if...',
   'andai.remove_aria': 'Remove',
@@ -1382,7 +1495,7 @@ const en: StringDictionary = {
   'andai.kind_target_nabung': 'savings target',
   'andai.result_label': 'if all this happened',
   'andai.result_daily': 'daily budget until payday',
-  'andai.result_sisa': 'operating balance',
+  'andai.result_sisa': 'operating budget',
   'andai.result_tabungan': 'total savings',
   'andai.reset': 'Reset',
   'andai.save': 'Save',
@@ -1406,8 +1519,11 @@ const en: StringDictionary = {
   'andai.save_sheet_submit': 'Save',
   'andai.compare_sheet_title': 'Compare scenarios',
   'andai.compare_daily': 'daily budget',
-  'andai.compare_sisa': 'operating balance',
+  'andai.compare_sisa': 'operating budget',
   'andai.compare_tabungan': 'total savings',
+  'andai.baseline_mengendap': 'parked money',
+  'andai.income_disclaimer':
+    '* Income in What If is assumed immediately available — not a date prediction.',
   'andai.insight_days':
     'This scenario burns through {n} days of your daily budget — if all of this happens, those days are gone before they start.',
   'andai.insight_portion':
