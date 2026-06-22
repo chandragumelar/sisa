@@ -56,6 +56,7 @@ export interface CompletedOnboardingData {
   incomeAnchorDate: number | null
   incomeDay: number | null
   freelanceMinBalance: number | null
+  fixedIncome: number | null
   avgIncome: number | null
   avgIncomeBasis: IncomeFrequency | null
   lastPaydayConfirmed: number | null
@@ -73,6 +74,7 @@ export function buildSettings(data: CompletedOnboardingData): Settings {
     incomeAnchorDate: data.incomeAnchorDate,
     incomeDay: data.incomeDay,
     freelanceMinBalance: data.freelanceMinBalance,
+    fixedIncome: data.fixedIncome,
     avgIncome: data.avgIncome,
     avgIncomeBasis: data.avgIncomeBasis,
     lastPaydayConfirmed: data.lastPaydayConfirmed,

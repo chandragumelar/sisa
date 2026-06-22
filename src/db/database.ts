@@ -103,6 +103,7 @@ export interface Settings {
   lastPaydayConfirmed: number | null // epoch ms of last confirmed payday; null = hari pertama
   avgIncome: number | null // freelance/mix: estimated income per avgIncomeBasis period
   avgIncomeBasis: IncomeFrequency | null // period basis for avgIncome
+  fixedIncome: number | null // tetap/mix: nominal salary per period; used as pemasukanPeriode fallback
 }
 
 // Singleton row — always id=1. Use db.license.put({ id: 1, ... }).

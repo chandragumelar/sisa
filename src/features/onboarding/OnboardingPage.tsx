@@ -28,6 +28,15 @@ import {
   parseWalletBalance,
 } from './onboarding.utils'
 import { getPaydayDate } from '@/features/home/home.utils'
+import type { IncomeFrequency } from '@/db/database'
+
+function getPreviousPaydayMs(nextPaydayMs: number, frequency: IncomeFrequency): number {
+  const d = new Date(nextPaydayMs)
+  if (frequency === 'mingguan') d.setDate(d.getDate() - 7)
+  else if (frequency === '2mingguan') d.setDate(d.getDate() - 14)
+  else d.setMonth(d.getMonth() - 1)
+  return d.getTime()
+}
 export function OnboardingPage() {
   const navigate = useNavigate()
   const clock = useClock()
@@ -52,6 +61,7 @@ export function OnboardingPage() {
     const incomeType = final.incomeType ?? 'tetap'
     const primaryCurrency = final.primaryCurrency ?? 'IDR'
     const avgIncomeNum = final.avgIncome ? parseWalletBalance(final.avgIncome) : null
+    const fixedIncomeNum = final.fixedIncome ? parseWalletBalance(final.fixedIncome) : null
 
     const settings = buildSettings({
       language,
@@ -62,6 +72,7 @@ export function OnboardingPage() {
       freelanceMinBalance: final.freelanceMinBalance
         ? parseWalletBalance(final.freelanceMinBalance)
         : null,
+      fixedIncome: fixedIncomeNum && fixedIncomeNum > 0 ? fixedIncomeNum : null,
       avgIncome: avgIncomeNum && avgIncomeNum > 0 ? avgIncomeNum : null,
       avgIncomeBasis: avgIncomeNum && avgIncomeNum > 0 ? final.avgIncomeBasis : null,
       lastPaydayConfirmed: final.lastPaydayConfirmed,
@@ -99,6 +110,7 @@ export function OnboardingPage() {
           onNext={({
             incomeDay,
             freelanceMinBalance,
+            fixedIncome,
             incomeFrequency,
             incomeAnchorDate,
             avgIncome,
@@ -107,6 +119,7 @@ export function OnboardingPage() {
             advance({
               incomeDay,
               freelanceMinBalance,
+              fixedIncome,
               incomeFrequency,
               incomeAnchorDate,
               avgIncome,
@@ -117,13 +130,16 @@ export function OnboardingPage() {
       )}
       {step === 'payConfirm' && (
         <StepPayConfirm
-          paydayMs={getPaydayDate(clock.now(), {
-            incomeType: data.incomeType ?? 'tetap',
-            incomeFrequency: data.incomeFrequency ?? 'bulanan',
-            incomeAnchorDate: data.incomeAnchorDate,
-            incomeDay: data.incomeDay,
-            weekendBehavior: null,
-          } as import('@/db/database').Settings).getTime()}
+          previousPaydayMs={getPreviousPaydayMs(
+            getPaydayDate(clock.now(), {
+              incomeType: data.incomeType ?? 'tetap',
+              incomeFrequency: data.incomeFrequency ?? 'bulanan',
+              incomeAnchorDate: data.incomeAnchorDate,
+              incomeDay: data.incomeDay,
+              weekendBehavior: null,
+            } as import('@/db/database').Settings).getTime(),
+            data.incomeFrequency ?? 'bulanan',
+          )}
           onNext={(lastPaydayConfirmed) => advance({ lastPaydayConfirmed })}
         />
       )}

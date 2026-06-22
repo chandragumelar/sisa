@@ -33,6 +33,7 @@ function makeSettings(overrides: Partial<Settings> = {}): Settings {
     avgIncome: null,
     avgIncomeBasis: null,
     lastPaydayConfirmed: null,
+    fixedIncome: null,
     primaryCurrency: 'IDR',
     secondaryCurrency: null,
     activeCurrencyMode: 'IDR',

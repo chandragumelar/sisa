@@ -26,9 +26,6 @@ interface Props {
   nextPaydayMs: number
   conditionLabel: string | null
   conditionColor: string | null
-  showPaydayPrompt: boolean
-  onPaydayConfirm: () => void
-  onPaydayDecline: () => void
   onWalletTap?: (wallet: Wallet) => void
   onHistoryTap?: () => void
   onAddWalletTap?: () => void
@@ -51,9 +48,6 @@ export function SaldoModule({
   nextPaydayMs,
   conditionLabel,
   conditionColor,
-  showPaydayPrompt,
-  onPaydayConfirm,
-  onPaydayDecline,
   onWalletTap,
   onHistoryTap,
   onAddWalletTap,
@@ -65,7 +59,7 @@ export function SaldoModule({
   const [anggaranTooltipOpen, setAnggaranTooltipOpen] = useState(false)
 
   const totalSaldo = wallets.reduce((sum, w) => sum + w.balance, 0)
-  const effectiveMode = showPaydayPrompt ? 'hari-gajian' : mode
+  const effectiveMode = mode
   const hariTerlewat = Math.max(0, hariPeriode - daysUntilPayday)
   const nextPaydayDate = new Date(nextPaydayMs)
   const paydayLabel = `${nextPaydayDate.getDate()} ${nextPaydayDate.toLocaleString(lang === 'en' ? 'en-US' : 'id-ID', { month: 'short' })} ${nextPaydayDate.getFullYear()}`
@@ -75,11 +69,7 @@ export function SaldoModule({
       <div className={styles.wrapper}>
         <div
           className={
-            effectiveMode === 'bertahan'
-              ? `${styles.card} ${styles.cardBertahan}`
-              : effectiveMode === 'hari-gajian'
-                ? `${styles.card} ${styles.cardHariGajian}`
-                : styles.card
+            effectiveMode === 'bertahan' ? `${styles.card} ${styles.cardBertahan}` : styles.card
           }
         >
           {/* ── Header row ── */}
@@ -87,10 +77,6 @@ export function SaldoModule({
             <span className={styles.label}>{t('home.saldo_bebas', lang)}</span>
             {effectiveMode === 'bertahan' ? (
               <span className={styles.badgeBertahan}>{t('saldo.mode_bertahan_badge', lang)}</span>
-            ) : effectiveMode === 'hari-gajian' ? (
-              <span className={styles.badgeHariGajian}>
-                {t('saldo.mode_harigajian_badge', lang)}
-              </span>
             ) : effectiveMode === 'hari-terakhir' ? (
               <span className={styles.badgeHariTerakhir}>
                 {t('saldo.mode_hariterakhir_badge', lang)}
@@ -138,50 +124,6 @@ export function SaldoModule({
                 <div className={styles.shortfallAmount}>{formatCurrency(shortfall, currency)}</div>
               </div>
               <p className={styles.bertahanNote}>{t('saldo.mode_bertahan_note', lang)}</p>
-            </div>
-          )}
-
-          {/* ── Mode: Hari Gajian ── */}
-          {effectiveMode === 'hari-gajian' && (
-            <div className={styles.hariGajianBody}>
-              <h2 className={styles.hariGajianHeading}>
-                {t('saldo.mode_harigajian_heading', lang)}
-              </h2>
-              <p className={styles.hariGajianSub}>{t('saldo.mode_harigajian_sub', lang)}</p>
-              <div className={styles.hariGajianBtns}>
-                <button className={styles.btnConfirmNo} onClick={onPaydayDecline}>
-                  {t('saldo.mode_harigajian_no', lang)}
-                </button>
-                <button className={styles.btnConfirmYes} onClick={onPaydayConfirm}>
-                  {t('saldo.mode_harigajian_yes', lang)}
-                </button>
-              </div>
-              <div className={styles.ringkasanDivider} />
-              <div className={styles.ringkasanLabel}>
-                {t('saldo.mode_harigajian_ringkasan', lang)}
-              </div>
-              <div className={styles.ringkasanRow}>
-                <span className={styles.ringkasanKey}>
-                  {t('saldo.mode_harigajian_sisa_anggaran', lang)}
-                </span>
-                <span className={styles.ringkasanValGreen}>
-                  {formatCurrency(Math.max(0, sisaPeriode), currency)}
-                </span>
-              </div>
-              <div className={styles.ringkasanRow}>
-                <span className={styles.ringkasanKey}>
-                  {t('saldo.mode_harigajian_total_saldo', lang)}
-                </span>
-                <span className={styles.ringkasanVal}>{formatCurrency(totalSaldo, currency)}</span>
-              </div>
-              <div className={styles.ringkasanRow}>
-                <span className={styles.ringkasanKey}>
-                  {t('saldo.mode_harigajian_uang_mengendap', lang)}
-                </span>
-                <span className={styles.ringkasanVal}>
-                  {formatCurrency(uangMengendap, currency)}
-                </span>
-              </div>
             </div>
           )}
 
@@ -292,78 +234,76 @@ export function SaldoModule({
             </>
           )}
 
-          {/* ── Lapis 3: Konteks (semua mode kecuali hari-gajian) ── */}
-          {effectiveMode !== 'hari-gajian' && (
-            <div className={styles.konteks}>
-              <button className={styles.konteksRow} onClick={() => setWalletExpanded((v) => !v)}>
-                <span className={styles.konteksLabel}>{t('saldo.total_saldo_label', lang)}</span>
-                <span className={styles.konteksVal}>
-                  {formatCurrency(totalSaldo, currency)}
-                  <span className={styles.konteksArrow}>{walletExpanded ? ' ∧' : ' >'}</span>
-                </span>
-              </button>
+          {/* ── Lapis 3: Konteks ── */}
+          <div className={styles.konteks}>
+            <button className={styles.konteksRow} onClick={() => setWalletExpanded((v) => !v)}>
+              <span className={styles.konteksLabel}>{t('saldo.total_saldo_label', lang)}</span>
+              <span className={styles.konteksVal}>
+                {formatCurrency(totalSaldo, currency)}
+                <span className={styles.konteksArrow}>{walletExpanded ? ' ∧' : ' >'}</span>
+              </span>
+            </button>
 
-              {walletExpanded && (
-                <div className={styles.walletList}>
-                  {wallets.map((w, i) => (
-                    <button
-                      key={w.id}
-                      className={styles.walletRow}
-                      style={{
-                        borderBottom:
-                          i < wallets.length - 1 ? '1px solid var(--border-soft)' : 'none',
-                      }}
-                      onClick={() => onWalletTap?.(w)}
-                    >
-                      <div className={styles.walletLeft}>
-                        <span
-                          className={styles.walletDot}
-                          style={{ background: WALLET_DOTS[i % WALLET_DOTS.length] }}
-                        />
-                        <span className={styles.walletName}>{w.name}</span>
-                      </div>
-                      <span className={styles.walletAmt}>
-                        {formatCurrency(w.balance, w.currency)}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              )}
-
-              <div className={styles.konteksRow}>
-                <span className={styles.konteksLabel}>
-                  <svg
-                    width="10"
-                    height="10"
-                    viewBox="0 0 12 12"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    className={styles.lockIcon}
+            {walletExpanded && (
+              <div className={styles.walletList}>
+                {wallets.map((w, i) => (
+                  <button
+                    key={w.id}
+                    className={styles.walletRow}
+                    style={{
+                      borderBottom:
+                        i < wallets.length - 1 ? '1px solid var(--border-soft)' : 'none',
+                    }}
+                    onClick={() => onWalletTap?.(w)}
                   >
-                    <rect x="2.5" y="5.5" width="7" height="5" rx="1" />
-                    <path d="M4 5.5V4a2 2 0 0 1 4 0v1.5" strokeLinecap="round" />
-                  </svg>
-                  {t('saldo.uang_mengendap_label', lang)}
-                  <span className={styles.konteksSubLabel}>
-                    {t('saldo.uang_mengendap_sub', lang)}
-                  </span>
-                </span>
-                <span className={styles.konteksValMuted}>
-                  {formatCurrency(uangMengendap, currency)}
-                </span>
-              </div>
-
-              {onHistoryTap && (
-                <>
-                  <div className={styles.divider} />
-                  <button className={styles.historyLink} onClick={onHistoryTap}>
-                    {t('home.history_link', lang)}
+                    <div className={styles.walletLeft}>
+                      <span
+                        className={styles.walletDot}
+                        style={{ background: WALLET_DOTS[i % WALLET_DOTS.length] }}
+                      />
+                      <span className={styles.walletName}>{w.name}</span>
+                    </div>
+                    <span className={styles.walletAmt}>
+                      {formatCurrency(w.balance, w.currency)}
+                    </span>
                   </button>
-                </>
-              )}
+                ))}
+              </div>
+            )}
+
+            <div className={styles.konteksRow}>
+              <span className={styles.konteksLabel}>
+                <svg
+                  width="10"
+                  height="10"
+                  viewBox="0 0 12 12"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  className={styles.lockIcon}
+                >
+                  <rect x="2.5" y="5.5" width="7" height="5" rx="1" />
+                  <path d="M4 5.5V4a2 2 0 0 1 4 0v1.5" strokeLinecap="round" />
+                </svg>
+                {t('saldo.uang_mengendap_label', lang)}
+                <span className={styles.konteksSubLabel}>
+                  {t('saldo.uang_mengendap_sub', lang)}
+                </span>
+              </span>
+              <span className={styles.konteksValMuted}>
+                {formatCurrency(uangMengendap, currency)}
+              </span>
             </div>
-          )}
+
+            {onHistoryTap && (
+              <>
+                <div className={styles.divider} />
+                <button className={styles.historyLink} onClick={onHistoryTap}>
+                  {t('home.history_link', lang)}
+                </button>
+              </>
+            )}
+          </div>
         </div>
 
         {onAddWalletTap && (

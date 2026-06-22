@@ -81,6 +81,7 @@ describe('buildSettings', () => {
     incomeAnchorDate: null,
     incomeDay: 25,
     freelanceMinBalance: null,
+    fixedIncome: null,
     avgIncome: null,
     avgIncomeBasis: null,
     lastPaydayConfirmed: null,

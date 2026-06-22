@@ -114,7 +114,6 @@ export function applyMigrations(db: Dexie): void {
     })
 
   // v5: settings gains lastPaydayConfirmed, avgIncome, avgIncomeBasis.
-  // Existing users get lastPaydayConfirmed=null (treated as hari-pertama until first confirmation).
   db.version(5)
     .stores({
       transactions: '++id, walletId, date, type, currency',
@@ -134,6 +133,27 @@ export function applyMigrations(db: Dexie): void {
           if (row.lastPaydayConfirmed === undefined) row.lastPaydayConfirmed = null
           if (row.avgIncome === undefined) row.avgIncome = null
           if (row.avgIncomeBasis === undefined) row.avgIncomeBasis = null
+        })
+    })
+
+  // v6: settings gains fixedIncome (tetap/mix nominal salary per period).
+  db.version(6)
+    .stores({
+      transactions: '++id, walletId, date, type, currency',
+      wallets: '++id, currency, order',
+      tagihan: '++id, currency, isActive',
+      goals: '++id, currency, order',
+      settings: 'id',
+      license: 'id',
+      meta: 'key',
+      savedScenarios: '++id, savedAt',
+    })
+    .upgrade((tx) => {
+      return tx
+        .table('settings')
+        .toCollection()
+        .modify((row) => {
+          if (row.fixedIncome === undefined) row.fixedIncome = null
         })
     })
 }

@@ -26,7 +26,7 @@ import {
   getPaydayDate,
   getPeriodStartDate,
   calcHariPeriode,
-  needsPaydayConfirmation,
+  shouldShowTransisiBanner,
   isHariPertamaMode,
   calcPemasukanFromAvg,
 } from './home.utils'
@@ -45,6 +45,7 @@ import { MarkPaidSheet } from './components/MarkPaidSheet'
 import { TagihanDetailSheet, UrgentTagihanSheet } from './components/TagihanDetailSheet'
 import { HistorySheet } from './components/HistorySheet'
 import { BackupCard } from './components/BackupCard'
+import { TransisiPeriodeBanner } from './components/TransisiPeriodeBanner'
 import { WalletEditSheet } from '@/features/wallet/WalletEditSheet'
 import { ProfilTagihanSheet } from '@/features/profil/ProfilTagihanSheet'
 import { ProfilGoalSheet } from '@/features/profil/ProfilGoalSheet'
@@ -52,10 +53,7 @@ import { ProfilWalletsSheet } from '@/features/profil/ProfilWalletsSheet'
 import { QuickLogSheet } from '@/features/quickLog/QuickLogSheet'
 import type { QuickLogMode } from '@/features/quickLog/quickLog.utils'
 import { BerbagiKeamananSection } from '@/features/shared-profile/components/BerbagiKeamananSection'
-import { PaydayConfirmCard } from './components/PaydayConfirmCard'
 import styles from './HomePage.module.css'
-
-const PAYDAY_DECLINE_KEY = 'sisa:paydayDeclinedOn'
 
 interface HomeData {
   settings: Settings | null
@@ -160,8 +158,10 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
               let effectivePemasukan = income
               if (hariPertama) {
                 effectivePemasukan = totalSaldoForCalc
+              } else if (income === 0 && settings.fixedIncome && settings.fixedIncome > 0) {
+                effectivePemasukan = settings.fixedIncome
               } else if (
-                settings.incomeType === 'freelance' &&
+                (settings.incomeType === 'freelance' || settings.incomeType === 'mix') &&
                 settings.avgIncome &&
                 settings.avgIncomeBasis
               ) {
@@ -284,18 +284,13 @@ export function HomePage() {
   const showBackupCard = shouldShowBackupReminder(settings.lastExportedAt, backupDismissedAt, nowMs)
   const backupUrgency = calcBackupUrgency(settings.lastExportedAt, nowMs)
 
-  const todayDateStr = new Date(nowMs).toISOString().slice(0, 10)
-  const paydayDeclinedOn = localStorage.getItem(PAYDAY_DECLINE_KEY)
-  const showPaydayConfirm =
-    needsPaydayConfirmation(nowMs, settings) && paydayDeclinedOn !== todayDateStr
+  const showTransisiBanner = shouldShowTransisiBanner(nowMs, settings)
 
-  async function handlePaydayConfirm() {
-    await patchSettings({ lastPaydayConfirmed: nowMs })
-    reload()
-  }
-
-  function handlePaydayDecline() {
-    localStorage.setItem(PAYDAY_DECLINE_KEY, todayDateStr)
+  async function handleTransisiConfirm(lastPaydayConfirmed: number, fixedIncome: number | null) {
+    await patchSettings({
+      lastPaydayConfirmed,
+      ...(fixedIncome !== null ? { fixedIncome } : {}),
+    })
     reload()
   }
 
@@ -436,9 +431,14 @@ export function HomePage() {
           />
         )}
 
-        {/* Payday confirmation prompt */}
-        {showPaydayConfirm && (
-          <PaydayConfirmCard onYes={handlePaydayConfirm} onNo={handlePaydayDecline} />
+        {/* Transisi periode banner (H-2) */}
+        {showTransisiBanner && (
+          <TransisiPeriodeBanner
+            currency={currency}
+            defaultNominal={settings.fixedIncome}
+            nowMs={nowMs}
+            onConfirm={handleTransisiConfirm}
+          />
         )}
 
         {/* Cards */}
@@ -477,9 +477,6 @@ export function HomePage() {
             nextPaydayMs={nextPaydayMs}
             conditionLabel={condition?.label ?? null}
             conditionColor={condition?.color ?? null}
-            showPaydayPrompt={showPaydayConfirm}
-            onPaydayConfirm={handlePaydayConfirm}
-            onPaydayDecline={handlePaydayDecline}
             onWalletTap={(w) => setEditWallet(w)}
             onHistoryTap={() => setHistoryOpen(true)}
             onAddWalletTap={() => setWalletSheetOpen(true)}
