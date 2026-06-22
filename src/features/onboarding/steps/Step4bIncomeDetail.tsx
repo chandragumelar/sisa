@@ -11,6 +11,7 @@ interface Props {
   onNext: (data: {
     incomeDay: number | null
     freelanceMinBalance: string
+    fixedIncome: string
     incomeFrequency: IncomeFrequency
     incomeAnchorDate: number | null
     avgIncome: string
@@ -32,6 +33,7 @@ export function Step4bIncomeDetail({ incomeType, currency = 'IDR', onNext }: Pro
   const [incomeDay, setIncomeDay] = useState<number | null>(null)
   const [anchorDateStr, setAnchorDateStr] = useState('')
   const [minBalance, setMinBalance] = useState('')
+  const [fixedIncome, setFixedIncome] = useState('')
   const [avgIncome, setAvgIncome] = useState('')
   const [avgIncomeBasis, setAvgIncomeBasis] = useState<IncomeFrequency>('bulanan')
 
@@ -51,6 +53,7 @@ export function Step4bIncomeDetail({ incomeType, currency = 'IDR', onNext }: Pro
     onNext({
       incomeDay: isWeekly ? null : incomeDay,
       freelanceMinBalance: parseNominalRaw(minBalance),
+      fixedIncome: parseNominalRaw(fixedIncome),
       incomeFrequency,
       incomeAnchorDate: isWeekly ? parseDateInputToMs(anchorDateStr) : null,
       avgIncome: parseNominalRaw(avgIncome),
@@ -144,6 +147,30 @@ export function Step4bIncomeDetail({ incomeType, currency = 'IDR', onNext }: Pro
             />
           </div>
           {isFreelance && <div className="ob-hint">{t('ob.step4b.min_balance_hint', lang)}</div>}
+        </div>
+      )}
+
+      {(isTetap || isMix) && (
+        <div className="ob-field">
+          <div className="ob-field-label">
+            {isTetap
+              ? t('ob.step4b.fixed_income_label_tetap', lang)
+              : t('ob.step4b.fixed_income_label_mix', lang)}
+          </div>
+          <div className="ob-input-row">
+            <span className="ob-input-prefix">{getCurrencySymbol(currency)}</span>
+            <input
+              className="ob-input ob-input-bare"
+              type="text"
+              inputMode="numeric"
+              placeholder="5.000.000"
+              value={fixedIncome}
+              onChange={(e) =>
+                setFixedIncome(formatNominalDisplay(parseNominalRaw(e.target.value)))
+              }
+            />
+          </div>
+          <div className="ob-hint">{t('ob.step4b.fixed_income_hint', lang)}</div>
         </div>
       )}
 

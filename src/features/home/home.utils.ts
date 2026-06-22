@@ -134,6 +134,18 @@ export function needsPaydayConfirmation(nowMs: number, settings: Settings): bool
 }
 
 /**
+ * True when the H-2 transition banner should appear.
+ * Shows for tetap/mix users when payday is ≤2 days away and not yet confirmed for this payday.
+ */
+export function shouldShowTransisiBanner(nowMs: number, settings: Settings): boolean {
+  if (settings.incomeType === 'freelance') return false
+  const days = calcDaysUntilPayday(nowMs, settings)
+  if (days > 2) return false
+  const nextPayday = getPaydayDate(nowMs, settings)
+  return (settings.lastPaydayConfirmed ?? 0) < nextPayday.getTime()
+}
+
+/**
  * True when user has never confirmed a payday and has no income transactions.
  * In this mode pemasukanPeriode should be set to totalSaldo instead.
  */

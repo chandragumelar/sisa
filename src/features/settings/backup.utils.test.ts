@@ -16,6 +16,7 @@ const SETTINGS: BackupData['settings'] = {
   avgIncome: null,
   avgIncomeBasis: null,
   lastPaydayConfirmed: null,
+  fixedIncome: null,
   primaryCurrency: 'IDR',
   secondaryCurrency: null,
   activeCurrencyMode: 'IDR',
