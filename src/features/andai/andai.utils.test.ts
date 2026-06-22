@@ -3,11 +3,10 @@ import { calcAndai } from './andai.utils'
 import type { AndaiBaseline, AndaiItem } from './andai.utils'
 
 // Self-consistent baseline:
-//   totalSaldo=5jt, unpaidTagihan=1jt, totalNabung=0 → sisa=4jt
+//   sisaPeriode=4jt (= pemasukan − tagihan − nabung after calcBudgetPeriode)
 //   dailyBudget = 4jt / 20 = 200rb
 const BASELINE: AndaiBaseline = {
-  totalSaldo: 5_000_000,
-  unpaidTagihanTotal: 1_000_000,
+  sisaPeriode: 4_000_000,
   dailyBudget: 200_000,
   daysUntilPayday: 20,
   totalNabung: 0,
@@ -144,14 +143,13 @@ describe('calcAndai — daily never negative', () => {
 
 describe('calcAndai — sisa correctness (repro: saldo 8jt, purchases 5jt → sisa 3jt not -5jt)', () => {
   const BIG: AndaiBaseline = {
-    totalSaldo: 8_000_000,
-    unpaidTagihanTotal: 0,
+    sisaPeriode: 8_000_000,
     dailyBudget: 400_000, // 8jt / 20
     daysUntilPayday: 20,
     totalNabung: 0,
   }
 
-  it('no items: sisa before equals totalSaldo when no tagihan/nabung', () => {
+  it('no items: sisa before equals sisaPeriode when no tagihan/nabung', () => {
     const r = calcAndai([], BIG)
     expect(r.sisaBefore).toBe(8_000_000)
     expect(r.sisaAfter).toBe(r.sisaBefore)

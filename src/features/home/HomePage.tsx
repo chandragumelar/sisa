@@ -14,15 +14,22 @@ import { getAllGoals, deleteGoal, updateGoalsOrder } from '@/db/goals.repository
 import {
   getTotalNabung,
   getMonthlyFlows,
+  getPeriodFlows,
   deleteTransactionAndRevertBalance,
   addNabungDeduction,
 } from '@/db/transactions.repository'
 import { t } from '@/shared/strings/strings'
 import type { Language, Settings, Wallet, Tagihan, Goal } from '@/db/database'
-import { calcDaysUntilPayday, calcGoalStatuses, getPaydayDate } from './home.utils'
+import {
+  calcDaysUntilPayday,
+  calcGoalStatuses,
+  getPaydayDate,
+  getPeriodStartDate,
+  calcHariPeriode,
+} from './home.utils'
 import { calcUnpaidTagihanTotal, getTagihanUrgency } from './tagihan.utils'
 import { shouldShowBackupReminder, calcBackupUrgency } from './backup-reminder.utils'
-import { calcSisa } from '@/shared/utils/sisa.utils'
+import { calcBudgetPeriode } from '@/shared/utils/budget.utils'
 import { BRAND_STUDIO_WITH_COLLAB } from '@/constants/brand'
 import { CekDuluCard } from './components/CekDuluCard'
 import { SaldoModule } from './components/SaldoModule'
@@ -52,6 +59,7 @@ interface HomeData {
   totalNabung: number
   monthlyIncome: number
   monthlyExpense: number
+  sisaPeriode: number
 }
 
 interface ToastState {
@@ -88,6 +96,7 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
     totalNabung: 0,
     monthlyIncome: 0,
     monthlyExpense: 0,
+    sisaPeriode: 0,
   })
   const [isLoading, setIsLoading] = useState(true)
   const [tick, setTick] = useState(0)
@@ -104,23 +113,53 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
       ([settings, wallets, tagihan, goals]) => {
         if (cancelled || !settings) return
         const currency = settings.activeCurrencyMode || settings.primaryCurrency
+        const totalSaldoForCalc = wallets
+          .filter((w) => w.currency === currency)
+          .reduce((sum, w) => sum + w.balance, 0)
+        const nextPaydayMsForCalc = getPaydayDate(nowMs, settings).getTime()
+        const unpaidForCalc = calcUnpaidTagihanTotal(
+          tagihan.filter((tg) => tg.currency === currency),
+          nowMs,
+          nextPaydayMsForCalc,
+        )
+        const periodStartMs = getPeriodStartDate(nowMs, settings).getTime()
+        const hariPeriode = calcHariPeriode(nowMs, settings)
+
         Promise.all([
           getTotalNabung(currency),
           getMonthlyFlows(currency, monthStart, monthEnd),
-        ]).then(([totalNabung, { income: monthlyIncome, expense: monthlyExpense }]) => {
-          if (!cancelled) {
-            setData({
-              settings,
-              wallets,
-              tagihan,
-              goals,
-              totalNabung,
-              monthlyIncome,
-              monthlyExpense,
-            })
-            setIsLoading(false)
-          }
-        })
+          getPeriodFlows(currency, periodStartMs, nowMs),
+        ]).then(
+          ([
+            totalNabung,
+            { income: monthlyIncome, expense: monthlyExpense },
+            { income, expense, spentToday },
+          ]) => {
+            if (!cancelled) {
+              const budget = calcBudgetPeriode({
+                pemasukanPeriode: income,
+                unpaidTagihanTotal: unpaidForCalc,
+                targetTabungan: totalNabung,
+                hariPeriode,
+                spentThisPeriode: expense,
+                spentToday,
+                totalSaldo: totalSaldoForCalc,
+                useSaldoFloor: settings.incomeType === 'freelance',
+              })
+              setData({
+                settings,
+                wallets,
+                tagihan,
+                goals,
+                totalNabung,
+                monthlyIncome,
+                monthlyExpense,
+                sisaPeriode: budget.sisaPeriode,
+              })
+              setIsLoading(false)
+            }
+          },
+        )
       },
     )
 
@@ -145,6 +184,7 @@ export function HomePage() {
     totalNabung,
     monthlyIncome,
     monthlyExpense,
+    sisaPeriode,
     isLoading,
     reload,
   } = useHomeData(nowMs)
@@ -179,9 +219,6 @@ export function HomePage() {
   if (isLoading || !settings) return null
 
   const currency = settings.activeCurrencyMode || settings.primaryCurrency
-  const totalSaldo = wallets
-    .filter((w) => w.currency === currency)
-    .reduce((sum, w) => sum + w.balance, 0)
   const nextPaydayMs = getPaydayDate(nowMs, settings).getTime()
   const unpaidTagihanTotal = calcUnpaidTagihanTotal(
     tagihan.filter((tg) => tg.currency === currency),
@@ -189,7 +226,7 @@ export function HomePage() {
     nextPaydayMs,
   )
   const daysUntilPayday = calcDaysUntilPayday(nowMs, settings)
-  const sisa = calcSisa(totalSaldo, unpaidTagihanTotal, totalNabung)
+  const sisa = sisaPeriode
   const condition = getConditionInfo(settings, sisa, lang)
 
   const backupDismissedAt = (() => {
@@ -358,6 +395,7 @@ export function HomePage() {
           <SaldoModule
             wallets={wallets.filter((w) => w.currency === currency)}
             currency={currency}
+            sisa={sisa}
             unpaidTagihanTotal={unpaidTagihanTotal}
             totalNabung={totalNabung}
             daysUntilPayday={daysUntilPayday}

@@ -1,5 +1,4 @@
-import { calcDailyBudget, calcDaysUntilPayday } from '@/features/home/home.utils'
-import { calcSisa } from '@/shared/utils/sisa.utils'
+import { calcDaysUntilPayday } from '@/features/home/home.utils'
 import type { Settings } from '@/db/database'
 
 export type AndaiKind = 'beli' | 'income' | 'tagihan' | 'target-nabung'
@@ -12,8 +11,7 @@ export interface AndaiItem {
 }
 
 export interface AndaiBaseline {
-  totalSaldo: number
-  unpaidTagihanTotal: number
+  sisaPeriode: number
   dailyBudget: number
   daysUntilPayday: number
   totalNabung: number
@@ -32,53 +30,46 @@ export interface AndaiResult {
 }
 
 export function calcAndai(items: AndaiItem[], baseline: AndaiBaseline): AndaiResult {
-  const { totalSaldo, unpaidTagihanTotal, dailyBudget, daysUntilPayday, totalNabung } = baseline
+  const { sisaPeriode, dailyBudget, daysUntilPayday, totalNabung } = baseline
 
-  let saldoDelta = 0
-  let tagihanDelta = 0
+  let sisaDelta = 0
   let nabungDelta = 0
 
   for (const item of items) {
     switch (item.kind) {
       case 'beli':
-        saldoDelta -= item.amount
+        sisaDelta -= item.amount
         break
       case 'income':
-        saldoDelta += item.amount
+        sisaDelta += item.amount
         break
       case 'tagihan':
-        tagihanDelta += item.amount
+        sisaDelta -= item.amount
         break
       case 'target-nabung':
+        sisaDelta -= item.amount
         nabungDelta += item.amount
         break
     }
   }
 
-  const afterSaldo = totalSaldo + saldoDelta
-  const afterUnpaidTagihan = unpaidTagihanTotal + tagihanDelta
+  const sisaBefore = Math.max(0, sisaPeriode)
+  const sisaAfter = sisaPeriode + sisaDelta
   const afterNabung = totalNabung + nabungDelta
-  const afterDailyBudget = calcDailyBudget(
-    afterSaldo,
-    afterUnpaidTagihan,
-    afterNabung,
-    daysUntilPayday,
-  )
 
-  const sisaBefore = calcSisa(totalSaldo, unpaidTagihanTotal, totalNabung)
-  const sisaAfter = calcSisa(afterSaldo, afterUnpaidTagihan, afterNabung)
+  const afterDaily = daysUntilPayday > 0 ? Math.max(0, sisaAfter / daysUntilPayday) : 0
 
-  const sisaDelta = sisaBefore - sisaAfter
-  const nabungDropped = totalNabung - afterNabung
-  const daysEquivalent = sisaDelta > 0 && dailyBudget > 0 ? Math.ceil(sisaDelta / dailyBudget) : 0
-  const portionPct =
-    sisaDelta > 0 && sisaBefore > 0 ? Math.round((sisaDelta / sisaBefore) * 100) : 0
+  const netLoss = sisaBefore - Math.max(0, sisaAfter)
+  const nabungDropped = totalNabung - Math.max(0, afterNabung)
+
+  const daysEquivalent = netLoss > 0 && dailyBudget > 0 ? Math.ceil(netLoss / dailyBudget) : 0
+  const portionPct = netLoss > 0 && sisaBefore > 0 ? Math.round((netLoss / sisaBefore) * 100) : 0
   const recoveryDays =
     nabungDropped > 0 && dailyBudget > 0 ? Math.ceil(nabungDropped / dailyBudget) : 0
 
   return {
     dailyBefore: dailyBudget,
-    dailyAfter: afterDailyBudget,
+    dailyAfter: afterDaily,
     sisaBefore,
     sisaAfter,
     nabungBefore: totalNabung,
@@ -90,17 +81,15 @@ export function calcAndai(items: AndaiItem[], baseline: AndaiBaseline): AndaiRes
 }
 
 export function buildAndaiBaseline(
-  totalSaldo: number,
-  unpaidTagihanTotal: number,
+  sisaPeriode: number,
   totalNabung: number,
   settings: Settings,
   nowMs: number,
 ): AndaiBaseline {
   const daysUntilPayday = calcDaysUntilPayday(nowMs, settings)
-  const dailyBudget = calcDailyBudget(totalSaldo, unpaidTagihanTotal, totalNabung, daysUntilPayday)
+  const dailyBudget = daysUntilPayday > 0 ? Math.max(0, sisaPeriode / daysUntilPayday) : 0
   return {
-    totalSaldo,
-    unpaidTagihanTotal,
+    sisaPeriode,
     dailyBudget,
     daysUntilPayday,
     totalNabung,

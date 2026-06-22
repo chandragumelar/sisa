@@ -6,10 +6,16 @@ import { t } from '@/shared/strings/strings'
 import { getSettings } from '@/db/settings.repository'
 import { getAllWallets } from '@/db/wallets.repository'
 import { getActiveTagihan } from '@/db/tagihan.repository'
-import { getTotalNabung } from '@/db/transactions.repository'
+import { getTotalNabung, getPeriodFlows } from '@/db/transactions.repository'
 import type { Settings, Wallet } from '@/db/database'
-import { calcDaysUntilPayday, getPaydayDate } from '@/features/home/home.utils'
+import {
+  calcDaysUntilPayday,
+  getPaydayDate,
+  getPeriodStartDate,
+  calcHariPeriode,
+} from '@/features/home/home.utils'
 import { calcUnpaidTagihanTotal } from '@/features/home/tagihan.utils'
+import { calcBudgetPeriode } from '@/shared/utils/budget.utils'
 import { formatCurrency, getCurrencySymbol } from '@/shared/utils/formatCurrency'
 import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
 import { calcCekDulu } from './cekDulu.utils'
@@ -20,7 +26,8 @@ interface PageData {
   settings: Settings
   wallets: Wallet[]
   totalSaldo: number
-  unpaidTagihanTotal: number
+  sisaPeriode: number
+  dailyBudget: number | null
   daysUntilPayday: number
   totalNabung: number
 }
@@ -44,23 +51,48 @@ export function CekDuluPage() {
     Promise.all([getSettings(), getAllWallets(), getActiveTagihan()]).then(
       ([settings, wallets, tagihan]) => {
         if (cancelled || !settings) return
-        const totalSaldo = wallets.reduce((s, w) => s + w.balance, 0)
+        const currency = settings.activeCurrencyMode || settings.primaryCurrency
+        const totalSaldo = wallets
+          .filter((w) => w.currency === currency)
+          .reduce((s, w) => s + w.balance, 0)
+        const nextPaydayMs = getPaydayDate(nowMs, settings).getTime()
         const unpaidTagihanTotal = calcUnpaidTagihanTotal(
-          tagihan,
+          tagihan.filter((tg) => tg.currency === currency),
           nowMs,
-          getPaydayDate(nowMs, settings).getTime(),
+          nextPaydayMs,
         )
         const daysUntilPayday = calcDaysUntilPayday(nowMs, settings)
-        getTotalNabung(settings.primaryCurrency).then((totalNabung) => {
-          if (!cancelled)
-            setData({
-              settings,
-              wallets,
-              totalSaldo,
-              unpaidTagihanTotal,
-              daysUntilPayday,
-              totalNabung,
-            })
+        const periodStartMs = getPeriodStartDate(nowMs, settings).getTime()
+        const hariPeriode = calcHariPeriode(nowMs, settings)
+
+        Promise.all([
+          getTotalNabung(currency),
+          getPeriodFlows(currency, periodStartMs, nowMs),
+        ]).then(([totalNabung, { income, expense, spentToday }]) => {
+          if (cancelled) return
+          const budget = calcBudgetPeriode({
+            pemasukanPeriode: income,
+            unpaidTagihanTotal,
+            targetTabungan: totalNabung,
+            hariPeriode,
+            spentThisPeriode: expense,
+            spentToday,
+            totalSaldo,
+            useSaldoFloor: settings.incomeType === 'freelance',
+          })
+          const dailyBudget =
+            budget.jatahHarian !== null && daysUntilPayday > 0
+              ? budget.sisaPeriode / daysUntilPayday
+              : budget.jatahHarian
+          setData({
+            settings,
+            wallets,
+            totalSaldo,
+            sisaPeriode: budget.sisaPeriode,
+            dailyBudget,
+            daysUntilPayday,
+            totalNabung,
+          })
         })
       },
     )
@@ -71,15 +103,16 @@ export function CekDuluPage() {
 
   if (!data) return null
 
-  const { settings, wallets, totalSaldo, unpaidTagihanTotal, daysUntilPayday, totalNabung } = data
-  const currency = settings.primaryCurrency
+  const { settings, wallets, totalSaldo, sisaPeriode, dailyBudget, daysUntilPayday, totalNabung } =
+    data
+  const currency = settings.activeCurrencyMode || settings.primaryCurrency
 
   const nominal = parseInt(parseNominalRaw(amountStr), 10) || 0
   const inputFontSize = amountStr.length > 11 ? 26 : amountStr.length > 8 ? 36 : 48
   const result = calcCekDulu({
     nominal,
-    totalSaldo,
-    unpaidTagihanTotal,
+    sisaPeriode,
+    dailyBudget,
     daysUntilPayday,
     totalNabung,
   })
