@@ -7,6 +7,12 @@ import { buildTransaction, type QuickLogMode } from './quickLog.utils'
 import { addTransactionAndUpdateBalance, replaceTransaction } from '@/db/transactions.repository'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
+import { CategoryPicker } from '@/features/category/CategoryPicker'
+import {
+  suggestExpenseCategory,
+  suggestIncomeCategory,
+} from '@/features/category/category-keywords'
+import { FALLBACK_CATEGORY } from '@/features/category/category.types'
 import styles from './QuickLogSheet.module.css'
 
 interface Props {
@@ -24,6 +30,7 @@ interface Props {
   initialLabel?: string
   initialNote?: string
   initialDateMs?: number
+  initialCategory?: string
 }
 
 function msToDateStr(ms: number): string {
@@ -46,6 +53,7 @@ export function QuickLogSheet({
   initialLabel,
   initialNote,
   initialDateMs,
+  initialCategory,
 }: Props) {
   const lang = useLanguage()
   const [mode, setMode] = useState<QuickLogMode>(initialMode ?? 'keluar')
@@ -53,6 +61,9 @@ export function QuickLogSheet({
   const [amountStr, setAmountStr] = useState(
     initialAmount ? formatNominalDisplay(String(initialAmount)) : '',
   )
+  const [label, setLabel] = useState(initialLabel ?? '')
+  const [category, setCategory] = useState(initialCategory ?? FALLBACK_CATEGORY)
+  const [categoryManuallySet, setCategoryManuallySet] = useState(!!initialCategory)
   const [isFromSavings, setIsFromSavings] = useState(false)
   const [dateMs, setDateMs] = useState(initialDateMs ?? nowMs)
   const [noteExpanded, setNoteExpanded] = useState(!!initialNote)
@@ -74,6 +85,8 @@ export function QuickLogSheet({
   const todayStr = msToDateStr(todayStart)
   const dateStr = msToDateStr(dateMs)
 
+  const categoryType: 'expense' | 'income' = mode === 'masuk' ? 'income' : 'expense'
+
   function handleAmountInput(val: string) {
     const raw = parseNominalRaw(val)
     setAmountStr(formatNominalDisplay(raw))
@@ -82,6 +95,18 @@ export function QuickLogSheet({
     } else {
       setSavingsWarning(false)
     }
+  }
+
+  function handleLabelBlur() {
+    if (categoryManuallySet || !label.trim()) return
+    const suggested =
+      mode === 'masuk' ? suggestIncomeCategory(label) : suggestExpenseCategory(label)
+    setCategory(suggested)
+  }
+
+  function handleCategoryChange(cat: string) {
+    setCategory(cat)
+    setCategoryManuallySet(true)
   }
 
   function handleFromSavingsToggle() {
@@ -104,11 +129,12 @@ export function QuickLogSheet({
         mode,
         walletId,
         amount,
-        label: initialLabel ?? '',
+        label,
         note,
         dateMs,
         currency: walletCurrency,
         isFromSavings: mode === 'keluar' ? isFromSavings : false,
+        category,
       })
       let txId: number
       if (editTxId !== undefined) {
@@ -128,6 +154,9 @@ export function QuickLogSheet({
 
   function resetForm() {
     setAmountStr('')
+    setLabel('')
+    setCategory(FALLBACK_CATEGORY)
+    setCategoryManuallySet(false)
     setNote('')
     setIsFromSavings(false)
     setSavingsWarning(false)
@@ -138,6 +167,9 @@ export function QuickLogSheet({
     setMode(m)
     setIsFromSavings(false)
     setSavingsWarning(false)
+    if (!categoryManuallySet) {
+      setCategory(FALLBACK_CATEGORY)
+    }
   }
 
   const modeLabels: Record<QuickLogMode, string> = {
@@ -188,6 +220,21 @@ export function QuickLogSheet({
           autoFocus={isOpen}
         />
       </div>
+
+      {/* Label freetext — primary field, triggers auto-suggest on blur */}
+      <input
+        className={styles.labelInput}
+        type="text"
+        placeholder={t('quick_log.label_placeholder', lang)}
+        value={label}
+        onChange={(e) => setLabel(e.target.value)}
+        onBlur={handleLabelBlur}
+      />
+
+      {/* Category picker — expense/income only; nabung has no category */}
+      {mode !== 'nabung' && (
+        <CategoryPicker type={categoryType} value={category} onChange={handleCategoryChange} />
+      )}
 
       {/* Savings warning */}
       {savingsWarning && (

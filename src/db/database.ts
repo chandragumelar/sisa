@@ -48,6 +48,7 @@ export interface Transaction {
   isFromSavings: boolean // expense drawn from savings, not operational budget
   isEarmark: boolean // nabung stays in wallet; excluded from wallet balance calc
   createdAt: number // epoch ms
+  category?: string // optional; defaults to 'Lainnya' when unset
 }
 
 export interface Wallet {
@@ -140,6 +141,15 @@ export interface BackupData {
   transactions: Transaction[]
 }
 
+export interface Category {
+  id?: number
+  name: string
+  type: 'expense' | 'income'
+  iconName: string
+  isDefault: boolean
+  order: number
+}
+
 // ---------------------------------------------------------------------------
 // Database class
 // ---------------------------------------------------------------------------
@@ -153,6 +163,7 @@ class SisaDatabase extends Dexie {
   license!: EntityTable<LicenseRecord, 'id'>
   meta!: EntityTable<MetaRecord, 'key'>
   savedScenarios!: EntityTable<SavedScenario, 'id'>
+  categories!: EntityTable<Category, 'id'>
 
   constructor() {
     super('sisa')

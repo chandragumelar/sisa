@@ -107,6 +107,29 @@
   margin-bottom: 12px;
 }
 
+.labelInput {
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid var(--line);
+  background: none;
+  padding: 6px 0 10px;
+  font-size: 15px;
+  color: var(--ink);
+  font-family: var(--font-display);
+  outline: none;
+  box-sizing: border-box;
+  margin-bottom: 12px;
+}
+
+.labelInput::placeholder {
+  color: var(--muted);
+}
+
+.labelInput:focus {
+  border-bottom-color: var(--accent);
+}
+
+/* Legacy — kept for reference, no longer rendered */
 .labelChips {
   display: flex;
   gap: 6px;

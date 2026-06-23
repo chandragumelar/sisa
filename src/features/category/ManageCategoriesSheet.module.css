@@ -1,0 +1,183 @@
+.tabRow {
+  display: flex;
+  background: var(--surface-deep);
+  border-radius: 10px;
+  padding: 3px;
+  margin-bottom: 16px;
+  gap: 2px;
+}
+
+.tabBtn {
+  flex: 1;
+  padding: 7px;
+  border: none;
+  border-radius: 8px;
+  background: none;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  font-family: var(--font-display);
+}
+
+.tabBtnActive {
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* ── Category list ──────────────────────────────────────── */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 12px;
+}
+
+.catRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 4px;
+  border-bottom: 1px solid var(--line);
+}
+
+.catIcon {
+  display: flex;
+  align-items: center;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.catName {
+  flex: 1;
+  font-size: 14px;
+  color: var(--ink);
+  font-family: var(--font-display);
+}
+
+.catActions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+/* ── Edit / Add row ─────────────────────────────────────── */
+.editRow {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  background: var(--surface-deep);
+  border-radius: 12px;
+  margin: 4px 0;
+}
+
+.editInput {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 9px 12px;
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--surface);
+  font-family: var(--font-display);
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.editInput:focus {
+  border-color: var(--accent);
+}
+
+.editActions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+/* ── Delete confirm row ─────────────────────────────────── */
+.deleteConfirmRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: color-mix(in srgb, var(--signal-danger, #ef4444) 8%, var(--surface));
+  border-radius: 10px;
+  border: 1px solid color-mix(in srgb, var(--signal-danger, #ef4444) 30%, transparent);
+  margin: 4px 0;
+}
+
+.deleteMsg {
+  flex: 1;
+  font-size: 12px;
+  color: var(--ink-soft);
+  font-family: var(--font-display);
+  line-height: 1.4;
+}
+
+/* ── Icon picker grid ───────────────────────────────────── */
+.iconGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.iconOption {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  cursor: pointer;
+  color: var(--muted);
+  transition:
+    border-color 0.12s,
+    color 0.12s,
+    background 0.12s;
+}
+
+.iconOptionActive {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+
+/* ── Buttons ────────────────────────────────────────────── */
+.iconBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--surface-deep);
+  cursor: pointer;
+  color: var(--muted);
+}
+
+.iconBtnDanger {
+  color: var(--signal-danger, #ef4444);
+  border-color: color-mix(in srgb, var(--signal-danger, #ef4444) 40%, transparent);
+}
+
+.addBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 11px 0;
+  background: none;
+  border: 1px dashed var(--line);
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  font-family: var(--font-display);
+  justify-content: center;
+}
