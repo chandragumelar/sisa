@@ -36,7 +36,7 @@ export function AlokasiEditSheet({
   }
 
   return (
-    <BottomSheet isOpen={isOpen} onClose={onClose} title={t('alokasi.atur_ulang_title', lang)}>
+    <BottomSheet isOpen={isOpen} onClose={onClose} title={t('alokasi.ubah_dipakai', lang)}>
       <div className={styles.reminderRow}>
         <span className={styles.reminderLabel}>{t('alokasi.bisa_kamu_atur', lang)}</span>
         <span className={styles.reminderAmt}>{formatCurrency(bisaDialokasi, currency)}</span>

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { calcBudgetPeriode, recomputeAlokasi } from './budget.utils'
+import { calcBudgetPeriode, recomputeAlokasi, computeFromAllocation, relock } from './budget.utils'
 import type { BudgetPeriodeInput } from './budget.utils'
 
 function makeInput(overrides: Partial<BudgetPeriodeInput> = {}): BudgetPeriodeInput {
@@ -264,5 +264,122 @@ describe('calcBudgetPeriode — freelance useSaldoFloor', () => {
     const noFloor = calcBudgetPeriode(makeInput({ useSaldoFloor: false }))
     const withFloor = calcBudgetPeriode(makeInput({ useSaldoFloor: true }))
     expect(withFloor.jatahHarian).toBeCloseTo(noFloor.jatahHarian as number, 0)
+  })
+})
+
+// ─── computeFromAllocation ────────────────────────────────────────────────────
+
+describe('computeFromAllocation', () => {
+  const base = {
+    id: 1 as const,
+    jatahHarian: 100_000,
+    daysAtLock: 10,
+    lockedAt: 0,
+    periodEndDate: null,
+  }
+
+  it('sisaUang decreases as spentSinceLock increases', () => {
+    const r1 = computeFromAllocation(base, {
+      totalSaldo: 5_000_000,
+      tagihanUnpaid: 0,
+      spentSinceLock: 0,
+      spentToday: 0,
+    })
+    const r2 = computeFromAllocation(base, {
+      totalSaldo: 5_000_000,
+      tagihanUnpaid: 0,
+      spentSinceLock: 200_000,
+      spentToday: 0,
+    })
+    expect(r1.sisaUang).toBe(1_000_000) // 100k × 10
+    expect(r2.sisaUang).toBe(800_000) // 1M - 200k
+  })
+
+  it('jatahHariIni unchanged when only spentToday changes', () => {
+    const r1 = computeFromAllocation(base, {
+      totalSaldo: 5_000_000,
+      tagihanUnpaid: 0,
+      spentSinceLock: 0,
+      spentToday: 0,
+    })
+    const r2 = computeFromAllocation(base, {
+      totalSaldo: 5_000_000,
+      tagihanUnpaid: 0,
+      spentSinceLock: 0,
+      spentToday: 50_000,
+    })
+    expect(r1.jatahHariIni).toBe(100_000)
+    expect(r2.jatahHariIni).toBe(100_000)
+  })
+
+  it('totalSaldo - tagihanUnpaid - mengendap === sisaUang (invariant)', () => {
+    const r = computeFromAllocation(base, {
+      totalSaldo: 5_000_000,
+      tagihanUnpaid: 500_000,
+      spentSinceLock: 0,
+      spentToday: 0,
+    })
+    expect(5_000_000 - 500_000 - r.mengendap).toBe(r.sisaUang)
+  })
+
+  it('sisaUang floored at 0 when overspent', () => {
+    const r = computeFromAllocation(base, {
+      totalSaldo: 5_000_000,
+      tagihanUnpaid: 0,
+      spentSinceLock: 2_000_000,
+      spentToday: 0,
+    })
+    expect(r.sisaUang).toBe(0) // 1M - 2M floored at 0
+  })
+})
+
+// ─── relock ───────────────────────────────────────────────────────────────────
+
+describe('relock', () => {
+  it('computes jatahHarian from buatDipakai / sisaHari', () => {
+    const a = relock({
+      totalSaldo: 0,
+      tagihanUnpaid: 0,
+      buatDipakai: 1_000_000,
+      sisaHari: 10,
+      now: 1000,
+    })
+    expect(a.jatahHarian).toBe(100_000)
+    expect(a.daysAtLock).toBe(10)
+    expect(a.lockedAt).toBe(1000)
+  })
+
+  it('jatahHarian = 0 when sisaHari = 0', () => {
+    const a = relock({
+      totalSaldo: 0,
+      tagihanUnpaid: 0,
+      buatDipakai: 500_000,
+      sisaHari: 0,
+      now: 999,
+    })
+    expect(a.jatahHarian).toBe(0)
+  })
+
+  it('stores periodEndDate for freelance', () => {
+    const a = relock({
+      totalSaldo: 0,
+      tagihanUnpaid: 0,
+      buatDipakai: 300_000,
+      sisaHari: 7,
+      now: 1000,
+      periodEndDate: 9999,
+    })
+    expect(a.periodEndDate).toBe(9999)
+  })
+
+  it('periodEndDate null by default', () => {
+    const a = relock({
+      totalSaldo: 0,
+      tagihanUnpaid: 0,
+      buatDipakai: 300_000,
+      sisaHari: 7,
+      now: 1000,
+    })
+    expect(a.periodEndDate).toBeNull()
   })
 })

@@ -1,3 +1,47 @@
+import type { Allocation } from '@/db/database'
+
+export interface AllocationResult {
+  sisaUang: number
+  mengendap: number
+  jatahHariIni: number
+  spentToday: number
+}
+
+export function computeFromAllocation(
+  allocation: Allocation,
+  params: {
+    totalSaldo: number
+    tagihanUnpaid: number
+    spentSinceLock: number
+    spentToday: number
+  },
+): AllocationResult {
+  const { totalSaldo, tagihanUnpaid, spentSinceLock, spentToday } = params
+  const sisaUang = Math.max(0, allocation.jatahHarian * allocation.daysAtLock - spentSinceLock)
+  const mengendap = totalSaldo - tagihanUnpaid - sisaUang
+  return { sisaUang, mengendap, jatahHariIni: allocation.jatahHarian, spentToday }
+}
+
+export interface RelockInput {
+  totalSaldo: number
+  tagihanUnpaid: number
+  buatDipakai: number
+  sisaHari: number
+  now: number
+  periodEndDate?: number | null
+}
+
+export function relock(input: RelockInput): Allocation {
+  const { buatDipakai, sisaHari, now, periodEndDate = null } = input
+  return {
+    id: 1,
+    jatahHarian: sisaHari > 0 ? Math.round(buatDipakai / sisaHari) : 0,
+    daysAtLock: sisaHari,
+    lockedAt: now,
+    periodEndDate: periodEndDate ?? null,
+  }
+}
+
 /**
  * Single source of truth untuk perhitungan anggaran periode.
  *

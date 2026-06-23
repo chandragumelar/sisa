@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import type { ReactNode } from 'react'
 import type { Wallet } from '@/db/database'
 import type { BudgetMode } from '@/shared/utils/budget.utils'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
@@ -12,15 +13,15 @@ const WALLET_DOTS = ['#60a5fa', '#f97316', '#34d399', '#a78bfa', '#f472b6']
 interface Props {
   wallets: Wallet[]
   currency: string
-  sisaPeriode: number
-  jatahHarian: number | null
-  pemasukanPeriode: number
-  uangMengendap: number
+  sisaUang: number
+  totalSaldo: number
+  tagihanUnpaid: number
+  mengendap: number
+  monthlyIncome: number
+  monthlyExpense: number
+  totalNabung: number
   mode: BudgetMode
   shortfall: number
-  unpaidTagihanTotal: number
-  totalNabung: number
-  spentThisPeriode: number
   daysUntilPayday: number
   nextPaydayMs: number
   conditionLabel: string | null
@@ -34,15 +35,15 @@ interface Props {
 export function SaldoModule({
   wallets,
   currency,
-  sisaPeriode,
-  jatahHarian,
-  pemasukanPeriode,
-  uangMengendap,
+  sisaUang,
+  totalSaldo,
+  tagihanUnpaid,
+  mengendap,
+  monthlyIncome,
+  monthlyExpense,
+  totalNabung,
   mode,
   shortfall,
-  unpaidTagihanTotal,
-  totalNabung,
-  spentThisPeriode,
   daysUntilPayday,
   nextPaydayMs,
   conditionLabel,
@@ -54,23 +55,40 @@ export function SaldoModule({
 }: Props) {
   const lang = useLanguage()
   const [expanded, setExpanded] = useState(false)
-  const [walletExpanded, setWalletExpanded] = useState(false)
-  const [jatahTooltipOpen, setJatahTooltipOpen] = useState(false)
-  const [mengendapTooltipOpen, setMengendapTooltipOpen] = useState(false)
+  const [tooltipOpen, setTooltipOpen] = useState(false)
 
-  const totalSaldo = wallets.reduce((sum, w) => sum + w.balance, 0)
   const nextPaydayDate = new Date(nextPaydayMs)
   const paydayLabel = `${nextPaydayDate.getDate()} ${nextPaydayDate.toLocaleString(lang === 'en' ? 'en-US' : 'id-ID', { month: 'short' })} ${nextPaydayDate.getFullYear()}`
 
   return (
     <>
       <div className={styles.wrapper}>
-        {/* ── Card 1: SISA ── */}
+        {/* ── Card 1: SISA UANG ── */}
         <div
           className={mode === 'bertahan' ? `${styles.card} ${styles.cardBertahan}` : styles.card}
         >
           <div className={styles.headerRow}>
-            <span className={styles.label}>{t('home.saldo_bebas', lang)}</span>
+            <div className={styles.heroLabelRow}>
+              <span className={styles.label}>{t('home.sisa_uang', lang)}</span>
+              <button
+                className={styles.tooltipBtn}
+                onClick={() => setTooltipOpen(true)}
+                aria-label="Info sisa uang"
+              >
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 12 12"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.3"
+                >
+                  <circle cx="6" cy="6" r="5" />
+                  <line x1="6" y1="5.5" x2="6" y2="8.5" strokeLinecap="round" />
+                  <circle cx="6" cy="3.4" r="0.75" fill="currentColor" stroke="none" />
+                </svg>
+              </button>
+            </div>
             {mode === 'bertahan' ? (
               <span className={styles.badgeBertahan}>{t('saldo.mode_bertahan_badge', lang)}</span>
             ) : mode === 'hari-terakhir' ? (
@@ -129,15 +147,15 @@ export function SaldoModule({
               <div className={styles.heroSublabel}>
                 {t('saldo.mode_hariterakhir_sub_label', lang)}
               </div>
-              <div className={styles.heroNum}>{formatCurrency(sisaPeriode, currency)}</div>
+              <div className={styles.heroNum}>{formatCurrency(sisaUang, currency)}</div>
               <p className={styles.hariterakhirNote}>{t('saldo.mode_hariterakhir_note', lang)}</p>
             </>
           )}
 
-          {/* Mode: Normal — Sisa hero */}
+          {/* Mode: Normal */}
           {mode === 'normal' && (
             <>
-              <div className={styles.heroNum}>{formatCurrency(sisaPeriode, currency)}</div>
+              <div className={styles.heroNum}>{formatCurrency(sisaUang, currency)}</div>
               {conditionLabel && (
                 <span
                   className={styles.conditionBadge}
@@ -155,23 +173,71 @@ export function SaldoModule({
 
               <button className={styles.expandBtn} onClick={() => setExpanded((v) => !v)}>
                 <span className={styles.expandChevron}>{expanded ? '∧' : '∨'}</span>
-                {expanded ? t('saldo.collapse_btn', lang) : t('saldo.expand_btn', lang)}
+                {expanded ? t('home.expand_hide', lang) : t('home.expand_show', lang)}
                 <span className={styles.expandChevron}>{expanded ? '∧' : '∨'}</span>
               </button>
 
               {expanded && (
                 <div className={styles.rincian}>
+                  <p className={styles.rincianSectionLabel}>{t('home.duit_di_mana', lang)}</p>
                   <RincianRow
-                    label={t('saldo.rincian_pemasukan', lang)}
-                    value={formatCurrency(pemasukanPeriode, currency)}
+                    label={t('saldo.total_saldo_label', lang)}
+                    value={formatCurrency(totalSaldo, currency)}
                   />
-                  {unpaidTagihanTotal > 0 && (
+                  {tagihanUnpaid > 0 && (
                     <RincianRow
                       label={t('saldo.rincian_tagihan', lang)}
-                      value={formatCurrency(unpaidTagihanTotal, currency)}
+                      value={formatCurrency(tagihanUnpaid, currency)}
                       minus
                     />
                   )}
+                  <RincianRow
+                    label={
+                      <span className={styles.rincianLabelMuted}>
+                        <svg
+                          width="10"
+                          height="10"
+                          viewBox="0 0 12 12"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          className={styles.lockIcon}
+                        >
+                          <rect x="2.5" y="5.5" width="7" height="5" rx="1" />
+                          <path d="M4 5.5V4a2 2 0 0 1 4 0v1.5" strokeLinecap="round" />
+                        </svg>
+                        {t('saldo.uang_mengendap_label', lang)}
+                      </span>
+                    }
+                    value={formatCurrency(mengendap, currency)}
+                    muted
+                    minus
+                  />
+                  <div className={styles.rincianDivider} />
+                  <div className={styles.rincianSisaRow}>
+                    <span className={styles.rincianSisaLabel}>{t('home.sisa_uang', lang)}</span>
+                    <div className={styles.rincianSisaRight}>
+                      <span className={styles.rincianSisaAmt}>
+                        {formatCurrency(sisaUang, currency)}
+                      </span>
+                      {onEditAlokasi && (
+                        <button className={styles.aturBtn} onClick={onEditAlokasi}>
+                          atur
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  <p className={styles.rincianSectionLabel}>{t('home.bulan_ini', lang)}</p>
+                  <RincianRow
+                    label={t('saldo.rincian_pemasukan', lang)}
+                    value={formatCurrency(monthlyIncome, currency)}
+                  />
+                  <RincianRow
+                    label={t('saldo.rincian_tagihan', lang)}
+                    value={formatCurrency(monthlyExpense, currency)}
+                    minus
+                  />
                   {totalNabung > 0 && (
                     <RincianRow
                       label={t('saldo.rincian_nabung', lang)}
@@ -179,179 +245,57 @@ export function SaldoModule({
                       minus
                     />
                   )}
-                  {spentThisPeriode > 0 && (
-                    <RincianRow
-                      label={t('saldo.rincian_udah_kepakai', lang)}
-                      value={formatCurrency(spentThisPeriode, currency)}
-                      minus
-                    />
-                  )}
-                  <RincianRow
-                    label={t('saldo.rincian_anggaran', lang)}
-                    value={formatCurrency(sisaPeriode, currency)}
-                    bold
-                  />
-                </div>
-              )}
-            </>
-          )}
-        </div>
-
-        {/* ── Card 2: JATAH HARIAN (hidden in bertahan — no daily budget available) ── */}
-        {mode !== 'bertahan' && (
-          <div className={styles.card}>
-            <div className={styles.headerRow}>
-              <span className={styles.label}>{t('saldo.jatah_harian_label', lang)}</span>
-              <button
-                className={styles.tooltipBtn}
-                onClick={() => setJatahTooltipOpen(true)}
-                aria-label="Info jatah harian"
-              >
-                <svg
-                  width="13"
-                  height="13"
-                  viewBox="0 0 12 12"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.3"
-                >
-                  <circle cx="6" cy="6" r="5" />
-                  <line x1="6" y1="5.5" x2="6" y2="8.5" strokeLinecap="round" />
-                  <circle cx="6" cy="3.4" r="0.75" fill="currentColor" stroke="none" />
-                </svg>
-              </button>
-            </div>
-            <div className={styles.heroNum}>
-              {formatCurrency(jatahHarian ?? 0, currency)}
-              <span className={styles.heroUnit}>/hari</span>
-            </div>
-          </div>
-        )}
-
-        {/* ── Card 3: TOTAL SALDO ── */}
-        <div className={styles.card}>
-          <button className={styles.konteksRow} onClick={() => setWalletExpanded((v) => !v)}>
-            <span className={styles.label}>{t('saldo.total_saldo_label', lang)}</span>
-            <span className={styles.konteksVal}>
-              {formatCurrency(totalSaldo, currency)}
-              <span className={styles.konteksArrow}>{walletExpanded ? ' ∧' : ' >'}</span>
-            </span>
-          </button>
-
-          {walletExpanded && (
-            <div className={styles.konteks}>
-              <div className={styles.konteksRow} style={{ cursor: 'default' }}>
-                <span className={styles.konteksLabel}>{t('saldo.sisa_periode_label', lang)}</span>
-                <span className={styles.konteksVal}>{formatCurrency(sisaPeriode, currency)}</span>
-              </div>
-              <div className={styles.mengendapRow}>
-                <button
-                  className={styles.konteksRow}
-                  style={{ flex: 1 }}
-                  onClick={() => setMengendapTooltipOpen(true)}
-                >
-                  <span className={styles.konteksLabel}>
-                    <svg
-                      width="10"
-                      height="10"
-                      viewBox="0 0 12 12"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      className={styles.lockIcon}
-                    >
-                      <rect x="2.5" y="5.5" width="7" height="5" rx="1" />
-                      <path d="M4 5.5V4a2 2 0 0 1 4 0v1.5" strokeLinecap="round" />
-                    </svg>
-                    {t('saldo.uang_mengendap_label', lang)}
-                  </span>
-                  <span className={styles.konteksValMuted}>
-                    {formatCurrency(uangMengendap, currency)}
-                  </span>
-                </button>
-                {onEditAlokasi && (
-                  <button
-                    className={styles.editAlokasiBtn}
-                    onClick={onEditAlokasi}
-                    aria-label="Edit alokasi"
-                  >
-                    <svg
-                      width="11"
-                      height="11"
-                      viewBox="0 0 14 14"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.3"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M2 11.5L9.5 4l1.5 1.5L3.5 13 2 11.5z" />
-                      <path d="M8.5 3l1.5-1.5 1.5 1.5-1.5 1.5L8.5 3z" />
-                    </svg>
-                    Edit
-                  </button>
-                )}
-              </div>
-
-              {wallets.length > 0 && (
-                <div className={styles.walletList}>
-                  {wallets.map((w, i) => (
-                    <button
-                      key={w.id}
-                      className={styles.walletRow}
-                      style={{
-                        borderBottom:
-                          i < wallets.length - 1 ? '1px solid var(--border-soft)' : 'none',
-                      }}
-                      onClick={() => onWalletTap?.(w)}
-                    >
-                      <div className={styles.walletLeft}>
-                        <span
-                          className={styles.walletDot}
-                          style={{ background: WALLET_DOTS[i % WALLET_DOTS.length] }}
-                        />
-                        <span className={styles.walletName}>{w.name}</span>
-                      </div>
-                      <span className={styles.walletAmt}>
-                        {formatCurrency(w.balance, w.currency)}
-                      </span>
+                  {onHistoryTap && (
+                    <button className={styles.historyLink} onClick={onHistoryTap}>
+                      {t('home.history_link', lang)}
                     </button>
-                  ))}
+                  )}
+
+                  <p className={styles.rincianSectionLabel}>{t('home.dompet', lang)}</p>
+                  {wallets.length > 0 && (
+                    <div className={styles.walletList}>
+                      {wallets.map((w, i) => (
+                        <button
+                          key={w.id}
+                          className={styles.walletRow}
+                          style={{
+                            borderBottom:
+                              i < wallets.length - 1 ? '1px solid var(--border-soft)' : 'none',
+                          }}
+                          onClick={() => onWalletTap?.(w)}
+                        >
+                          <div className={styles.walletLeft}>
+                            <span
+                              className={styles.walletDot}
+                              style={{ background: WALLET_DOTS[i % WALLET_DOTS.length] }}
+                            />
+                            <span className={styles.walletName}>{w.name}</span>
+                          </div>
+                          <span className={styles.walletAmt}>
+                            {formatCurrency(w.balance, w.currency)}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  {onAddWalletTap && (
+                    <button className={styles.addWalletInline} onClick={onAddWalletTap}>
+                      {t('saldo.add_wallet', lang)}
+                    </button>
+                  )}
                 </div>
               )}
-            </div>
-          )}
-
-          {onHistoryTap && (
-            <>
-              <div className={styles.divider} />
-              <button className={styles.historyLink} onClick={onHistoryTap}>
-                {t('home.history_link', lang)}
-              </button>
             </>
           )}
         </div>
-
-        {onAddWalletTap && (
-          <button className={styles.addWalletBtn} onClick={onAddWalletTap}>
-            {t('saldo.add_wallet', lang)}
-          </button>
-        )}
       </div>
 
       <BottomSheet
-        isOpen={jatahTooltipOpen}
-        onClose={() => setJatahTooltipOpen(false)}
-        title={t('saldo.jatah_harian_label', lang)}
+        isOpen={tooltipOpen}
+        onClose={() => setTooltipOpen(false)}
+        title={t('home.sisa_uang', lang)}
       >
-        <p className={styles.tooltipBody}>{t('saldo.jatah_harian_tooltip', lang)}</p>
-      </BottomSheet>
-      <BottomSheet
-        isOpen={mengendapTooltipOpen}
-        onClose={() => setMengendapTooltipOpen(false)}
-        title={t('saldo.uang_mengendap_label', lang)}
-      >
-        <p className={styles.tooltipBody}>{t('saldo.uang_mengendap_tooltip', lang)}</p>
+        <p className={styles.tooltipBody}>{t('home.sisa_uang_tooltip', lang)}</p>
       </BottomSheet>
     </>
   )
@@ -362,16 +306,22 @@ function RincianRow({
   value,
   minus,
   bold,
+  muted,
 }: {
-  label: string
+  label: ReactNode
   value: string
   minus?: boolean
   bold?: boolean
+  muted?: boolean
 }) {
   return (
     <div className={`${styles.rincianRow} ${bold ? styles.rincianRowBold : ''}`}>
       <span className={styles.rincianLabel}>{label}</span>
-      <span className={`${styles.rincianVal} ${minus ? styles.rincianValMinus : ''}`}>{value}</span>
+      <span
+        className={`${styles.rincianVal} ${minus ? styles.rincianValMinus : ''} ${muted ? styles.rincianValMuted : ''}`}
+      >
+        {value}
+      </span>
     </div>
   )
 }

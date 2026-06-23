@@ -512,16 +512,6 @@ export type StringKey =
   | 'profil.tagihan_anchor_month_label'
   | 'profil.tagihan_annual_month_label'
   | 'profil.tagihan_add_btn'
-  // alokasi editor
-  | 'alokasi.buat_dipakai'
-  | 'alokasi.uang_mengendap'
-  | 'alokasi.mengendap_note'
-  | 'alokasi.jatah_harian_approx'
-  | 'alokasi.slider_hint'
-  | 'alokasi.sampai_gajian'
-  | 'alokasi.sampai_akhir_bulan'
-  | 'alokasi.atur_ulang_title'
-  | 'alokasi.bisa_kamu_atur'
   // settings page
   | 'settings.title'
   | 'settings.back_aria'
@@ -569,6 +559,39 @@ export type StringKey =
   | 'settings.delete_type_word'
   | 'settings.delete_type_placeholder'
   | 'settings.delete_confirm_btn'
+  // alokasi editor
+  | 'alokasi.buat_dipakai'
+  | 'alokasi.uang_mengendap'
+  | 'alokasi.mengendap_note'
+  | 'alokasi.jatah_harian_approx'
+  | 'alokasi.slider_hint'
+  | 'alokasi.sampai_gajian'
+  | 'alokasi.sampai_akhir_bulan'
+  | 'alokasi.atur_ulang_title'
+  | 'alokasi.bisa_kamu_atur'
+  | 'alokasi.ubah_dipakai'
+  | 'alokasi.mengendap_auto'
+  // home — new allocation model strings
+  | 'home.sisa_uang'
+  | 'home.sisa_uang_tooltip'
+  | 'home.expand_show'
+  | 'home.expand_hide'
+  | 'home.duit_di_mana'
+  | 'home.bulan_ini'
+  | 'home.lihat_riwayat'
+  | 'home.dompet'
+  | 'home.tambah_dompet'
+  | 'home.atur_alokasi'
+  | 'home.banner_gajian_title'
+  | 'home.banner_gajian_body'
+  | 'home.banner_periode_title'
+  | 'home.banner_periode_body'
+  | 'home.banner_cta'
+  | 'home.jatah_harian_label'
+  | 'home.jatah_keluar'
+  | 'home.jatah_lewat_badge'
+  | 'home.jatah_lewat_title'
+  | 'home.jatah_besok'
 
 export type StringDictionary = Record<StringKey, string>
 
@@ -1105,16 +1128,6 @@ const id: StringDictionary = {
   'profil.tagihan_annual_month_label': 'Bulan',
   'profil.tagihan_add_btn': '+ Tambah tagihan',
 
-  'alokasi.buat_dipakai': 'Buat dipakai',
-  'alokasi.uang_mengendap': 'Uang Mengendap',
-  'alokasi.mengendap_note': 'Uang Mengendap boleh Rp 0.',
-  'alokasi.jatah_harian_approx': 'Jatah harian ≈',
-  'alokasi.slider_hint': '← geser atau ketik',
-  'alokasi.sampai_gajian': 'sampai gajian berikutnya',
-  'alokasi.sampai_akhir_bulan': 'sampai akhir bulan',
-  'alokasi.atur_ulang_title': 'Atur ulang alokasi',
-  'alokasi.bisa_kamu_atur': 'Bisa kamu atur',
-
   'settings.title': 'setelan',
   'settings.back_aria': 'Kembali',
   'settings.profile_active_until': 'Aktif sampai {date} · {n} hari lagi',
@@ -1163,6 +1176,39 @@ const id: StringDictionary = {
   'settings.delete_type_word': 'HAPUS',
   'settings.delete_type_placeholder': 'HAPUS',
   'settings.delete_confirm_btn': 'Hapus semua data',
+
+  'alokasi.buat_dipakai': 'Buat dipakai',
+  'alokasi.uang_mengendap': 'Uang Mengendap',
+  'alokasi.mengendap_note': 'Uang Mengendap boleh Rp 0.',
+  'alokasi.jatah_harian_approx': 'Jatah harian ≈',
+  'alokasi.slider_hint': '← geser atau ketik',
+  'alokasi.sampai_gajian': 'sampai gajian berikutnya',
+  'alokasi.sampai_akhir_bulan': 'sampai akhir bulan',
+  'alokasi.atur_ulang_title': 'Atur ulang alokasi',
+  'alokasi.bisa_kamu_atur': 'Bisa kamu atur',
+  'alokasi.ubah_dipakai': 'Ubah buat dipakai',
+  'alokasi.mengendap_auto': 'OTOMATIS',
+
+  'home.sisa_uang': 'SISA UANG',
+  'home.sisa_uang_tooltip': 'Total saldo − tagihan belum dibayar − Uang Mengendap',
+  'home.expand_show': 'kok bisa segini?',
+  'home.expand_hide': 'sembunyikan',
+  'home.duit_di_mana': 'Duit lo ada di mana',
+  'home.bulan_ini': 'Bulan ini',
+  'home.lihat_riwayat': 'lihat riwayat →',
+  'home.dompet': 'Dompet',
+  'home.tambah_dompet': '+ Tambah dompet',
+  'home.atur_alokasi': 'atur',
+  'home.banner_gajian_title': 'Gajian masuk?',
+  'home.banner_gajian_body': 'Gajian masuk? Atur ulang alokasi lo.',
+  'home.banner_periode_title': 'Periode habis',
+  'home.banner_periode_body': 'Periode lo udah lewat — atur ulang alokasi.',
+  'home.banner_cta': 'Atur alokasi →',
+  'home.jatah_harian_label': 'Jatah Harian',
+  'home.jatah_keluar': 'Keluar hari ini',
+  'home.jatah_lewat_badge': '⚠ Lewat',
+  'home.jatah_lewat_title': 'Hari ini lewat {n}',
+  'home.jatah_besok': 'Besok jatahmu nyusut jadi {n}',
 }
 
 const en: StringDictionary = {
@@ -1693,16 +1739,6 @@ const en: StringDictionary = {
   'profil.tagihan_annual_month_label': 'Month',
   'profil.tagihan_add_btn': '+ Add bill',
 
-  'alokasi.buat_dipakai': 'For spending',
-  'alokasi.uang_mengendap': 'Parked Money',
-  'alokasi.mengendap_note': 'Parked Money can be Rp 0.',
-  'alokasi.jatah_harian_approx': 'Daily budget ≈',
-  'alokasi.slider_hint': '← slide or type',
-  'alokasi.sampai_gajian': 'until next payday',
-  'alokasi.sampai_akhir_bulan': 'until end of month',
-  'alokasi.atur_ulang_title': 'Reallocate',
-  'alokasi.bisa_kamu_atur': 'Available to allocate',
-
   'settings.title': 'settings',
   'settings.back_aria': 'Back',
   'settings.profile_active_until': 'Active until {date} · {n} days left',
@@ -1751,6 +1787,39 @@ const en: StringDictionary = {
   'settings.delete_type_word': 'DELETE',
   'settings.delete_type_placeholder': 'DELETE',
   'settings.delete_confirm_btn': 'Delete all data',
+
+  'alokasi.buat_dipakai': 'For spending',
+  'alokasi.uang_mengendap': 'Parked Money',
+  'alokasi.mengendap_note': 'Parked Money can be Rp 0.',
+  'alokasi.jatah_harian_approx': 'Daily budget ≈',
+  'alokasi.slider_hint': '← slide or type',
+  'alokasi.sampai_gajian': 'until next payday',
+  'alokasi.sampai_akhir_bulan': 'until end of month',
+  'alokasi.atur_ulang_title': 'Reallocate',
+  'alokasi.bisa_kamu_atur': 'Available to allocate',
+  'alokasi.ubah_dipakai': 'Change spending amount',
+  'alokasi.mengendap_auto': 'AUTO',
+
+  'home.sisa_uang': 'MONEY LEFT',
+  'home.sisa_uang_tooltip': 'Total balance − unpaid bills − Parked Money',
+  'home.expand_show': 'how is this possible?',
+  'home.expand_hide': 'hide',
+  'home.duit_di_mana': 'Where your money is',
+  'home.bulan_ini': 'This month',
+  'home.lihat_riwayat': 'view history →',
+  'home.dompet': 'Wallets',
+  'home.tambah_dompet': '+ Add wallet',
+  'home.atur_alokasi': 'set',
+  'home.banner_gajian_title': 'Got paid?',
+  'home.banner_gajian_body': 'Got paid? Reallocate your budget.',
+  'home.banner_periode_title': 'Period ended',
+  'home.banner_periode_body': 'Your period ended — reallocate your budget.',
+  'home.banner_cta': 'Reallocate →',
+  'home.jatah_harian_label': 'Daily Budget',
+  'home.jatah_keluar': 'Spent today',
+  'home.jatah_lewat_badge': '⚠ Over',
+  'home.jatah_lewat_title': 'Today over by {n}',
+  'home.jatah_besok': "Tomorrow's budget drops to {n}",
 }
 
 const strings: Record<Language, StringDictionary> = { id, en }

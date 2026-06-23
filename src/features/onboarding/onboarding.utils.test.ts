@@ -95,9 +95,6 @@ describe('buildSettings', () => {
     lastPaydayConfirmed: null,
     primaryCurrency: 'IDR',
     secondaryCurrency: null,
-    operasionalBudget: null,
-    periodEndDate: null,
-    jatahHarianLocked: null,
   }
 
   it('always sets onboardingCompleted: true', () => {

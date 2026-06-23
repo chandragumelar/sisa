@@ -67,9 +67,6 @@ export interface CompletedOnboardingData {
   lastPaydayConfirmed: number | null
   primaryCurrency: string
   secondaryCurrency: string | null
-  operasionalBudget: number | null
-  periodEndDate: number | null
-  jatahHarianLocked: number | null
 }
 
 export function buildSettings(data: CompletedOnboardingData): Settings {
@@ -92,9 +89,6 @@ export function buildSettings(data: CompletedOnboardingData): Settings {
     weekendBehavior: null,
     onboardingCompleted: true,
     lastExportedAt: null,
-    operasionalBudget: data.operasionalBudget,
-    periodEndDate: data.periodEndDate,
-    jatahHarianLocked: data.jatahHarianLocked,
   }
 }
 

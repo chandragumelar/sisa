@@ -1,9 +1,7 @@
 import { useState } from 'react'
 import type { IncomeType } from '@/db/database'
-import { useLanguage } from '@/app/providers/useLanguage'
 import { AlokasiEditor } from '@/features/alokasi/AlokasiEditor'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
-import { t } from '@/shared/strings/strings'
 
 interface Props {
   incomeType: IncomeType
@@ -39,7 +37,6 @@ export function StepAlokasi({
   onPeriodEndDateChange,
   onNext,
 }: Props) {
-  const lang = useLanguage()
   const bisaDialokasi = Math.max(0, totalSaldo - tagihanTotal)
   const [operasional, setOperasional] = useState(bisaDialokasi)
 
@@ -50,9 +47,6 @@ export function StepAlokasi({
     month: 'long',
     year: 'numeric',
   })
-  const periodeLabel = isFreelance
-    ? t('alokasi.sampai_akhir_bulan', lang)
-    : t('alokasi.sampai_gajian', lang)
 
   function handleDateChange(e: React.ChangeEvent<HTMLInputElement>) {
     const ms = new Date(e.target.value).getTime()
@@ -181,8 +175,10 @@ export function StepAlokasi({
         </div>
       )}
 
-      <p style={{ fontSize: 15, fontWeight: 600, color: 'var(--ink-primary)', lineHeight: 1.55 }}>
-        Berapa yang mau lo pakai {periodeLabel}?
+      <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--ink-primary)', lineHeight: 1.5 }}>
+        Mau pakai berapa untuk operasional
+        {isFreelance ? ` sampai ${periodEndLabel}` : ''} ({sisaHari} hari
+        {isFreelance ? '' : ' lagi'})?
       </p>
 
       <AlokasiEditor
@@ -190,7 +186,7 @@ export function StepAlokasi({
         sisaHari={sisaHari}
         currency={currency}
         operasional={operasional}
-        periodeLabel={periodeLabel}
+        periodeLabel={isFreelance ? `sampai ${periodEndLabel}` : `sampai gajian`}
         onChange={setOperasional}
       />
 

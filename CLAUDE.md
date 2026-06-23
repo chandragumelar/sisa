@@ -9,31 +9,23 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 1. Apa Ini
 
-**SISA** — PWA decision-support keuangan ("aman ga gue beli ini sekarang?"), local-first, dijual via license key (Gumroad USD / Clicky IDR), masa aktif **3 bulan** per pembelian.
+**SISA** — PWA decision-support keuangan ("aman ga gue beli ini sekarang?"), local-first, dijual via license key
 
 **Stack:** React 18 + Vite + TypeScript + Zustand + React Router + CSS Modules → deploy Vercel (static).
-
-**Empat batasan keras (tiap keputusan dinilai dari ini):**
-
-1. **Serverless & 0 cost** — gak ada backend/DB/Edge Function. Static site only.
-2. **Less maintenance** — "kalau gak disentuh 6 bulan, masih jalan?"
-3. **Local-first** — data di device (IndexedDB via Dexie). Backup = export/import manual.
-4. **Anti-piracy realistis** — bypass = medium effort (diterima), palsu key = high effort.
 
 ---
 
 ## 2. Urutan Baca (sebelum nulis kode apapun)
 
-| #   | Dokumen                                    | Untuk                                                                 |
-| --- | ------------------------------------------ | --------------------------------------------------------------------- |
-| 1   | **`CLAUDE.md`** (ini)                      | Aturan kritis + peta. Selalu di context                               |
-| 2   | **`docs/PRD.md`**                          | _Apa_ yang dibangun — produk, fitur, spec. **Source of truth produk** |
-| 3   | **`docs/engineering-guidelines-pwa.md`**   | _Bagaimana_ — arsitektur, license, storage, testing                   |
-| 4   | **`design_handoff_sisa_revamp/README.md`** | Visual — token, komponen, voice/copy. **Source of truth visual**      |
+| #   | Dokumen                                    | Untuk                                                            |
+| --- | ------------------------------------------ | ---------------------------------------------------------------- |
+| 1   | **`CLAUDE.md`** (ini)                      | Aturan kritis + peta. Selalu di context                          |
+| 2   | **`docs/engineering-guidelines-pwa.md`**   | _Bagaimana_ — arsitektur, license, storage, testing              |
+| 3   | **`design_handoff_sisa_revamp/README.md`** | Visual — token, komponen, voice/copy. **Source of truth visual** |
 
 Tarik dokumen **saat relevan**, bukan semua sekaligus (irit token). Kerja di fitur tagihan → baca section tagihan di PRD + guidelines, bukan seluruh PRD.
 
-**Prioritas saat konflik:** PRD menang untuk produk · design_handoff_sisa_revamp/README.md menang untuk visual · engineering-guidelines menang untuk keputusan teknis PWA · CLAUDE.md (ini) menang untuk aturan koding & batasan keras.
+**Prioritas saat konflik:** design_handoff_sisa_revamp/README.md menang untuk visual · engineering-guidelines menang untuk keputusan teknis PWA · CLAUDE.md (ini) menang untuk aturan koding & batasan keras.
 
 ---
 

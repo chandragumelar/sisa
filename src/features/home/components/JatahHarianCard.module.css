@@ -1,0 +1,115 @@
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border-hair);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: var(--pad-card);
+}
+
+.cardOver {
+  border-color: var(--signal-danger);
+  background: color-mix(in srgb, var(--signal-danger) 4%, var(--surface));
+}
+
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+}
+
+.overBadge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--signal-danger);
+  font-family: var(--font-sans);
+  padding: 3px 8px;
+  border: 1px solid var(--signal-danger);
+  border-radius: 999px;
+  opacity: 0.85;
+}
+
+.heroNum {
+  font-size: 28px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--ink-primary);
+  letter-spacing: -1px;
+  line-height: 1;
+  font-feature-settings: 'tnum';
+  margin-bottom: 12px;
+}
+
+.barWrap {
+  height: 4px;
+  background: var(--border-hair);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.bar {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.barOver {
+  background: var(--signal-danger);
+}
+
+.spentRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.spentLabel {
+  font-size: 12px;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+}
+
+.spentAmt {
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  color: var(--ink-secondary);
+  font-feature-settings: 'tnum';
+}
+
+.spentAmtOver {
+  color: var(--signal-danger);
+}
+
+.alertBox {
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: color-mix(in srgb, var(--signal-danger) 8%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--signal-danger) 25%, transparent);
+  border-radius: 8px;
+}
+
+.alertLine {
+  font-size: 13px;
+  color: var(--signal-danger);
+  font-family: var(--font-sans);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.alertLine + .alertLine {
+  margin-top: 4px;
+}
