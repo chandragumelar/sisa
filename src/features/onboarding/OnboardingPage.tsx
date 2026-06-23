@@ -5,6 +5,7 @@ import { useClock } from '@/app/providers/useClock'
 import { useSetLanguage } from '@/app/providers/useLanguage'
 import { saveSettings } from '@/db/settings.repository'
 import { addWallet } from '@/db/wallets.repository'
+import { addTagihan } from '@/db/tagihan.repository'
 import { OnboardingShell } from './components/OnboardingShell'
 import { Step1Language } from './steps/Step1Language'
 import { StepInstallGuide } from './steps/StepInstallGuide'
@@ -16,6 +17,8 @@ import { StepPayConfirm } from './steps/StepPayConfirm'
 import { Step4cCurrency } from './steps/Step4cCurrency'
 import { Step4dWallet } from './steps/Step4dWallet'
 import { Step4eCurrency2 } from './steps/Step4eCurrency2'
+import { StepTagihan } from './steps/StepTagihan'
+import { StepAlokasi } from './steps/StepAlokasi'
 import {
   INITIAL_ACCUMULATED,
   type OnboardingAccumulated,
@@ -27,7 +30,8 @@ import {
   getNextStep,
   parseWalletBalance,
 } from './onboarding.utils'
-import { getPaydayDate } from '@/features/home/home.utils'
+import { getPaydayDate, calcDaysUntilPayday } from '@/features/home/home.utils'
+import { recomputeAlokasi } from '@/shared/utils/budget.utils'
 import type { IncomeFrequency } from '@/db/database'
 
 function getPreviousPaydayMs(nextPaydayMs: number, frequency: IncomeFrequency): number {
@@ -62,6 +66,33 @@ export function OnboardingPage() {
     const primaryCurrency = final.primaryCurrency ?? 'IDR'
     const avgIncomeNum = final.avgIncome ? parseWalletBalance(final.avgIncome) : null
     const fixedIncomeNum = final.fixedIncome ? parseWalletBalance(final.fixedIncome) : null
+    const nowMs = clock.now()
+
+    // Compute jatahHarianLocked from the alokasi the user just set
+    let jatahHarianLocked: number | null = null
+    if (final.operasionalBudget != null) {
+      const partialSettings = {
+        incomeType,
+        incomeFrequency: final.incomeFrequency ?? 'bulanan',
+        incomeAnchorDate: final.incomeAnchorDate,
+        incomeDay: final.incomeDay,
+        weekendBehavior: null,
+      } as import('@/db/database').Settings
+      const sisaHari = final.periodEndDate
+        ? Math.max(1, Math.round((final.periodEndDate - nowMs) / 86_400_000))
+        : calcDaysUntilPayday(nowMs, partialSettings)
+      const totalSaldoForAlokasi = final.wallets
+        .filter((w) => w.name.trim())
+        .reduce((s, w) => s + parseWalletBalance(w.balance), 0)
+      const tagihanTotal = final.tagihanInputs.reduce((s, t) => s + t.nominal, 0)
+      const result = recomputeAlokasi({
+        totalSaldo: totalSaldoForAlokasi,
+        unpaidTagihanTotal: tagihanTotal,
+        operasionalBudget: final.operasionalBudget,
+        sisaHari,
+      })
+      jatahHarianLocked = result.jatahHarianLocked
+    }
 
     const settings = buildSettings({
       language,
@@ -78,17 +109,35 @@ export function OnboardingPage() {
       lastPaydayConfirmed: final.lastPaydayConfirmed,
       primaryCurrency,
       secondaryCurrency: final.secondaryCurrency,
+      operasionalBudget: final.operasionalBudget,
+      periodEndDate: final.periodEndDate,
+      jatahHarianLocked,
     })
 
     const walletRecords = buildWalletRecords(
       final.wallets.filter((w) => w.name.trim()),
       primaryCurrency,
-      clock.now(),
+      nowMs,
     )
 
     await saveSettings(settings)
     for (const wallet of walletRecords) {
       await addWallet(wallet)
+    }
+    for (const tg of final.tagihanInputs) {
+      await addTagihan({
+        name: tg.name,
+        nominalType: 'tetap',
+        nominalEstimate: tg.nominal,
+        dueDay: tg.dueDay,
+        frequency: 'bulanan',
+        anchorDate: new Date(new Date().getFullYear(), new Date().getMonth(), tg.dueDay).getTime(),
+        currency: primaryCurrency,
+        isActive: true,
+        lastPaidAt: null,
+        lastPaidAmount: null,
+        createdAt: nowMs,
+      })
     }
 
     navigate('/', { replace: true })
@@ -146,6 +195,15 @@ export function OnboardingPage() {
       {step === 'currency' && (
         <Step4cCurrency onNext={(primaryCurrency) => advance({ primaryCurrency })} />
       )}
+      {step === 'tagihan' && (
+        <StepTagihan
+          tagihan={data.tagihanInputs}
+          currency={data.primaryCurrency ?? 'IDR'}
+          onChange={(tagihanInputs) => setData((d) => ({ ...d, tagihanInputs }))}
+          onNext={() => advance()}
+          onSkip={() => advance()}
+        />
+      )}
       {step === 'wallet' && (
         <Step4dWallet
           primaryCurrency={data.primaryCurrency ?? 'IDR'}
@@ -155,6 +213,42 @@ export function OnboardingPage() {
           onNext={() => advance()}
         />
       )}
+      {step === 'alokasi' &&
+        (() => {
+          const currency = data.primaryCurrency ?? 'IDR'
+          const totalSaldo = data.wallets
+            .filter((w) => w.name.trim())
+            .reduce((s, w) => s + parseWalletBalance(w.balance), 0)
+          const tagihanTotal = data.tagihanInputs.reduce((s, t) => s + t.nominal, 0)
+          const nowMs = clock.now()
+          const effectivePeriodEnd =
+            data.periodEndDate ??
+            new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getTime()
+          const sisaHari =
+            data.incomeType === 'freelance'
+              ? Math.max(1, Math.round((effectivePeriodEnd - nowMs) / 86_400_000))
+              : calcDaysUntilPayday(nowMs, {
+                  incomeType: data.incomeType ?? 'tetap',
+                  incomeFrequency: data.incomeFrequency ?? 'bulanan',
+                  incomeAnchorDate: data.incomeAnchorDate,
+                  incomeDay: data.incomeDay,
+                  weekendBehavior: null,
+                } as import('@/db/database').Settings)
+          return (
+            <StepAlokasi
+              incomeType={data.incomeType ?? 'tetap'}
+              totalSaldo={totalSaldo}
+              tagihanTotal={tagihanTotal}
+              sisaHari={sisaHari}
+              currency={currency}
+              periodEndDate={data.periodEndDate}
+              onPeriodEndDateChange={(ms) => setData((d) => ({ ...d, periodEndDate: ms }))}
+              onNext={(operasionalBudget, periodEndDate) =>
+                advance({ operasionalBudget, periodEndDate })
+              }
+            />
+          )
+        })()}
       {step === 'currency2' && (
         <Step4eCurrency2
           primaryCurrencyCode={data.primaryCurrency ?? 'IDR'}

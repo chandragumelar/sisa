@@ -9,13 +9,21 @@ export type OnboardingStep =
   | 'incomeDetail'
   | 'payConfirm'
   | 'currency'
+  | 'tagihan'
   | 'wallet'
+  | 'alokasi'
   | 'currency2'
 
 export interface WalletInput {
   id: string
   name: string
   balance: string
+}
+
+export interface TagihanOnboardingInput {
+  name: string
+  nominal: number
+  dueDay: number
 }
 
 export interface OnboardingAccumulated {
@@ -33,6 +41,9 @@ export interface OnboardingAccumulated {
   primaryCurrency: string | null
   wallets: WalletInput[]
   secondaryCurrency: string | null
+  tagihanInputs: TagihanOnboardingInput[]
+  operasionalBudget: number | null
+  periodEndDate: number | null
 }
 
 export const INITIAL_ACCUMULATED: OnboardingAccumulated = {
@@ -49,4 +60,7 @@ export const INITIAL_ACCUMULATED: OnboardingAccumulated = {
   primaryCurrency: null,
   wallets: [{ id: crypto.randomUUID(), name: '', balance: '' }],
   secondaryCurrency: null,
+  tagihanInputs: [],
+  operasionalBudget: null,
+  periodEndDate: null,
 }

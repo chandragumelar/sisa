@@ -28,6 +28,7 @@ interface Props {
   onWalletTap?: (wallet: Wallet) => void
   onHistoryTap?: () => void
   onAddWalletTap?: () => void
+  onEditAlokasi?: () => void
 }
 
 export function SaldoModule({
@@ -49,6 +50,7 @@ export function SaldoModule({
   onWalletTap,
   onHistoryTap,
   onAddWalletTap,
+  onEditAlokasi,
 }: Props) {
   const lang = useLanguage()
   const [expanded, setExpanded] = useState(false)
@@ -242,26 +244,54 @@ export function SaldoModule({
                 <span className={styles.konteksLabel}>{t('saldo.sisa_periode_label', lang)}</span>
                 <span className={styles.konteksVal}>{formatCurrency(sisaPeriode, currency)}</span>
               </div>
-              <button className={styles.konteksRow} onClick={() => setMengendapTooltipOpen(true)}>
-                <span className={styles.konteksLabel}>
-                  <svg
-                    width="10"
-                    height="10"
-                    viewBox="0 0 12 12"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    className={styles.lockIcon}
+              <div className={styles.mengendapRow}>
+                <button
+                  className={styles.konteksRow}
+                  style={{ flex: 1 }}
+                  onClick={() => setMengendapTooltipOpen(true)}
+                >
+                  <span className={styles.konteksLabel}>
+                    <svg
+                      width="10"
+                      height="10"
+                      viewBox="0 0 12 12"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      className={styles.lockIcon}
+                    >
+                      <rect x="2.5" y="5.5" width="7" height="5" rx="1" />
+                      <path d="M4 5.5V4a2 2 0 0 1 4 0v1.5" strokeLinecap="round" />
+                    </svg>
+                    {t('saldo.uang_mengendap_label', lang)}
+                  </span>
+                  <span className={styles.konteksValMuted}>
+                    {formatCurrency(uangMengendap, currency)}
+                  </span>
+                </button>
+                {onEditAlokasi && (
+                  <button
+                    className={styles.editAlokasiBtn}
+                    onClick={onEditAlokasi}
+                    aria-label="Edit alokasi"
                   >
-                    <rect x="2.5" y="5.5" width="7" height="5" rx="1" />
-                    <path d="M4 5.5V4a2 2 0 0 1 4 0v1.5" strokeLinecap="round" />
-                  </svg>
-                  {t('saldo.uang_mengendap_label', lang)}
-                </span>
-                <span className={styles.konteksValMuted}>
-                  {formatCurrency(uangMengendap, currency)}
-                </span>
-              </button>
+                    <svg
+                      width="11"
+                      height="11"
+                      viewBox="0 0 14 14"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.3"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M2 11.5L9.5 4l1.5 1.5L3.5 13 2 11.5z" />
+                      <path d="M8.5 3l1.5-1.5 1.5 1.5-1.5 1.5L8.5 3z" />
+                    </svg>
+                    Edit
+                  </button>
+                )}
+              </div>
 
               {wallets.length > 0 && (
                 <div className={styles.walletList}>

@@ -30,6 +30,17 @@ export interface BudgetPeriodeInput {
   totalSaldo: number
   /** True for freelance: cap jatahHarian at totalSaldo ÷ hariPeriode. */
   useSaldoFloor: boolean
+  /**
+   * When set (non-null): activates alokasi path.
+   * Hero is operasionalBudget-based, not income-based.
+   * null → income-based path (backward compat for users without alokasi set).
+   */
+  operasionalBudget?: number | null
+  /**
+   * Model B locked jatah harian — computed once on re-divide events, stored in Settings.
+   * Only used when operasionalBudget != null.
+   */
+  jatahHarianLocked?: number | null
 }
 
 export interface BudgetPeriodeResult {
@@ -62,8 +73,44 @@ export function calcBudgetPeriode(input: BudgetPeriodeInput): BudgetPeriodeResul
     spentToday,
     totalSaldo,
     useSaldoFloor,
+    operasionalBudget,
+    jatahHarianLocked,
   } = input
 
+  // ── ALOKASI PATH: user has committed an operasionalBudget ─────────────────
+  if (operasionalBudget != null) {
+    const anggaranOperasional = operasionalBudget
+    const sisaPeriode = operasionalBudget - spentThisPeriode
+    const jatahHarian = jatahHarianLocked ?? null
+    const uangMengendap = Math.max(0, totalSaldo - unpaidTagihanTotal - operasionalBudget)
+    const sisaHariIni = jatahHarian !== null ? jatahHarian - spentToday : 0
+
+    let mode: BudgetMode
+    if (hariPeriode === 0) {
+      mode = 'hari-gajian'
+    } else if (sisaPeriode < 0) {
+      mode = 'bertahan'
+    } else if (hariPeriode === 1) {
+      mode = 'hari-terakhir'
+    } else {
+      mode = 'normal'
+    }
+
+    return {
+      pemasukanPeriode: 0,
+      anggaranOperasional,
+      anggaranRaw: operasionalBudget,
+      jatahHarian,
+      sisaPeriode,
+      sisaHariIni,
+      uangMengendap,
+      hariPeriode,
+      mode,
+      shortfall: 0,
+    }
+  }
+
+  // ── INCOME-BASED PATH (legacy / users without alokasi) ────────────────────
   const anggaranRaw = pemasukanPeriode - unpaidTagihanTotal - targetTabungan
   const anggaranOperasional = Math.max(0, anggaranRaw)
   const shortfall = anggaranRaw < 0 ? Math.abs(anggaranRaw) : 0
@@ -106,4 +153,28 @@ export function calcBudgetPeriode(input: BudgetPeriodeInput): BudgetPeriodeResul
     mode,
     shortfall,
   }
+}
+
+/**
+ * Pure function — called on every re-divide event:
+ *   1. User sets/edits alokasi (onboarding or home sheet)
+ *   2. Payday reset confirmed by user
+ *
+ * mengendap is clamped to 0 (cannot go negative).
+ * jatahHarianLocked is 0 when sisaHari <= 0 (hari-gajian guard).
+ */
+export function recomputeAlokasi({
+  totalSaldo,
+  unpaidTagihanTotal,
+  operasionalBudget,
+  sisaHari,
+}: {
+  totalSaldo: number
+  unpaidTagihanTotal: number
+  operasionalBudget: number
+  sisaHari: number
+}): { mengendap: number; jatahHarianLocked: number } {
+  const mengendap = Math.max(0, totalSaldo - unpaidTagihanTotal - operasionalBudget)
+  const jatahHarianLocked = sisaHari > 0 ? Math.round(operasionalBudget / sisaHari) : 0
+  return { mengendap, jatahHarianLocked }
 }

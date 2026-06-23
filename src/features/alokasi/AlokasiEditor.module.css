@@ -1,0 +1,229 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border-hair);
+  border-radius: var(--radius-card);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cardCompact {
+  gap: 10px;
+  padding: 14px;
+}
+
+/* Section: operasional / mengendap */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sectionLabel {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-family: var(--font-sans);
+}
+
+.sectionLabelMuted {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.sectionHint {
+  font-size: 11px;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+}
+
+.inputBox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--border-hair);
+  border-radius: 8px;
+  padding: 10px 14px;
+  background: var(--surface-deep);
+}
+
+.inputBoxActive {
+  border: 2px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 6%, var(--surface));
+}
+
+.inputPrefix {
+  font-size: 15px;
+  font-family: var(--font-mono);
+  color: var(--ink-tertiary);
+  flex-shrink: 0;
+}
+
+.inputNum {
+  font-family: var(--font-mono);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--ink-primary);
+  letter-spacing: -1px;
+  line-height: 1;
+  flex: 1;
+  font-feature-settings: 'tnum';
+}
+
+.inputNumCompact {
+  font-size: 22px;
+}
+
+.inputNumMuted {
+  color: var(--ink-secondary);
+}
+
+.inputNumDanger {
+  color: var(--signal-danger);
+}
+
+/* Slider */
+.sliderWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding-bottom: 4px;
+}
+
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border-hair);
+  outline: none;
+  cursor: pointer;
+  display: block;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--accent) 35%, transparent);
+  border: 3px solid var(--surface);
+}
+
+.slider::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: 3px solid var(--surface);
+}
+
+.sliderLabels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--ink-tertiary);
+  font-family: var(--font-mono);
+}
+
+.sliderHint {
+  font-family: var(--font-sans);
+  font-style: italic;
+}
+
+/* Divider */
+.dividerRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 0 4px;
+}
+
+.dividerLine {
+  flex: 1;
+  height: 1px;
+  background: var(--border-soft);
+}
+
+.dividerText {
+  font-size: 11px;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+  white-space: nowrap;
+}
+
+/* Note */
+.note {
+  font-size: 12px;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+  line-height: 1.55;
+  margin: 0;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-soft);
+}
+
+/* Jatah harian preview */
+.jatahBox {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: color-mix(in srgb, var(--signal-safe) 8%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--signal-safe) 30%, transparent);
+  border-radius: 8px;
+  padding: 11px 14px;
+}
+
+.jatahLabel {
+  font-size: 13px;
+  color: var(--signal-safe);
+  font-weight: 500;
+  font-family: var(--font-sans);
+}
+
+.jatahRight {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.jatahNum {
+  font-size: 16px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--signal-safe);
+  font-feature-settings: 'tnum';
+}
+
+.jatahUnit {
+  font-size: 12px;
+  font-family: var(--font-sans);
+  color: var(--signal-safe);
+  opacity: 0.8;
+}

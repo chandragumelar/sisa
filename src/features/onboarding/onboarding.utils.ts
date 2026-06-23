@@ -1,7 +1,7 @@
 import type { Settings, Wallet, IncomeFrequency, IncomeType, Language } from '@/db/database'
 import type { OnboardingStep, WalletInput } from './onboarding.types'
 
-export const TOTAL_PROGRESS_DOTS = 6
+export const TOTAL_PROGRESS_DOTS = 9
 
 const STEP_PROGRESS: Record<OnboardingStep, number> = {
   language: 1,
@@ -12,8 +12,10 @@ const STEP_PROGRESS: Record<OnboardingStep, number> = {
   incomeType: 5,
   incomeDetail: 5,
   payConfirm: 5,
-  wallet: 6,
-  currency2: 6,
+  tagihan: 6,
+  wallet: 7,
+  alokasi: 8,
+  currency2: 9,
 }
 
 export function getProgressCount(step: OnboardingStep): number {
@@ -38,11 +40,14 @@ export function getNextStep(
     case 'incomeType':
       return 'incomeDetail'
     case 'incomeDetail':
-      // tetap/mix need payConfirm; freelance goes straight to wallet
-      return incomeType === 'freelance' ? 'wallet' : 'payConfirm'
+      return incomeType === 'freelance' ? 'tagihan' : 'payConfirm'
     case 'payConfirm':
+      return 'tagihan'
+    case 'tagihan':
       return 'wallet'
     case 'wallet':
+      return 'alokasi'
+    case 'alokasi':
       return 'currency2'
     case 'currency2':
       return 'done'
@@ -62,6 +67,9 @@ export interface CompletedOnboardingData {
   lastPaydayConfirmed: number | null
   primaryCurrency: string
   secondaryCurrency: string | null
+  operasionalBudget: number | null
+  periodEndDate: number | null
+  jatahHarianLocked: number | null
 }
 
 export function buildSettings(data: CompletedOnboardingData): Settings {
@@ -84,6 +92,9 @@ export function buildSettings(data: CompletedOnboardingData): Settings {
     weekendBehavior: null,
     onboardingCompleted: true,
     lastExportedAt: null,
+    operasionalBudget: data.operasionalBudget,
+    periodEndDate: data.periodEndDate,
+    jatahHarianLocked: data.jatahHarianLocked,
   }
 }
 
