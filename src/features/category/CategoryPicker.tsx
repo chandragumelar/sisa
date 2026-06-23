@@ -13,7 +13,9 @@ interface Props {
 }
 
 function CategoryIcon({ name, size = 13 }: { name: string; size?: number }) {
-  const Icon = (Icons as Record<string, React.FC<{ size: number; strokeWidth: number }>>)[name]
+  const Icon = (
+    Icons as unknown as Record<string, React.FC<{ size: number; strokeWidth: number }>>
+  )[name]
   if (!Icon) return null
   return <Icon size={size} strokeWidth={1.8} />
 }
