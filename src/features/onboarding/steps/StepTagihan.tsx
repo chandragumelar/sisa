@@ -1,106 +1,77 @@
 import { useState } from 'react'
-import type { TagihanOnboardingInput } from '../onboarding.types'
+import { useLanguage } from '@/app/providers/useLanguage'
+import type { NominalType } from '@/db/database'
+import { BottomSheet } from '@/shared/components/BottomSheet'
+import { ScrollSegmented } from '@/shared/components/ScrollSegmented'
+import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
+import { getCurrencySymbol } from '@/shared/utils/formatCurrency'
+import { t } from '@/shared/strings/strings'
+import { TagihanAnchorInput } from '@/features/profil/TagihanAnchorInput'
+import { EMPTY_FORM, FREQ_KEYS, FREQ_LABEL } from '@/features/profil/ProfilTagihanSheet.utils'
+import type { FormState } from '@/features/profil/ProfilTagihanSheet.utils'
+import styles from './StepTagihan.module.css'
 
 interface Props {
-  tagihan: TagihanOnboardingInput[]
+  tagihan: FormState[]
   currency: string
-  onChange: (items: TagihanOnboardingInput[]) => void
+  onChange: (items: FormState[]) => void
   onNext: () => void
-  onSkip: () => void
 }
 
-const CONTOH = [
-  { name: 'Kos / sewa', amt: 'Rp2.500.000', date: 'Tgl 1' },
-  { name: 'Cicilan (motor, KPR)', amt: 'Rp850.000', date: 'Tgl 10' },
-  { name: 'Listrik & air', amt: 'Rp300.000', date: 'Tgl 20' },
-  { name: 'Langganan (Spotify, Netflix…)', amt: null, date: null },
-]
+export function StepTagihan({ tagihan, currency, onChange, onNext }: Props) {
+  const lang = useLanguage()
+  const currSymbol = getCurrencySymbol(currency)
+  const [sheetOpen, setSheetOpen] = useState(false)
+  const [form, setForm] = useState<FormState>(EMPTY_FORM)
 
-export function StepTagihan({ tagihan, currency, onChange, onNext, onSkip }: Props) {
-  const [addingName, setAddingName] = useState('')
-  const [addingNominal, setAddingNominal] = useState('')
-  const [addingDueDay, setAddingDueDay] = useState('1')
-  const [showAddForm, setShowAddForm] = useState(false)
+  const canProceed = tagihan.length > 0
 
-  const total = tagihan.reduce((s, t) => s + (Number(t.nominal) || 0), 0)
+  function patch<K extends keyof FormState>(k: K) {
+    return (v: FormState[K]) => setForm((f) => ({ ...f, [k]: v }))
+  }
 
   function handleAdd() {
-    const nominal = Number(addingNominal.replace(/\D/g, ''))
-    if (!addingName.trim() || nominal <= 0) return
-    onChange([...tagihan, { name: addingName.trim(), nominal, dueDay: Number(addingDueDay) || 1 }])
-    setAddingName('')
-    setAddingNominal('')
-    setAddingDueDay('1')
-    setShowAddForm(false)
+    const nominal = parseNominalRaw(form.nominalEstimate)
+    if (!form.name.trim() || !nominal || nominal === '0') return
+    onChange([...tagihan, form])
+    setForm(EMPTY_FORM)
+    setSheetOpen(false)
   }
 
   function handleRemove(idx: number) {
     onChange(tagihan.filter((_, i) => i !== idx))
   }
 
-  const currSymbol = currency === 'IDR' ? 'Rp' : currency
+  const total = tagihan.reduce(
+    (s, tg) => s + (parseInt(parseNominalRaw(tg.nominalEstimate), 10) || 0),
+    0,
+  )
+  const canAddItem =
+    form.name.trim().length > 0 && parseInt(parseNominalRaw(form.nominalEstimate), 10) > 0
 
   return (
     <>
-      <div className="ob-toprow">
-        <button type="button" className="ob-skip" onClick={onSkip}>
-          Nanti aja
-        </button>
-      </div>
-      <h1 className="ob-heading">Tagihan rutin lo?</h1>
-      <p className="ob-subheading">
-        Isi ini biar angka Sisa lo akurat. Makin lengkap, makin tepat.{' '}
-        {tagihan.length === 0 && 'Skip kalau mau nanti.'}
-      </p>
+      <h1 className="ob-heading">Tagihan rutin lo apa aja?</h1>
+      <p className="ob-subheading">Isi ini biar angka Sisa lo akurat. Minimal 1 tagihan ya.</p>
 
-      {tagihan.length === 0 && !showAddForm ? (
-        <div className="ob-card" style={{ padding: '14px 16px' }}>
-          <p className="ob-label" style={{ marginBottom: 11 }}>
-            Contoh tagihan rutin
-          </p>
-          {CONTOH.map((c, i) => (
-            <div
-              key={i}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 8,
-                padding: '8px 10px',
-                background: 'var(--surface-deep)',
-                borderRadius: 8,
-                border: '1px dashed var(--border-hair)',
-                marginBottom: i < CONTOH.length - 1 ? 6 : 0,
-                opacity: 0.7,
-              }}
+      {tagihan.length === 0 ? (
+        <div className="ob-card" style={{ padding: '28px 16px', textAlign: 'center' }}>
+          <div className={styles.emptyIcon}>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.4"
+              strokeLinecap="round"
             >
-              <span style={{ flex: 1, fontSize: 13, color: 'var(--ink-tertiary)' }}>{c.name}</span>
-              {c.amt && (
-                <span
-                  style={{
-                    fontSize: 12,
-                    color: 'var(--ink-tertiary)',
-                    fontFamily: 'var(--font-mono)',
-                  }}
-                >
-                  {c.amt}
-                </span>
-              )}
-              {c.date && (
-                <span
-                  style={{
-                    fontSize: 10,
-                    color: 'var(--ink-tertiary)',
-                    padding: '2px 7px',
-                    background: 'var(--surface)',
-                    border: '1px solid var(--border-hair)',
-                    borderRadius: 20,
-                  }}
-                >
-                  {c.date}
-                </span>
-              )}
-            </div>
-          ))}
+              <circle cx="8" cy="8" r="6.5" />
+              <path d="M8 5v3M8 10.5v.5" />
+            </svg>
+          </div>
+          <div className={styles.emptyLabel}>Belum ada tagihan</div>
+          <div className={styles.emptyHint}>Contoh: kos, cicilan motor, langganan streaming.</div>
         </div>
       ) : (
         <div className="ob-card">
@@ -120,7 +91,7 @@ export function StepTagihan({ tagihan, currency, onChange, onNext, onSkip }: Pro
                   {item.name}
                 </div>
                 <div style={{ fontSize: 11, color: 'var(--ink-tertiary)', marginTop: 2 }}>
-                  Jatuh tempo tgl {item.dueDay}
+                  {t(FREQ_LABEL[item.frequency], lang)}
                 </div>
               </div>
               <span
@@ -132,7 +103,7 @@ export function StepTagihan({ tagihan, currency, onChange, onNext, onSkip }: Pro
                 }}
               >
                 {currSymbol}
-                {Number(item.nominal).toLocaleString('id-ID')}
+                {(parseInt(parseNominalRaw(item.nominalEstimate), 10) || 0).toLocaleString('id-ID')}
               </span>
               <button
                 type="button"
@@ -168,63 +139,27 @@ export function StepTagihan({ tagihan, currency, onChange, onNext, onSkip }: Pro
         </div>
       )}
 
-      {showAddForm && (
-        <div
-          className="ob-card"
-          style={{ padding: '14px 16px', display: 'flex', flexDirection: 'column', gap: 10 }}
+      <button
+        type="button"
+        className="ob-add-dashed"
+        onClick={() => {
+          setForm(EMPTY_FORM)
+          setSheetOpen(true)
+        }}
+      >
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 16 16"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
         >
-          <input
-            className="ob-input"
-            placeholder="Nama tagihan (mis. Kos)"
-            value={addingName}
-            onChange={(e) => setAddingName(e.target.value)}
-            autoFocus
-          />
-          <div style={{ display: 'flex', gap: 8 }}>
-            <input
-              className="ob-input"
-              placeholder="Nominal"
-              inputMode="numeric"
-              style={{ flex: 2 }}
-              value={addingNominal}
-              onChange={(e) => setAddingNominal(e.target.value.replace(/\D/g, ''))}
-            />
-            <input
-              className="ob-input"
-              placeholder="Tgl"
-              inputMode="numeric"
-              style={{ flex: 1 }}
-              value={addingDueDay}
-              onChange={(e) => setAddingDueDay(e.target.value)}
-            />
-          </div>
-          <div style={{ display: 'flex', gap: 8 }}>
-            <button type="button" className="ob-btn-ghost" onClick={() => setShowAddForm(false)}>
-              Batal
-            </button>
-            <button type="button" className="ob-btn-primary" onClick={handleAdd}>
-              Tambah
-            </button>
-          </div>
-        </div>
-      )}
-
-      {!showAddForm && (
-        <button type="button" className="ob-add-dashed" onClick={() => setShowAddForm(true)}>
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 16 16"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-          >
-            <path d="M8 3V13M3 8H13" />
-          </svg>
-          Tambah tagihan
-        </button>
-      )}
+          <path d="M8 3V13M3 8H13" />
+        </svg>
+        Tambah tagihan
+      </button>
 
       <div className="ob-footer">
         <div className="ob-footer-total">
@@ -237,10 +172,94 @@ export function StepTagihan({ tagihan, currency, onChange, onNext, onSkip }: Pro
             {total.toLocaleString('id-ID')}
           </span>
         </div>
-        <button type="button" className="ob-btn-primary ob-btn-full" onClick={onNext}>
+        <button
+          type="button"
+          className="ob-btn-primary ob-btn-full"
+          disabled={!canProceed}
+          onClick={onNext}
+        >
           Lanjut →
         </button>
+        {!canProceed && (
+          <div style={{ textAlign: 'center', fontSize: 12, color: 'var(--ink-tertiary)' }}>
+            Tambah minimal 1 tagihan dulu
+          </div>
+        )}
       </div>
+
+      {/* Add tagihan sheet */}
+      <BottomSheet
+        isOpen={sheetOpen}
+        onClose={() => setSheetOpen(false)}
+        title={t('profil.tagihan_title_add', lang)}
+      >
+        <div className={styles.formWrap}>
+          <div className={styles.fieldLabel}>{t('profil.tagihan_name_label', lang)}</div>
+          <input
+            className={styles.fieldInput}
+            placeholder={t('profil.tagihan_name_placeholder', lang)}
+            value={form.name}
+            onChange={(e) => patch('name')(e.target.value)}
+            autoFocus
+          />
+
+          <div className={styles.fieldLabel}>{t('profil.tagihan_nominal_label', lang)}</div>
+          <div className={styles.segRow}>
+            {(['tetap', 'variabel'] as NominalType[]).map((n) => (
+              <button
+                key={n}
+                type="button"
+                className={`${styles.seg} ${form.nominalType === n ? styles.segActive : ''}`}
+                onClick={() => patch('nominalType')(n)}
+              >
+                {n === 'tetap'
+                  ? t('profil.tagihan_fixed', lang)
+                  : t('profil.tagihan_variable', lang)}
+              </button>
+            ))}
+          </div>
+
+          <div className={styles.amountRow}>
+            <span className={styles.amountPrefix}>{currSymbol}</span>
+            <input
+              className={styles.amountInput}
+              type="text"
+              inputMode="numeric"
+              placeholder="0"
+              value={form.nominalEstimate}
+              onChange={(e) =>
+                patch('nominalEstimate')(formatNominalDisplay(parseNominalRaw(e.target.value)))
+              }
+            />
+          </div>
+
+          <div className={styles.fieldLabel}>{t('profil.tagihan_freq_label', lang)}</div>
+          <ScrollSegmented
+            items={FREQ_KEYS.map((f) => ({ value: f, label: t(FREQ_LABEL[f], lang) }))}
+            value={form.frequency}
+            onChange={(f) => patch('frequency')(f)}
+          />
+
+          <TagihanAnchorInput
+            frequency={form.frequency}
+            fields={form}
+            onChange={(field, value) => setForm((f) => ({ ...f, [field]: value }))}
+            lang={lang}
+          />
+
+          <button
+            type="button"
+            className={`${styles.saveBtn} ${!canAddItem ? styles.saveBtnDisabled : ''}`}
+            disabled={!canAddItem}
+            onClick={handleAdd}
+          >
+            {t('common.save', lang)}
+          </button>
+          <button type="button" className={styles.cancelBtn} onClick={() => setSheetOpen(false)}>
+            {t('common.cancel', lang)}
+          </button>
+        </div>
+      </BottomSheet>
     </>
   )
 }

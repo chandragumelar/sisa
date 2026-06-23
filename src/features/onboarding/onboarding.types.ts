@@ -1,4 +1,5 @@
 import type { IncomeFrequency, IncomeType, Language } from '@/db/database'
+import type { FormState } from '@/features/profil/ProfilTagihanSheet.utils'
 
 export type OnboardingStep =
   | 'language'
@@ -20,11 +21,7 @@ export interface WalletInput {
   balance: string
 }
 
-export interface TagihanOnboardingInput {
-  name: string
-  nominal: number
-  dueDay: number
-}
+export type { FormState as TagihanFormState }
 
 export interface OnboardingAccumulated {
   language: Language | null
@@ -41,7 +38,7 @@ export interface OnboardingAccumulated {
   primaryCurrency: string | null
   wallets: WalletInput[]
   secondaryCurrency: string | null
-  tagihanInputs: TagihanOnboardingInput[]
+  tagihanInputs: FormState[]
   operasionalBudget: number | null
   periodEndDate: number | null
 }

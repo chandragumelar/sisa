@@ -512,6 +512,16 @@ export type StringKey =
   | 'profil.tagihan_anchor_month_label'
   | 'profil.tagihan_annual_month_label'
   | 'profil.tagihan_add_btn'
+  // alokasi editor
+  | 'alokasi.buat_dipakai'
+  | 'alokasi.uang_mengendap'
+  | 'alokasi.mengendap_note'
+  | 'alokasi.jatah_harian_approx'
+  | 'alokasi.slider_hint'
+  | 'alokasi.sampai_gajian'
+  | 'alokasi.sampai_akhir_bulan'
+  | 'alokasi.atur_ulang_title'
+  | 'alokasi.bisa_kamu_atur'
   // settings page
   | 'settings.title'
   | 'settings.back_aria'
@@ -1095,6 +1105,16 @@ const id: StringDictionary = {
   'profil.tagihan_annual_month_label': 'Bulan',
   'profil.tagihan_add_btn': '+ Tambah tagihan',
 
+  'alokasi.buat_dipakai': 'Buat dipakai',
+  'alokasi.uang_mengendap': 'Uang Mengendap',
+  'alokasi.mengendap_note': 'Uang Mengendap boleh Rp 0.',
+  'alokasi.jatah_harian_approx': 'Jatah harian ≈',
+  'alokasi.slider_hint': '← geser atau ketik',
+  'alokasi.sampai_gajian': 'sampai gajian berikutnya',
+  'alokasi.sampai_akhir_bulan': 'sampai akhir bulan',
+  'alokasi.atur_ulang_title': 'Atur ulang alokasi',
+  'alokasi.bisa_kamu_atur': 'Bisa kamu atur',
+
   'settings.title': 'setelan',
   'settings.back_aria': 'Kembali',
   'settings.profile_active_until': 'Aktif sampai {date} · {n} hari lagi',
@@ -1672,6 +1692,16 @@ const en: StringDictionary = {
   'profil.tagihan_anchor_month_label': 'Starting month',
   'profil.tagihan_annual_month_label': 'Month',
   'profil.tagihan_add_btn': '+ Add bill',
+
+  'alokasi.buat_dipakai': 'For spending',
+  'alokasi.uang_mengendap': 'Parked Money',
+  'alokasi.mengendap_note': 'Parked Money can be Rp 0.',
+  'alokasi.jatah_harian_approx': 'Daily budget ≈',
+  'alokasi.slider_hint': '← slide or type',
+  'alokasi.sampai_gajian': 'until next payday',
+  'alokasi.sampai_akhir_bulan': 'until end of month',
+  'alokasi.atur_ulang_title': 'Reallocate',
+  'alokasi.bisa_kamu_atur': 'Available to allocate',
 
   'settings.title': 'settings',
   'settings.back_aria': 'Back',
