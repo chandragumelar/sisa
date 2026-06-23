@@ -40,6 +40,9 @@ function makeSettings(overrides: Partial<Settings> = {}): Settings {
     weekendBehavior: null,
     onboardingCompleted: true,
     lastExportedAt: null,
+    operasionalBudget: null,
+    periodEndDate: null,
+    jatahHarianLocked: null,
     ...overrides,
   }
 }

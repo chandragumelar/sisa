@@ -23,6 +23,9 @@ const SETTINGS: BackupData['settings'] = {
   weekendBehavior: null,
   onboardingCompleted: true,
   lastExportedAt: null,
+  operasionalBudget: null,
+  periodEndDate: null,
+  jatahHarianLocked: null,
 }
 
 const WALLET: BackupData['wallets'][0] = {

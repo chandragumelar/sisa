@@ -365,6 +365,7 @@ export function HomePage() {
   }
 
   async function handleSaveAlokasi(operasional: number) {
+    if (!settings) return
     const totalSaldoForAlokasi = wallets
       .filter((w) => w.currency === currency)
       .reduce((s, w) => s + w.balance, 0)
