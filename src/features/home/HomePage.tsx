@@ -726,6 +726,11 @@ export function HomePage() {
               sisaHari={sisaHari}
               currency={currency}
               initialOperasional={settings.operasionalBudget ?? bisaDialokasi}
+              periodeLabel={
+                settings.incomeType === 'freelance'
+                  ? t('alokasi.sampai_akhir_bulan', lang)
+                  : t('alokasi.sampai_gajian', lang)
+              }
               onSave={handleSaveAlokasi}
             />
           )

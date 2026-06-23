@@ -6,6 +6,8 @@ import { useSetLanguage } from '@/app/providers/useLanguage'
 import { saveSettings } from '@/db/settings.repository'
 import { addWallet } from '@/db/wallets.repository'
 import { addTagihan } from '@/db/tagihan.repository'
+import { computeAnchor } from '@/features/profil/ProfilTagihanSheet.utils'
+import { parseNominalRaw } from '@/shared/utils/formatNominalInput'
 import { OnboardingShell } from './components/OnboardingShell'
 import { Step1Language } from './steps/Step1Language'
 import { StepInstallGuide } from './steps/StepInstallGuide'
@@ -84,7 +86,10 @@ export function OnboardingPage() {
       const totalSaldoForAlokasi = final.wallets
         .filter((w) => w.name.trim())
         .reduce((s, w) => s + parseWalletBalance(w.balance), 0)
-      const tagihanTotal = final.tagihanInputs.reduce((s, t) => s + t.nominal, 0)
+      const tagihanTotal = final.tagihanInputs.reduce(
+        (s, tg) => s + (parseInt(parseNominalRaw(tg.nominalEstimate), 10) || 0),
+        0,
+      )
       const result = recomputeAlokasi({
         totalSaldo: totalSaldoForAlokasi,
         unpaidTagihanTotal: tagihanTotal,
@@ -125,13 +130,15 @@ export function OnboardingPage() {
       await addWallet(wallet)
     }
     for (const tg of final.tagihanInputs) {
+      const nominal = parseInt(parseNominalRaw(tg.nominalEstimate), 10) || 0
+      const { anchorDate, dueDay } = computeAnchor(tg, nowMs)
       await addTagihan({
-        name: tg.name,
-        nominalType: 'tetap',
-        nominalEstimate: tg.nominal,
-        dueDay: tg.dueDay,
-        frequency: 'bulanan',
-        anchorDate: new Date(new Date().getFullYear(), new Date().getMonth(), tg.dueDay).getTime(),
+        name: tg.name.trim(),
+        nominalType: tg.nominalType,
+        nominalEstimate: nominal,
+        dueDay,
+        frequency: tg.frequency,
+        anchorDate,
         currency: primaryCurrency,
         isActive: true,
         lastPaidAt: null,
@@ -201,7 +208,6 @@ export function OnboardingPage() {
           currency={data.primaryCurrency ?? 'IDR'}
           onChange={(tagihanInputs) => setData((d) => ({ ...d, tagihanInputs }))}
           onNext={() => advance()}
-          onSkip={() => advance()}
         />
       )}
       {step === 'wallet' && (
@@ -219,7 +225,10 @@ export function OnboardingPage() {
           const totalSaldo = data.wallets
             .filter((w) => w.name.trim())
             .reduce((s, w) => s + parseWalletBalance(w.balance), 0)
-          const tagihanTotal = data.tagihanInputs.reduce((s, t) => s + t.nominal, 0)
+          const tagihanTotal = data.tagihanInputs.reduce(
+            (s, tg) => s + (parseInt(parseNominalRaw(tg.nominalEstimate), 10) || 0),
+            0,
+          )
           const nowMs = clock.now()
           const effectivePeriodEnd =
             data.periodEndDate ??

@@ -33,29 +33,23 @@
 }
 
 .sectionLabel {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.8px;
-  text-transform: uppercase;
-  color: var(--accent);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-primary);
   font-family: var(--font-sans);
 }
 
-.sectionLabelMuted {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.8px;
-  text-transform: uppercase;
-  color: var(--ink-tertiary);
-  font-family: var(--font-sans);
+.sectionLabelRow {
   display: flex;
   align-items: center;
   gap: 5px;
+  color: var(--ink-secondary);
 }
 
-.sectionHint {
-  font-size: 11px;
-  color: var(--ink-tertiary);
+.sectionLabelMuted {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-secondary);
   font-family: var(--font-sans);
 }
 
@@ -74,6 +68,10 @@
   background: color-mix(in srgb, var(--accent) 6%, var(--surface));
 }
 
+.inputBoxDanger {
+  border-color: var(--signal-danger);
+}
+
 .inputPrefix {
   font-size: 15px;
   font-family: var(--font-mono);
@@ -89,7 +87,12 @@
   letter-spacing: -1px;
   line-height: 1;
   flex: 1;
+  min-width: 0;
+  width: 100%;
   font-feature-settings: 'tnum';
+  border: none;
+  outline: none;
+  background: transparent;
 }
 
 .inputNumCompact {
