@@ -1,0 +1,57 @@
+.reminderRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 14px;
+  background: var(--surface-deep);
+  border: 1px solid var(--border-hair);
+  border-radius: 8px;
+  margin-bottom: 14px;
+}
+
+.reminderLabel {
+  font-size: 12px;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+}
+
+.reminderAmt {
+  font-size: 14px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--ink-primary);
+  font-feature-settings: 'tnum';
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.saveBtn {
+  width: 100%;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 13px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-sans);
+}
+
+.cancelBtn {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border-hair);
+  border-radius: 8px;
+  padding: 11px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  color: var(--ink-secondary);
+}

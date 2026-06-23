@@ -27,6 +27,7 @@ import {
   getPeriodStartDate,
   calcHariPeriode,
   shouldShowTransisiBanner,
+  needsPaydayConfirmation,
   isHariPertamaMode,
   calcPemasukanFromAvg,
 } from './home.utils'
@@ -53,6 +54,8 @@ import { ProfilWalletsSheet } from '@/features/profil/ProfilWalletsSheet'
 import { QuickLogSheet } from '@/features/quickLog/QuickLogSheet'
 import type { QuickLogMode } from '@/features/quickLog/quickLog.utils'
 import { BerbagiKeamananSection } from '@/features/shared-profile/components/BerbagiKeamananSection'
+import { AlokasiEditSheet } from '@/features/alokasi/AlokasiEditSheet'
+import { recomputeAlokasi } from '@/shared/utils/budget.utils'
 import styles from './HomePage.module.css'
 
 interface HomeData {
@@ -182,6 +185,8 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
                 spentToday,
                 totalSaldo: totalSaldoForCalc,
                 useSaldoFloor: settings.incomeType === 'freelance',
+                operasionalBudget: settings.operasionalBudget ?? null,
+                jatahHarianLocked: settings.jatahHarianLocked ?? null,
               })
               setData({
                 settings,
@@ -257,6 +262,7 @@ export function HomePage() {
   const [showGoalToast, setShowGoalToast] = useState(false)
   const [firstGoalName, setFirstGoalName] = useState('')
   const prevGoalsLengthRef = useRef<number | null>(null)
+  const [alokasiSheetOpen, setAlokasiSheetOpen] = useState(false)
 
   useEffect(() => {
     const prev = prevGoalsLengthRef.current
@@ -358,6 +364,31 @@ export function HomePage() {
     reload()
   }
 
+  async function handleSaveAlokasi(operasional: number) {
+    const totalSaldoForAlokasi = wallets
+      .filter((w) => w.currency === currency)
+      .reduce((s, w) => s + w.balance, 0)
+    const sisaHari = settings.periodEndDate
+      ? Math.max(1, Math.round((settings.periodEndDate - nowMs) / 86_400_000))
+      : daysUntilPayday
+    const { jatahHarianLocked } = recomputeAlokasi({
+      totalSaldo: totalSaldoForAlokasi,
+      unpaidTagihanTotal,
+      operasionalBudget: operasional,
+      sisaHari,
+    })
+    const patch: Partial<import('@/db/database').Settings> = {
+      operasionalBudget: operasional,
+      jatahHarianLocked,
+    }
+    // Re-divide event also confirms payday if it's pending
+    if (needsPaydayConfirmation(nowMs, settings)) {
+      patch.lastPaydayConfirmed = nowMs
+    }
+    await patchSettings(patch)
+    reload()
+  }
+
   const hasDualCurrency = settings.secondaryCurrency != null
   const currencies = hasDualCurrency ? [settings.primaryCurrency, settings.secondaryCurrency!] : []
 
@@ -443,6 +474,27 @@ export function HomePage() {
           />
         )}
 
+        {/* Payday alokasi banner — shown when alokasi model active + payday unconfirmed */}
+        {!showTransisiBanner &&
+          settings.operasionalBudget != null &&
+          needsPaydayConfirmation(nowMs, settings) && (
+            <div className={styles.paydayAlokasiCard}>
+              <div className={styles.paydayAlokasiBody}>
+                <p className={styles.paydayAlokasiTag}>Gajian masuk?</p>
+                <p className={styles.paydayAlokasiTitle}>Atur ulang alokasi lo</p>
+                <p className={styles.paydayAlokasiMsg}>
+                  Saldo lo kayaknya naik nih. Mau langsung tentuin jatah operasional baru?
+                </p>
+                <button
+                  className={styles.paydayAlokasiCta}
+                  onClick={() => setAlokasiSheetOpen(true)}
+                >
+                  Atur alokasi →
+                </button>
+              </div>
+            </div>
+          )}
+
         {/* Cards */}
         <div className={styles.cards}>
           <CekDuluCard
@@ -481,6 +533,7 @@ export function HomePage() {
             onWalletTap={(w) => setEditWallet(w)}
             onHistoryTap={() => setHistoryOpen(true)}
             onAddWalletTap={() => setWalletSheetOpen(true)}
+            onEditAlokasi={() => setAlokasiSheetOpen(true)}
           />
 
           <MonthlyModule
@@ -654,6 +707,28 @@ export function HomePage() {
         onCommit={handleQuickLogCommit}
         initialMode={quickLogInitialMode}
       />
+
+      {alokasiSheetOpen &&
+        (() => {
+          const totalSaldoForAlokasi = wallets
+            .filter((w) => w.currency === currency)
+            .reduce((s, w) => s + w.balance, 0)
+          const bisaDialokasi = Math.max(0, totalSaldoForAlokasi - unpaidTagihanTotal)
+          const sisaHari = settings.periodEndDate
+            ? Math.max(1, Math.round((settings.periodEndDate - nowMs) / 86_400_000))
+            : daysUntilPayday
+          return (
+            <AlokasiEditSheet
+              isOpen
+              onClose={() => setAlokasiSheetOpen(false)}
+              bisaDialokasi={bisaDialokasi}
+              sisaHari={sisaHari}
+              currency={currency}
+              initialOperasional={settings.operasionalBudget ?? bisaDialokasi}
+              onSave={handleSaveAlokasi}
+            />
+          )
+        })()}
     </div>
   )
 }

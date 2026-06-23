@@ -460,6 +460,29 @@
   font-style: italic;
 }
 
+/* ── Mengendap row with edit button ─────────────────────── */
+.mengendapRow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.editAlokasiBtn {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border-hair);
+  background: var(--surface-deep);
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+  flex-shrink: 0;
+}
+
 /* ── Mode: Hari Terakhir ─────────────────────────────────── */
 .hariterakhirNote {
   font-size: 12px;
