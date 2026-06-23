@@ -21,10 +21,12 @@ describe('getProgressCount', () => {
   it('incomeType → 5', () => expect(getProgressCount('incomeType')).toBe(5))
   it('incomeDetail → 5 (same dot as incomeType)', () =>
     expect(getProgressCount('incomeDetail')).toBe(5))
-  it('wallet → 6', () => expect(getProgressCount('wallet')).toBe(6))
-  it('currency2 → 6 (same dot as wallet)', () => expect(getProgressCount('currency2')).toBe(6))
+  it('tagihan → 6', () => expect(getProgressCount('tagihan')).toBe(6))
+  it('wallet → 7', () => expect(getProgressCount('wallet')).toBe(7))
+  it('alokasi → 8', () => expect(getProgressCount('alokasi')).toBe(8))
+  it('currency2 → 9', () => expect(getProgressCount('currency2')).toBe(9))
   it('max filled equals TOTAL_PROGRESS_DOTS', () => {
-    expect(getProgressCount('wallet')).toBe(TOTAL_PROGRESS_DOTS)
+    expect(getProgressCount('currency2')).toBe(TOTAL_PROGRESS_DOTS)
   })
 })
 
@@ -50,8 +52,8 @@ describe('getNextStep', () => {
   it('incomeType → incomeDetail', () => {
     expect(getNextStep('incomeType', 'tetap')).toBe('incomeDetail')
   })
-  it('incomeDetail + freelance → wallet (skip payConfirm)', () => {
-    expect(getNextStep('incomeDetail', 'freelance')).toBe('wallet')
+  it('incomeDetail + freelance → tagihan (skip payConfirm)', () => {
+    expect(getNextStep('incomeDetail', 'freelance')).toBe('tagihan')
   })
   it('incomeDetail + tetap → payConfirm', () => {
     expect(getNextStep('incomeDetail', 'tetap')).toBe('payConfirm')
@@ -59,11 +61,17 @@ describe('getNextStep', () => {
   it('incomeDetail + mix → payConfirm', () => {
     expect(getNextStep('incomeDetail', 'mix')).toBe('payConfirm')
   })
-  it('payConfirm → wallet', () => {
-    expect(getNextStep('payConfirm', 'tetap')).toBe('wallet')
+  it('payConfirm → tagihan', () => {
+    expect(getNextStep('payConfirm', 'tetap')).toBe('tagihan')
   })
-  it('wallet → currency2 (always)', () => {
-    expect(getNextStep('wallet', 'tetap')).toBe('currency2')
+  it('tagihan → wallet', () => {
+    expect(getNextStep('tagihan', 'tetap')).toBe('wallet')
+  })
+  it('wallet → alokasi', () => {
+    expect(getNextStep('wallet', 'tetap')).toBe('alokasi')
+  })
+  it('alokasi → currency2', () => {
+    expect(getNextStep('alokasi', 'tetap')).toBe('currency2')
   })
   it('currency2 → done', () => {
     expect(getNextStep('currency2', 'tetap')).toBe('done')
@@ -87,6 +95,9 @@ describe('buildSettings', () => {
     lastPaydayConfirmed: null,
     primaryCurrency: 'IDR',
     secondaryCurrency: null,
+    operasionalBudget: null,
+    periodEndDate: null,
+    jatahHarianLocked: null,
   }
 
   it('always sets onboardingCompleted: true', () => {

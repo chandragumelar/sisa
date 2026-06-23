@@ -329,3 +329,97 @@
   width: 100%;
   font-family: var(--font-sans);
 }
+
+/* ── StepTagihan / StepAlokasi helpers ────────────────── */
+
+.ob-toprow {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 4px;
+}
+
+.ob-card {
+  background: var(--surface);
+  border: 1px solid var(--border-hair);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.ob-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+}
+
+.ob-btn-primary {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-sans);
+}
+
+.ob-btn-ghost {
+  background: var(--surface);
+  color: var(--ink-secondary);
+  border: 1px solid var(--border-hair);
+  border-radius: 8px;
+  padding: 11px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-sans);
+}
+
+.ob-btn-full {
+  width: 100%;
+}
+
+.ob-add-dashed {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 11px;
+  border-radius: 8px;
+  border: 1.5px dashed var(--border-hair);
+  background: none;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+  cursor: pointer;
+  font-family: var(--font-sans);
+  width: 100%;
+}
+
+.ob-footer {
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ob-footer-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: var(--ink-secondary);
+}
+
+.ob-footer-total-amt {
+  font-size: 18px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  font-feature-settings: 'tnum';
+}

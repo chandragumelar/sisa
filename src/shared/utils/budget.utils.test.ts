@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { calcBudgetPeriode } from './budget.utils'
+import { calcBudgetPeriode, recomputeAlokasi } from './budget.utils'
 import type { BudgetPeriodeInput } from './budget.utils'
 
 function makeInput(overrides: Partial<BudgetPeriodeInput> = {}): BudgetPeriodeInput {
@@ -125,6 +125,127 @@ describe('calcBudgetPeriode — anti double-count', () => {
     const r = calcBudgetPeriode(makeInput({ spentThisPeriode: 4_000_000 }))
     expect(r.sisaPeriode).toBe(r.anggaranOperasional - 4_000_000)
     expect(r.sisaPeriode).toBeLessThan(0)
+  })
+})
+
+// ─── alokasi path ─────────────────────────────────────────────────────────────
+
+describe('calcBudgetPeriode — alokasi path (operasionalBudget != null)', () => {
+  const alokasiBase: BudgetPeriodeInput = {
+    pemasukanPeriode: 0, // ignored in alokasi path
+    unpaidTagihanTotal: 3_000_000,
+    targetTabungan: 0, // ignored in alokasi path
+    hariPeriode: 15,
+    spentThisPeriode: 2_000_000,
+    spentToday: 200_000,
+    totalSaldo: 20_000_000,
+    useSaldoFloor: false,
+    operasionalBudget: 12_000_000,
+    jatahHarianLocked: 800_000,
+  }
+
+  it('anggaranOperasional = operasionalBudget', () => {
+    const r = calcBudgetPeriode(alokasiBase)
+    expect(r.anggaranOperasional).toBe(12_000_000)
+    expect(r.anggaranRaw).toBe(12_000_000)
+  })
+
+  it('sisaPeriode = operasionalBudget − spentThisPeriode (LIVE)', () => {
+    const r = calcBudgetPeriode(alokasiBase)
+    expect(r.sisaPeriode).toBe(10_000_000) // 12jt − 2jt
+  })
+
+  it('jatahHarian = jatahHarianLocked (model B, NOT re-divided)', () => {
+    const r = calcBudgetPeriode(alokasiBase)
+    expect(r.jatahHarian).toBe(800_000)
+  })
+
+  it('jatahHarian unchanged when only spentToday increases', () => {
+    const r1 = calcBudgetPeriode({ ...alokasiBase, spentToday: 0 })
+    const r2 = calcBudgetPeriode({ ...alokasiBase, spentToday: 500_000 })
+    expect(r1.jatahHarian).toBe(r2.jatahHarian)
+  })
+
+  it('uangMengendap = totalSaldo − unpaidTagihan − operasionalBudget, clamped ≥ 0', () => {
+    // 20jt − 3jt − 12jt = 5jt
+    const r = calcBudgetPeriode(alokasiBase)
+    expect(r.uangMengendap).toBe(5_000_000)
+  })
+
+  it('uangMengendap clamped to 0 when operasional > totalSaldo − tagihan', () => {
+    const r = calcBudgetPeriode({ ...alokasiBase, operasionalBudget: 19_000_000 })
+    // 20jt − 3jt − 19jt = −2jt → clamped to 0
+    expect(r.uangMengendap).toBe(0)
+  })
+
+  it('mode normal when sisaPeriode >= 0 and hariPeriode > 1', () => {
+    const r = calcBudgetPeriode(alokasiBase)
+    expect(r.mode).toBe('normal')
+  })
+
+  it('mode bertahan when overspent (sisaPeriode < 0)', () => {
+    const r = calcBudgetPeriode({ ...alokasiBase, spentThisPeriode: 15_000_000 })
+    expect(r.mode).toBe('bertahan')
+    expect(r.shortfall).toBe(0) // no shortfall concept in alokasi path
+  })
+
+  it('mode hari-gajian when hariPeriode = 0', () => {
+    const r = calcBudgetPeriode({ ...alokasiBase, hariPeriode: 0 })
+    expect(r.mode).toBe('hari-gajian')
+    expect(r.jatahHarian).toBe(800_000) // still returns locked value
+  })
+
+  it('income-based path still works when operasionalBudget is null', () => {
+    const r = calcBudgetPeriode({ ...alokasiBase, operasionalBudget: null })
+    // falls back to income-based: pemasukanPeriode=0 → bertahan
+    expect(r.mode).toBe('bertahan')
+    expect(r.anggaranOperasional).toBe(0)
+  })
+})
+
+// ─── recomputeAlokasi ─────────────────────────────────────────────────────────
+
+describe('recomputeAlokasi', () => {
+  it('happy path: mengendap and jatahHarianLocked correct', () => {
+    const r = recomputeAlokasi({
+      totalSaldo: 20_000_000,
+      unpaidTagihanTotal: 3_000_000,
+      operasionalBudget: 12_000_000,
+      sisaHari: 15,
+    })
+    expect(r.mengendap).toBe(5_000_000) // 20 − 3 − 12
+    expect(r.jatahHarianLocked).toBe(800_000) // 12jt / 15
+  })
+
+  it('mengendap clamped to 0 when operasional exhausts bisaDialokasi', () => {
+    const r = recomputeAlokasi({
+      totalSaldo: 10_000_000,
+      unpaidTagihanTotal: 3_000_000,
+      operasionalBudget: 10_000_000, // exceeds bisa
+      sisaHari: 10,
+    })
+    expect(r.mengendap).toBe(0)
+  })
+
+  it('mengendap can equal bisaDialokasi when operasional = 0', () => {
+    const r = recomputeAlokasi({
+      totalSaldo: 10_000_000,
+      unpaidTagihanTotal: 3_000_000,
+      operasionalBudget: 0,
+      sisaHari: 10,
+    })
+    expect(r.mengendap).toBe(7_000_000)
+    expect(r.jatahHarianLocked).toBe(0)
+  })
+
+  it('jatahHarianLocked = 0 when sisaHari = 0 (hari-gajian guard)', () => {
+    const r = recomputeAlokasi({
+      totalSaldo: 20_000_000,
+      unpaidTagihanTotal: 3_000_000,
+      operasionalBudget: 12_000_000,
+      sisaHari: 0,
+    })
+    expect(r.jatahHarianLocked).toBe(0)
   })
 })
 

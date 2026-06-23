@@ -192,4 +192,29 @@ export function applyMigrations(db: Dexie): void {
         await tx.table('categories').bulkAdd(seed)
       }
     })
+
+  // v8: settings gains operasionalBudget, periodEndDate, jatahHarianLocked (alokasi model).
+  // Existing users get null → income-based fallback path stays active.
+  db.version(8)
+    .stores({
+      transactions: '++id, walletId, date, type, currency',
+      wallets: '++id, currency, order',
+      tagihan: '++id, currency, isActive',
+      goals: '++id, currency, order',
+      settings: 'id',
+      license: 'id',
+      meta: 'key',
+      savedScenarios: '++id, savedAt',
+      categories: '++id, type',
+    })
+    .upgrade((tx) => {
+      return tx
+        .table('settings')
+        .toCollection()
+        .modify((row) => {
+          if (row.operasionalBudget === undefined) row.operasionalBudget = null
+          if (row.periodEndDate === undefined) row.periodEndDate = null
+          if (row.jatahHarianLocked === undefined) row.jatahHarianLocked = null
+        })
+    })
 }

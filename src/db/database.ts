@@ -105,6 +105,9 @@ export interface Settings {
   avgIncome: number | null // freelance/mix: estimated income per avgIncomeBasis period
   avgIncomeBasis: IncomeFrequency | null // period basis for avgIncome
   fixedIncome: number | null // tetap/mix: nominal salary per period; used as pemasukanPeriode fallback
+  operasionalBudget: number | null // user-committed operational budget (alokasi model)
+  periodEndDate: number | null // epoch ms; freelance period end (default = akhir bulan)
+  jatahHarianLocked: number | null // model B locked daily budget; recomputed on re-divide events
 }
 
 // Singleton row — always id=1. Use db.license.put({ id: 1, ... }).
