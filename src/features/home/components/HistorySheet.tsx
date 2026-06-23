@@ -197,6 +197,7 @@ export function HistorySheet({
           initialLabel={editTx.label ?? undefined}
           initialNote={editTx.note ?? undefined}
           initialDateMs={editTx.date}
+          initialCategory={editTx.category ?? undefined}
         />
       )}
     </>

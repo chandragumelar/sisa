@@ -1,4 +1,9 @@
 import type Dexie from 'dexie'
+import {
+  DEFAULT_EXPENSE_CATEGORIES,
+  DEFAULT_INCOME_CATEGORIES,
+  FALLBACK_CATEGORY,
+} from '@/features/category/category.types'
 
 /**
  * Apply all Dexie schema versions to the database instance.
@@ -155,5 +160,36 @@ export function applyMigrations(db: Dexie): void {
         .modify((row) => {
           if (row.fixedIncome === undefined) row.fixedIncome = null
         })
+    })
+
+  // v7: categories table + transaction.category field.
+  // Seeded with defaults on first open; existing transactions default to 'Lainnya'.
+  db.version(7)
+    .stores({
+      transactions: '++id, walletId, date, type, currency',
+      wallets: '++id, currency, order',
+      tagihan: '++id, currency, isActive',
+      goals: '++id, currency, order',
+      settings: 'id',
+      license: 'id',
+      meta: 'key',
+      savedScenarios: '++id, savedAt',
+      categories: '++id, type',
+    })
+    .upgrade(async (tx) => {
+      // Set category on all existing transactions that lack it
+      await tx
+        .table('transactions')
+        .toCollection()
+        .modify((row) => {
+          if (row.category === undefined) row.category = FALLBACK_CATEGORY
+        })
+
+      // Seed default categories (only if table is empty to support re-runs)
+      const count = await tx.table('categories').count()
+      if (count === 0) {
+        const seed = [...DEFAULT_EXPENSE_CATEGORIES, ...DEFAULT_INCOME_CATEGORIES]
+        await tx.table('categories').bulkAdd(seed)
+      }
     })
 }

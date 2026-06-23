@@ -1,9 +1,7 @@
 import type { Transaction } from '@/db/database'
+import { FALLBACK_CATEGORY } from '@/features/category/category.types'
 
 export type QuickLogMode = 'keluar' | 'masuk' | 'nabung'
-
-export const LABELS_KELUAR = ['makan', 'transport', 'belanja', 'tagihan', 'lainnya']
-export const LABELS_MASUK = ['gaji', 'freelance', 'bonus', 'lainnya']
 
 export interface QuickLogInput {
   mode: QuickLogMode
@@ -14,6 +12,7 @@ export interface QuickLogInput {
   dateMs: number
   currency: string
   isFromSavings: boolean
+  category: string
 }
 
 export function buildKeluar(input: QuickLogInput): Omit<Transaction, 'id'> {
@@ -28,6 +27,7 @@ export function buildKeluar(input: QuickLogInput): Omit<Transaction, 'id'> {
     isFromSavings: input.isFromSavings,
     isEarmark: false,
     createdAt: Date.now(),
+    category: input.category || FALLBACK_CATEGORY,
   }
 }
 
@@ -43,6 +43,7 @@ export function buildMasuk(input: QuickLogInput): Omit<Transaction, 'id'> {
     isFromSavings: false,
     isEarmark: false,
     createdAt: Date.now(),
+    category: input.category || FALLBACK_CATEGORY,
   }
 }
 
@@ -58,6 +59,7 @@ export function buildNabung(input: QuickLogInput): Omit<Transaction, 'id'> {
     isFromSavings: false,
     isEarmark: true,
     createdAt: Date.now(),
+    category: input.category || FALLBACK_CATEGORY,
   }
 }
 

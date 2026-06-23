@@ -14,6 +14,7 @@ import { ALL_CURRENCIES } from '@/constants/currencies'
 import { BottomSheet } from '@/shared/components/BottomSheet'
 import { ProfilIncomeSheet } from '@/features/profil/ProfilIncomeSheet'
 import { ProfilLicenseSheet } from '@/features/profil/ProfilLicenseSheet'
+import { ManageCategoriesSheet } from '@/features/category/ManageCategoriesSheet'
 import { t, toLocale } from '@/shared/strings/strings'
 import {
   buildBackupJSON,
@@ -38,7 +39,7 @@ export function SettingsPage() {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [data, setData] = useState<PageData | null>(null)
-  const [activeSheet, setActiveSheet] = useState<'income' | 'license' | null>(null)
+  const [activeSheet, setActiveSheet] = useState<'income' | 'license' | 'categories' | null>(null)
   const [importPreview, setImportPreview] = useState<{
     preview: ImportPreview
     json: string
@@ -188,6 +189,10 @@ export function SettingsPage() {
           <span className={styles.rowLabel}>{t('settings.row_income', lang)}</span>
           <span className={styles.rowSub}>{t('settings.row_income_sub', lang)}</span>
         </button>
+        <button className={styles.actionRow} onClick={() => setActiveSheet('categories')}>
+          <span className={styles.rowLabel}>{t('settings.row_categories', lang)}</span>
+          <span className={styles.rowSub}>{t('settings.row_categories_sub', lang)}</span>
+        </button>
       </div>
 
       {/* Tampilan */}
@@ -323,6 +328,10 @@ export function SettingsPage() {
         license={data?.license}
         nowMs={nowMs}
         onUpdate={loadData}
+      />
+      <ManageCategoriesSheet
+        isOpen={activeSheet === 'categories'}
+        onClose={() => setActiveSheet(null)}
       />
 
       {/* Import preview sheet */}

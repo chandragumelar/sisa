@@ -11,6 +11,7 @@ const BASE: QuickLogInput = {
   dateMs: 1700000000000,
   currency: 'IDR',
   isFromSavings: false,
+  category: 'Lainnya',
 }
 
 describe('buildKeluar', () => {
