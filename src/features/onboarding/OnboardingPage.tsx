@@ -6,6 +6,7 @@ import { useSetLanguage } from '@/app/providers/useLanguage'
 import { saveSettings } from '@/db/settings.repository'
 import { addWallet } from '@/db/wallets.repository'
 import { addTagihan } from '@/db/tagihan.repository'
+import { putAllocation } from '@/db/allocation.repository'
 import { computeAnchor } from '@/features/profil/ProfilTagihanSheet.utils'
 import { parseNominalRaw } from '@/shared/utils/formatNominalInput'
 import { OnboardingShell } from './components/OnboardingShell'
@@ -33,7 +34,7 @@ import {
   parseWalletBalance,
 } from './onboarding.utils'
 import { getPaydayDate, calcDaysUntilPayday } from '@/features/home/home.utils'
-import { recomputeAlokasi } from '@/shared/utils/budget.utils'
+import { relock } from '@/shared/utils/budget.utils'
 import type { IncomeFrequency } from '@/db/database'
 
 function getPreviousPaydayMs(nextPaydayMs: number, frequency: IncomeFrequency): number {
@@ -43,6 +44,7 @@ function getPreviousPaydayMs(nextPaydayMs: number, frequency: IncomeFrequency): 
   else d.setMonth(d.getMonth() - 1)
   return d.getTime()
 }
+
 export function OnboardingPage() {
   const navigate = useNavigate()
   const clock = useClock()
@@ -70,35 +72,6 @@ export function OnboardingPage() {
     const fixedIncomeNum = final.fixedIncome ? parseWalletBalance(final.fixedIncome) : null
     const nowMs = clock.now()
 
-    // Compute jatahHarianLocked from the alokasi the user just set
-    let jatahHarianLocked: number | null = null
-    if (final.operasionalBudget != null) {
-      const partialSettings = {
-        incomeType,
-        incomeFrequency: final.incomeFrequency ?? 'bulanan',
-        incomeAnchorDate: final.incomeAnchorDate,
-        incomeDay: final.incomeDay,
-        weekendBehavior: null,
-      } as import('@/db/database').Settings
-      const sisaHari = final.periodEndDate
-        ? Math.max(1, Math.round((final.periodEndDate - nowMs) / 86_400_000))
-        : calcDaysUntilPayday(nowMs, partialSettings)
-      const totalSaldoForAlokasi = final.wallets
-        .filter((w) => w.name.trim())
-        .reduce((s, w) => s + parseWalletBalance(w.balance), 0)
-      const tagihanTotal = final.tagihanInputs.reduce(
-        (s, tg) => s + (parseInt(parseNominalRaw(tg.nominalEstimate), 10) || 0),
-        0,
-      )
-      const result = recomputeAlokasi({
-        totalSaldo: totalSaldoForAlokasi,
-        unpaidTagihanTotal: tagihanTotal,
-        operasionalBudget: final.operasionalBudget,
-        sisaHari,
-      })
-      jatahHarianLocked = result.jatahHarianLocked
-    }
-
     const settings = buildSettings({
       language,
       incomeType,
@@ -114,9 +87,6 @@ export function OnboardingPage() {
       lastPaydayConfirmed: final.lastPaydayConfirmed,
       primaryCurrency,
       secondaryCurrency: final.secondaryCurrency,
-      operasionalBudget: final.operasionalBudget,
-      periodEndDate: final.periodEndDate,
-      jatahHarianLocked,
     })
 
     const walletRecords = buildWalletRecords(
@@ -145,6 +115,35 @@ export function OnboardingPage() {
         lastPaidAmount: null,
         createdAt: nowMs,
       })
+    }
+
+    if (final.operasionalBudget != null) {
+      const partialSettings = {
+        incomeType,
+        incomeFrequency: final.incomeFrequency ?? 'bulanan',
+        incomeAnchorDate: final.incomeAnchorDate,
+        incomeDay: final.incomeDay,
+        weekendBehavior: null,
+      } as import('@/db/database').Settings
+      const totalSaldoForAlokasi = final.wallets
+        .filter((w) => w.name.trim())
+        .reduce((s, w) => s + parseWalletBalance(w.balance), 0)
+      const tagihanTotal = final.tagihanInputs.reduce(
+        (s, tg) => s + (parseInt(parseNominalRaw(tg.nominalEstimate), 10) || 0),
+        0,
+      )
+      const sisaHari = final.periodEndDate
+        ? Math.max(1, Math.round((final.periodEndDate - nowMs) / 86_400_000))
+        : calcDaysUntilPayday(nowMs, partialSettings)
+      const allocation = relock({
+        totalSaldo: totalSaldoForAlokasi,
+        tagihanUnpaid: tagihanTotal,
+        buatDipakai: final.operasionalBudget,
+        sisaHari,
+        now: nowMs,
+        periodEndDate: incomeType === 'freelance' ? final.periodEndDate : null,
+      })
+      await putAllocation(allocation)
     }
 
     navigate('/', { replace: true })
@@ -230,9 +229,10 @@ export function OnboardingPage() {
             0,
           )
           const nowMs = clock.now()
+          const nowDate = new Date(nowMs)
           const effectivePeriodEnd =
             data.periodEndDate ??
-            new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getTime()
+            new Date(nowDate.getFullYear(), nowDate.getMonth() + 1, 0).getTime()
           const sisaHari =
             data.incomeType === 'freelance'
               ? Math.max(1, Math.round((effectivePeriodEnd - nowMs) / 86_400_000))

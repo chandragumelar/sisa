@@ -1,4 +1,4 @@
-import type { Settings, Goal, Transaction } from '@/db/database'
+import type { Settings, Goal, Transaction, Allocation } from '@/db/database'
 
 // ─── Shared ───────────────────────────────────────────────────────────────────
 
@@ -123,10 +123,19 @@ export function getPeriodStartDate(nowMs: number, settings: Settings): Date {
 
 /**
  * True when a tetap/mix user has entered a new calendar period but not yet
- * confirmed that their salary arrived. Freelance never needs confirmation.
+ * confirmed that their salary arrived.
+ * For freelance: true when now > allocation.periodEndDate (period expired, relock needed).
  */
-export function needsPaydayConfirmation(nowMs: number, settings: Settings): boolean {
-  if (settings.incomeType === 'freelance') return false
+export function needsPaydayConfirmation(
+  nowMs: number,
+  settings: Settings,
+  allocation?: Allocation | null,
+): boolean {
+  if (settings.incomeType === 'freelance') {
+    return (
+      allocation != null && allocation.periodEndDate != null && nowMs > allocation.periodEndDate
+    )
+  }
   const calStart = getCalendarPeriodStartDate(nowMs, settings)
   const confirmedThisPeriod =
     settings.lastPaydayConfirmed != null && settings.lastPaydayConfirmed >= calStart.getTime()

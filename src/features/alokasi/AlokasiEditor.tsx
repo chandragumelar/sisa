@@ -19,29 +19,19 @@ interface NumInputProps {
   onChange: (v: number) => void
   symbol: string
   accent?: boolean
-  danger?: boolean
   compact?: boolean
 }
 
-function NumInput({
-  value,
-  onChange,
-  symbol,
-  accent = false,
-  danger = false,
-  compact = false,
-}: NumInputProps) {
+function NumInput({ value, onChange, symbol, accent = false, compact = false }: NumInputProps) {
   const [raw, setRaw] = useState<string | null>(null)
   const display = raw !== null ? raw : value.toLocaleString('id-ID')
   return (
-    <div
-      className={`${styles.inputBox} ${accent ? styles.inputBoxActive : ''} ${danger ? styles.inputBoxDanger : ''}`}
-    >
+    <div className={`${styles.inputBox} ${accent ? styles.inputBoxActive : ''}`}>
       <span className={styles.inputPrefix}>{symbol}</span>
       <input
         type="text"
         inputMode="numeric"
-        className={`${styles.inputNum} ${compact ? styles.inputNumCompact : ''} ${danger ? styles.inputNumDanger : ''}`}
+        className={`${styles.inputNum} ${compact ? styles.inputNumCompact : ''}`}
         value={display}
         onFocus={() => setRaw(value === 0 ? '' : String(value))}
         onChange={(e) => setRaw(e.target.value.replace(/\D/g, ''))}
@@ -67,23 +57,16 @@ export function AlokasiEditor({
 }: Props) {
   const lang = useLanguage()
   const currSymbol = getCurrencySymbol(currency)
-  const mengendap = bisaDialokasi - operasional
+  const mengendap = Math.max(0, bisaDialokasi - operasional)
   const jatahHarian = sisaHari > 0 ? Math.round(operasional / sisaHari) : 0
-  const step = Math.max(1000, Math.round(bisaDialokasi / 100 / 1000) * 1000)
 
   function setDipakai(v: number) {
     onChange(Math.max(0, Math.min(bisaDialokasi, v)))
   }
 
-  function setMengendapInput(v: number) {
-    const m = Math.max(0, Math.min(bisaDialokasi, v))
-    onChange(bisaDialokasi - m)
-  }
-
   return (
     <div className={styles.root}>
       <div className={`${styles.card} ${compact ? styles.cardCompact : ''}`}>
-        {/* Buat dipakai */}
         <div className={styles.section}>
           <div className={styles.sectionLabel}>{t('alokasi.buat_dipakai', lang)}</div>
           <NumInput
@@ -95,35 +78,12 @@ export function AlokasiEditor({
           />
         </div>
 
-        {/* Slider */}
-        <div className={styles.sliderWrap}>
-          <input
-            type="range"
-            className={styles.slider}
-            min={0}
-            max={bisaDialokasi}
-            step={step}
-            value={operasional}
-            onChange={(e) => setDipakai(Math.round(+e.target.value / step) * step)}
-          />
-          <div className={styles.sliderLabels}>
-            <span>{currSymbol}0</span>
-            <span className={styles.sliderHint}>{t('alokasi.slider_hint', lang)}</span>
-            <span>
-              {currSymbol}
-              {bisaDialokasi.toLocaleString('id-ID')}
-            </span>
-          </div>
-        </div>
-
-        {/* Linked divider */}
         <div className={styles.dividerRow}>
           <div className={styles.dividerLine} />
-          <span className={styles.dividerText}>↕ saling terhubung</span>
+          <span className={styles.dividerText}>↕ otomatis nyesuain</span>
           <div className={styles.dividerLine} />
         </div>
 
-        {/* Uang Mengendap */}
         <div className={styles.section}>
           <div className={styles.sectionLabelRow}>
             <svg
@@ -138,20 +98,21 @@ export function AlokasiEditor({
               <path d="M4.5 5.5V4a2 2 0 1 1 4 0v1.5" strokeLinecap="round" />
             </svg>
             <span className={styles.sectionLabelMuted}>{t('alokasi.uang_mengendap', lang)}</span>
+            <span className={styles.autoBadge}>{t('alokasi.mengendap_auto', lang)}</span>
           </div>
-          <NumInput
-            value={Math.abs(mengendap)}
-            onChange={setMengendapInput}
-            symbol={mengendap < 0 ? `−${currSymbol}` : currSymbol}
-            danger={mengendap < 0}
-            compact={compact}
-          />
+          <div className={styles.inputBoxReadOnly}>
+            <span className={styles.inputPrefix}>{currSymbol}</span>
+            <span
+              className={`${styles.inputNum} ${styles.inputNumMuted} ${compact ? styles.inputNumCompact : ''}`}
+            >
+              {mengendap.toLocaleString('id-ID')}
+            </span>
+          </div>
         </div>
 
         <p className={styles.note}>{t('alokasi.mengendap_note', lang)}</p>
       </div>
 
-      {/* Jatah harian preview */}
       {sisaHari > 0 && (
         <div className={styles.jatahBox}>
           <span className={styles.jatahLabel}>{t('alokasi.jatah_harian_approx', lang)}</span>

@@ -217,4 +217,20 @@ export function applyMigrations(db: Dexie): void {
           if (row.jatahHarianLocked === undefined) row.jatahHarianLocked = null
         })
     })
+
+  // v9: allocation table replaces settings.operasionalBudget/periodEndDate/jatahHarianLocked.
+  // No upgrade callback needed — allocation table starts empty;
+  // existing users without allocation fall back to income-based path.
+  db.version(9).stores({
+    transactions: '++id, walletId, date, type, currency',
+    wallets: '++id, currency, order',
+    tagihan: '++id, currency, isActive',
+    goals: '++id, currency, order',
+    settings: 'id',
+    license: 'id',
+    meta: 'key',
+    savedScenarios: '++id, savedAt',
+    categories: '++id, type',
+    allocation: 'id',
+  })
 }

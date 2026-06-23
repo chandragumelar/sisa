@@ -492,3 +492,97 @@
   margin: 6px 0 0;
   font-style: italic;
 }
+
+/* ── New rincian layout classes ─────────────────────────────── */
+.rincianRowBold .rincianLabel,
+.rincianRowBold .rincianVal {
+  font-weight: 700;
+  color: var(--ink-primary);
+}
+
+.rincianValMuted {
+  color: var(--ink-tertiary);
+}
+
+.rincianLabelMuted {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--ink-tertiary);
+}
+
+.rincianSectionLabel {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+  margin-top: 10px;
+  margin-bottom: 4px;
+}
+
+.rincianDivider {
+  height: 1px;
+  background: var(--border-soft);
+  margin: 6px 0;
+}
+
+.rincianSisaRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 0;
+}
+
+.rincianSisaLabel {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink-primary);
+  font-family: var(--font-sans);
+}
+
+.rincianSisaRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rincianSisaAmt {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink-primary);
+  font-feature-settings: 'tnum';
+  white-space: nowrap;
+}
+
+.aturBtn {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--accent);
+  background: none;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  padding: 2px 7px;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  flex-shrink: 0;
+}
+
+.addWalletInline {
+  background: none;
+  border: 1px dashed var(--border-hair);
+  border-radius: 8px;
+  padding: 10px 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+  letter-spacing: 0.02em;
+  margin-top: 4px;
+}

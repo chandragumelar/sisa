@@ -19,7 +19,7 @@ import {
   addNabungDeduction,
 } from '@/db/transactions.repository'
 import { t } from '@/shared/strings/strings'
-import type { Language, Settings, Wallet, Tagihan, Goal } from '@/db/database'
+import type { Language, Settings, Wallet, Tagihan, Goal, Allocation } from '@/db/database'
 import {
   calcDaysUntilPayday,
   calcGoalStatuses,
@@ -55,7 +55,9 @@ import { QuickLogSheet } from '@/features/quickLog/QuickLogSheet'
 import type { QuickLogMode } from '@/features/quickLog/quickLog.utils'
 import { BerbagiKeamananSection } from '@/features/shared-profile/components/BerbagiKeamananSection'
 import { AlokasiEditSheet } from '@/features/alokasi/AlokasiEditSheet'
-import { recomputeAlokasi } from '@/shared/utils/budget.utils'
+import { getAllocation, putAllocation } from '@/db/allocation.repository'
+import { computeFromAllocation, relock } from '@/shared/utils/budget.utils'
+import { JatahHarianCard } from './components/JatahHarianCard'
 import styles from './HomePage.module.css'
 
 interface HomeData {
@@ -66,6 +68,14 @@ interface HomeData {
   totalNabung: number
   monthlyIncome: number
   monthlyExpense: number
+  // allocation path
+  allocation: Allocation | null
+  sisaUang: number
+  mengendap: number
+  jatahHariIni: number
+  spentToday: number
+  spentSinceLock: number
+  // legacy fields for CekDuluCard and other consumers
   sisaPeriode: number
   jatahHarian: number | null
   anggaranOperasional: number
@@ -111,6 +121,12 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
     totalNabung: 0,
     monthlyIncome: 0,
     monthlyExpense: 0,
+    allocation: null,
+    sisaUang: 0,
+    mengendap: 0,
+    jatahHariIni: 0,
+    spentToday: 0,
+    spentSinceLock: 0,
     sisaPeriode: 0,
     jatahHarian: null,
     anggaranOperasional: 0,
@@ -152,62 +168,100 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
           getTotalNabung(currency),
           getMonthlyFlows(currency, monthStart, monthEnd),
           getPeriodFlows(currency, periodStartMs, nowMs),
+          getAllocation(),
         ]).then(
-          ([
+          async ([
             totalNabung,
             { income: monthlyIncome, expense: monthlyExpense },
             { income, expense, spentToday },
+            allocation,
           ]) => {
-            if (!cancelled) {
-              const hariPertama = isHariPertamaMode(settings.lastPaydayConfirmed, income)
-              let effectivePemasukan = income
-              if (hariPertama) {
-                effectivePemasukan = totalSaldoForCalc
-              } else if (income === 0 && settings.fixedIncome && settings.fixedIncome > 0) {
-                effectivePemasukan = settings.fixedIncome
-              } else if (
-                (settings.incomeType === 'freelance' || settings.incomeType === 'mix') &&
-                settings.avgIncome &&
-                settings.avgIncomeBasis
-              ) {
-                effectivePemasukan = calcPemasukanFromAvg(
-                  settings.avgIncome,
-                  settings.avgIncomeBasis,
-                  hariPeriode,
-                )
-              }
-              const budget = calcBudgetPeriode({
-                pemasukanPeriode: effectivePemasukan,
-                unpaidTagihanTotal: unpaidForCalc,
-                targetTabungan: totalNabung,
-                hariPeriode,
-                spentThisPeriode: expense,
-                spentToday,
-                totalSaldo: totalSaldoForCalc,
-                useSaldoFloor: settings.incomeType === 'freelance',
-                operasionalBudget: settings.operasionalBudget ?? null,
-                jatahHarianLocked: settings.jatahHarianLocked ?? null,
-              })
-              setData({
-                settings,
-                wallets,
-                tagihan,
-                goals,
-                totalNabung,
-                monthlyIncome,
-                monthlyExpense,
-                sisaPeriode: budget.sisaPeriode,
-                jatahHarian: budget.jatahHarian,
-                anggaranOperasional: budget.anggaranOperasional,
-                uangMengendap: budget.uangMengendap,
-                mode: budget.mode,
-                shortfall: budget.shortfall,
-                pemasukanPeriode: budget.pemasukanPeriode,
-                hariPeriode: budget.hariPeriode,
-                spentThisPeriode: expense,
-              })
-              setIsLoading(false)
+            if (cancelled) return
+
+            let spentSinceLock = 0
+            if (allocation) {
+              const { expense: sinceLock } = await getPeriodFlows(
+                currency,
+                allocation.lockedAt,
+                nowMs,
+              )
+              spentSinceLock = sinceLock
             }
+            if (cancelled) return
+
+            const hariPertama = isHariPertamaMode(settings.lastPaydayConfirmed, income)
+            let effectivePemasukan = income
+            if (hariPertama) {
+              effectivePemasukan = totalSaldoForCalc
+            } else if (income === 0 && settings.fixedIncome && settings.fixedIncome > 0) {
+              effectivePemasukan = settings.fixedIncome
+            } else if (
+              (settings.incomeType === 'freelance' || settings.incomeType === 'mix') &&
+              settings.avgIncome &&
+              settings.avgIncomeBasis
+            ) {
+              effectivePemasukan = calcPemasukanFromAvg(
+                settings.avgIncome,
+                settings.avgIncomeBasis,
+                hariPeriode,
+              )
+            }
+            const budget = calcBudgetPeriode({
+              pemasukanPeriode: effectivePemasukan,
+              unpaidTagihanTotal: unpaidForCalc,
+              targetTabungan: totalNabung,
+              hariPeriode,
+              spentThisPeriode: expense,
+              spentToday,
+              totalSaldo: totalSaldoForCalc,
+              useSaldoFloor: settings.incomeType === 'freelance',
+            })
+
+            let sisaUang: number
+            let mengendap: number
+            let jatahHariIni: number
+
+            if (allocation) {
+              const result = computeFromAllocation(allocation, {
+                totalSaldo: totalSaldoForCalc,
+                tagihanUnpaid: unpaidForCalc,
+                spentSinceLock,
+                spentToday,
+              })
+              sisaUang = result.sisaUang
+              mengendap = result.mengendap
+              jatahHariIni = result.jatahHariIni
+            } else {
+              sisaUang = budget.sisaPeriode
+              mengendap = budget.uangMengendap
+              jatahHariIni = budget.jatahHarian ?? 0
+            }
+
+            setData({
+              settings,
+              wallets,
+              tagihan,
+              goals,
+              totalNabung,
+              monthlyIncome,
+              monthlyExpense,
+              allocation,
+              sisaUang,
+              mengendap,
+              jatahHariIni,
+              spentToday,
+              spentSinceLock,
+              sisaPeriode: budget.sisaPeriode,
+              jatahHarian: budget.jatahHarian,
+              anggaranOperasional: budget.anggaranOperasional,
+              uangMengendap: budget.uangMengendap,
+              mode: budget.mode,
+              shortfall: budget.shortfall,
+              pemasukanPeriode: budget.pemasukanPeriode,
+              hariPeriode: budget.hariPeriode,
+              spentThisPeriode: expense,
+            })
+            setIsLoading(false)
           },
         )
       },
@@ -234,13 +288,14 @@ export function HomePage() {
     totalNabung,
     monthlyIncome,
     monthlyExpense,
+    allocation,
+    sisaUang,
+    mengendap,
+    jatahHariIni,
+    spentToday,
     sisaPeriode,
-    jatahHarian,
-    uangMengendap,
     mode,
     shortfall,
-    pemasukanPeriode,
-    spentThisPeriode,
     isLoading,
     reload,
   } = useHomeData(nowMs)
@@ -283,7 +338,7 @@ export function HomePage() {
     nextPaydayMs,
   )
   const daysUntilPayday = calcDaysUntilPayday(nowMs, settings)
-  const condition = getConditionInfo(settings, sisaPeriode, lang)
+  const condition = getConditionInfo(settings, sisaUang, lang)
 
   const backupDismissedAt = (() => {
     const raw = localStorage.getItem(BACKUP_DISMISS_KEY)
@@ -369,24 +424,24 @@ export function HomePage() {
     const totalSaldoForAlokasi = wallets
       .filter((w) => w.currency === currency)
       .reduce((s, w) => s + w.balance, 0)
-    const sisaHari = settings.periodEndDate
-      ? Math.max(1, Math.round((settings.periodEndDate - nowMs) / 86_400_000))
+    const sisaHari = allocation?.periodEndDate
+      ? Math.max(1, Math.round((allocation.periodEndDate - nowMs) / 86_400_000))
       : daysUntilPayday
-    const { jatahHarianLocked } = recomputeAlokasi({
+    const newAllocation = relock({
       totalSaldo: totalSaldoForAlokasi,
-      unpaidTagihanTotal,
-      operasionalBudget: operasional,
+      tagihanUnpaid: unpaidTagihanTotal,
+      buatDipakai: operasional,
       sisaHari,
+      now: nowMs,
+      periodEndDate: allocation?.periodEndDate ?? null,
     })
-    const patch: Partial<import('@/db/database').Settings> = {
-      operasionalBudget: operasional,
-      jatahHarianLocked,
+    await putAllocation(newAllocation)
+    if (
+      settings.incomeType !== 'freelance' &&
+      needsPaydayConfirmation(nowMs, settings, allocation)
+    ) {
+      await patchSettings({ lastPaydayConfirmed: nowMs })
     }
-    // Re-divide event also confirms payday if it's pending
-    if (needsPaydayConfirmation(nowMs, settings)) {
-      patch.lastPaydayConfirmed = nowMs
-    }
-    await patchSettings(patch)
     reload()
   }
 
@@ -477,8 +532,8 @@ export function HomePage() {
 
         {/* Payday alokasi banner — shown when alokasi model active + payday unconfirmed */}
         {!showTransisiBanner &&
-          settings.operasionalBudget != null &&
-          needsPaydayConfirmation(nowMs, settings) && (
+          allocation != null &&
+          needsPaydayConfirmation(nowMs, settings, allocation) && (
             <div className={styles.paydayAlokasiCard}>
               <div className={styles.paydayAlokasiBody}>
                 <p className={styles.paydayAlokasiTag}>Gajian masuk?</p>
@@ -518,15 +573,17 @@ export function HomePage() {
           <SaldoModule
             wallets={wallets.filter((w) => w.currency === currency)}
             currency={currency}
-            sisaPeriode={sisaPeriode}
-            jatahHarian={jatahHarian}
-            pemasukanPeriode={pemasukanPeriode}
-            uangMengendap={uangMengendap}
+            sisaUang={sisaUang}
+            totalSaldo={wallets
+              .filter((w) => w.currency === currency)
+              .reduce((s, w) => s + w.balance, 0)}
+            tagihanUnpaid={unpaidTagihanTotal}
+            mengendap={mengendap}
+            monthlyIncome={monthlyIncome}
+            monthlyExpense={monthlyExpense}
+            totalNabung={totalNabung}
             mode={mode}
             shortfall={shortfall}
-            unpaidTagihanTotal={unpaidTagihanTotal}
-            totalNabung={totalNabung}
-            spentThisPeriode={spentThisPeriode}
             daysUntilPayday={daysUntilPayday}
             nextPaydayMs={nextPaydayMs}
             conditionLabel={condition?.label ?? null}
@@ -536,6 +593,16 @@ export function HomePage() {
             onAddWalletTap={() => setWalletSheetOpen(true)}
             onEditAlokasi={() => setAlokasiSheetOpen(true)}
           />
+
+          {allocation && (
+            <JatahHarianCard
+              jatahHariIni={jatahHariIni}
+              spentToday={spentToday}
+              sisaUang={sisaUang}
+              sisaHari={daysUntilPayday}
+              currency={currency}
+            />
+          )}
 
           <MonthlyModule
             income={monthlyIncome}
@@ -715,8 +782,8 @@ export function HomePage() {
             .filter((w) => w.currency === currency)
             .reduce((s, w) => s + w.balance, 0)
           const bisaDialokasi = Math.max(0, totalSaldoForAlokasi - unpaidTagihanTotal)
-          const sisaHari = settings.periodEndDate
-            ? Math.max(1, Math.round((settings.periodEndDate - nowMs) / 86_400_000))
+          const sisaHari = allocation?.periodEndDate
+            ? Math.max(1, Math.round((allocation.periodEndDate - nowMs) / 86_400_000))
             : daysUntilPayday
           return (
             <AlokasiEditSheet
@@ -725,7 +792,9 @@ export function HomePage() {
               bisaDialokasi={bisaDialokasi}
               sisaHari={sisaHari}
               currency={currency}
-              initialOperasional={settings.operasionalBudget ?? bisaDialokasi}
+              initialOperasional={
+                allocation ? allocation.jatahHarian * allocation.daysAtLock : bisaDialokasi
+              }
               periodeLabel={
                 settings.incomeType === 'freelance'
                   ? t('alokasi.sampai_akhir_bulan', lang)

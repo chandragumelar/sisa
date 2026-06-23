@@ -19,17 +19,10 @@
   padding: 14px;
 }
 
-/* Section: operasional / mengendap */
 .section {
   display: flex;
   flex-direction: column;
   gap: 7px;
-}
-
-.sectionHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 }
 
 .sectionLabel {
@@ -53,6 +46,19 @@
   font-family: var(--font-sans);
 }
 
+.autoBadge {
+  margin-left: auto;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+  border: 1px solid var(--border-soft);
+  border-radius: 4px;
+  padding: 2px 5px;
+}
+
 .inputBox {
   display: flex;
   align-items: center;
@@ -68,8 +74,15 @@
   background: color-mix(in srgb, var(--accent) 6%, var(--surface));
 }
 
-.inputBoxDanger {
-  border-color: var(--signal-danger);
+.inputBoxReadOnly {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--border-soft);
+  border-radius: 8px;
+  padding: 10px 14px;
+  background: var(--surface-deep);
+  opacity: 0.7;
 }
 
 .inputPrefix {
@@ -101,63 +114,6 @@
 
 .inputNumMuted {
   color: var(--ink-secondary);
-}
-
-.inputNumDanger {
-  color: var(--signal-danger);
-}
-
-/* Slider */
-.sliderWrap {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  padding-bottom: 4px;
-}
-
-.slider {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 100%;
-  height: 4px;
-  border-radius: 2px;
-  background: var(--border-hair);
-  outline: none;
-  cursor: pointer;
-  display: block;
-}
-
-.slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: var(--accent);
-  cursor: pointer;
-  box-shadow: 0 2px 8px color-mix(in srgb, var(--accent) 35%, transparent);
-  border: 3px solid var(--surface);
-}
-
-.slider::-moz-range-thumb {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: var(--accent);
-  cursor: pointer;
-  border: 3px solid var(--surface);
-}
-
-.sliderLabels {
-  display: flex;
-  justify-content: space-between;
-  font-size: 10px;
-  color: var(--ink-tertiary);
-  font-family: var(--font-mono);
-}
-
-.sliderHint {
-  font-family: var(--font-sans);
-  font-style: italic;
 }
 
 /* Divider */

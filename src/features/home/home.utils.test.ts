@@ -40,9 +40,6 @@ function makeSettings(overrides: Partial<Settings> = {}): Settings {
     weekendBehavior: null,
     onboardingCompleted: true,
     lastExportedAt: null,
-    operasionalBudget: null,
-    periodEndDate: null,
-    jatahHarianLocked: null,
     ...overrides,
   }
 }
@@ -587,5 +584,50 @@ describe('calcGoalStatuses', () => {
   it('pct calculation', () => {
     const goals = [makeGoal(1, 0, 1_000_000)]
     expect(calcGoalStatuses(goals, 250_000)[0].pct).toBe(25)
+  })
+})
+
+// ─── needsPaydayConfirmation with allocation ──────────────────────────────────
+
+describe('needsPaydayConfirmation with allocation', () => {
+  const NOW = NOW_MS
+  const baseFreelance = makeSettings({ incomeType: 'freelance', lastPaydayConfirmed: null })
+
+  it('freelance: false when allocation is null', () => {
+    expect(needsPaydayConfirmation(NOW, baseFreelance, null)).toBe(false)
+  })
+
+  it('freelance: false when now < periodEndDate', () => {
+    const alloc: import('@/db/database').Allocation = {
+      id: 1,
+      jatahHarian: 100_000,
+      daysAtLock: 10,
+      lockedAt: 0,
+      periodEndDate: NOW + 86_400_000,
+    }
+    expect(needsPaydayConfirmation(NOW, baseFreelance, alloc)).toBe(false)
+  })
+
+  it('freelance: true when now > periodEndDate', () => {
+    const alloc: import('@/db/database').Allocation = {
+      id: 1,
+      jatahHarian: 100_000,
+      daysAtLock: 10,
+      lockedAt: 0,
+      periodEndDate: NOW - 1,
+    }
+    expect(needsPaydayConfirmation(NOW, baseFreelance, alloc)).toBe(true)
+  })
+
+  it('mix: follows getPaydayDate cycle, not periodEndDate', () => {
+    const mix = makeSettings({ incomeType: 'mix', incomeDay: 25, lastPaydayConfirmed: NOW })
+    const alloc: import('@/db/database').Allocation = {
+      id: 1,
+      jatahHarian: 100_000,
+      daysAtLock: 10,
+      lockedAt: 0,
+      periodEndDate: NOW - 1,
+    }
+    expect(needsPaydayConfirmation(NOW, mix, alloc)).toBe(false)
   })
 })
