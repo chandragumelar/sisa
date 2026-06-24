@@ -8,6 +8,7 @@ import { addTransactionAndUpdateBalance, replaceTransaction } from '@/db/transac
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
 import { CategoryPicker } from '@/features/category/CategoryPicker'
+import { ManageCategoriesSheet } from '@/features/category/ManageCategoriesSheet'
 import {
   suggestExpenseCategory,
   suggestIncomeCategory,
@@ -28,7 +29,6 @@ interface Props {
   editTxId?: number
   initialWalletId?: number
   initialLabel?: string
-  initialNote?: string
   initialDateMs?: number
   initialCategory?: string
 }
@@ -51,7 +51,6 @@ export function QuickLogSheet({
   editTxId,
   initialWalletId,
   initialLabel,
-  initialNote,
   initialDateMs,
   initialCategory,
 }: Props) {
@@ -66,10 +65,9 @@ export function QuickLogSheet({
   const [categoryManuallySet, setCategoryManuallySet] = useState(!!initialCategory)
   const [isFromSavings, setIsFromSavings] = useState(false)
   const [dateMs, setDateMs] = useState(initialDateMs ?? nowMs)
-  const [noteExpanded, setNoteExpanded] = useState(!!initialNote)
-  const [note, setNote] = useState(initialNote ?? '')
   const [submitting, setSubmitting] = useState(false)
   const [savingsWarning, setSavingsWarning] = useState(false)
+  const [manageOpen, setManageOpen] = useState(false)
 
   const amount = parseInt(parseNominalRaw(amountStr), 10) || 0
   const walletCurrency = wallets.find((w) => w.id === walletId)?.currency ?? currency
@@ -130,7 +128,6 @@ export function QuickLogSheet({
         walletId,
         amount,
         label,
-        note,
         dateMs,
         currency: walletCurrency,
         isFromSavings: mode === 'keluar' ? isFromSavings : false,
@@ -157,10 +154,8 @@ export function QuickLogSheet({
     setLabel('')
     setCategory(FALLBACK_CATEGORY)
     setCategoryManuallySet(false)
-    setNote('')
     setIsFromSavings(false)
     setSavingsWarning(false)
-    setNoteExpanded(false)
   }
 
   function handleModeChange(m: QuickLogMode) {
@@ -179,144 +174,138 @@ export function QuickLogSheet({
   }
 
   return (
-    <BottomSheet isOpen={isOpen} onClose={onClose}>
-      {/* Mode toggle */}
-      <div className={styles.modeToggle}>
-        {(['keluar', 'masuk', 'nabung'] as QuickLogMode[]).map((m) => (
-          <button
-            key={m}
-            className={`${styles.modeBtn} ${mode === m ? styles.modeBtnActive : ''}`}
-            onClick={() => handleModeChange(m)}
-          >
-            {modeLabels[m]}
-          </button>
-        ))}
-      </div>
-
-      {/* Wallet chips */}
-      <div className={styles.walletChips}>
-        {wallets.map((w) => (
-          <button
-            key={w.id}
-            className={`${styles.walletChip} ${walletId === w.id ? styles.walletChipActive : ''}`}
-            onClick={() => setWalletId(w.id!)}
-          >
-            <span className={styles.walletChipName}>{w.name}</span>
-            <span className={styles.walletChipBal}>{formatCurrency(w.balance, w.currency)}</span>
-          </button>
-        ))}
-      </div>
-
-      {/* Nominal */}
-      <div className={styles.nominalWrap}>
-        <span className={styles.nominalPrefix}>{getCurrencySymbol(walletCurrency)}</span>
-        <input
-          className={styles.nominalInput}
-          type="text"
-          inputMode="numeric"
-          placeholder="0"
-          value={amountStr}
-          onChange={(e) => handleAmountInput(e.target.value)}
-          autoFocus={isOpen}
-        />
-      </div>
-
-      {/* Label freetext — primary field, triggers auto-suggest on blur */}
-      <input
-        className={styles.labelInput}
-        type="text"
-        placeholder={t('quick_log.label_placeholder', lang)}
-        value={label}
-        onChange={(e) => setLabel(e.target.value)}
-        onBlur={handleLabelBlur}
-      />
-
-      {/* Category picker — expense/income only; nabung has no category */}
-      {mode !== 'nabung' && (
-        <CategoryPicker type={categoryType} value={category} onChange={handleCategoryChange} />
-      )}
-
-      {/* Savings warning */}
-      {savingsWarning && (
-        <div className={styles.savingsWarning}>
-          {t('quick_log.savings_warning', lang).replace(
-            '{amount}',
-            formatCurrency(totalNabung, walletCurrency),
-          )}
+    <>
+      <BottomSheet isOpen={isOpen} onClose={onClose}>
+        {/* Mode toggle */}
+        <div className={styles.modeToggle}>
+          {(['keluar', 'masuk', 'nabung'] as QuickLogMode[]).map((m) => (
+            <button
+              key={m}
+              className={`${styles.modeBtn} ${mode === m ? styles.modeBtnActive : ''}`}
+              onClick={() => handleModeChange(m)}
+            >
+              {modeLabels[m]}
+            </button>
+          ))}
         </div>
-      )}
 
-      {/* Dari tabungan toggle (keluar only) */}
-      {mode === 'keluar' && (
-        <div className={styles.toggleRow}>
-          <label className={styles.toggleLabel}>{t('quick_log.from_savings', lang)}</label>
-          <button
-            className={`${styles.toggle} ${isFromSavings ? styles.toggleOn : ''}`}
-            onClick={handleFromSavingsToggle}
-            role="switch"
-            aria-checked={isFromSavings}
-          >
-            <span className={styles.toggleThumb} />
-          </button>
+        {/* Wallet chips */}
+        <div className={styles.walletChips}>
+          {wallets.map((w) => (
+            <button
+              key={w.id}
+              className={`${styles.walletChip} ${walletId === w.id ? styles.walletChipActive : ''}`}
+              onClick={() => setWalletId(w.id!)}
+            >
+              <span className={styles.walletChipName}>{w.name}</span>
+              <span className={styles.walletChipBal}>{formatCurrency(w.balance, w.currency)}</span>
+            </button>
+          ))}
         </div>
-      )}
 
-      {/* Date pills + calendar input */}
-      <div className={styles.datePills}>
-        <button
-          className={`${styles.datePill} ${isToday ? styles.datePillActive : ''}`}
-          onClick={() => setDateMs(nowMs)}
-        >
-          {t('common.today', lang)}
-        </button>
-        <button
-          className={`${styles.datePill} ${isYesterday ? styles.datePillActive : ''}`}
-          onClick={() => setDateMs(yesterdayStart + 12 * 3600 * 1000)}
-        >
-          {t('common.yesterday', lang)}
-        </button>
-        <label
-          className={`${styles.datePill} ${styles.datePillCalendar} ${isCustomDate ? styles.datePillActive : ''}`}
-        >
-          {isCustomDate ? dateStr : t('quick_log.date_label', lang)}
+        {/* Nominal */}
+        <div className={styles.nominalWrap}>
+          <span className={styles.nominalPrefix}>{getCurrencySymbol(walletCurrency)}</span>
           <input
-            type="date"
-            className={styles.dateInputHidden}
-            max={todayStr}
-            value={isCustomDate ? dateStr : ''}
-            onChange={(e) => handleDateInput(e.target.value)}
-            aria-label={t('quick_log.date_custom_aria', lang)}
+            className={styles.nominalInput}
+            type="text"
+            inputMode="numeric"
+            placeholder="0"
+            value={amountStr}
+            onChange={(e) => handleAmountInput(e.target.value)}
+            autoFocus={isOpen}
           />
-        </label>
-      </div>
+        </div>
 
-      {/* Note expander */}
-      {!noteExpanded ? (
-        <button className={styles.noteToggle} onClick={() => setNoteExpanded(true)}>
-          {t('quick_log.add_note', lang)}
-        </button>
-      ) : (
-        <textarea
-          className={styles.noteInput}
-          placeholder={t('quick_log.note_placeholder', lang)}
-          value={note}
-          onChange={(e) => setNote(e.target.value)}
-          rows={2}
+        {/* Label freetext — primary field, triggers auto-suggest on blur */}
+        <input
+          className={styles.labelInput}
+          type="text"
+          placeholder={t('quick_log.label_placeholder', lang)}
+          value={label}
+          onChange={(e) => setLabel(e.target.value)}
+          onBlur={handleLabelBlur}
         />
-      )}
 
-      {/* Submit */}
-      <button
-        className={styles.submitBtn}
-        onClick={handleSubmit}
-        disabled={!amount || !walletId || submitting}
-      >
-        {submitting
-          ? t('quick_log.submitting', lang)
-          : editTxId !== undefined
-            ? t('quick_log.submit_edit', lang)
-            : t('quick_log.submit_new', lang)}
-      </button>
-    </BottomSheet>
+        {/* Category picker — expense/income only; nabung has no category */}
+        {mode !== 'nabung' && (
+          <CategoryPicker
+            type={categoryType}
+            value={category}
+            onChange={handleCategoryChange}
+            onManage={() => setManageOpen(true)}
+          />
+        )}
+
+        {/* Savings warning */}
+        {savingsWarning && (
+          <div className={styles.savingsWarning}>
+            {t('quick_log.savings_warning', lang).replace(
+              '{amount}',
+              formatCurrency(totalNabung, walletCurrency),
+            )}
+          </div>
+        )}
+
+        {/* Dari tabungan toggle (keluar only) */}
+        {mode === 'keluar' && (
+          <div className={styles.toggleRow}>
+            <label className={styles.toggleLabel}>{t('quick_log.from_savings', lang)}</label>
+            <button
+              className={`${styles.toggle} ${isFromSavings ? styles.toggleOn : ''}`}
+              onClick={handleFromSavingsToggle}
+              role="switch"
+              aria-checked={isFromSavings}
+            >
+              <span className={styles.toggleThumb} />
+            </button>
+          </div>
+        )}
+
+        {/* Date pills + calendar input */}
+        <div className={styles.datePills}>
+          <button
+            className={`${styles.datePill} ${isToday ? styles.datePillActive : ''}`}
+            onClick={() => setDateMs(nowMs)}
+          >
+            {t('common.today', lang)}
+          </button>
+          <button
+            className={`${styles.datePill} ${isYesterday ? styles.datePillActive : ''}`}
+            onClick={() => setDateMs(yesterdayStart + 12 * 3600 * 1000)}
+          >
+            {t('common.yesterday', lang)}
+          </button>
+          <label
+            className={`${styles.datePill} ${styles.datePillCalendar} ${isCustomDate ? styles.datePillActive : ''}`}
+          >
+            {isCustomDate ? dateStr : t('quick_log.date_label', lang)}
+            <input
+              type="date"
+              className={styles.dateInputHidden}
+              max={todayStr}
+              value={isCustomDate ? dateStr : ''}
+              onChange={(e) => handleDateInput(e.target.value)}
+              aria-label={t('quick_log.date_custom_aria', lang)}
+            />
+          </label>
+        </div>
+
+        {/* Submit */}
+        <button
+          className={styles.submitBtn}
+          onClick={handleSubmit}
+          disabled={!amount || !walletId || submitting}
+        >
+          {submitting
+            ? t('quick_log.submitting', lang)
+            : editTxId !== undefined
+              ? t('quick_log.submit_edit', lang)
+              : t('quick_log.submit_new', lang)}
+        </button>
+      </BottomSheet>
+
+      <ManageCategoriesSheet isOpen={manageOpen} onClose={() => setManageOpen(false)} />
+    </>
   )
 }

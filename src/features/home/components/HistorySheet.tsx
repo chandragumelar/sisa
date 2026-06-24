@@ -195,7 +195,6 @@ export function HistorySheet({
           initialAmount={Math.abs(editTx.amount)}
           initialWalletId={editTx.walletId}
           initialLabel={editTx.label ?? undefined}
-          initialNote={editTx.note ?? undefined}
           initialDateMs={editTx.date}
           initialCategory={editTx.category ?? undefined}
         />

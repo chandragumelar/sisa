@@ -1,15 +1,19 @@
 import { useEffect, useState } from 'react'
 import * as Icons from 'lucide-react'
+import { Settings } from 'lucide-react'
 import type { Category } from '@/db/database'
 import { getCategoriesByType } from '@/db/categories.repository'
 import { seedDefaultCategoriesIfEmpty } from '@/db/categories.repository'
 import { FALLBACK_CATEGORY } from './category.types'
+import { useLanguage } from '@/app/providers/useLanguage'
+import { t } from '@/shared/strings/strings'
 import styles from './CategoryPicker.module.css'
 
 interface Props {
   type: 'expense' | 'income'
   value: string
   onChange: (category: string) => void
+  onManage?: () => void
 }
 
 function CategoryIcon({ name, size = 13 }: { name: string; size?: number }) {
@@ -20,7 +24,8 @@ function CategoryIcon({ name, size = 13 }: { name: string; size?: number }) {
   return <Icon size={size} strokeWidth={1.8} />
 }
 
-export function CategoryPicker({ type, value, onChange }: Props) {
+export function CategoryPicker({ type, value, onChange, onManage }: Props) {
+  const lang = useLanguage()
   const [categories, setCategories] = useState<Category[]>([])
 
   useEffect(() => {
@@ -33,23 +38,33 @@ export function CategoryPicker({ type, value, onChange }: Props) {
 
   return (
     <div className={styles.wrap}>
-      <div className={styles.chips}>
-        {categories.map((cat) => {
-          const active = value === cat.name
-          return (
-            <button
-              key={cat.id ?? cat.name}
-              type="button"
-              className={`${styles.chip} ${active ? styles.chipActive : ''}`}
-              onClick={() => onChange(cat.name)}
-            >
-              <span className={styles.chipIcon}>
-                <CategoryIcon name={cat.iconName} />
-              </span>
-              <span className={styles.chipName}>{cat.name}</span>
+      <div className={styles.row}>
+        <div className={styles.chips}>
+          {categories.map((cat) => {
+            const active = value === cat.name
+            return (
+              <button
+                key={cat.id ?? cat.name}
+                type="button"
+                className={`${styles.chip} ${active ? styles.chipActive : ''}`}
+                onClick={() => onChange(cat.name)}
+              >
+                <span className={styles.chipIcon}>
+                  <CategoryIcon name={cat.iconName} />
+                </span>
+                <span className={styles.chipName}>{cat.name}</span>
+              </button>
+            )
+          })}
+        </div>
+        {onManage && (
+          <div className={styles.manageDivider}>
+            <button type="button" className={styles.manageBtn} onClick={onManage}>
+              <Settings size={12} strokeWidth={1.8} />
+              {t('category.manage_btn', lang)}
             </button>
-          )
-        })}
+          </div>
+        )}
       </div>
     </div>
   )
