@@ -383,3 +383,64 @@ describe('relock', () => {
     expect(a.periodEndDate).toBeNull()
   })
 })
+
+// ─── allocation invariants: masuk vs keluar ───────────────────────────────────
+
+describe('allocation invariants: masuk does not change sisaUang', () => {
+  const base = {
+    id: 1 as const,
+    jatahHarian: 100_000,
+    daysAtLock: 10,
+    lockedAt: 0,
+    periodEndDate: null,
+  }
+
+  it('masuk Rp1jt: sisaUang unchanged, mengendap +1jt, jatahHarian tetap', () => {
+    const before = computeFromAllocation(base, {
+      totalSaldo: 5_000_000,
+      tagihanUnpaid: 0,
+      spentSinceLock: 0,
+      spentToday: 0,
+    })
+    // simulate masuk: totalSaldo increases, spentSinceLock unchanged
+    const after = computeFromAllocation(base, {
+      totalSaldo: 6_000_000,
+      tagihanUnpaid: 0,
+      spentSinceLock: 0,
+      spentToday: 0,
+    })
+    expect(after.sisaUang).toBe(before.sisaUang)
+    expect(after.mengendap).toBe(before.mengendap + 1_000_000)
+    expect(after.jatahHariIni).toBe(before.jatahHariIni)
+  })
+
+  it('keluar Rp200k: sisaUang turun, mengendap stabil, jatahHarian tetap', () => {
+    const before = computeFromAllocation(base, {
+      totalSaldo: 5_000_000,
+      tagihanUnpaid: 0,
+      spentSinceLock: 0,
+      spentToday: 0,
+    })
+    // simulate keluar: totalSaldo decreases by same amount as spentSinceLock increases
+    const after = computeFromAllocation(base, {
+      totalSaldo: 4_800_000,
+      tagihanUnpaid: 0,
+      spentSinceLock: 200_000,
+      spentToday: 200_000,
+    })
+    expect(after.sisaUang).toBe(before.sisaUang - 200_000)
+    // mengendap stays stable: both totalSaldo and sisaUang dropped by same 200k
+    expect(after.mengendap).toBe(before.mengendap)
+    expect(after.jatahHariIni).toBe(before.jatahHariIni)
+  })
+
+  it('invariant: totalSaldo − tagihanUnpaid − mengendap === sisaUang after masuk', () => {
+    const r = computeFromAllocation(base, {
+      totalSaldo: 6_000_000,
+      tagihanUnpaid: 500_000,
+      spentSinceLock: 0,
+      spentToday: 0,
+    })
+    expect(6_000_000 - 500_000 - r.mengendap).toBe(r.sisaUang)
+  })
+})

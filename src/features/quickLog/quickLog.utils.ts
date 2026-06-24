@@ -8,7 +8,6 @@ export interface QuickLogInput {
   walletId: number
   amount: number
   label: string
-  note: string
   dateMs: number
   currency: string
   isFromSavings: boolean
@@ -22,7 +21,6 @@ export function buildKeluar(input: QuickLogInput): Omit<Transaction, 'id'> {
     type: 'keluar',
     currency: input.currency,
     label: input.label || undefined,
-    note: input.note || undefined,
     date: input.dateMs,
     isFromSavings: input.isFromSavings,
     isEarmark: false,
@@ -38,7 +36,6 @@ export function buildMasuk(input: QuickLogInput): Omit<Transaction, 'id'> {
     type: 'masuk',
     currency: input.currency,
     label: input.label || undefined,
-    note: input.note || undefined,
     date: input.dateMs,
     isFromSavings: false,
     isEarmark: false,
@@ -54,7 +51,6 @@ export function buildNabung(input: QuickLogInput): Omit<Transaction, 'id'> {
     type: 'nabung',
     currency: input.currency,
     label: input.label || undefined,
-    note: input.note || undefined,
     date: input.dateMs,
     isFromSavings: false,
     isEarmark: true,

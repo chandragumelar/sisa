@@ -7,7 +7,6 @@ const BASE: QuickLogInput = {
   walletId: 1,
   amount: 50000,
   label: 'makan',
-  note: '',
   dateMs: 1700000000000,
   currency: 'IDR',
   isFromSavings: false,
@@ -32,16 +31,14 @@ describe('buildKeluar', () => {
     expect(tx.isEarmark).toBe(false)
   })
 
-  it('omits empty label/note', () => {
-    const tx = buildKeluar({ ...BASE, label: '', note: '' })
+  it('omits empty label', () => {
+    const tx = buildKeluar({ ...BASE, label: '' })
     expect(tx.label).toBeUndefined()
-    expect(tx.note).toBeUndefined()
   })
 
-  it('keeps non-empty label and note', () => {
-    const tx = buildKeluar({ ...BASE, label: 'makan', note: 'warung padang' })
-    expect(tx.label).toBe('makan')
-    expect(tx.note).toBe('warung padang')
+  it('note field absent — old txs with note still readable via Transaction schema', () => {
+    const tx = buildKeluar(BASE)
+    expect(tx.note).toBeUndefined()
   })
 })
 
@@ -115,5 +112,10 @@ describe('buildTransaction', () => {
   it('preserves date', () => {
     const tx = buildTransaction({ ...BASE, dateMs: 1699999999000 })
     expect(tx.date).toBe(1699999999000)
+  })
+
+  it('valid without note — no note field on QuickLogInput', () => {
+    const tx = buildTransaction(BASE)
+    expect(tx.note).toBeUndefined()
   })
 })

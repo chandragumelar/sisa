@@ -355,9 +355,8 @@ export type StringKey =
   | 'quick_log.submitting'
   | 'quick_log.submit_edit'
   | 'quick_log.submit_new'
-  | 'quick_log.add_note'
-  | 'quick_log.note_placeholder'
   | 'quick_log.label_placeholder'
+  | 'category.manage_btn'
   // category management
   | 'settings.row_categories'
   | 'settings.row_categories_sub'
@@ -963,9 +962,8 @@ const id: StringDictionary = {
   'quick_log.submitting': 'Menyimpan...',
   'quick_log.submit_edit': 'Simpan',
   'quick_log.submit_new': 'Catat',
-  'quick_log.add_note': '+ tambah catatan',
-  'quick_log.note_placeholder': 'Catatan...',
   'quick_log.label_placeholder': 'kopi, grab, beli baju...',
+  'category.manage_btn': 'Atur',
   'settings.row_categories': 'Kategori',
   'settings.row_categories_sub': 'Atur kategori pengeluaran & pemasukan',
 
@@ -1574,9 +1572,8 @@ const en: StringDictionary = {
   'quick_log.submitting': 'Saving...',
   'quick_log.submit_edit': 'Save',
   'quick_log.submit_new': 'Log',
-  'quick_log.add_note': '+ add note',
-  'quick_log.note_placeholder': 'Note...',
   'quick_log.label_placeholder': 'coffee, grab, groceries...',
+  'category.manage_btn': 'Manage',
   'settings.row_categories': 'Categories',
   'settings.row_categories_sub': 'Manage expense & income categories',
 
