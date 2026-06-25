@@ -52,6 +52,8 @@ import { AlokasiEditSheet } from '@/features/alokasi/AlokasiEditSheet'
 import { getAllocation, putAllocation } from '@/db/allocation.repository'
 import { computeFromAllocation, relock } from '@/shared/utils/budget.utils'
 import { JatahHarianCard } from './components/JatahHarianCard'
+import { KekayaanCard } from './components/KekayaanCard'
+import { KekayaanSheet } from './components/KekayaanSheet'
 import styles from './HomePage.module.css'
 
 interface HomeData {
@@ -292,6 +294,7 @@ export function HomePage() {
   const [tagihanSheetOpen, setTagihanSheetOpen] = useState(false)
   const [walletSheetOpen, setWalletSheetOpen] = useState(false)
   const [alokasiSheetOpen, setAlokasiSheetOpen] = useState(false)
+  const [kekayaanSheetOpen, setKekayaanSheetOpen] = useState(false)
 
   if (isLoading || !settings) return null
 
@@ -528,6 +531,14 @@ export function HomePage() {
             nowMs={nowMs}
           />
 
+          {wallets.some((w) => w.currency !== currency) && (
+            <KekayaanCard
+              wallets={wallets}
+              primaryCurrency={currency}
+              onClick={() => setKekayaanSheetOpen(true)}
+            />
+          )}
+
           <TagihanModule
             tagihan={currencyTagihan}
             currency={currency}
@@ -642,6 +653,13 @@ export function HomePage() {
           reload()
         }}
         initialEditTagihan={editTagihan}
+      />
+
+      <KekayaanSheet
+        isOpen={kekayaanSheetOpen}
+        onClose={() => setKekayaanSheetOpen(false)}
+        wallets={wallets}
+        primaryCurrency={currency}
       />
 
       <QuickLogSheet

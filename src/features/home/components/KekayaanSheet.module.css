@@ -1,0 +1,127 @@
+.rows {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-hair);
+  gap: 12px;
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.rowLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rowCurrency {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+}
+
+.rowNative {
+  font-size: 15px;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  color: var(--ink-primary);
+  font-feature-settings: 'tnum';
+}
+
+.rowRight {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.rowEquiv {
+  font-size: 15px;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  color: var(--ink-secondary);
+  font-feature-settings: 'tnum';
+}
+
+.rowRate {
+  font-size: 10px;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+}
+
+.rowNoRate {
+  font-size: 11px;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+  font-style: italic;
+}
+
+.totalRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0 10px;
+  border-top: 1px solid var(--border-hair);
+}
+
+.totalLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-secondary);
+  font-family: var(--font-sans);
+}
+
+.totalValue {
+  font-size: 20px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--ink-primary);
+  letter-spacing: -0.5px;
+  font-feature-settings: 'tnum';
+}
+
+.flips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.flipChip {
+  padding: 5px 14px;
+  border-radius: 100px;
+  border: 1px solid var(--border-hair);
+  background: var(--surface-deep);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-tertiary);
+  cursor: pointer;
+  font-family: var(--font-sans);
+  letter-spacing: 0.5px;
+}
+
+.flipChipActive {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.footer {
+  font-size: 11px;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+  margin: 0;
+  text-align: center;
+  padding-top: 4px;
+}
