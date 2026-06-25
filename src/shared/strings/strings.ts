@@ -8,6 +8,7 @@ export type StringKey =
   | 'common.close'
   | 'common.back_aria'
   | 'common.ok'
+  | 'common.confirm'
   | 'common.add'
   | 'common.today'
   | 'common.yesterday'
@@ -494,6 +495,8 @@ export type StringKey =
   | 'settings.row_language'
   | 'settings.row_patokan_currency'
   | 'settings.row_patokan_currency_sub'
+  | 'settings.currency_warning_title'
+  | 'settings.currency_warning_body'
   | 'settings.section_data'
   | 'settings.export_json'
   | 'settings.export_json_sub'
@@ -564,6 +567,7 @@ const id: StringDictionary = {
   'common.close': 'Tutup',
   'common.back_aria': 'Kembali',
   'common.ok': 'Oke',
+  'common.confirm': 'Konfirmasi',
   'common.add': 'Tambah',
   'common.today': 'Hari ini',
   'common.yesterday': 'Kemarin',
@@ -1070,6 +1074,9 @@ const id: StringDictionary = {
   'settings.row_language': 'bahasa',
   'settings.row_patokan_currency': 'Mata Uang Patokan',
   'settings.row_patokan_currency_sub': 'Dipakai untuk semua perhitungan budget',
+  'settings.currency_warning_title': 'Ganti mata uang utama',
+  'settings.currency_warning_body':
+    'Mengubah mata uang utama tidak mengubah angka yang sudah tersimpan. Rp 50.000 akan menjadi $50.000, bukan dikonversi.',
   'settings.section_data': 'data & backup',
   'settings.export_json': 'export backup',
   'settings.export_json_sub': 'file lengkap buat pindah / restore',
@@ -1140,6 +1147,7 @@ const en: StringDictionary = {
   'common.close': 'Close',
   'common.back_aria': 'Back',
   'common.ok': 'OK',
+  'common.confirm': 'Confirm',
   'common.add': 'Add',
   'common.today': 'Today',
   'common.yesterday': 'Yesterday',
@@ -1642,6 +1650,9 @@ const en: StringDictionary = {
   'settings.row_language': 'language',
   'settings.row_patokan_currency': 'Budgeting Currency',
   'settings.row_patokan_currency_sub': 'Used for all budget calculations',
+  'settings.currency_warning_title': 'Change main currency',
+  'settings.currency_warning_body':
+    "Changing your main currency won't convert saved amounts. Rp 50,000 becomes $50,000, not converted.",
   'settings.section_data': 'data & backup',
   'settings.export_json': 'export backup',
   'settings.export_json_sub': 'full file for transfer / restore',
