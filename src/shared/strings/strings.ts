@@ -316,6 +316,13 @@ export type StringKey =
   | 'home.payday_confirm_sub'
   | 'home.payday_confirm_yes'
   | 'home.payday_confirm_no'
+  // kekayaan card + sheet
+  | 'kekayaan.label'
+  | 'kekayaan.sheet_title'
+  | 'kekayaan.grand_total'
+  | 'kekayaan.rate_note'
+  | 'kekayaan.rate_footer'
+  | 'kekayaan.no_rate'
   // quick log sheet
   | 'quick_log.mode_keluar'
   | 'quick_log.mode_masuk'
@@ -873,6 +880,13 @@ const id: StringDictionary = {
   'home.payday_confirm_sub': 'Kalau udah, SISA reset jatah harian dari sekarang.',
   'home.payday_confirm_yes': 'Udah masuk',
   'home.payday_confirm_no': 'Belum',
+
+  'kekayaan.label': 'total kekayaan',
+  'kekayaan.sheet_title': 'Rincian Kekayaan',
+  'kekayaan.grand_total': 'Total',
+  'kekayaan.rate_note': 'kurs per {date}',
+  'kekayaan.rate_footer': 'kurs per {date} · tersimpan lokal, bukan real-time',
+  'kekayaan.no_rate': 'kurs belum tersedia',
 
   'quick_log.mode_keluar': 'keluar',
   'quick_log.mode_masuk': 'masuk',
@@ -1433,6 +1447,13 @@ const en: StringDictionary = {
   'home.payday_confirm_sub': 'If yes, SISA resets your daily budget from now.',
   'home.payday_confirm_yes': "Yes, it's in",
   'home.payday_confirm_no': 'Not yet',
+
+  'kekayaan.label': 'total wealth',
+  'kekayaan.sheet_title': 'Wealth Breakdown',
+  'kekayaan.grand_total': 'Total',
+  'kekayaan.rate_note': 'rate as of {date}',
+  'kekayaan.rate_footer': 'rate as of {date} · stored locally, not real-time',
+  'kekayaan.no_rate': 'rate not available',
 
   'quick_log.mode_keluar': 'out',
   'quick_log.mode_masuk': 'in',

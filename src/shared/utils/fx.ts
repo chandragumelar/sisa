@@ -19,11 +19,16 @@ export async function fetchRates(base: string, targets: string[]): Promise<void>
   )
 }
 
-/** Returns cached rate, 1 if base===target, or null if not cached. */
+/** Returns cached rate, 1 if base===target, or null if not cached.
+ *  Tries inverse ({base:target, target:base}) as fallback so foreign→primary works
+ *  even though rates are stored from primary→foreign. */
 export async function getRate(base: string, target: string): Promise<number | null> {
   if (base === target) return 1
-  const record = await db.rates.get({ base, target })
-  return record?.rate ?? null
+  const direct = await db.rates.get({ base, target })
+  if (direct) return direct.rate
+  const inverse = await db.rates.get({ base: target, target: base })
+  if (inverse && inverse.rate > 0) return 1 / inverse.rate
+  return null
 }
 
 /** Returns amount converted to `to` currency, or null if rate not cached. */
