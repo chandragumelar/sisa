@@ -55,8 +55,8 @@ export function StepAlokasi({
 
   return (
     <>
-      <h1 className="ob-heading">Mau dialokasiin gimana?</h1>
-      <p className="ob-subheading">Pisahin yang mau lo pakai dari yang didiamkan dulu.</p>
+      <h1 className="ob-heading">Yuk atur duit lo</h1>
+      <p className="ob-subheading">Pisahin mana yang mau lo pakai, mana yang ngga.</p>
 
       {/* Breakdown */}
       <div className="ob-card" style={{ padding: '14px 16px' }}>
