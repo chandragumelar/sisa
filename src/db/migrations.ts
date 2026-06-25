@@ -233,4 +233,29 @@ export function applyMigrations(db: Dexie): void {
     categories: '++id, type',
     allocation: 'id',
   })
+
+  // v10: add rates table (FX cache) + remove secondaryCurrency/activeCurrencyMode from settings.
+  db.version(10)
+    .stores({
+      transactions: '++id, walletId, date, type, currency',
+      wallets: '++id, currency, order',
+      tagihan: '++id, currency, isActive',
+      goals: '++id, currency, order',
+      settings: 'id',
+      license: 'id',
+      meta: 'key',
+      savedScenarios: '++id, savedAt',
+      categories: '++id, type',
+      allocation: 'id',
+      rates: '[base+target]',
+    })
+    .upgrade((tx) => {
+      return tx
+        .table('settings')
+        .toCollection()
+        .modify((row) => {
+          delete row.secondaryCurrency
+          delete row.activeCurrencyMode
+        })
+    })
 }

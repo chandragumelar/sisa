@@ -101,7 +101,7 @@ export function AndaiPage() {
     Promise.all([getSettings(), getAllWallets(), getActiveTagihan(), getAllocation()]).then(
       ([s, wallets, tagihan, allocation]) => {
         if (cancelled || !s) return
-        const currency = s.activeCurrencyMode || s.primaryCurrency
+        const currency = s.primaryCurrency
         const totalSaldo = wallets
           .filter((w) => w.currency === currency)
           .reduce((sum, w) => sum + w.balance, 0)

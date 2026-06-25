@@ -1,7 +1,7 @@
 import type { Settings, Wallet, IncomeFrequency, IncomeType, Language } from '@/db/database'
 import type { OnboardingStep, WalletInput } from './onboarding.types'
 
-export const TOTAL_PROGRESS_DOTS = 9
+export const TOTAL_PROGRESS_DOTS = 8
 
 const STEP_PROGRESS: Record<OnboardingStep, number> = {
   language: 1,
@@ -15,7 +15,6 @@ const STEP_PROGRESS: Record<OnboardingStep, number> = {
   tagihan: 6,
   wallet: 7,
   alokasi: 8,
-  currency2: 9,
 }
 
 export function getProgressCount(step: OnboardingStep): number {
@@ -48,8 +47,6 @@ export function getNextStep(
     case 'wallet':
       return 'alokasi'
     case 'alokasi':
-      return 'currency2'
-    case 'currency2':
       return 'done'
   }
 }
@@ -66,7 +63,6 @@ export interface CompletedOnboardingData {
   avgIncomeBasis: IncomeFrequency | null
   lastPaydayConfirmed: number | null
   primaryCurrency: string
-  secondaryCurrency: string | null
 }
 
 export function buildSettings(data: CompletedOnboardingData): Settings {
@@ -84,8 +80,6 @@ export function buildSettings(data: CompletedOnboardingData): Settings {
     avgIncomeBasis: data.avgIncomeBasis,
     lastPaydayConfirmed: data.lastPaydayConfirmed,
     primaryCurrency: data.primaryCurrency,
-    secondaryCurrency: data.secondaryCurrency,
-    activeCurrencyMode: data.primaryCurrency,
     weekendBehavior: null,
     onboardingCompleted: true,
     lastExportedAt: null,

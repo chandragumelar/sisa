@@ -19,7 +19,6 @@ import { Step4bIncomeDetail } from './steps/Step4bIncomeDetail'
 import { StepPayConfirm } from './steps/StepPayConfirm'
 import { Step4cCurrency } from './steps/Step4cCurrency'
 import { Step4dWallet } from './steps/Step4dWallet'
-import { Step4eCurrency2 } from './steps/Step4eCurrency2'
 import { StepTagihan } from './steps/StepTagihan'
 import { StepAlokasi } from './steps/StepAlokasi'
 import {
@@ -86,7 +85,6 @@ export function OnboardingPage() {
       avgIncomeBasis: avgIncomeNum && avgIncomeNum > 0 ? final.avgIncomeBasis : null,
       lastPaydayConfirmed: final.lastPaydayConfirmed,
       primaryCurrency,
-      secondaryCurrency: final.secondaryCurrency,
     })
 
     const walletRecords = buildWalletRecords(
@@ -258,12 +256,6 @@ export function OnboardingPage() {
             />
           )
         })()}
-      {step === 'currency2' && (
-        <Step4eCurrency2
-          primaryCurrencyCode={data.primaryCurrency ?? 'IDR'}
-          onNext={(secondaryCurrency) => advance({ secondaryCurrency })}
-        />
-      )}
     </OnboardingShell>
   )
 }

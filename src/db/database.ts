@@ -1,4 +1,4 @@
-import Dexie, { type EntityTable } from 'dexie'
+import Dexie, { type EntityTable, type Table } from 'dexie'
 import { applyMigrations } from './migrations'
 
 // ---------------------------------------------------------------------------
@@ -94,8 +94,6 @@ export interface Settings {
   incomeDay: number | null // 1–31 for tetap/mix
   freelanceMinBalance: number | null // target minimum for freelance
   primaryCurrency: string // ISO 4217
-  secondaryCurrency: string | null
-  activeCurrencyMode: string // current currency context (Pro: one of the two currencies)
   incomeFrequency: IncomeFrequency // 'bulanan' for existing users (migration default)
   incomeAnchorDate: number | null // epoch ms; reference date for weekly/biweekly cycle
   weekendBehavior: WeekendBehavior | null // null until first payday falls on a weekend
@@ -126,6 +124,13 @@ export interface LicenseRecord {
   buyerIdHash: string // bid from key payload; 8-char hash, not raw PII
   lastSeenAt: number // epoch ms; used for anti-rollback check
   activatedAt: number // epoch ms
+}
+
+export interface RateRecord {
+  base: string
+  target: string
+  rate: number
+  fetchedAt: number // epoch ms
 }
 
 export interface MetaRecord {
@@ -174,6 +179,7 @@ class SisaDatabase extends Dexie {
   savedScenarios!: EntityTable<SavedScenario, 'id'>
   categories!: EntityTable<Category, 'id'>
   allocation!: EntityTable<Allocation, 'id'>
+  rates!: Table<RateRecord>
 
   constructor() {
     super('sisa')
