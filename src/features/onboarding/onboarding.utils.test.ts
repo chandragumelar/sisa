@@ -24,9 +24,9 @@ describe('getProgressCount', () => {
   it('tagihan → 6', () => expect(getProgressCount('tagihan')).toBe(6))
   it('wallet → 7', () => expect(getProgressCount('wallet')).toBe(7))
   it('alokasi → 8', () => expect(getProgressCount('alokasi')).toBe(8))
-  it('currency2 → 9', () => expect(getProgressCount('currency2')).toBe(9))
+  it('alokasi → 8', () => expect(getProgressCount('alokasi')).toBe(8))
   it('max filled equals TOTAL_PROGRESS_DOTS', () => {
-    expect(getProgressCount('currency2')).toBe(TOTAL_PROGRESS_DOTS)
+    expect(getProgressCount('alokasi')).toBe(TOTAL_PROGRESS_DOTS)
   })
 })
 
@@ -70,11 +70,8 @@ describe('getNextStep', () => {
   it('wallet → alokasi', () => {
     expect(getNextStep('wallet', 'tetap')).toBe('alokasi')
   })
-  it('alokasi → currency2', () => {
-    expect(getNextStep('alokasi', 'tetap')).toBe('currency2')
-  })
-  it('currency2 → done', () => {
-    expect(getNextStep('currency2', 'tetap')).toBe('done')
+  it('alokasi → done', () => {
+    expect(getNextStep('alokasi', 'tetap')).toBe('done')
   })
 })
 
@@ -94,7 +91,6 @@ describe('buildSettings', () => {
     avgIncomeBasis: null,
     lastPaydayConfirmed: null,
     primaryCurrency: 'IDR',
-    secondaryCurrency: null,
   }
 
   it('always sets onboardingCompleted: true', () => {
@@ -108,8 +104,6 @@ describe('buildSettings', () => {
     expect(s.incomeType).toBe('tetap')
     expect(s.incomeDay).toBe(25)
     expect(s.primaryCurrency).toBe('IDR')
-    expect(s.secondaryCurrency).toBeNull()
-    expect(s.activeCurrencyMode).toBe('IDR')
     expect(s.weekendBehavior).toBeNull()
     expect(s.lastExportedAt).toBeNull()
   })
@@ -124,12 +118,6 @@ describe('buildSettings', () => {
     expect(s.incomeType).toBe('freelance')
     expect(s.incomeDay).toBeNull()
     expect(s.freelanceMinBalance).toBe(500000)
-  })
-
-  it('sets secondaryCurrency when provided', () => {
-    const s = buildSettings({ ...base, secondaryCurrency: 'USD' })
-    expect(s.secondaryCurrency).toBe('USD')
-    expect(s.activeCurrencyMode).toBe('IDR')
   })
 
   it('avgIncome and avgIncomeBasis are passed through', () => {

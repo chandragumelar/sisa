@@ -141,7 +141,7 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
     Promise.all([getSettings(), getAllWallets(), getActiveTagihan(), getAllocation()]).then(
       ([settings, wallets, tagihan, allocation]) => {
         if (cancelled || !settings) return
-        const currency = settings.activeCurrencyMode || settings.primaryCurrency
+        const currency = settings.primaryCurrency
         const totalSaldoForCalc = wallets
           .filter((w) => w.currency === currency)
           .reduce((sum, w) => sum + w.balance, 0)
@@ -295,7 +295,7 @@ export function HomePage() {
 
   if (isLoading || !settings) return null
 
-  const currency = settings.activeCurrencyMode || settings.primaryCurrency
+  const currency = settings.primaryCurrency
   const nextPaydayMs = getPaydayDate(nowMs, settings, allocation).getTime()
   const unpaidTagihanTotal = calcUnpaidTagihanTotal(
     tagihan.filter((tg) => tg.currency === currency),
@@ -362,11 +362,6 @@ export function HomePage() {
     reload()
   }
 
-  async function handleCurrencySwitch(cur: string) {
-    await patchSettings({ activeCurrencyMode: cur })
-    reload()
-  }
-
   async function handleSaveAlokasi(operasional: number) {
     if (!settings) return
     const totalSaldoForAlokasi = wallets
@@ -393,9 +388,6 @@ export function HomePage() {
     reload()
   }
 
-  const hasDualCurrency = settings.secondaryCurrency != null
-  const currencies = hasDualCurrency ? [settings.primaryCurrency, settings.secondaryCurrency!] : []
-
   const currencyTagihan = tagihan.filter((tg) => tg.currency === currency)
   const lewatTempoCount = currencyTagihan.filter(
     (tg) => tg.isActive && getTagihanUrgency(tg, nowMs) === 'lewat-tempo',
@@ -412,23 +404,6 @@ export function HomePage() {
           </div>
 
           <div className={styles.headerRight}>
-            {hasDualCurrency && (
-              <div className={styles.currencySegmented}>
-                {currencies.map((cur) => (
-                  <button
-                    key={cur}
-                    className={
-                      cur === currency
-                        ? `${styles.currencyBtn} ${styles.currencyBtnActive}`
-                        : styles.currencyBtn
-                    }
-                    onClick={() => handleCurrencySwitch(cur)}
-                  >
-                    {cur}
-                  </button>
-                ))}
-              </div>
-            )}
             {lewatTempoCount > 0 && (
               <button className={styles.urgencyBadge} onClick={() => setUrgentSheetOpen(true)}>
                 <span className={styles.urgencyDot} />

@@ -115,12 +115,6 @@ export type StringKey =
   | 'ob.step4d.remove_aria'
   | 'ob.step4d.placeholder_first'
   | 'ob.step4d.placeholder_other'
-  // onboarding step 4e
-  | 'ob.step4e.heading'
-  | 'ob.step4e.sub'
-  | 'ob.step4e.placeholder'
-  | 'ob.step4e.skip'
-  | 'ob.step4e.add'
   // currency picker
   | 'currency_picker.search'
   | 'currency_picker.popular'
@@ -486,8 +480,8 @@ export type StringKey =
   | 'settings.theme_system'
   | 'settings.dark_note'
   | 'settings.row_language'
-  | 'settings.row_secondary_currency'
-  | 'settings.no_secondary_currency'
+  | 'settings.row_patokan_currency'
+  | 'settings.row_patokan_currency_sub'
   | 'settings.section_data'
   | 'settings.export_json'
   | 'settings.export_json_sub'
@@ -508,8 +502,6 @@ export type StringKey =
   | 'settings.import_preview_goals'
   | 'settings.import_warning'
   | 'settings.import_confirm'
-  | 'settings.currency_blocked_title'
-  | 'settings.currency_blocked_warning'
   | 'settings.import_error_title'
   | 'settings.delete_title'
   | 'settings.delete_warning'
@@ -659,8 +651,8 @@ const id: StringDictionary = {
   'home.transisi_popup_confirm': 'Ya, mulai periode baru',
   'home.transisi_popup_cancel': 'Batal',
 
-  'ob.step4c.heading': 'Mata uang utama',
-  'ob.step4c.sub': 'Semua nominal akan ditampilkan dalam mata uang ini.',
+  'ob.step4c.heading': 'Mata Uang Patokan',
+  'ob.step4c.sub': 'Budget & saldo bebas selalu dihitung dalam mata uang ini.',
   'ob.step4c.placeholder': 'Pilih mata uang…',
   'ob.step4c.next': 'Lanjut',
 
@@ -673,12 +665,6 @@ const id: StringDictionary = {
   'ob.step4d.remove_aria': 'Hapus dompet',
   'ob.step4d.placeholder_first': 'Nama dompet (cth: BCA, GoPay)',
   'ob.step4d.placeholder_other': 'Nama dompet',
-
-  'ob.step4e.heading': 'Mata uang kedua',
-  'ob.step4e.sub': 'Lo bisa pantau dua mata uang sekaligus. Bisa diatur ulang nanti.',
-  'ob.step4e.placeholder': 'Pilih mata uang kedua…',
-  'ob.step4e.skip': 'Nanti aja',
-  'ob.step4e.add': '+ Tambah',
 
   'currency_picker.search': 'pilih mata uang…',
   'currency_picker.popular': 'Populer',
@@ -1058,8 +1044,8 @@ const id: StringDictionary = {
   'settings.theme_system': 'sistem',
   'settings.dark_note': 'gelap = v2 · belum tersedia',
   'settings.row_language': 'bahasa',
-  'settings.row_secondary_currency': 'mata uang kedua',
-  'settings.no_secondary_currency': 'tidak ada',
+  'settings.row_patokan_currency': 'Mata Uang Patokan',
+  'settings.row_patokan_currency_sub': 'Dipakai untuk semua perhitungan budget',
   'settings.section_data': 'data & backup',
   'settings.export_json': 'export backup',
   'settings.export_json_sub': 'file lengkap buat pindah / restore',
@@ -1080,9 +1066,6 @@ const id: StringDictionary = {
   'settings.import_preview_goals': 'goal',
   'settings.import_warning': 'Data yang ada sekarang akan ditimpa. Tidak bisa di-undo.',
   'settings.import_confirm': 'Restore sekarang',
-  'settings.currency_blocked_title': 'Mata uang masih dipakai',
-  'settings.currency_blocked_warning':
-    'Hapus dulu semua dompet, tagihan, dan goal dalam mata uang ini sebelum menonaktifkannya.',
   'settings.import_error_title': 'Gagal import',
   'settings.delete_title': 'Hapus semua data',
   'settings.delete_warning':
@@ -1230,8 +1213,8 @@ const en: StringDictionary = {
   'home.transisi_popup_confirm': 'Yes, start new period',
   'home.transisi_popup_cancel': 'Cancel',
 
-  'ob.step4c.heading': 'Primary currency',
-  'ob.step4c.sub': 'All amounts will show in this currency.',
+  'ob.step4c.heading': 'Budgeting Currency',
+  'ob.step4c.sub': 'Your daily budget and free balance are always calculated in this currency.',
   'ob.step4c.placeholder': 'Choose currency…',
   'ob.step4c.next': 'Next',
 
@@ -1244,12 +1227,6 @@ const en: StringDictionary = {
   'ob.step4d.remove_aria': 'Remove wallet',
   'ob.step4d.placeholder_first': 'Wallet name (e.g. Standard Chartered, Wise)',
   'ob.step4d.placeholder_other': 'Wallet name',
-
-  'ob.step4e.heading': 'Second currency',
-  'ob.step4e.sub': 'Track two currencies at once. You can change this later.',
-  'ob.step4e.placeholder': 'Choose second currency…',
-  'ob.step4e.skip': 'Skip for now',
-  'ob.step4e.add': '+ Add',
 
   'currency_picker.search': 'search currency…',
   'currency_picker.popular': 'Popular',
@@ -1627,8 +1604,8 @@ const en: StringDictionary = {
   'settings.theme_system': 'system',
   'settings.dark_note': 'dark = v2 · not yet available',
   'settings.row_language': 'language',
-  'settings.row_secondary_currency': 'second currency',
-  'settings.no_secondary_currency': 'none',
+  'settings.row_patokan_currency': 'Budgeting Currency',
+  'settings.row_patokan_currency_sub': 'Used for all budget calculations',
   'settings.section_data': 'data & backup',
   'settings.export_json': 'export backup',
   'settings.export_json_sub': 'full file for transfer / restore',
@@ -1649,9 +1626,6 @@ const en: StringDictionary = {
   'settings.import_preview_goals': 'goals',
   'settings.import_warning': 'Existing data will be overwritten. Cannot be undone.',
   'settings.import_confirm': 'Restore now',
-  'settings.currency_blocked_title': 'Currency still in use',
-  'settings.currency_blocked_warning':
-    'Remove all wallets, bills, and goals in this currency before disabling it.',
   'settings.import_error_title': 'Import failed',
   'settings.delete_title': 'Delete all data',
   'settings.delete_warning':

@@ -55,7 +55,7 @@ export function CekDuluPage() {
     Promise.all([getSettings(), getAllWallets(), getActiveTagihan(), getAllocation()]).then(
       ([settings, wallets, tagihan, allocation]) => {
         if (cancelled || !settings) return
-        const currency = settings.activeCurrencyMode || settings.primaryCurrency
+        const currency = settings.primaryCurrency
         const totalSaldo = wallets
           .filter((w) => w.currency === currency)
           .reduce((s, w) => s + w.balance, 0)
@@ -129,7 +129,7 @@ export function CekDuluPage() {
     mengendap,
     jatahHarian,
   } = data
-  const currency = settings.activeCurrencyMode || settings.primaryCurrency
+  const currency = settings.primaryCurrency
 
   const nominal = parseInt(parseNominalRaw(amountStr), 10) || 0
   const inputFontSize = amountStr.length > 11 ? 26 : amountStr.length > 8 ? 36 : 48

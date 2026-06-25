@@ -4,13 +4,11 @@ import { useClock } from '@/app/providers/useClock'
 import { useLanguage, useSetLanguage } from '@/app/providers/useLanguage'
 import { getSettings, patchSettings } from '@/db/settings.repository'
 import { getLicense } from '@/db/license.repository'
-import { hasCurrencyData } from '@/db/wallets.repository'
 import { getRecentTransactions } from '@/db/transactions.repository'
 import { exportAllData, importAllData, clearAllData } from '@/db/backup.repository'
 import { applyTheme } from '@/shared/utils/theme'
 import { applyLanguage } from '@/shared/utils/language'
 import type { Settings, LicenseRecord, Theme, Language } from '@/db/database'
-import { ALL_CURRENCIES } from '@/constants/currencies'
 import { BottomSheet } from '@/shared/components/BottomSheet'
 import { ProfilIncomeSheet } from '@/features/profil/ProfilIncomeSheet'
 import { ProfilLicenseSheet } from '@/features/profil/ProfilLicenseSheet'
@@ -47,7 +45,6 @@ export function SettingsPage() {
   const [importError, setImportError] = useState<string | null>(null)
   const [deleteStep, setDeleteStep] = useState<'idle' | 'confirm' | 'type'>('idle')
   const [deleteInput, setDeleteInput] = useState('')
-  const [currencyRemoveBlocked, setCurrencyRemoveBlocked] = useState(false)
 
   const loadData = useCallback(async () => {
     const [settings, license] = await Promise.all([getSettings(), getLicense()])
@@ -72,23 +69,6 @@ export function SettingsPage() {
     applyLanguage(language)
     setLang(language)
     setData((prev) => prev && { ...prev, settings: { ...prev.settings, language } })
-  }
-
-  async function handleSecondaryCurrencyChange(value: string) {
-    const isRemoving = value === '' || value === settings.primaryCurrency
-    if (isRemoving && settings.secondaryCurrency) {
-      const inUse = await hasCurrencyData(settings.secondaryCurrency)
-      if (inUse) {
-        setCurrencyRemoveBlocked(true)
-        return
-      }
-      if (settings.activeCurrencyMode === settings.secondaryCurrency) {
-        await patchSettings({ activeCurrencyMode: settings.primaryCurrency })
-      }
-    }
-    const secondaryCurrency = isRemoving ? null : value
-    await patchSettings({ secondaryCurrency })
-    setData((prev) => prev && { ...prev, settings: { ...prev.settings, secondaryCurrency } })
   }
 
   async function handleExportJSON() {
@@ -233,19 +213,11 @@ export function SettingsPage() {
         </div>
         <div className={styles.divider} />
         <div className={styles.row}>
-          <span className={styles.rowLabel}>{t('settings.row_secondary_currency', lang)}</span>
-          <select
-            className={styles.select}
-            value={settings.secondaryCurrency ?? ''}
-            onChange={(e) => handleSecondaryCurrencyChange(e.target.value)}
-          >
-            <option value="">{t('settings.no_secondary_currency', lang)}</option>
-            {ALL_CURRENCIES.filter((c) => c.code !== settings.primaryCurrency).map((c) => (
-              <option key={c.code} value={c.code}>
-                {c.code}
-              </option>
-            ))}
-          </select>
+          <div>
+            <span className={styles.rowLabel}>{t('settings.row_patokan_currency', lang)}</span>
+            <div className={styles.rowSub}>{t('settings.row_patokan_currency_sub', lang)}</div>
+          </div>
+          <span className={styles.rowSub}>{settings.primaryCurrency}</span>
         </div>
       </div>
 
@@ -375,20 +347,6 @@ export function SettingsPage() {
             </button>
           </div>
         )}
-      </BottomSheet>
-
-      {/* Currency remove blocked sheet */}
-      <BottomSheet
-        isOpen={currencyRemoveBlocked}
-        onClose={() => setCurrencyRemoveBlocked(false)}
-        title={t('settings.currency_blocked_title', lang)}
-      >
-        <div className={styles.sheetBody}>
-          <div className={styles.sheetWarning}>{t('settings.currency_blocked_warning', lang)}</div>
-          <button className={styles.ghostBtn} onClick={() => setCurrencyRemoveBlocked(false)}>
-            {t('common.ok', lang)}
-          </button>
-        </div>
       </BottomSheet>
 
       {/* Import error sheet */}

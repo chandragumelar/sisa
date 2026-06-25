@@ -18,8 +18,6 @@ const SETTINGS: BackupData['settings'] = {
   lastPaydayConfirmed: null,
   fixedIncome: null,
   primaryCurrency: 'IDR',
-  secondaryCurrency: null,
-  activeCurrencyMode: 'IDR',
   weekendBehavior: null,
   onboardingCompleted: true,
   lastExportedAt: null,
