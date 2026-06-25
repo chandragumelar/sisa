@@ -150,7 +150,6 @@ export type StringKey =
   | 'saldo.sisa'
   | 'saldo.income_month'
   | 'saldo.expense_month'
-  | 'saldo.add_wallet'
   | 'saldo.verdict_near_limit'
   | 'saldo.verdict_below_limit'
   | 'saldo.formula_title'
@@ -335,7 +334,6 @@ export type StringKey =
   | 'home.days_to_payday'
   | 'home.day_to_payday'
   | 'home.saldo_bebas'
-  | 'home.history_link'
   | 'home.monthly_title'
   | 'home.income_label'
   | 'home.expense_label'
@@ -563,7 +561,6 @@ export type StringKey =
   | 'alokasi.uang_mengendap'
   | 'alokasi.mengendap_note'
   | 'alokasi.jatah_harian_approx'
-  | 'alokasi.slider_hint'
   | 'alokasi.sampai_gajian'
   | 'alokasi.sampai_akhir_bulan'
   | 'alokasi.atur_ulang_title'
@@ -749,7 +746,6 @@ const id: StringDictionary = {
   'saldo.sisa': '= Sisa bulan ini',
   'saldo.income_month': 'Pemasukan bulan ini',
   'saldo.expense_month': 'Pengeluaran bulan ini',
-  'saldo.add_wallet': '+ Tambah dompet',
   'saldo.verdict_near_limit':
     '● Mendekati batas aman lo — pertimbangkan kurangi pengeluaran sekarang.',
   'saldo.verdict_below_limit':
@@ -942,7 +938,6 @@ const id: StringDictionary = {
   'home.days_to_payday': '{n} hari ke gajian',
   'home.day_to_payday': '{n} hari ke gajian',
   'home.saldo_bebas': 'Sisa',
-  'home.history_link': 'lihat riwayat →',
   'home.monthly_title': 'Bulan Ini',
   'home.income_label': 'Pemasukan',
   'home.expense_label': 'Pengeluaran',
@@ -1179,7 +1174,6 @@ const id: StringDictionary = {
   'alokasi.uang_mengendap': 'Uang Mengendap',
   'alokasi.mengendap_note': 'Uang Mengendap boleh Rp 0.',
   'alokasi.jatah_harian_approx': 'Jatah harian ≈',
-  'alokasi.slider_hint': '← geser atau ketik',
   'alokasi.sampai_gajian': 'sampai gajian berikutnya',
   'alokasi.sampai_akhir_bulan': 'sampai akhir bulan',
   'alokasi.atur_ulang_title': 'Atur ulang alokasi',
@@ -1362,7 +1356,6 @@ const en: StringDictionary = {
   'saldo.sisa': '= Left this month',
   'saldo.income_month': 'Income this month',
   'saldo.expense_month': 'Spending this month',
-  'saldo.add_wallet': '+ Add wallet',
   'saldo.verdict_near_limit':
     '● Approaching your safety floor — consider pulling back on spending.',
   'saldo.verdict_below_limit': '● Your budget is below your safety floor — cut spending now.',
@@ -1552,7 +1545,6 @@ const en: StringDictionary = {
   'home.days_to_payday': '{n} days to payday',
   'home.day_to_payday': '{n} day to payday',
   'home.saldo_bebas': 'Left',
-  'home.history_link': 'view history →',
   'home.monthly_title': 'This Month',
   'home.income_label': 'Income',
   'home.expense_label': 'Expense',
@@ -1789,7 +1781,6 @@ const en: StringDictionary = {
   'alokasi.uang_mengendap': 'Parked Money',
   'alokasi.mengendap_note': 'Parked Money can be Rp 0.',
   'alokasi.jatah_harian_approx': 'Daily budget ≈',
-  'alokasi.slider_hint': '← slide or type',
   'alokasi.sampai_gajian': 'until next payday',
   'alokasi.sampai_akhir_bulan': 'until end of month',
   'alokasi.atur_ulang_title': 'Reallocate',

@@ -164,13 +164,6 @@ export function SaldoModule({
                   {conditionLabel}
                 </span>
               )}
-              <div className={styles.heroSub}>
-                {(daysUntilPayday === 1
-                  ? t('home.day_to_payday', lang)
-                  : t('home.days_to_payday', lang)
-                ).replace('{n}', String(daysUntilPayday))}
-              </div>
-
               <button className={styles.expandBtn} onClick={() => setExpanded((v) => !v)}>
                 <span className={styles.expandChevron}>{expanded ? '∧' : '∨'}</span>
                 {expanded ? t('home.expand_hide', lang) : t('home.expand_show', lang)}
@@ -222,7 +215,7 @@ export function SaldoModule({
                       </span>
                       {onEditAlokasi && (
                         <button className={styles.aturBtn} onClick={onEditAlokasi}>
-                          atur
+                          {t('home.atur_alokasi', lang)}
                         </button>
                       )}
                     </div>
@@ -247,7 +240,7 @@ export function SaldoModule({
                   )}
                   {onHistoryTap && (
                     <button className={styles.historyLink} onClick={onHistoryTap}>
-                      {t('home.history_link', lang)}
+                      {t('home.lihat_riwayat', lang)}
                     </button>
                   )}
 
@@ -280,7 +273,7 @@ export function SaldoModule({
                   )}
                   {onAddWalletTap && (
                     <button className={styles.addWalletInline} onClick={onAddWalletTap}>
-                      {t('saldo.add_wallet', lang)}
+                      {t('home.tambah_dompet', lang)}
                     </button>
                   )}
                 </div>
