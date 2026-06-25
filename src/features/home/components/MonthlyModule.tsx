@@ -6,12 +6,11 @@ import styles from './MonthlyModule.module.css'
 interface Props {
   income: number
   expense: number
-  totalNabung: number
   currency: string
   nowMs: number
 }
 
-export function MonthlyModule({ income, expense, totalNabung, currency, nowMs }: Props) {
+export function MonthlyModule({ income, expense, currency, nowMs }: Props) {
   const lang = useLanguage()
   const locale = lang === 'en' ? 'en-US' : 'id-ID'
   const monthLabel = new Intl.DateTimeFormat(locale, { month: 'short', year: 'numeric' }).format(
@@ -61,32 +60,6 @@ export function MonthlyModule({ income, expense, totalNabung, currency, nowMs }:
             strokeWidth="1.4"
             strokeLinecap="round"
             strokeLinejoin="round"
-          />
-        </svg>
-      ),
-    },
-    {
-      label: t('home.savings_label', lang),
-      value: totalNabung,
-      colorVar: 'var(--accent)',
-      icon: (
-        <svg width="12" height="12" viewBox="0 0 13 13" fill="none">
-          <path d="M6.5 11V3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-          <path
-            d="M4 5L6.5 2.5L9 5"
-            stroke="currentColor"
-            strokeWidth="1.4"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <line
-            x1="2"
-            y1="12"
-            x2="11"
-            y2="12"
-            stroke="currentColor"
-            strokeWidth="1.4"
-            strokeLinecap="round"
           />
         </svg>
       ),

@@ -62,8 +62,6 @@ export interface BudgetPeriodeInput {
   pemasukanPeriode: number
   /** Unpaid tagihan occurrences from now until next payday. */
   unpaidTagihanTotal: number
-  /** Total earmarked savings (totalNabung). */
-  targetTabungan: number
   /** Total calendar days in this pay period (7/14/~30). Fixed at period start. */
   hariPeriode: number
   /** Sum of keluar+tagihan (non-savings) transactions since period start. Live. */
@@ -111,7 +109,6 @@ export function calcBudgetPeriode(input: BudgetPeriodeInput): BudgetPeriodeResul
   const {
     pemasukanPeriode,
     unpaidTagihanTotal,
-    targetTabungan,
     hariPeriode,
     spentThisPeriode,
     spentToday,
@@ -155,7 +152,7 @@ export function calcBudgetPeriode(input: BudgetPeriodeInput): BudgetPeriodeResul
   }
 
   // ── INCOME-BASED PATH (legacy / users without alokasi) ────────────────────
-  const anggaranRaw = pemasukanPeriode - unpaidTagihanTotal - targetTabungan
+  const anggaranRaw = pemasukanPeriode - unpaidTagihanTotal
   const anggaranOperasional = Math.max(0, anggaranRaw)
   const shortfall = anggaranRaw < 0 ? Math.abs(anggaranRaw) : 0
 

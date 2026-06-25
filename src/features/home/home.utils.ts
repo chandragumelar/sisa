@@ -1,4 +1,4 @@
-import type { Settings, Goal, Transaction, Allocation } from '@/db/database'
+import type { Settings, Transaction, Allocation } from '@/db/database'
 
 // ─── Shared ───────────────────────────────────────────────────────────────────
 
@@ -221,31 +221,4 @@ export function calcYesterdayStats(
     .reduce((sum, t) => sum + Math.abs(t.amount), 0)
   const earned = yesterday.filter((t) => t.type === 'masuk').reduce((sum, t) => sum + t.amount, 0)
   return { spent, earned }
-}
-
-// ─── Goals ───────────────────────────────────────────────────────────────────
-
-export type GoalStatus = 'aktif' | 'antri' | 'tercapai'
-
-export interface GoalWithStatus {
-  goal: Goal
-  saved: number
-  pct: number
-  status: GoalStatus
-}
-
-export function calcGoalStatuses(goals: Goal[], totalNabung: number): GoalWithStatus[] {
-  let remaining = totalNabung
-  let activeAssigned = false
-
-  return goals.map((goal) => {
-    const saved = Math.min(remaining, goal.target)
-    remaining = Math.max(0, remaining - saved)
-    const isFull = saved >= goal.target && goal.target > 0
-    const isActive = !activeAssigned && !isFull
-    if (isActive) activeAssigned = true
-    const pct = goal.target > 0 ? Math.min(100, Math.round((saved / goal.target) * 100)) : 0
-    const status: GoalStatus = isFull ? 'tercapai' : isActive ? 'aktif' : 'antri'
-    return { goal, saved, pct, status }
-  })
 }

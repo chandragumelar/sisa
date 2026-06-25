@@ -19,13 +19,12 @@ interface Props {
   wallets: Wallet[]
   currency: string
   nowMs: number
-  totalNabung: number
   onUpdate: () => void
 }
 
 type FilterMode = 'semua' | 'keluar' | 'masuk' | 'nabung'
 
-const EDITABLE_TYPES: Transaction['type'][] = ['keluar', 'masuk', 'nabung']
+const EDITABLE_TYPES: Transaction['type'][] = ['keluar', 'masuk']
 
 function relativeDate(dateMs: number, nowMs: number, lang: Language): string {
   const now = new Date(nowMs)
@@ -53,15 +52,7 @@ function typeLabel(type: Transaction['type'], lang: Language): string {
   }
 }
 
-export function HistorySheet({
-  isOpen,
-  onClose,
-  wallets,
-  currency,
-  nowMs,
-  totalNabung,
-  onUpdate,
-}: Props) {
+export function HistorySheet({ isOpen, onClose, wallets, currency, nowMs, onUpdate }: Props) {
   const lang = useLanguage()
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [filter, setFilter] = useState<FilterMode>('semua')
@@ -177,21 +168,20 @@ export function HistorySheet({
         )}
       </BottomSheet>
 
-      {editTx && (
+      {editTx && (editTx.type === 'keluar' || editTx.type === 'masuk') && (
         <QuickLogSheet
           key={editTx.id}
           isOpen={!!editTx}
           onClose={() => setEditTx(null)}
           wallets={wallets}
           currency={currency}
-          totalNabung={totalNabung}
           nowMs={nowMs}
           onCommit={(_txId: number, _mode: QuickLogMode) => {
             setEditTx(null)
             reload()
           }}
           editTxId={editTx.id!}
-          initialMode={editTx.type as QuickLogMode}
+          initialMode={editTx.type}
           initialAmount={Math.abs(editTx.amount)}
           initialWalletId={editTx.walletId}
           initialLabel={editTx.label ?? undefined}

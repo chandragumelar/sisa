@@ -19,7 +19,6 @@ interface Props {
   mengendap: number
   monthlyIncome: number
   monthlyExpense: number
-  totalNabung: number
   mode: BudgetMode
   shortfall: number
   daysUntilPayday: number
@@ -41,7 +40,6 @@ export function SaldoModule({
   mengendap,
   monthlyIncome,
   monthlyExpense,
-  totalNabung,
   mode,
   shortfall,
   daysUntilPayday,
@@ -231,13 +229,6 @@ export function SaldoModule({
                     value={formatCurrency(monthlyExpense, currency)}
                     minus
                   />
-                  {totalNabung > 0 && (
-                    <RincianRow
-                      label={t('saldo.rincian_nabung', lang)}
-                      value={formatCurrency(totalNabung, currency)}
-                      minus
-                    />
-                  )}
                   {onHistoryTap && (
                     <button className={styles.historyLink} onClick={onHistoryTap}>
                       {t('home.lihat_riwayat', lang)}

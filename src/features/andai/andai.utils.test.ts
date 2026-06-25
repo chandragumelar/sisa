@@ -3,13 +3,11 @@ import { calcAndai } from './andai.utils'
 import type { AndaiBaseline, AndaiItem } from './andai.utils'
 
 // Self-consistent baseline:
-//   sisaPeriode=4jt (= pemasukan − tagihan − nabung after calcBudgetPeriode)
-//   dailyBudget = 4jt / 20 = 200rb
+//   sisaPeriode=4jt, dailyBudget=4jt/20=200rb
 const BASELINE: AndaiBaseline = {
   sisaPeriode: 4_000_000,
   dailyBudget: 200_000,
   daysUntilPayday: 20,
-  totalNabung: 0,
   uangMengendap: 500_000,
 }
 
@@ -27,11 +25,6 @@ describe('calcAndai — empty stack', () => {
     const r = calcAndai([], BASELINE)
     expect(r.sisaAfter).toBe(r.sisaBefore)
   })
-
-  it('nabung unchanged', () => {
-    const r = calcAndai([], BASELINE)
-    expect(r.nabungAfter).toBe(r.nabungBefore)
-  })
 })
 
 describe('calcAndai — beli', () => {
@@ -43,11 +36,6 @@ describe('calcAndai — beli', () => {
   it('reduces sisa', () => {
     const r = calcAndai([item('beli', 1_000_000)], BASELINE)
     expect(r.sisaAfter).toBeLessThan(r.sisaBefore)
-  })
-
-  it('does not affect tabungan', () => {
-    const r = calcAndai([item('beli', 1_000_000)], BASELINE)
-    expect(r.nabungAfter).toBe(r.nabungBefore)
   })
 
   it('large beli clamps daily to 0', () => {
@@ -66,11 +54,6 @@ describe('calcAndai — income', () => {
     const r = calcAndai([item('income', 3_000_000)], BASELINE)
     expect(r.sisaAfter).toBeGreaterThan(r.sisaBefore)
   })
-
-  it('does not affect tabungan', () => {
-    const r = calcAndai([item('income', 3_000_000)], BASELINE)
-    expect(r.nabungAfter).toBe(r.nabungBefore)
-  })
 })
 
 describe('calcAndai — tagihan (new commitment)', () => {
@@ -79,30 +62,8 @@ describe('calcAndai — tagihan (new commitment)', () => {
     expect(r.dailyAfter).toBeLessThan(r.dailyBefore)
   })
 
-  it('does not affect tabungan', () => {
-    const r = calcAndai([item('tagihan', 500_000)], BASELINE)
-    expect(r.nabungAfter).toBe(r.nabungBefore)
-  })
-
   it('reduces sisa', () => {
     const r = calcAndai([item('tagihan', 500_000)], BASELINE)
-    expect(r.sisaAfter).toBeLessThan(r.sisaBefore)
-  })
-})
-
-describe('calcAndai — target nabung', () => {
-  it('increases tabungan', () => {
-    const r = calcAndai([item('target-nabung', 1_000_000)], BASELINE)
-    expect(r.nabungAfter).toBe(BASELINE.totalNabung + 1_000_000)
-  })
-
-  it('reduces daily budget (earmark reduces operational budget)', () => {
-    const r = calcAndai([item('target-nabung', 1_000_000)], BASELINE)
-    expect(r.dailyAfter).toBeLessThan(r.dailyBefore)
-  })
-
-  it('reduces sisa', () => {
-    const r = calcAndai([item('target-nabung', 1_000_000)], BASELINE)
     expect(r.sisaAfter).toBeLessThan(r.sisaBefore)
   })
 })
@@ -111,13 +72,6 @@ describe('calcAndai — combined variables', () => {
   it('beli + income of equal amounts: daily returns to baseline', () => {
     const r = calcAndai([item('beli', 2_000_000), item('income', 2_000_000)], BASELINE)
     expect(r.dailyAfter).toBeCloseTo(r.dailyBefore, 0)
-    expect(r.nabungAfter).toBe(r.nabungBefore)
-  })
-
-  it('beli + target-nabung: daily drops, nabung rises', () => {
-    const r = calcAndai([item('beli', 1_000_000), item('target-nabung', 500_000)], BASELINE)
-    expect(r.dailyAfter).toBeLessThan(r.dailyBefore)
-    expect(r.nabungAfter).toBe(BASELINE.totalNabung + 500_000)
   })
 
   it('two beli sum correctly', () => {
@@ -127,7 +81,6 @@ describe('calcAndai — combined variables', () => {
   })
 
   it('tagihan + income of equal amounts: daily returns to baseline', () => {
-    // income 1jt raises saldo, tagihan 1jt raises unpaidTagihan by same — sisa unchanged
     const r = calcAndai([item('tagihan', 1_000_000), item('income', 1_000_000)], BASELINE)
     expect(r.dailyAfter).toBeCloseTo(r.dailyBefore, 0)
     expect(r.sisaAfter).toBeCloseTo(r.sisaBefore, 0)
@@ -147,11 +100,10 @@ describe('calcAndai — sisa correctness (repro: saldo 8jt, purchases 5jt → si
     sisaPeriode: 8_000_000,
     dailyBudget: 400_000, // 8jt / 20
     daysUntilPayday: 20,
-    totalNabung: 0,
     uangMengendap: 0,
   }
 
-  it('no items: sisa before equals sisaPeriode when no tagihan/nabung', () => {
+  it('no items: sisa before equals sisaPeriode when no tagihan', () => {
     const r = calcAndai([], BIG)
     expect(r.sisaBefore).toBe(8_000_000)
     expect(r.sisaAfter).toBe(r.sisaBefore)

@@ -49,12 +49,6 @@ export function CompareSheet({ isOpen, onClose, scenarios, baseline, currency }:
           valB={resultB.sisaAfter}
           currency={currency}
         />
-        <CompareRow
-          label={t('andai.compare_tabungan', lang)}
-          valA={resultA.nabungAfter}
-          valB={resultB.nabungAfter}
-          currency={currency}
-        />
       </div>
     </BottomSheet>
   )

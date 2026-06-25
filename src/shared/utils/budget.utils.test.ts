@@ -6,7 +6,6 @@ function makeInput(overrides: Partial<BudgetPeriodeInput> = {}): BudgetPeriodeIn
   return {
     pemasukanPeriode: 5_000_000,
     unpaidTagihanTotal: 1_000_000,
-    targetTabungan: 500_000,
     hariPeriode: 30,
     spentThisPeriode: 1_000_000,
     spentToday: 100_000,
@@ -20,18 +19,18 @@ function makeInput(overrides: Partial<BudgetPeriodeInput> = {}): BudgetPeriodeIn
 
 describe('calcBudgetPeriode — normal mode', () => {
   it('computes all fields correctly', () => {
-    // anggaranRaw = 5_000_000 − 1_000_000 − 500_000 = 3_500_000
-    // anggaranOp  = 3_500_000
-    // jatahHarian = 3_500_000 / 30 ≈ 116_666.67
-    // sisaPeriode = 3_500_000 − 1_000_000 = 2_500_000
-    // sisaHariIni = 116_666.67 − 100_000 ≈ 16_666.67
+    // anggaranRaw = 5_000_000 − 1_000_000 = 4_000_000
+    // anggaranOp  = 4_000_000
+    // jatahHarian = 4_000_000 / 30 ≈ 133_333.33
+    // sisaPeriode = 4_000_000 − 1_000_000 = 3_000_000
+    // sisaHariIni = 133_333.33 − 100_000 ≈ 33_333.33
     const r = calcBudgetPeriode(makeInput())
     expect(r.mode).toBe('normal')
-    expect(r.anggaranRaw).toBe(3_500_000)
-    expect(r.anggaranOperasional).toBe(3_500_000)
-    expect(r.jatahHarian).toBeCloseTo(116_666.67, 0)
-    expect(r.sisaPeriode).toBe(2_500_000)
-    expect(r.sisaHariIni).toBeCloseTo(16_666.67, 0)
+    expect(r.anggaranRaw).toBe(4_000_000)
+    expect(r.anggaranOperasional).toBe(4_000_000)
+    expect(r.jatahHarian).toBeCloseTo(133_333.33, 0)
+    expect(r.sisaPeriode).toBe(3_000_000)
+    expect(r.sisaHariIni).toBeCloseTo(33_333.33, 0)
     expect(r.shortfall).toBe(0)
   })
 
@@ -61,7 +60,6 @@ describe('calcBudgetPeriode — bertahan mode', () => {
       makeInput({
         pemasukanPeriode: 0,
         unpaidTagihanTotal: 1_000_000,
-        targetTabungan: 0,
         spentThisPeriode: 0,
       }),
     )
@@ -73,12 +71,11 @@ describe('calcBudgetPeriode — bertahan mode', () => {
   })
 
   it('boundary: anggaranRaw exactly 0 → bertahan (not normal)', () => {
-    // pemasukanPeriode = unpaid + target → anggaranRaw = 0
+    // pemasukanPeriode = unpaid → anggaranRaw = 0
     const r = calcBudgetPeriode(
       makeInput({
-        pemasukanPeriode: 1_500_000,
+        pemasukanPeriode: 1_000_000,
         unpaidTagihanTotal: 1_000_000,
-        targetTabungan: 500_000,
       }),
     )
     expect(r.mode).toBe('bertahan')
@@ -112,18 +109,18 @@ describe('calcBudgetPeriode — guard precedence', () => {
 
 describe('calcBudgetPeriode — anti double-count', () => {
   it('higher unpaid deducts from anggaranOperasional, not from sisaPeriode directly', () => {
-    // pemasukanPeriode=5jt, unpaid=2jt, targetTabungan=500rb → anggaranRaw=2_500_000
-    // sisaPeriode = 2_500_000 − spentThisPeriode(500rb) = 2_000_000
+    // pemasukanPeriode=5jt, unpaid=2jt → anggaranRaw=3_000_000
+    // sisaPeriode = 3_000_000 − spentThisPeriode(500rb) = 2_500_000
     const r = calcBudgetPeriode(
       makeInput({ unpaidTagihanTotal: 2_000_000, spentThisPeriode: 500_000 }),
     )
-    expect(r.anggaranOperasional).toBe(2_500_000)
-    expect(r.sisaPeriode).toBe(2_000_000)
+    expect(r.anggaranOperasional).toBe(3_000_000)
+    expect(r.sisaPeriode).toBe(2_500_000)
   })
 
   it('sisaPeriode can go negative when overspent', () => {
-    const r = calcBudgetPeriode(makeInput({ spentThisPeriode: 4_000_000 }))
-    expect(r.sisaPeriode).toBe(r.anggaranOperasional - 4_000_000)
+    const r = calcBudgetPeriode(makeInput({ spentThisPeriode: 5_000_000 }))
+    expect(r.sisaPeriode).toBe(r.anggaranOperasional - 5_000_000)
     expect(r.sisaPeriode).toBeLessThan(0)
   })
 })
@@ -134,7 +131,6 @@ describe('calcBudgetPeriode — alokasi path (operasionalBudget != null)', () =>
   const alokasiBase: BudgetPeriodeInput = {
     pemasukanPeriode: 0, // ignored in alokasi path
     unpaidTagihanTotal: 3_000_000,
-    targetTabungan: 0, // ignored in alokasi path
     hariPeriode: 15,
     spentThisPeriode: 2_000_000,
     spentToday: 200_000,
@@ -253,7 +249,7 @@ describe('recomputeAlokasi', () => {
 
 describe('calcBudgetPeriode — freelance useSaldoFloor', () => {
   it('caps jatahHarian at totalSaldo / hariPeriode when saldo is lower', () => {
-    // anggaranOp / hari = 3_500_000 / 30 ≈ 116_666
+    // anggaranOp / hari = 4_000_000 / 30 ≈ 133_333
     // totalSaldo / hari = 2_000_000 / 30 ≈ 66_666 → floor applies
     const r = calcBudgetPeriode(makeInput({ useSaldoFloor: true, totalSaldo: 2_000_000 }))
     expect(r.jatahHarian).toBeCloseTo(2_000_000 / 30, 0)

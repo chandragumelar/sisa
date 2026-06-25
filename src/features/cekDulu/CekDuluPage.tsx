@@ -6,7 +6,7 @@ import { t } from '@/shared/strings/strings'
 import { getSettings } from '@/db/settings.repository'
 import { getAllWallets } from '@/db/wallets.repository'
 import { getActiveTagihan } from '@/db/tagihan.repository'
-import { getTotalNabung, getPeriodFlows } from '@/db/transactions.repository'
+import { getPeriodFlows } from '@/db/transactions.repository'
 import type { Settings, Wallet } from '@/db/database'
 import {
   calcDaysUntilPayday,
@@ -31,7 +31,8 @@ interface PageData {
   sisaPeriode: number
   dailyBudget: number | null
   daysUntilPayday: number
-  totalNabung: number
+  mengendap: number
+  jatahHarian: number
 }
 
 export function CekDuluPage() {
@@ -67,10 +68,7 @@ export function CekDuluPage() {
         const periodStartMs = getPeriodStartDate(nowMs, settings).getTime()
         const hariPeriode = calcHariPeriode(nowMs, settings)
 
-        Promise.all([
-          getTotalNabung(currency),
-          getPeriodFlows(currency, periodStartMs, nowMs),
-        ]).then(([totalNabung, { income, expense, spentToday }]) => {
+        getPeriodFlows(currency, periodStartMs, nowMs).then(({ income, expense, spentToday }) => {
           if (cancelled) return
           const hariPertama = isHariPertamaMode(settings.lastPaydayConfirmed, income)
           let effectivePemasukan = income
@@ -90,7 +88,6 @@ export function CekDuluPage() {
           const budget = calcBudgetPeriode({
             pemasukanPeriode: effectivePemasukan,
             unpaidTagihanTotal,
-            targetTabungan: totalNabung,
             hariPeriode,
             spentThisPeriode: expense,
             spentToday,
@@ -108,7 +105,8 @@ export function CekDuluPage() {
             sisaPeriode: budget.sisaPeriode,
             dailyBudget,
             daysUntilPayday,
-            totalNabung,
+            mengendap: Math.max(0, budget.uangMengendap),
+            jatahHarian: budget.jatahHarian ?? 0,
           })
         })
       },
@@ -120,18 +118,27 @@ export function CekDuluPage() {
 
   if (!data) return null
 
-  const { settings, wallets, totalSaldo, sisaPeriode, dailyBudget, daysUntilPayday, totalNabung } =
-    data
+  const {
+    settings,
+    wallets,
+    totalSaldo,
+    sisaPeriode,
+    dailyBudget,
+    daysUntilPayday,
+    mengendap,
+    jatahHarian,
+  } = data
   const currency = settings.activeCurrencyMode || settings.primaryCurrency
 
   const nominal = parseInt(parseNominalRaw(amountStr), 10) || 0
   const inputFontSize = amountStr.length > 11 ? 26 : amountStr.length > 8 ? 36 : 48
   const result = calcCekDulu({
     nominal,
-    sisaPeriode,
+    sisaUang: sisaPeriode,
     dailyBudget,
     daysUntilPayday,
-    totalNabung,
+    mengendap,
+    jatahHarian,
   })
 
   return (
@@ -237,28 +244,28 @@ export function CekDuluPage() {
           </>
         )}
 
-        {/* Row 3 — muncul saat nyentuh tabungan */}
-        {result.showTabunganRow && (
+        {/* Row 3 — muncul saat nyentuh uang mengendap */}
+        {result.showMengendapRow && (
           <>
             <div className={styles.cmpDivider} />
             <div className={styles.cmpRow}>
               <div className={styles.rowLabel}>
-                {t('cek_dulu.tabungan_label', lang)}
+                {t('cek_dulu.mengendap_label', lang)}
                 <span className={styles.newFlag}>{t('cek_dulu.new_flag', lang)}</span>
               </div>
               <div className={styles.cmpValues}>
                 <span className={styles.valueBefore}>
-                  {formatCurrency(result.nabungBefore, currency)}
+                  {formatCurrency(result.mengendapBefore, currency)}
                 </span>
                 <span className={styles.cmpArrow}>→</span>
                 <span className={styles.valueAfter}>
-                  {formatCurrency(result.nabungAfter, currency)}
+                  {formatCurrency(result.mengendapAfter, currency)}
                 </span>
               </div>
               <div className={styles.rowSubNote}>
-                {t('cek_dulu.tabungan_note', lang).replace(
+                {t('cek_dulu.mengendap_note', lang).replace(
                   '{amount}',
-                  formatCurrency(result.nabungDrawn, currency),
+                  formatCurrency(result.mengendapDrawn, currency),
                 )}
               </div>
             </div>
@@ -325,7 +332,6 @@ export function CekDuluPage() {
         onClose={() => setQuickLogOpen(false)}
         wallets={wallets}
         currency={currency}
-        totalNabung={totalNabung}
         nowMs={nowMs}
         initialAmount={nominal}
         initialMode="keluar"

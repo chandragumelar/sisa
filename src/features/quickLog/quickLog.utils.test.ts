@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buildKeluar, buildMasuk, buildNabung, buildTransaction } from './quickLog.utils'
+import { buildKeluar, buildMasuk, buildTransaction } from './quickLog.utils'
 import type { QuickLogInput } from './quickLog.utils'
 
 const BASE: QuickLogInput = {
@@ -9,7 +9,6 @@ const BASE: QuickLogInput = {
   label: 'makan',
   dateMs: 1700000000000,
   currency: 'IDR',
-  isFromSavings: false,
   category: 'Lainnya',
 }
 
@@ -25,9 +24,9 @@ describe('buildKeluar', () => {
     expect(tx.amount).toBe(-50000)
   })
 
-  it('sets isFromSavings flag', () => {
-    const tx = buildKeluar({ ...BASE, isFromSavings: true })
-    expect(tx.isFromSavings).toBe(true)
+  it('isFromSavings always false, isEarmark always false', () => {
+    const tx = buildKeluar(BASE)
+    expect(tx.isFromSavings).toBe(false)
     expect(tx.isEarmark).toBe(false)
   })
 
@@ -36,7 +35,7 @@ describe('buildKeluar', () => {
     expect(tx.label).toBeUndefined()
   })
 
-  it('note field absent — old txs with note still readable via Transaction schema', () => {
+  it('note field absent', () => {
     const tx = buildKeluar(BASE)
     expect(tx.note).toBeUndefined()
   })
@@ -50,37 +49,13 @@ describe('buildMasuk', () => {
   })
 
   it('isFromSavings is always false', () => {
-    const tx = buildMasuk({ ...BASE, mode: 'masuk', isFromSavings: true })
+    const tx = buildMasuk({ ...BASE, mode: 'masuk' })
     expect(tx.isFromSavings).toBe(false)
   })
 
   it('isEarmark is always false', () => {
     const tx = buildMasuk({ ...BASE, mode: 'masuk' })
     expect(tx.isEarmark).toBe(false)
-  })
-})
-
-describe('buildNabung', () => {
-  it('positive amount, type nabung', () => {
-    const tx = buildNabung({ ...BASE, mode: 'nabung' })
-    expect(tx.amount).toBe(50000)
-    expect(tx.type).toBe('nabung')
-  })
-
-  it('isEarmark is always true', () => {
-    const tx = buildNabung({ ...BASE, mode: 'nabung' })
-    expect(tx.isEarmark).toBe(true)
-  })
-
-  it('never mutates wallet saldo — isEarmark always true', () => {
-    const tx = buildNabung({ ...BASE, mode: 'nabung' })
-    expect(tx.amount).toBe(50000)
-    expect(tx.isEarmark).toBe(true)
-  })
-
-  it('isFromSavings is always false', () => {
-    const tx = buildNabung({ ...BASE, mode: 'nabung' })
-    expect(tx.isFromSavings).toBe(false)
   })
 })
 
@@ -97,12 +72,6 @@ describe('buildTransaction', () => {
     expect(tx.amount).toBeGreaterThan(0)
   })
 
-  it('routes nabung correctly', () => {
-    const tx = buildTransaction({ ...BASE, mode: 'nabung' })
-    expect(tx.type).toBe('nabung')
-    expect(tx.isEarmark).toBe(true)
-  })
-
   it('preserves walletId and currency', () => {
     const tx = buildTransaction({ ...BASE, walletId: 3, currency: 'USD' })
     expect(tx.walletId).toBe(3)
@@ -114,7 +83,7 @@ describe('buildTransaction', () => {
     expect(tx.date).toBe(1699999999000)
   })
 
-  it('valid without note — no note field on QuickLogInput', () => {
+  it('no note field on QuickLogInput', () => {
     const tx = buildTransaction(BASE)
     expect(tx.note).toBeUndefined()
   })

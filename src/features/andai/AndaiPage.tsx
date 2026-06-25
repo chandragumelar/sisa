@@ -7,7 +7,7 @@ import type { Language } from '@/db/database'
 import { getSettings } from '@/db/settings.repository'
 import { getAllWallets } from '@/db/wallets.repository'
 import { getActiveTagihan } from '@/db/tagihan.repository'
-import { getTotalNabung, getPeriodFlows } from '@/db/transactions.repository'
+import { getPeriodFlows } from '@/db/transactions.repository'
 import {
   getSavedScenarios,
   saveScenario,
@@ -39,7 +39,6 @@ const KIND_RAIL_COLOR: Record<AndaiKind, string> = {
   beli: 'var(--signal-danger-br)',
   income: 'var(--signal-safe-br)',
   tagihan: 'var(--signal-caution-br)',
-  'target-nabung': '#bfdbfe',
 }
 
 function kindLabel(kind: AndaiKind, lang: Language): string {
@@ -50,8 +49,6 @@ function kindLabel(kind: AndaiKind, lang: Language): string {
       return t('andai.kind_income', lang)
     case 'tagihan':
       return t('andai.kind_tagihan', lang)
-    case 'target-nabung':
-      return t('andai.kind_target_nabung', lang)
   }
 }
 
@@ -63,8 +60,6 @@ function kindPlaceholder(kind: AndaiKind, lang: Language): string {
       return t('andai.placeholder_income', lang)
     case 'tagihan':
       return t('andai.placeholder_tagihan', lang)
-    case 'target-nabung':
-      return t('andai.placeholder_nabung', lang)
   }
 }
 
@@ -117,10 +112,7 @@ export function AndaiPage() {
         const periodStartMs = getPeriodStartDate(nowMs, s).getTime()
         const hariPeriode = calcHariPeriode(nowMs, s)
 
-        Promise.all([
-          getTotalNabung(currency),
-          getPeriodFlows(currency, periodStartMs, nowMs),
-        ]).then(([totalNabung, { income, expense, spentToday }]) => {
+        getPeriodFlows(currency, periodStartMs, nowMs).then(({ income, expense, spentToday }) => {
           if (cancelled) return
           const hariPertama = isHariPertamaMode(s.lastPaydayConfirmed, income)
           let effectivePemasukan = income
@@ -138,20 +130,13 @@ export function AndaiPage() {
           const budget = calcBudgetPeriode({
             pemasukanPeriode: effectivePemasukan,
             unpaidTagihanTotal,
-            targetTabungan: totalNabung,
             hariPeriode,
             spentThisPeriode: expense,
             spentToday,
             totalSaldo,
             useSaldoFloor: s.incomeType === 'freelance',
           })
-          const bl = buildAndaiBaseline(
-            budget.sisaPeriode,
-            totalNabung,
-            budget.uangMengendap,
-            s,
-            nowMs,
-          )
+          const bl = buildAndaiBaseline(budget.sisaPeriode, budget.uangMengendap, s, nowMs)
           setBaseline(bl)
           setCurrency(currency)
 
@@ -274,10 +259,6 @@ export function AndaiPage() {
             </span>
           </div>
           <div className={styles.baselineCell}>
-            <span className={styles.blKey}>{t('andai.baseline_tabungan', lang)}</span>
-            <span className={styles.blVal}>{formatCurrency(baseline.totalNabung, currency)}</span>
-          </div>
-          <div className={styles.baselineCell}>
             <span className={styles.blKey}>{t('andai.baseline_mengendap', lang)}</span>
             <span className={styles.blVal}>{formatCurrency(baseline.uangMengendap, currency)}</span>
           </div>
@@ -332,12 +313,6 @@ export function AndaiPage() {
               label={t('andai.result_sisa', lang)}
               before={result.sisaBefore}
               after={result.sisaAfter}
-              currency={currency}
-            />
-            <ResultRow
-              label={t('andai.result_tabungan', lang)}
-              before={result.nabungBefore}
-              after={result.nabungAfter}
               currency={currency}
             />
           </div>
@@ -422,7 +397,7 @@ export function AndaiPage() {
         title={t('andai.title', lang)}
       >
         <div className={styles.kindPicker}>
-          {(['beli', 'income', 'tagihan', 'target-nabung'] as AndaiKind[]).map((k) => (
+          {(['beli', 'income', 'tagihan'] as AndaiKind[]).map((k) => (
             <button
               key={k}
               className={styles.kindPickerBtn}
@@ -454,11 +429,7 @@ export function AndaiPage() {
             onChange={(e) => setAddDesc(e.target.value)}
           />
 
-          <div className={styles.addLabel}>
-            {addSheet === 'target-nabung'
-              ? t('andai.add_target_label', lang)
-              : t('andai.add_nominal_label', lang)}
-          </div>
+          <div className={styles.addLabel}>{t('andai.add_nominal_label', lang)}</div>
           <div className={styles.addAmountRow}>
             <span className={styles.addAmountPrefix}>{getCurrencySymbol(currency)}</span>
             <input
