@@ -1,8 +1,4 @@
-/** sisa = totalSaldo − tagihan belum dibayar − total nabung */
-export function calcSisa(
-  totalSaldo: number,
-  unpaidTagihanTotal: number,
-  totalNabung: number,
-): number {
-  return totalSaldo - unpaidTagihanTotal - totalNabung
+/** sisa = totalSaldo − tagihan belum dibayar */
+export function calcSisa(totalSaldo: number, unpaidTagihanTotal: number): number {
+  return totalSaldo - unpaidTagihanTotal
 }

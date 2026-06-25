@@ -1,16 +1,19 @@
 // Row visibility thresholds:
-//   Row 1 (jatah harian)      — always
-//   Row 2 (sisa gajian)       — nominal > dailyBudget (exceeds one day's allocation)
-//   Row 3 (tabungan kepotong) — nominal > sisaPeriode (exceeds full remaining)
+//   Row 1 (jatah harian)        — always
+//   Row 2 (sisa gajian)         — nominal > dailyBudget (exceeds one day's allocation)
+//   Row 3 (uang mengendap)      — nominal > sisaUang (exceeds full remaining)
 
 export interface CekDuluInput {
   nominal: number
-  /** Live remaining operational budget this period (from calcBudgetPeriode.sisaPeriode). */
-  sisaPeriode: number
-  /** Effective daily: sisaPeriode ÷ daysUntilPayday. Null on hari-gajian. */
+  /** Live remaining operational budget this period. */
+  sisaUang: number
+  /** Effective daily: sisaUang ÷ daysUntilPayday. Null on hari-gajian. */
   dailyBudget: number | null
   daysUntilPayday: number
-  totalNabung: number
+  /** Uang mengendap (parked money outside operational). */
+  mengendap: number
+  /** Daily budget for recovery days calculation. */
+  jatahHarian: number
 }
 
 export interface CekDuluResult {
@@ -24,33 +27,34 @@ export interface CekDuluResult {
   sisaBefore: number
   sisaAfter: number
 
-  // Row 3 — tabungan kepotong (appears when nominal > sisaPeriode)
-  showTabunganRow: boolean
-  nabungBefore: number
-  nabungAfter: number
-  nabungDrawn: number
+  // Row 3 — uang mengendap kepotong (appears when nominal > sisaUang)
+  showMengendapRow: boolean
+  mengendapBefore: number
+  mengendapAfter: number
+  mengendapDrawn: number
 
   // Insights
   daysEquivalent: number // ceil(nominal / dailyBefore)
-  portionPct: number // round(nominal / sisaPeriode * 100)
-  recoveryDays: number // ceil(nabungDrawn / dailyBefore); 0 if no savings drawn
+  portionPct: number // round(nominal / sisaUang * 100)
+  recoveryDays: number // ceil(mengendapDrawn / jatahHarian); 0 if none drawn
 }
 
 export function calcCekDulu(input: CekDuluInput): CekDuluResult {
-  const { nominal, sisaPeriode, dailyBudget, daysUntilPayday, totalNabung } = input
+  const { nominal, sisaUang, dailyBudget, daysUntilPayday, mengendap, jatahHarian } = input
 
-  const availableOp = Math.max(0, sisaPeriode)
+  const availableOp = Math.max(0, sisaUang)
   const daily = dailyBudget !== null ? dailyBudget : 0
 
   const afterAvailableOp = availableOp - nominal
   const afterDaily = daysUntilPayday > 0 ? Math.max(0, afterAvailableOp / daysUntilPayday) : 0
 
-  const nabungDrawn = Math.max(0, Math.min(totalNabung, nominal - availableOp))
-  const afterNabung = totalNabung - nabungDrawn
+  const mengendapDrawn = Math.max(0, Math.min(mengendap, nominal - availableOp))
+  const afterMengendap = mengendap - mengendapDrawn
 
   const daysEquivalent = nominal > 0 && daily > 0 ? Math.ceil(nominal / daily) : 0
   const portionPct = nominal > 0 && availableOp > 0 ? Math.round((nominal / availableOp) * 100) : 0
-  const recoveryDays = nabungDrawn > 0 && daily > 0 ? Math.ceil(nabungDrawn / daily) : 0
+  const recoveryDays =
+    mengendapDrawn > 0 && jatahHarian > 0 ? Math.ceil(mengendapDrawn / jatahHarian) : 0
 
   return {
     dailyBefore: daily,
@@ -61,10 +65,10 @@ export function calcCekDulu(input: CekDuluInput): CekDuluResult {
     sisaBefore: availableOp,
     sisaAfter: afterAvailableOp,
 
-    showTabunganRow: nominal > availableOp,
-    nabungBefore: totalNabung,
-    nabungAfter: afterNabung,
-    nabungDrawn,
+    showMengendapRow: nominal > availableOp,
+    mengendapBefore: mengendap,
+    mengendapAfter: afterMengendap,
+    mengendapDrawn,
 
     daysEquivalent,
     portionPct,

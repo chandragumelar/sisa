@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import type { Settings, Goal, Transaction } from '@/db/database'
+import type { Settings, Transaction } from '@/db/database'
 import {
   calcDaysUntilPayday,
   getPaydayDate,
@@ -7,7 +7,6 @@ import {
   calcHariPeriode,
   calcSpentToday,
   calcYesterdayStats,
-  calcGoalStatuses,
   needsPaydayConfirmation,
   isHariPertamaMode,
   calcPemasukanFromAvg,
@@ -42,10 +41,6 @@ function makeSettings(overrides: Partial<Settings> = {}): Settings {
     lastExportedAt: null,
     ...overrides,
   }
-}
-
-function makeGoal(id: number, order: number, target: number): Goal {
-  return { id, name: `Goal ${id}`, target, currency: 'IDR', order, createdAt: NOW_MS }
 }
 
 function makeTx(overrides: Partial<Transaction>): Transaction {
@@ -546,44 +541,6 @@ describe('calcYesterdayStats', () => {
 
   it('empty → both 0', () => {
     expect(calcYesterdayStats([], NOW_MS)).toEqual({ spent: 0, earned: 0 })
-  })
-})
-
-// ─── calcGoalStatuses ─────────────────────────────────────────────────────────
-
-describe('calcGoalStatuses', () => {
-  it('first goal is aktif when nabung is partial', () => {
-    const goals = [makeGoal(1, 0, 1_000_000), makeGoal(2, 1, 500_000)]
-    const statuses = calcGoalStatuses(goals, 300_000)
-    expect(statuses[0].status).toBe('aktif')
-    expect(statuses[0].saved).toBe(300_000)
-    expect(statuses[1].status).toBe('antri')
-    expect(statuses[1].saved).toBe(0)
-  })
-
-  it('first goal tercapai, second becomes aktif', () => {
-    const goals = [makeGoal(1, 0, 500_000), makeGoal(2, 1, 1_000_000)]
-    const statuses = calcGoalStatuses(goals, 600_000)
-    expect(statuses[0].status).toBe('tercapai')
-    expect(statuses[0].pct).toBe(100)
-    expect(statuses[1].status).toBe('aktif')
-    expect(statuses[1].saved).toBe(100_000)
-  })
-
-  it('no nabung → all antri except first which is aktif', () => {
-    const goals = [makeGoal(1, 0, 1_000_000), makeGoal(2, 1, 500_000)]
-    const statuses = calcGoalStatuses(goals, 0)
-    expect(statuses[0].status).toBe('aktif')
-    expect(statuses[1].status).toBe('antri')
-  })
-
-  it('empty goals → empty result', () => {
-    expect(calcGoalStatuses([], 500_000)).toEqual([])
-  })
-
-  it('pct calculation', () => {
-    const goals = [makeGoal(1, 0, 1_000_000)]
-    expect(calcGoalStatuses(goals, 250_000)[0].pct).toBe(25)
   })
 })
 

@@ -9,14 +9,12 @@ interface Props {
   currency: string
   walletCount: number
   tagihanCount: number
-  hasNabung: boolean
   sisa: number
   unpaidTagihanTotal: number
   onCekDulu: (amount?: number) => void
   onAndai: () => void
   onAddTagihan: () => void
   onAddWallet: () => void
-  onNabungTap: () => void
 }
 
 type CardState = 0 | 1 | 2
@@ -31,14 +29,12 @@ export function CekDuluCard({
   currency,
   walletCount,
   tagihanCount,
-  hasNabung,
   sisa,
   unpaidTagihanTotal,
   onCekDulu,
   onAndai,
   onAddTagihan,
   onAddWallet,
-  onNabungTap,
 }: Props) {
   const lang = useLanguage()
   const [amountStr, setAmountStr] = useState('')
@@ -112,17 +108,6 @@ export function CekDuluCard({
                 todoText={t('cek.need_fill', lang)}
                 onTodo={onAddTagihan}
               />
-              <div className={styles.checkRow}>
-                <span className={styles.checkIconOptional} />
-                <span className={styles.checkLabel}>{t('cek.item_tabungan', lang)}</span>
-                {hasNabung ? (
-                  <span className={styles.checkOptional}>{t('cek.optional', lang)}</span>
-                ) : (
-                  <button className={styles.checkTodoBtn} onClick={onNabungTap}>
-                    {t('cek.nabung_cta', lang)} →
-                  </button>
-                )}
-              </div>
             </div>
 
             <div className={styles.disclaimer}>

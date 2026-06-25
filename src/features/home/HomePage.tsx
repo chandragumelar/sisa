@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useClock } from '@/app/providers/useClock'
 import { useLanguage } from '@/app/providers/useLanguage'
@@ -10,19 +10,15 @@ import {
   revertTagihanPayment,
   deleteTagihan,
 } from '@/db/tagihan.repository'
-import { getAllGoals, deleteGoal, updateGoalsOrder } from '@/db/goals.repository'
 import {
-  getTotalNabung,
   getMonthlyFlows,
   getPeriodFlows,
   deleteTransactionAndRevertBalance,
-  addNabungDeduction,
 } from '@/db/transactions.repository'
 import { t } from '@/shared/strings/strings'
-import type { Language, Settings, Wallet, Tagihan, Goal, Allocation } from '@/db/database'
+import type { Language, Settings, Wallet, Tagihan, Allocation } from '@/db/database'
 import {
   calcDaysUntilPayday,
-  calcGoalStatuses,
   getPaydayDate,
   getPeriodStartDate,
   calcHariPeriode,
@@ -39,7 +35,6 @@ import { CekDuluCard } from './components/CekDuluCard'
 import { SaldoModule } from './components/SaldoModule'
 import { MonthlyModule } from './components/MonthlyModule'
 import { TagihanModule } from './components/TagihanModule'
-import { GoalModule } from './components/GoalModule'
 import { BottomActionBar } from './components/BottomActionBar'
 import { Toast } from './components/Toast'
 import { MarkPaidSheet } from './components/MarkPaidSheet'
@@ -49,7 +44,6 @@ import { BackupCard } from './components/BackupCard'
 import { TransisiPeriodeBanner } from './components/TransisiPeriodeBanner'
 import { WalletEditSheet } from '@/features/wallet/WalletEditSheet'
 import { ProfilTagihanSheet } from '@/features/profil/ProfilTagihanSheet'
-import { ProfilGoalSheet } from '@/features/profil/ProfilGoalSheet'
 import { ProfilWalletsSheet } from '@/features/profil/ProfilWalletsSheet'
 import { QuickLogSheet } from '@/features/quickLog/QuickLogSheet'
 import type { QuickLogMode } from '@/features/quickLog/quickLog.utils'
@@ -64,8 +58,6 @@ interface HomeData {
   settings: Settings | null
   wallets: Wallet[]
   tagihan: Tagihan[]
-  goals: Goal[]
-  totalNabung: number
   monthlyIncome: number
   monthlyExpense: number
   // allocation path
@@ -117,8 +109,6 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
     settings: null,
     wallets: [],
     tagihan: [],
-    goals: [],
-    totalNabung: 0,
     monthlyIncome: 0,
     monthlyExpense: 0,
     allocation: null,
@@ -148,8 +138,8 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).getTime()
     const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 1).getTime()
 
-    Promise.all([getSettings(), getAllWallets(), getActiveTagihan(), getAllGoals()]).then(
-      ([settings, wallets, tagihan, goals]) => {
+    Promise.all([getSettings(), getAllWallets(), getActiveTagihan()]).then(
+      ([settings, wallets, tagihan]) => {
         if (cancelled || !settings) return
         const currency = settings.activeCurrencyMode || settings.primaryCurrency
         const totalSaldoForCalc = wallets
@@ -165,13 +155,11 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
         const hariPeriode = calcHariPeriode(nowMs, settings)
 
         Promise.all([
-          getTotalNabung(currency),
           getMonthlyFlows(currency, monthStart, monthEnd),
           getPeriodFlows(currency, periodStartMs, nowMs),
           getAllocation(),
         ]).then(
           async ([
-            totalNabung,
             { income: monthlyIncome, expense: monthlyExpense },
             { income, expense, spentToday },
             allocation,
@@ -209,7 +197,6 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
             const budget = calcBudgetPeriode({
               pemasukanPeriode: effectivePemasukan,
               unpaidTagihanTotal: unpaidForCalc,
-              targetTabungan: totalNabung,
               hariPeriode,
               spentThisPeriode: expense,
               spentToday,
@@ -241,8 +228,6 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
               settings,
               wallets,
               tagihan,
-              goals,
-              totalNabung,
               monthlyIncome,
               monthlyExpense,
               allocation,
@@ -284,8 +269,6 @@ export function HomePage() {
     settings,
     wallets,
     tagihan,
-    goals,
-    totalNabung,
     monthlyIncome,
     monthlyExpense,
     allocation,
@@ -309,24 +292,8 @@ export function HomePage() {
   const [quickLogOpen, setQuickLogOpen] = useState(false)
   const [editWallet, setEditWallet] = useState<Wallet | null>(null)
   const [tagihanSheetOpen, setTagihanSheetOpen] = useState(false)
-  const [goalSheetOpen, setGoalSheetOpen] = useState(false)
   const [walletSheetOpen, setWalletSheetOpen] = useState(false)
-  const [quickLogInitialMode, setQuickLogInitialMode] = useState<QuickLogMode | undefined>(
-    undefined,
-  )
-  const [showGoalToast, setShowGoalToast] = useState(false)
-  const [firstGoalName, setFirstGoalName] = useState('')
-  const prevGoalsLengthRef = useRef<number | null>(null)
   const [alokasiSheetOpen, setAlokasiSheetOpen] = useState(false)
-
-  useEffect(() => {
-    const prev = prevGoalsLengthRef.current
-    if (prev === 0 && goals.length === 1) {
-      setFirstGoalName(goals[0].name)
-      setShowGoalToast(true)
-    }
-    prevGoalsLengthRef.current = goals.length
-  }, [goals])
 
   if (isLoading || !settings) return null
 
@@ -383,12 +350,7 @@ export function HomePage() {
   async function handleQuickLogCommit(txId: number, mode: QuickLogMode) {
     reload()
     setToast({
-      message:
-        mode === 'nabung'
-          ? t('home.toast_nabung', lang)
-          : mode === 'masuk'
-            ? t('home.toast_masuk', lang)
-            : t('home.toast_keluar', lang),
+      message: mode === 'masuk' ? t('home.toast_masuk', lang) : t('home.toast_keluar', lang),
       onUndo: async () => {
         await deleteTransactionAndRevertBalance(txId)
         reload()
@@ -399,18 +361,6 @@ export function HomePage() {
 
   async function handleDeleteTagihan(tg: Tagihan) {
     await deleteTagihan(tg.id!)
-    reload()
-  }
-
-  async function handleDeleteGoal(id: number) {
-    const currencyGoals = goals.filter((g) => g.currency === currency)
-    const currencyWallets = wallets.filter((w) => w.currency === currency)
-    const goalStatuses = calcGoalStatuses(currencyGoals, totalNabung)
-    const gs = goalStatuses.find((s) => s.goal.id === id)
-    if (gs && gs.saved > 0 && currencyWallets.length > 0) {
-      await addNabungDeduction(gs.saved, currency, currencyWallets[0].id!, nowMs)
-    }
-    await deleteGoal(id)
     reload()
   }
 
@@ -557,17 +507,12 @@ export function HomePage() {
             currency={currency}
             walletCount={wallets.filter((w) => w.currency === currency).length}
             tagihanCount={currencyTagihan.length}
-            hasNabung={totalNabung > 0}
             sisa={sisaPeriode}
             unpaidTagihanTotal={unpaidTagihanTotal}
             onCekDulu={(amount) => navigate('/cek-dulu', { state: { initialAmount: amount } })}
             onAndai={() => navigate('/andai')}
             onAddTagihan={() => setTagihanSheetOpen(true)}
             onAddWallet={() => setWalletSheetOpen(true)}
-            onNabungTap={() => {
-              setQuickLogInitialMode('nabung')
-              setQuickLogOpen(true)
-            }}
           />
 
           <SaldoModule
@@ -581,7 +526,6 @@ export function HomePage() {
             mengendap={mengendap}
             monthlyIncome={monthlyIncome}
             monthlyExpense={monthlyExpense}
-            totalNabung={totalNabung}
             mode={mode}
             shortfall={shortfall}
             daysUntilPayday={daysUntilPayday}
@@ -607,7 +551,6 @@ export function HomePage() {
           <MonthlyModule
             income={monthlyIncome}
             expense={monthlyExpense}
-            totalNabung={totalNabung}
             currency={currency}
             nowMs={nowMs}
           />
@@ -619,27 +562,6 @@ export function HomePage() {
             onPayTap={(tg) => setMarkPaidTagihan(tg)}
             onRowTap={(tg) => setDetailTagihan(tg)}
             onAddTap={() => setTagihanSheetOpen(true)}
-          />
-
-          <GoalModule
-            goals={goals.filter((g) => g.currency === currency)}
-            totalNabung={totalNabung}
-            currency={currency}
-            onAddTap={() => setGoalSheetOpen(true)}
-            onGoalTap={() => setGoalSheetOpen(true)}
-            onReorder={(ids) => updateGoalsOrder(ids).then(reload)}
-            onNabungTap={() => {
-              setQuickLogInitialMode('nabung')
-              setQuickLogOpen(true)
-            }}
-            showGoalToast={showGoalToast}
-            newGoalName={firstGoalName}
-            onGoalToastNabung={() => {
-              setShowGoalToast(false)
-              setQuickLogInitialMode('nabung')
-              setQuickLogOpen(true)
-            }}
-            onGoalToastDismiss={() => setShowGoalToast(false)}
           />
 
           <BerbagiKeamananSection />
@@ -705,7 +627,6 @@ export function HomePage() {
         wallets={wallets}
         currency={currency}
         nowMs={nowMs}
-        totalNabung={totalNabung}
         onUpdate={reload}
       />
 
@@ -750,30 +671,13 @@ export function HomePage() {
         initialEditTagihan={editTagihan}
       />
 
-      <ProfilGoalSheet
-        isOpen={goalSheetOpen}
-        onClose={() => setGoalSheetOpen(false)}
-        goals={goals.filter((g) => g.currency === currency)}
-        currency={currency}
-        nowMs={nowMs}
-        onUpdate={async () => {
-          reload()
-        }}
-        onDeleteGoal={handleDeleteGoal}
-      />
-
       <QuickLogSheet
         isOpen={quickLogOpen}
-        onClose={() => {
-          setQuickLogOpen(false)
-          setQuickLogInitialMode(undefined)
-        }}
+        onClose={() => setQuickLogOpen(false)}
         wallets={wallets}
         currency={currency}
-        totalNabung={totalNabung}
         nowMs={nowMs}
         onCommit={handleQuickLogCommit}
-        initialMode={quickLogInitialMode}
       />
 
       {alokasiSheetOpen &&

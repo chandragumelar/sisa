@@ -200,25 +200,6 @@ export type StringKey =
   | 'saldo.mode_hariterakhir_badge'
   | 'saldo.mode_hariterakhir_sub_label'
   | 'saldo.mode_hariterakhir_note'
-  // goal module
-  | 'goal.title'
-  | 'goal.empty_text'
-  | 'goal.empty_title'
-  | 'goal.empty_hint'
-  | 'goal.saving'
-  | 'goal.reached'
-  | 'goal.waiting'
-  | 'goal.add'
-  | 'goal.reorder_hint_new'
-  | 'goal.menabung'
-  | 'goal.status_belum'
-  | 'goal.status_sedang'
-  | 'goal.prioritas'
-  | 'goal.antrian_label'
-  | 'goal.not_saved'
-  | 'goal.toast_title'
-  | 'goal.toast_cta'
-  | 'goal.toast_dismiss'
   // tagihan module
   | 'tagihan_module.title'
   | 'tagihan_module.empty_text'
@@ -328,7 +309,6 @@ export type StringKey =
   | 'toast.undo'
   // home toast messages
   | 'home.toast_paid'
-  | 'home.toast_nabung'
   | 'home.toast_masuk'
   | 'home.toast_keluar'
   | 'home.days_to_payday'
@@ -345,9 +325,6 @@ export type StringKey =
   // quick log sheet
   | 'quick_log.mode_keluar'
   | 'quick_log.mode_masuk'
-  | 'quick_log.mode_nabung'
-  | 'quick_log.savings_warning'
-  | 'quick_log.from_savings'
   | 'quick_log.date_label'
   | 'quick_log.date_custom_aria'
   | 'quick_log.submitting'
@@ -370,8 +347,8 @@ export type StringKey =
   | 'cek_dulu.daily_unit'
   | 'cek_dulu.sisa_label'
   | 'cek_dulu.new_flag'
-  | 'cek_dulu.tabungan_label'
-  | 'cek_dulu.tabungan_note'
+  | 'cek_dulu.mengendap_label'
+  | 'cek_dulu.mengendap_note'
   | 'cek_dulu.src_label'
   | 'cek_dulu.src_wallets'
   | 'cek_dulu.close_btn'
@@ -386,17 +363,14 @@ export type StringKey =
   | 'andai.back_aria'
   | 'andai.baseline_label'
   | 'andai.baseline_saldo'
-  | 'andai.baseline_tabungan'
   | 'andai.stack_label'
   | 'andai.remove_aria'
   | 'andai.kind_beli'
   | 'andai.kind_income'
   | 'andai.kind_tagihan'
-  | 'andai.kind_target_nabung'
   | 'andai.result_label'
   | 'andai.result_daily'
   | 'andai.result_sisa'
-  | 'andai.result_tabungan'
   | 'andai.reset'
   | 'andai.save'
   | 'andai.compare'
@@ -404,12 +378,10 @@ export type StringKey =
   | 'andai.add_event'
   | 'andai.add_desc_label'
   | 'andai.add_nominal_label'
-  | 'andai.add_target_label'
   | 'andai.add_submit'
   | 'andai.placeholder_beli'
   | 'andai.placeholder_income'
   | 'andai.placeholder_tagihan'
-  | 'andai.placeholder_nabung'
   | 'andai.scenarios_label'
   | 'andai.scenarios_delete_aria'
   | 'andai.scenarios_delete_label'
@@ -420,21 +392,11 @@ export type StringKey =
   | 'andai.compare_sheet_title'
   | 'andai.compare_daily'
   | 'andai.compare_sisa'
-  | 'andai.compare_tabungan'
   | 'andai.insight_days'
   | 'andai.insight_portion'
   | 'andai.insight_recovery'
   | 'andai.baseline_mengendap'
   | 'andai.income_disclaimer'
-  // profil – goals
-  | 'profil.goals_title_list'
-  | 'profil.goals_title_edit'
-  | 'profil.goals_title_add'
-  | 'profil.goals_empty'
-  | 'profil.goals_reorder_hint'
-  | 'profil.goals_name_label'
-  | 'profil.goals_name_placeholder'
-  | 'profil.goals_target_label'
   // profil – wallets
   | 'profil.wallets_title_list'
   | 'profil.wallets_title_add'
@@ -802,26 +764,6 @@ const id: StringDictionary = {
   'saldo.mode_hariterakhir_note':
     'Ini hari terakhir periode. Besok periode baru dimulai dan jatah harian dihitung ulang.',
 
-  'goal.title': 'mimpi lo',
-  'goal.empty_text':
-    'misal: laptop 20jt, liburan Bali, dana darurat — supaya lo tau lagi nabung buat apa.',
-  'goal.empty_title': 'Tulis mimpi lo di sini',
-  'goal.empty_hint': 'Lalu menabung di tab Menabung — mimpi paling atas otomatis terisi duluan.',
-  'goal.saving': 'menabung →',
-  'goal.reached': 'tercapai ✓',
-  'goal.waiting': 'nunggu giliran',
-  'goal.add': '+ Catat mimpi baru',
-  'goal.reorder_hint_new': 'Pakai ↑↓ untuk atur urutan mimpi',
-  'goal.menabung': 'Menabung',
-  'goal.status_belum': 'belum menabung',
-  'goal.status_sedang': 'sedang ditabung',
-  'goal.prioritas': 'prioritas',
-  'goal.antrian_label': 'antrian',
-  'goal.not_saved': 'Belum ada yang ditabung',
-  'goal.toast_title': 'Mimpi tercatat!',
-  'goal.toast_cta': 'Mulai menabung sekarang',
-  'goal.toast_dismiss': 'Nanti saja',
-
   'tagihan_module.title': 'tagihan bulan ini',
   'tagihan_module.empty_text':
     'Catat tagihan rutin — listrik, internet, streaming — biar budget lo akurat dan gak kecolongan.',
@@ -932,7 +874,6 @@ const id: StringDictionary = {
   'toast.undo': 'Batal',
 
   'home.toast_paid': '{name} ditandai dibayar',
-  'home.toast_nabung': 'Nabung dicatat',
   'home.toast_masuk': 'Pemasukan dicatat',
   'home.toast_keluar': 'Pengeluaran dicatat',
   'home.days_to_payday': '{n} hari ke gajian',
@@ -949,9 +890,6 @@ const id: StringDictionary = {
 
   'quick_log.mode_keluar': 'keluar',
   'quick_log.mode_masuk': 'masuk',
-  'quick_log.mode_nabung': 'nabung',
-  'quick_log.savings_warning': 'Tabungan kamu cuma {amount} — mau pakai semua tabungan?',
-  'quick_log.from_savings': 'dari tabungan',
   'quick_log.date_label': 'Pilih tanggal',
   'quick_log.date_custom_aria': 'Pilih tanggal lain',
   'quick_log.submitting': 'Menyimpan...',
@@ -973,8 +911,8 @@ const id: StringDictionary = {
   'cek_dulu.daily_unit': '/hari',
   'cek_dulu.sisa_label': 'anggaran operasional',
   'cek_dulu.new_flag': 'baru muncul',
-  'cek_dulu.tabungan_label': 'tabungan kepotong',
-  'cek_dulu.tabungan_note': 'Buat nutupin, {amount} ketarik dari tabungan.',
+  'cek_dulu.mengendap_label': 'uang mengendap kepotong',
+  'cek_dulu.mengendap_note': 'Buat nutupin, {amount} ketarik dari Uang Mengendap.',
   'cek_dulu.src_label': 'dihitung dari anggaran operasional',
   'cek_dulu.src_wallets': '{n} dompet · {amount}',
   'cek_dulu.close_btn': 'Tutup',
@@ -992,17 +930,14 @@ const id: StringDictionary = {
   'andai.back_aria': 'Kembali',
   'andai.baseline_label': 'sekarang · tanpa diandai',
   'andai.baseline_saldo': 'anggaran operasional',
-  'andai.baseline_tabungan': 'total tabungan',
   'andai.stack_label': 'andai...',
   'andai.remove_aria': 'Hapus',
   'andai.kind_beli': 'beli',
   'andai.kind_income': 'pemasukan',
   'andai.kind_tagihan': 'tagihan',
-  'andai.kind_target_nabung': 'target nabung',
   'andai.result_label': 'kalau semua ini kejadian',
   'andai.result_daily': 'jatah harian sampai gajian',
   'andai.result_sisa': 'anggaran operasional',
-  'andai.result_tabungan': 'total tabungan',
   'andai.reset': 'Reset',
   'andai.save': 'Simpan',
   'andai.compare': 'Banding',
@@ -1010,12 +945,10 @@ const id: StringDictionary = {
   'andai.add_event': '+ tambah kejadian',
   'andai.add_desc_label': 'Deskripsi (opsional)',
   'andai.add_nominal_label': 'Nominal',
-  'andai.add_target_label': 'Target per bulan',
   'andai.add_submit': 'Tambah',
   'andai.placeholder_beli': 'e.g. service mobil',
   'andai.placeholder_income': 'e.g. gaji, freelance',
   'andai.placeholder_tagihan': 'e.g. langganan baru',
-  'andai.placeholder_nabung': 'e.g. nabung tiap bulan',
   'andai.scenarios_label': 'skenario tersimpan',
   'andai.scenarios_delete_aria': 'Hapus skenario',
   'andai.scenarios_delete_label': 'hapus',
@@ -1026,7 +959,6 @@ const id: StringDictionary = {
   'andai.compare_sheet_title': 'Banding skenario',
   'andai.compare_daily': 'jatah harian',
   'andai.compare_sisa': 'anggaran operasional',
-  'andai.compare_tabungan': 'total tabungan',
   'andai.baseline_mengendap': 'uang mengendap',
   'andai.income_disclaimer':
     '* Pemasukan di Andai diasumsikan langsung tersedia, bukan prediksi tanggal.',
@@ -1036,15 +968,6 @@ const id: StringDictionary = {
     'Efek bersih skenario ini mengambil {pct}% dari total sisa lo sampai gajian. Semakin besar angkanya, semakin sempit ruang gerak untuk kebutuhan lain.',
   'andai.insight_recovery':
     'Skenario ini mengurangi tabungan lo. Butuh sekitar {n} hari nabung konsisten untuk balik ke posisi sekarang — timbang lagi apakah worth it.',
-
-  'profil.goals_title_list': 'Goal tabungan',
-  'profil.goals_title_edit': 'Edit goal',
-  'profil.goals_title_add': 'Tambah goal',
-  'profil.goals_empty': 'Belum ada goal.',
-  'profil.goals_reorder_hint': 'Atur urutan goal di Home pakai tombol ↑↓.',
-  'profil.goals_name_label': 'nama goal',
-  'profil.goals_name_placeholder': 'e.g. Emergency fund, Liburan',
-  'profil.goals_target_label': 'target nominal',
 
   'profil.wallets_title_list': 'Dompet',
   'profil.wallets_title_add': 'Tambah dompet',
@@ -1410,25 +1333,6 @@ const en: StringDictionary = {
   'saldo.mode_hariterakhir_note':
     'Last day of the period. Tomorrow a new period starts and the daily budget resets.',
 
-  'goal.title': 'your dreams',
-  'goal.empty_text': "e.g. laptop, Bali trip, emergency fund — so you know what you're saving for.",
-  'goal.empty_title': 'Write your dreams here',
-  'goal.empty_hint': 'Then save in the Save tab — the top dream fills first automatically.',
-  'goal.saving': 'saving →',
-  'goal.reached': 'reached ✓',
-  'goal.waiting': 'in queue',
-  'goal.add': '+ Add new dream',
-  'goal.reorder_hint_new': 'Use ↑↓ to reorder dreams',
-  'goal.menabung': 'Save',
-  'goal.status_belum': 'not saving yet',
-  'goal.status_sedang': 'currently saving',
-  'goal.prioritas': 'priority',
-  'goal.antrian_label': 'queue',
-  'goal.not_saved': 'Nothing saved yet',
-  'goal.toast_title': 'Dream saved!',
-  'goal.toast_cta': 'Start saving now',
-  'goal.toast_dismiss': 'Maybe later',
-
   'tagihan_module.title': 'bills this month',
   'tagihan_module.empty_text':
     'Track recurring bills — utilities, internet, subscriptions — to keep your budget accurate.',
@@ -1539,7 +1443,6 @@ const en: StringDictionary = {
   'toast.undo': 'Undo',
 
   'home.toast_paid': '{name} marked as paid',
-  'home.toast_nabung': 'Savings logged',
   'home.toast_masuk': 'Income logged',
   'home.toast_keluar': 'Expense logged',
   'home.days_to_payday': '{n} days to payday',
@@ -1556,9 +1459,6 @@ const en: StringDictionary = {
 
   'quick_log.mode_keluar': 'out',
   'quick_log.mode_masuk': 'in',
-  'quick_log.mode_nabung': 'save',
-  'quick_log.savings_warning': 'Your savings are only {amount} — use all your savings?',
-  'quick_log.from_savings': 'from savings',
   'quick_log.date_label': 'Pick date',
   'quick_log.date_custom_aria': 'Pick another date',
   'quick_log.submitting': 'Saving...',
@@ -1580,8 +1480,8 @@ const en: StringDictionary = {
   'cek_dulu.daily_unit': '/day',
   'cek_dulu.sisa_label': 'operating budget',
   'cek_dulu.new_flag': 'newly visible',
-  'cek_dulu.tabungan_label': 'savings dip',
-  'cek_dulu.tabungan_note': 'To cover this, {amount} would come from savings.',
+  'cek_dulu.mengendap_label': 'parked money dip',
+  'cek_dulu.mengendap_note': 'To cover this, {amount} would come from Parked Money.',
   'cek_dulu.src_label': 'calculated from operating budget',
   'cek_dulu.src_wallets': '{n} wallets · {amount}',
   'cek_dulu.close_btn': 'Close',
@@ -1599,17 +1499,14 @@ const en: StringDictionary = {
   'andai.back_aria': 'Back',
   'andai.baseline_label': 'now · no changes',
   'andai.baseline_saldo': 'operating budget',
-  'andai.baseline_tabungan': 'total savings',
   'andai.stack_label': 'what if...',
   'andai.remove_aria': 'Remove',
   'andai.kind_beli': 'purchase',
   'andai.kind_income': 'income',
   'andai.kind_tagihan': 'bill',
-  'andai.kind_target_nabung': 'savings target',
   'andai.result_label': 'if all this happened',
   'andai.result_daily': 'daily budget until payday',
   'andai.result_sisa': 'operating budget',
-  'andai.result_tabungan': 'total savings',
   'andai.reset': 'Reset',
   'andai.save': 'Save',
   'andai.compare': 'Compare',
@@ -1617,12 +1514,10 @@ const en: StringDictionary = {
   'andai.add_event': '+ add event',
   'andai.add_desc_label': 'Description (optional)',
   'andai.add_nominal_label': 'Amount',
-  'andai.add_target_label': 'Monthly target',
   'andai.add_submit': 'Add',
   'andai.placeholder_beli': 'e.g. car service',
   'andai.placeholder_income': 'e.g. salary, freelance',
   'andai.placeholder_tagihan': 'e.g. new subscription',
-  'andai.placeholder_nabung': 'e.g. monthly savings',
   'andai.scenarios_label': 'saved scenarios',
   'andai.scenarios_delete_aria': 'Delete scenario',
   'andai.scenarios_delete_label': 'delete',
@@ -1633,7 +1528,6 @@ const en: StringDictionary = {
   'andai.compare_sheet_title': 'Compare scenarios',
   'andai.compare_daily': 'daily budget',
   'andai.compare_sisa': 'operating budget',
-  'andai.compare_tabungan': 'total savings',
   'andai.baseline_mengendap': 'parked money',
   'andai.income_disclaimer':
     '* Income in What If is assumed immediately available — not a date prediction.',
@@ -1643,15 +1537,6 @@ const en: StringDictionary = {
     'The net effect of this scenario takes {pct}% of your remaining balance until payday. The bigger that number, the less room you have for everything else.',
   'andai.insight_recovery':
     "This scenario reduces your savings. Getting back to where you are now takes around {n} days of consistent saving — weigh whether it's worth it.",
-
-  'profil.goals_title_list': 'Savings goals',
-  'profil.goals_title_edit': 'Edit goal',
-  'profil.goals_title_add': 'Add goal',
-  'profil.goals_empty': 'No goals yet.',
-  'profil.goals_reorder_hint': 'Set goal order on Home using ↑↓ buttons.',
-  'profil.goals_name_label': 'goal name',
-  'profil.goals_name_placeholder': 'e.g. Emergency fund, Vacation',
-  'profil.goals_target_label': 'target amount',
 
   'profil.wallets_title_list': 'Wallets',
   'profil.wallets_title_add': 'Add wallet',

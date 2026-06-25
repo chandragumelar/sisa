@@ -21,7 +21,6 @@ interface Props {
   onClose: () => void
   wallets: Wallet[]
   currency: string
-  totalNabung: number
   nowMs: number
   onCommit: (txId: number, mode: QuickLogMode) => void
   initialAmount?: number
@@ -43,7 +42,6 @@ export function QuickLogSheet({
   onClose,
   wallets,
   currency,
-  totalNabung,
   nowMs,
   onCommit,
   initialAmount,
@@ -63,10 +61,8 @@ export function QuickLogSheet({
   const [label, setLabel] = useState(initialLabel ?? '')
   const [category, setCategory] = useState(initialCategory ?? FALLBACK_CATEGORY)
   const [categoryManuallySet, setCategoryManuallySet] = useState(!!initialCategory)
-  const [isFromSavings, setIsFromSavings] = useState(false)
   const [dateMs, setDateMs] = useState(initialDateMs ?? nowMs)
   const [submitting, setSubmitting] = useState(false)
-  const [savingsWarning, setSavingsWarning] = useState(false)
   const [manageOpen, setManageOpen] = useState(false)
 
   const amount = parseInt(parseNominalRaw(amountStr), 10) || 0
@@ -88,11 +84,6 @@ export function QuickLogSheet({
   function handleAmountInput(val: string) {
     const raw = parseNominalRaw(val)
     setAmountStr(formatNominalDisplay(raw))
-    if (isFromSavings && parseInt(raw, 10) > totalNabung) {
-      setSavingsWarning(true)
-    } else {
-      setSavingsWarning(false)
-    }
   }
 
   function handleLabelBlur() {
@@ -105,12 +96,6 @@ export function QuickLogSheet({
   function handleCategoryChange(cat: string) {
     setCategory(cat)
     setCategoryManuallySet(true)
-  }
-
-  function handleFromSavingsToggle() {
-    const next = !isFromSavings
-    setIsFromSavings(next)
-    setSavingsWarning(next && amount > totalNabung)
   }
 
   function handleDateInput(val: string) {
@@ -130,7 +115,6 @@ export function QuickLogSheet({
         label,
         dateMs,
         currency: walletCurrency,
-        isFromSavings: mode === 'keluar' ? isFromSavings : false,
         category,
       })
       let txId: number
@@ -154,14 +138,10 @@ export function QuickLogSheet({
     setLabel('')
     setCategory(FALLBACK_CATEGORY)
     setCategoryManuallySet(false)
-    setIsFromSavings(false)
-    setSavingsWarning(false)
   }
 
   function handleModeChange(m: QuickLogMode) {
     setMode(m)
-    setIsFromSavings(false)
-    setSavingsWarning(false)
     if (!categoryManuallySet) {
       setCategory(FALLBACK_CATEGORY)
     }
@@ -170,7 +150,6 @@ export function QuickLogSheet({
   const modeLabels: Record<QuickLogMode, string> = {
     keluar: t('quick_log.mode_keluar', lang),
     masuk: t('quick_log.mode_masuk', lang),
-    nabung: t('quick_log.mode_nabung', lang),
   }
 
   return (
@@ -178,7 +157,7 @@ export function QuickLogSheet({
       <BottomSheet isOpen={isOpen} onClose={onClose}>
         {/* Mode toggle */}
         <div className={styles.modeToggle}>
-          {(['keluar', 'masuk', 'nabung'] as QuickLogMode[]).map((m) => (
+          {(['keluar', 'masuk'] as QuickLogMode[]).map((m) => (
             <button
               key={m}
               className={`${styles.modeBtn} ${mode === m ? styles.modeBtnActive : ''}`}
@@ -227,40 +206,13 @@ export function QuickLogSheet({
           onBlur={handleLabelBlur}
         />
 
-        {/* Category picker — expense/income only; nabung has no category */}
-        {mode !== 'nabung' && (
-          <CategoryPicker
-            type={categoryType}
-            value={category}
-            onChange={handleCategoryChange}
-            onManage={() => setManageOpen(true)}
-          />
-        )}
-
-        {/* Savings warning */}
-        {savingsWarning && (
-          <div className={styles.savingsWarning}>
-            {t('quick_log.savings_warning', lang).replace(
-              '{amount}',
-              formatCurrency(totalNabung, walletCurrency),
-            )}
-          </div>
-        )}
-
-        {/* Dari tabungan toggle (keluar only) */}
-        {mode === 'keluar' && (
-          <div className={styles.toggleRow}>
-            <label className={styles.toggleLabel}>{t('quick_log.from_savings', lang)}</label>
-            <button
-              className={`${styles.toggle} ${isFromSavings ? styles.toggleOn : ''}`}
-              onClick={handleFromSavingsToggle}
-              role="switch"
-              aria-checked={isFromSavings}
-            >
-              <span className={styles.toggleThumb} />
-            </button>
-          </div>
-        )}
+        {/* Category picker */}
+        <CategoryPicker
+          type={categoryType}
+          value={category}
+          onChange={handleCategoryChange}
+          onManage={() => setManageOpen(true)}
+        />
 
         {/* Date pills + calendar input */}
         <div className={styles.datePills}>
