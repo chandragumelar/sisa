@@ -3,6 +3,7 @@ import type { Wallet } from '@/db/database'
 import { formatCurrency, getCurrencySymbol } from '@/shared/utils/formatCurrency'
 import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
 import { BottomSheet } from '@/shared/components/BottomSheet'
+import { EquivLine } from '@/shared/components/EquivLine'
 import { buildTransaction, type QuickLogMode } from './quickLog.utils'
 import { addTransactionAndUpdateBalance, replaceTransaction } from '@/db/transactions.repository'
 import { useLanguage } from '@/app/providers/useLanguage'
@@ -53,7 +54,15 @@ export function QuickLogSheet({
   initialCategory,
 }: Props) {
   const lang = useLanguage()
+  const uniqueCurrencies = [...new Set(wallets.map((w) => w.currency))]
+  const isMultiCurrency = uniqueCurrencies.length > 1
+
   const [mode, setMode] = useState<QuickLogMode>(initialMode ?? 'keluar')
+  const [activeCurrency, setActiveCurrency] = useState(
+    initialWalletId
+      ? (wallets.find((w) => w.id === initialWalletId)?.currency ?? currency)
+      : currency,
+  )
   const [walletId, setWalletId] = useState<number>(initialWalletId ?? wallets[0]?.id ?? 0)
   const [amountStr, setAmountStr] = useState(
     initialAmount ? formatNominalDisplay(String(initialAmount)) : '',
@@ -66,7 +75,14 @@ export function QuickLogSheet({
   const [manageOpen, setManageOpen] = useState(false)
 
   const amount = parseInt(parseNominalRaw(amountStr), 10) || 0
+  const currencyWallets = wallets.filter((w) => w.currency === activeCurrency)
   const walletCurrency = wallets.find((w) => w.id === walletId)?.currency ?? currency
+
+  function handleCurrencyChip(cur: string) {
+    setActiveCurrency(cur)
+    const first = wallets.find((w) => w.currency === cur)
+    if (first?.id) setWalletId(first.id)
+  }
 
   const todayStart = (() => {
     const d = new Date(nowMs)
@@ -168,9 +184,24 @@ export function QuickLogSheet({
           ))}
         </div>
 
+        {/* Currency chips — only when wallets span multiple currencies */}
+        {isMultiCurrency && (
+          <div className={styles.walletChips}>
+            {uniqueCurrencies.map((cur) => (
+              <button
+                key={cur}
+                className={`${styles.walletChip} ${activeCurrency === cur ? styles.walletChipActive : ''}`}
+                onClick={() => handleCurrencyChip(cur)}
+              >
+                <span className={styles.walletChipName}>{cur}</span>
+              </button>
+            ))}
+          </div>
+        )}
+
         {/* Wallet chips */}
         <div className={styles.walletChips}>
-          {wallets.map((w) => (
+          {(isMultiCurrency ? currencyWallets : wallets).map((w) => (
             <button
               key={w.id}
               className={`${styles.walletChip} ${walletId === w.id ? styles.walletChipActive : ''}`}
@@ -184,7 +215,9 @@ export function QuickLogSheet({
 
         {/* Nominal */}
         <div className={styles.nominalWrap}>
-          <span className={styles.nominalPrefix}>{getCurrencySymbol(walletCurrency)}</span>
+          <span className={styles.nominalPrefix}>
+            {walletCurrency !== currency ? walletCurrency : getCurrencySymbol(walletCurrency)}
+          </span>
           <input
             className={styles.nominalInput}
             type="text"
@@ -195,6 +228,7 @@ export function QuickLogSheet({
             autoFocus={isOpen}
           />
         </div>
+        <EquivLine amount={amount} currency={walletCurrency} primaryCurrency={currency} />
 
         {/* Label freetext — primary field, triggers auto-suggest on blur */}
         <input

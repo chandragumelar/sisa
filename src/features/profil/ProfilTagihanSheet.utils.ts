@@ -12,6 +12,7 @@ export interface FormState {
   weekDay: string
   anchorMonth: string
   annualMonth: string
+  currency: string
 }
 
 export const EMPTY_FORM: FormState = {
@@ -24,6 +25,7 @@ export const EMPTY_FORM: FormState = {
   weekDay: '1',
   anchorMonth: '',
   annualMonth: '',
+  currency: '',
 }
 
 export const FREQ_KEYS: TagihanFrequency[] = [
@@ -71,6 +73,7 @@ export function tagihanToForm(tg: Tagihan): FormState {
     weekDay: toIsoWeekDay(anchor.getDay()),
     anchorMonth: String(anchor.getMonth() + 1),
     annualMonth: String(anchor.getMonth() + 1),
+    currency: tg.currency,
   }
 }
 

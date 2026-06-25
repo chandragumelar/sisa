@@ -521,3 +521,28 @@
   width: 100%;
   cursor: pointer;
 }
+
+.currencyChips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.currencyChip {
+  padding: 5px 12px;
+  border-radius: 100px;
+  border: 1px solid var(--line);
+  background: var(--surface-deep);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  cursor: pointer;
+  font-family: var(--font-sans);
+  letter-spacing: 0.4px;
+}
+
+.currencyChipActive {
+  border-color: var(--accent);
+  color: var(--accent);
+}
