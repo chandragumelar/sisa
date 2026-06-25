@@ -19,14 +19,19 @@ function applyWeekendBehavior(payday: Date, behavior: Settings['weekendBehavior'
   }
 }
 
-export function getPaydayDate(nowMs: number, settings: Settings): Date {
+export function getPaydayDate(
+  nowMs: number,
+  settings: Settings,
+  allocation?: Allocation | null,
+): Date {
   const now = new Date(nowMs)
   const year = now.getFullYear()
   const month = now.getMonth()
   const today = now.getDate()
 
   if (settings.incomeType === 'freelance') {
-    return new Date(year, month + 1, 0) // last day of month; no weekend adjustment
+    if (allocation?.periodEndDate != null) return new Date(allocation.periodEndDate)
+    return new Date(year, month + 1, 0) // fallback: belum lock
   }
 
   const frequency = settings.incomeFrequency ?? 'bulanan'
@@ -61,8 +66,12 @@ export function getPaydayDate(nowMs: number, settings: Settings): Date {
   return payday
 }
 
-export function calcDaysUntilPayday(nowMs: number, settings: Settings): number {
-  const payday = getPaydayDate(nowMs, settings)
+export function calcDaysUntilPayday(
+  nowMs: number,
+  settings: Settings,
+  allocation?: Allocation | null,
+): number {
+  const payday = getPaydayDate(nowMs, settings, allocation)
   const now = new Date(nowMs)
   const todayStart = startOfDay(now).getTime()
   return Math.max(1, Math.round((startOfDay(payday).getTime() - todayStart) / DAY_MS))

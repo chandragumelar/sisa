@@ -138,14 +138,14 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).getTime()
     const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 1).getTime()
 
-    Promise.all([getSettings(), getAllWallets(), getActiveTagihan()]).then(
-      ([settings, wallets, tagihan]) => {
+    Promise.all([getSettings(), getAllWallets(), getActiveTagihan(), getAllocation()]).then(
+      ([settings, wallets, tagihan, allocation]) => {
         if (cancelled || !settings) return
         const currency = settings.activeCurrencyMode || settings.primaryCurrency
         const totalSaldoForCalc = wallets
           .filter((w) => w.currency === currency)
           .reduce((sum, w) => sum + w.balance, 0)
-        const nextPaydayMsForCalc = getPaydayDate(nowMs, settings).getTime()
+        const nextPaydayMsForCalc = getPaydayDate(nowMs, settings, allocation).getTime()
         const unpaidForCalc = calcUnpaidTagihanTotal(
           tagihan.filter((tg) => tg.currency === currency),
           nowMs,
@@ -157,12 +157,10 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
         Promise.all([
           getMonthlyFlows(currency, monthStart, monthEnd),
           getPeriodFlows(currency, periodStartMs, nowMs),
-          getAllocation(),
         ]).then(
           async ([
             { income: monthlyIncome, expense: monthlyExpense },
             { income, expense, spentToday },
-            allocation,
           ]) => {
             if (cancelled) return
 
@@ -298,13 +296,13 @@ export function HomePage() {
   if (isLoading || !settings) return null
 
   const currency = settings.activeCurrencyMode || settings.primaryCurrency
-  const nextPaydayMs = getPaydayDate(nowMs, settings).getTime()
+  const nextPaydayMs = getPaydayDate(nowMs, settings, allocation).getTime()
   const unpaidTagihanTotal = calcUnpaidTagihanTotal(
     tagihan.filter((tg) => tg.currency === currency),
     nowMs,
     nextPaydayMs,
   )
-  const daysUntilPayday = calcDaysUntilPayday(nowMs, settings)
+  const daysUntilPayday = calcDaysUntilPayday(nowMs, settings, allocation)
   const condition = getConditionInfo(settings, sisaUang, lang)
 
   const backupDismissedAt = (() => {
