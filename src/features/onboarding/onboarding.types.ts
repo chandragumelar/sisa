@@ -18,6 +18,7 @@ export interface WalletInput {
   id: string
   name: string
   balance: string
+  currency?: string
 }
 
 export type { FormState as TagihanFormState }

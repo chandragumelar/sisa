@@ -115,6 +115,7 @@ export type StringKey =
   | 'ob.step4d.remove_aria'
   | 'ob.step4d.placeholder_first'
   | 'ob.step4d.placeholder_other'
+  | 'ob.step4d.currency_label'
   // currency picker
   | 'currency_picker.search'
   | 'currency_picker.popular'
@@ -419,6 +420,7 @@ export type StringKey =
   | 'profil.wallets_add_btn'
   | 'profil.wallets_add_placeholder'
   | 'profil.wallets_add_more'
+  | 'profil.wallets_currency_label'
   // profil – income
   | 'profil.income_title'
   | 'profil.income_type_label'
@@ -675,6 +677,7 @@ const id: StringDictionary = {
   'ob.step4d.remove_aria': 'Hapus dompet',
   'ob.step4d.placeholder_first': 'Nama dompet (cth: BCA, GoPay)',
   'ob.step4d.placeholder_other': 'Nama dompet',
+  'ob.step4d.currency_label': 'Mata uang',
 
   'currency_picker.search': 'pilih mata uang…',
   'currency_picker.popular': 'Populer',
@@ -992,6 +995,7 @@ const id: StringDictionary = {
   'profil.wallets_add_btn': 'Tambah dompet',
   'profil.wallets_add_placeholder': 'e.g. BCA, Dana, Tunai',
   'profil.wallets_add_more': '+ Tambah dompet',
+  'profil.wallets_currency_label': 'Mata uang',
 
   'profil.income_title': 'Profil keuangan',
   'profil.income_type_label': 'tipe pemasukan',
@@ -1247,6 +1251,7 @@ const en: StringDictionary = {
   'ob.step4d.remove_aria': 'Remove wallet',
   'ob.step4d.placeholder_first': 'Wallet name (e.g. Standard Chartered, Wise)',
   'ob.step4d.placeholder_other': 'Wallet name',
+  'ob.step4d.currency_label': 'Currency',
 
   'currency_picker.search': 'search currency…',
   'currency_picker.popular': 'Popular',
@@ -1562,6 +1567,7 @@ const en: StringDictionary = {
   'profil.wallets_add_btn': 'Add wallet',
   'profil.wallets_add_placeholder': 'e.g. Chase, Cash',
   'profil.wallets_add_more': '+ Add wallet',
+  'profil.wallets_currency_label': 'Currency',
 
   'profil.income_title': 'Income profile',
   'profil.income_type_label': 'income type',

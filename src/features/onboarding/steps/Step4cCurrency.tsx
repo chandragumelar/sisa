@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { CurrencyPickerSheet } from '../components/CurrencyPickerSheet'
+import { CurrencyPickerSheet } from '@/shared/components/CurrencyPickerSheet'
 import type { Currency } from '@/constants/currencies'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'

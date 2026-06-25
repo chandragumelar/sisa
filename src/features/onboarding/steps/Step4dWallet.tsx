@@ -1,8 +1,11 @@
+import { useState } from 'react'
 import type { Language } from '@/db/database'
 import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
 import type { WalletInput } from '../onboarding.types'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
+import { CurrencyPickerSheet } from '@/shared/components/CurrencyPickerSheet'
+import type { Currency } from '@/constants/currencies'
 
 interface Props {
   primaryCurrency: string
@@ -14,6 +17,7 @@ interface Props {
 
 export function Step4dWallet({ primaryCurrency, wallets, onChange, onNext }: Props) {
   const lang = useLanguage()
+  const [openCurrencyPickerFor, setOpenCurrencyPickerFor] = useState<string | null>(null)
 
   function updateWalletName(id: string, name: string) {
     onChange(wallets.map((w) => (w.id === id ? { ...w, name } : w)))
@@ -24,12 +28,24 @@ export function Step4dWallet({ primaryCurrency, wallets, onChange, onNext }: Pro
     onChange(wallets.map((w) => (w.id === id ? { ...w, balance } : w)))
   }
 
+  function updateWalletCurrency(id: string, code: string) {
+    onChange(wallets.map((w) => (w.id === id ? { ...w, currency: code } : w)))
+  }
+
   function addWallet() {
-    onChange([...wallets, { id: crypto.randomUUID(), name: '', balance: '' }])
+    onChange([
+      ...wallets,
+      { id: crypto.randomUUID(), name: '', balance: '', currency: primaryCurrency },
+    ])
   }
 
   function removeWallet(id: string) {
     onChange(wallets.filter((w) => w.id !== id))
+  }
+
+  function handleCurrencySelect(currency: Currency) {
+    if (openCurrencyPickerFor) updateWalletCurrency(openCurrencyPickerFor, currency.code)
+    setOpenCurrencyPickerFor(null)
   }
 
   const canProceed = wallets.length > 0 && wallets[0].name.trim() !== ''
@@ -70,7 +86,14 @@ export function Step4dWallet({ primaryCurrency, wallets, onChange, onNext }: Pro
             )}
           </div>
           <div className="ob-input-row">
-            <span className="ob-input-prefix">{primaryCurrency}</span>
+            <button
+              className="ob-input-prefix ob-currency-btn"
+              onClick={() => setOpenCurrencyPickerFor(wallet.id)}
+              aria-label={t('ob.step4d.currency_label', lang)}
+              type="button"
+            >
+              {wallet.currency ?? primaryCurrency}
+            </button>
             <input
               className="ob-input ob-input-bare"
               type="text"
@@ -92,6 +115,13 @@ export function Step4dWallet({ primaryCurrency, wallets, onChange, onNext }: Pro
       <button className="ob-primary-btn" disabled={!canProceed} onClick={onNext}>
         {t('ob.step4d.next', lang)}
       </button>
+
+      {openCurrencyPickerFor !== null && (
+        <CurrencyPickerSheet
+          onSelect={handleCurrencySelect}
+          onDismiss={() => setOpenCurrencyPickerFor(null)}
+        />
+      )}
     </>
   )
 }

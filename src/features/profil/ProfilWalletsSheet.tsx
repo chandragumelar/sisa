@@ -3,10 +3,12 @@ import { renameWallet, deleteWallet, setWalletBalance, addWallet } from '@/db/wa
 import { addTransactionAndUpdateBalance } from '@/db/transactions.repository'
 import type { Wallet } from '@/db/database'
 import { BottomSheet } from '@/shared/components/BottomSheet'
+import { CurrencyPickerSheet } from '@/shared/components/CurrencyPickerSheet'
 import { formatCurrency, getCurrencySymbol } from '@/shared/utils/formatCurrency'
 import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
+import type { Currency } from '@/constants/currencies'
 import styles from './ProfilPage.module.css'
 
 interface Props {
@@ -40,6 +42,8 @@ export function ProfilWalletsSheet({
   const [transferTargetId, setTransferTargetId] = useState<number | null>(null)
   const [addName, setAddName] = useState('')
   const [addBalance, setAddBalance] = useState('')
+  const [addCurrencyCode, setAddCurrencyCode] = useState(currency)
+  const [currencyPickerOpen, setCurrencyPickerOpen] = useState(false)
   const [deleteConfirm, setDeleteConfirm] = useState(false)
 
   function reset() {
@@ -48,6 +52,7 @@ export function ProfilWalletsSheet({
     setNameInput('')
     setActualBalanceStr('')
     setDeleteConfirm(false)
+    setAddCurrencyCode(currency)
   }
 
   useEffect(() => {
@@ -88,7 +93,7 @@ export function ProfilWalletsSheet({
       walletId: selected.id!,
       amount: diff,
       type: diff >= 0 ? 'masuk' : 'keluar',
-      currency,
+      currency: selected.currency,
       label: 'koreksi saldo',
       date: nowMs,
       isFromSavings: false,
@@ -105,7 +110,7 @@ export function ProfilWalletsSheet({
       walletId: selected.id!,
       amount: diff,
       type: diff >= 0 ? 'masuk' : 'keluar',
-      currency,
+      currency: selected.currency,
       label: 'transfer koreksi',
       transferPairId: `adj-${nowMs}`,
       date: nowMs,
@@ -117,7 +122,7 @@ export function ProfilWalletsSheet({
       walletId: transferTargetId,
       amount: -diff,
       type: -diff >= 0 ? 'masuk' : 'keluar',
-      currency,
+      currency: selected.currency,
       label: 'transfer koreksi',
       transferPairId: `adj-${nowMs}`,
       date: nowMs,
@@ -144,15 +149,25 @@ export function ProfilWalletsSheet({
     await addWallet({
       name: addName.trim(),
       balance,
-      currency,
+      currency: addCurrencyCode,
       order: wallets.length,
       createdAt: nowMs,
     })
     setAddName('')
     setAddBalance('')
+    setAddCurrencyCode(currency)
     await onUpdate()
     setStep('list')
   }
+
+  function handleAddCurrencySelect(c: Currency) {
+    setAddCurrencyCode(c.code)
+    setCurrencyPickerOpen(false)
+  }
+
+  const sameCurrencyTargets = selected
+    ? wallets.filter((w) => w.id !== selected.id && w.currency === selected.currency)
+    : []
 
   const sheetTitle =
     step === 'list'
@@ -175,7 +190,7 @@ export function ProfilWalletsSheet({
           {wallets.map((w) => (
             <button key={w.id} className={styles.listRow} onClick={() => openDetail(w)}>
               <span className={styles.listLabel}>{w.name}</span>
-              <span className={styles.listVal}>{formatCurrency(w.balance, currency)}</span>
+              <span className={styles.listVal}>{formatCurrency(w.balance, w.currency)}</span>
             </button>
           ))}
           {showAdd && (
@@ -199,7 +214,9 @@ export function ProfilWalletsSheet({
               {t('common.save', lang)}
             </button>
           </div>
-          <div className={styles.balanceDisplay}>{formatCurrency(selected.balance, currency)}</div>
+          <div className={styles.balanceDisplay}>
+            {formatCurrency(selected.balance, selected.currency)}
+          </div>
           <button className={styles.secondaryBtn} onClick={() => setStep('sesuaikan')}>
             {t('profil.wallets_sesuaikan_btn', lang)}
           </button>
@@ -227,7 +244,7 @@ export function ProfilWalletsSheet({
         <div className={styles.sheetForm}>
           <div className={styles.fieldLabel}>{t('profil.wallets_balance_label', lang)}</div>
           <div className={styles.amountRow}>
-            <span className={styles.prefix}>{getCurrencySymbol(currency)}</span>
+            <span className={styles.prefix}>{getCurrencySymbol(selected.currency)}</span>
             <input
               className={styles.amountInput}
               type="text"
@@ -242,7 +259,7 @@ export function ProfilWalletsSheet({
           {actualBalanceStr !== '' && (
             <div className={`${styles.diffLabel} ${diff < 0 ? styles.diffNeg : styles.diffPos}`}>
               {t('profil.wallets_diff_prefix', lang)} {diff >= 0 ? '+' : ''}
-              {formatCurrency(diff, currency)}
+              {formatCurrency(diff, selected.currency)}
             </div>
           )}
           <div className={styles.fieldLabel}>{t('profil.wallets_diff_from', lang)}</div>
@@ -259,7 +276,7 @@ export function ProfilWalletsSheet({
               setTransferTargetId(null)
               setStep('sesuaikan-transfer')
             }}
-            disabled={!actualBalanceStr || diff === 0}
+            disabled={!actualBalanceStr || diff === 0 || sameCurrencyTargets.length === 0}
           >
             {t('profil.wallets_opt_transfer', lang)}
           </button>
@@ -279,17 +296,15 @@ export function ProfilWalletsSheet({
       {step === 'sesuaikan-transfer' && selected && (
         <div className={styles.sheetForm}>
           <div className={styles.fieldLabel}>{t('profil.wallets_transfer_pick_label', lang)}</div>
-          {wallets
-            .filter((w) => w.id !== selected.id)
-            .map((w) => (
-              <button
-                key={w.id}
-                className={`${styles.optionBtn} ${transferTargetId === w.id ? styles.optionBtnActive : ''}`}
-                onClick={() => setTransferTargetId(w.id!)}
-              >
-                {w.name} · {formatCurrency(w.balance, currency)}
-              </button>
-            ))}
+          {sameCurrencyTargets.map((w) => (
+            <button
+              key={w.id}
+              className={`${styles.optionBtn} ${transferTargetId === w.id ? styles.optionBtnActive : ''}`}
+              onClick={() => setTransferTargetId(w.id!)}
+            >
+              {w.name} · {formatCurrency(w.balance, w.currency)}
+            </button>
+          ))}
           <button
             className={styles.primaryBtn}
             onClick={handleSesuaikanTransfer}
@@ -313,9 +328,13 @@ export function ProfilWalletsSheet({
             onChange={(e) => setAddName(e.target.value)}
             autoFocus
           />
+          <div className={styles.fieldLabel}>{t('profil.wallets_currency_label', lang)}</div>
+          <button className={styles.secondaryBtn} onClick={() => setCurrencyPickerOpen(true)}>
+            {addCurrencyCode}
+          </button>
           <div className={styles.fieldLabel}>{t('profil.wallets_initial_balance', lang)}</div>
           <div className={styles.amountRow}>
-            <span className={styles.prefix}>{getCurrencySymbol(currency)}</span>
+            <span className={styles.prefix}>{getCurrencySymbol(addCurrencyCode)}</span>
             <input
               className={styles.amountInput}
               type="text"
@@ -335,6 +354,13 @@ export function ProfilWalletsSheet({
             {t('common.cancel', lang)}
           </button>
         </div>
+      )}
+
+      {currencyPickerOpen && (
+        <CurrencyPickerSheet
+          onSelect={handleAddCurrencySelect}
+          onDismiss={() => setCurrencyPickerOpen(false)}
+        />
       )}
     </BottomSheet>
   )
