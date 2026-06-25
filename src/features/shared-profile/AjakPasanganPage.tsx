@@ -25,9 +25,7 @@ export function AjakPasanganPage() {
   const navigate = useNavigate()
   const { status, createProfile, generateCode, profileId } = useSharedProfileCtx()
 
-  const [step, setStep] = useState<Step>(
-    status === 'solo' && !localStorage.getItem(RECOVERY_SHOWN_KEY) ? 'recovery' : 'code',
-  )
+  const [step, setStep] = useState<Step>('code')
   const [recoveryCode, setRecoveryCode] = useState<string | null>(null)
   const [joinCode, setJoinCode] = useState<JoinCode | null>(null)
   const [loading, setLoading] = useState(false)
