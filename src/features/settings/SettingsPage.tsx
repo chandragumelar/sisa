@@ -10,6 +10,8 @@ import { applyTheme } from '@/shared/utils/theme'
 import { applyLanguage } from '@/shared/utils/language'
 import type { Settings, LicenseRecord, Theme, Language } from '@/db/database'
 import { BottomSheet } from '@/shared/components/BottomSheet'
+import { CurrencyPickerSheet } from '@/shared/components/CurrencyPickerSheet'
+import type { Currency } from '@/constants/currencies'
 import { ProfilIncomeSheet } from '@/features/profil/ProfilIncomeSheet'
 import { ProfilLicenseSheet } from '@/features/profil/ProfilLicenseSheet'
 import { ManageCategoriesSheet } from '@/features/category/ManageCategoriesSheet'
@@ -45,6 +47,8 @@ export function SettingsPage() {
   const [importError, setImportError] = useState<string | null>(null)
   const [deleteStep, setDeleteStep] = useState<'idle' | 'confirm' | 'type'>('idle')
   const [deleteInput, setDeleteInput] = useState('')
+  const [currencyPickerOpen, setCurrencyPickerOpen] = useState(false)
+  const [pendingCurrency, setPendingCurrency] = useState<string | null>(null)
 
   const loadData = useCallback(async () => {
     const [settings, license] = await Promise.all([getSettings(), getLicense()])
@@ -69,6 +73,21 @@ export function SettingsPage() {
     applyLanguage(language)
     setLang(language)
     setData((prev) => prev && { ...prev, settings: { ...prev.settings, language } })
+  }
+
+  function handleCurrencyPick(c: Currency) {
+    setCurrencyPickerOpen(false)
+    setPendingCurrency(c.code)
+  }
+
+  async function handleCurrencyConfirm() {
+    if (!pendingCurrency) return
+    await patchSettings({ primaryCurrency: pendingCurrency })
+    setData(
+      (prev) =>
+        prev && { ...prev, settings: { ...prev.settings, primaryCurrency: pendingCurrency } },
+    )
+    setPendingCurrency(null)
   }
 
   async function handleExportJSON() {
@@ -212,13 +231,13 @@ export function SettingsPage() {
           </select>
         </div>
         <div className={styles.divider} />
-        <div className={styles.row}>
+        <button className={styles.actionRow} onClick={() => setCurrencyPickerOpen(true)}>
           <div>
             <span className={styles.rowLabel}>{t('settings.row_patokan_currency', lang)}</span>
             <div className={styles.rowSub}>{t('settings.row_patokan_currency_sub', lang)}</div>
           </div>
           <span className={styles.rowSub}>{settings.primaryCurrency}</span>
-        </div>
+        </button>
       </div>
 
       {/* Data & Backup */}
@@ -363,6 +382,23 @@ export function SettingsPage() {
         </div>
       </BottomSheet>
 
+      {/* Currency warning sheet */}
+      <BottomSheet
+        isOpen={pendingCurrency !== null}
+        onClose={() => setPendingCurrency(null)}
+        title={t('settings.currency_warning_title', lang)}
+      >
+        <div className={styles.sheetBody}>
+          <div className={styles.sheetWarning}>{t('settings.currency_warning_body', lang)}</div>
+          <button className={styles.primaryBtn} onClick={handleCurrencyConfirm}>
+            {t('common.confirm', lang)}
+          </button>
+          <button className={styles.ghostBtn} onClick={() => setPendingCurrency(null)}>
+            {t('common.cancel', lang)}
+          </button>
+        </div>
+      </BottomSheet>
+
       {/* Delete confirm sheet */}
       <BottomSheet
         isOpen={deleteStep !== 'idle'}
@@ -425,6 +461,13 @@ export function SettingsPage() {
           )}
         </div>
       </BottomSheet>
+      {currencyPickerOpen && (
+        <CurrencyPickerSheet
+          onSelect={handleCurrencyPick}
+          onDismiss={() => setCurrencyPickerOpen(false)}
+          excludeCode={settings.primaryCurrency}
+        />
+      )}
     </div>
   )
 }
