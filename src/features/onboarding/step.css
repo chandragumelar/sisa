@@ -297,6 +297,17 @@
   padding-left: 12px;
 }
 
+/* Currency code prefix button in balance row */
+.ob-currency-btn {
+  cursor: pointer;
+  background: none;
+  border: none;
+  border-right: 1px solid var(--border-hair);
+}
+.ob-currency-btn:hover {
+  color: var(--accent);
+}
+
 /* Small inline remove button (✕) */
 .ob-remove-btn {
   flex-shrink: 0;

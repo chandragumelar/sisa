@@ -100,7 +100,7 @@ export function buildWalletRecords(
   return inputs.map((w, i) => ({
     name: w.name.trim(),
     balance: parseWalletBalance(w.balance),
-    currency,
+    currency: w.currency ?? currency,
     order: i,
     createdAt: nowMs,
   }))
