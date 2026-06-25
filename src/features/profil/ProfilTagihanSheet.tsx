@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react'
 import { addTagihan, updateTagihan, deleteTagihan } from '@/db/tagihan.repository'
 import type { Tagihan, NominalType } from '@/db/database'
 import { BottomSheet } from '@/shared/components/BottomSheet'
+import { EquivLine } from '@/shared/components/EquivLine'
 import { formatCurrency, getCurrencySymbol } from '@/shared/utils/formatCurrency'
 import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
+import { POPULAR_CURRENCY_CODES } from '@/constants/currencies'
 import { TagihanAnchorInput } from './TagihanAnchorInput'
 import type { AnchorFields } from './TagihanAnchorInput'
 import {
@@ -59,7 +61,7 @@ export function ProfilTagihanSheet({
 
   function openAdd() {
     setEditId(null)
-    setForm(EMPTY_FORM)
+    setForm({ ...EMPTY_FORM, currency })
     setStep('form')
   }
 
@@ -73,6 +75,7 @@ export function ProfilTagihanSheet({
     const nominal = parseInt(parseNominalRaw(form.nominalEstimate), 10) || 0
     if (!form.name.trim()) return
     const { anchorDate, dueDay } = computeAnchor(form, nowMs)
+    const formCurrency = form.currency || currency
     if (editId !== null) {
       await updateTagihan(editId, {
         name: form.name.trim(),
@@ -81,6 +84,7 @@ export function ProfilTagihanSheet({
         dueDay,
         frequency: form.frequency,
         anchorDate,
+        currency: formCurrency,
       })
     } else {
       await addTagihan({
@@ -90,7 +94,7 @@ export function ProfilTagihanSheet({
         dueDay,
         frequency: form.frequency,
         anchorDate,
-        currency,
+        currency: formCurrency,
         isActive: true,
         lastPaidAt: null,
         lastPaidAmount: null,
@@ -176,6 +180,19 @@ export function ProfilTagihanSheet({
             autoFocus
           />
 
+          <div className={styles.fieldLabel}>{t('profil.tagihan_currency_label', lang)}</div>
+          <div className={styles.currencyChips}>
+            {POPULAR_CURRENCY_CODES.map((code) => (
+              <button
+                key={code}
+                className={`${styles.currencyChip} ${(form.currency || currency) === code ? styles.currencyChipActive : ''}`}
+                onClick={() => patch('currency')(code)}
+              >
+                {code}
+              </button>
+            ))}
+          </div>
+
           <div className={styles.fieldLabel}>{t('profil.tagihan_nominal_label', lang)}</div>
           <div className={styles.segmented}>
             {(['tetap', 'variabel'] as NominalType[]).map((n) => (
@@ -191,7 +208,7 @@ export function ProfilTagihanSheet({
             ))}
           </div>
           <div className={styles.amountRow}>
-            <span className={styles.prefix}>{getCurrencySymbol(currency)}</span>
+            <span className={styles.prefix}>{getCurrencySymbol(form.currency || currency)}</span>
             <input
               className={styles.amountInput}
               type="text"
@@ -203,6 +220,11 @@ export function ProfilTagihanSheet({
               }
             />
           </div>
+          <EquivLine
+            amount={parseInt(parseNominalRaw(form.nominalEstimate), 10) || 0}
+            currency={form.currency || currency}
+            primaryCurrency={currency}
+          />
 
           <div className={styles.fieldLabel}>{t('profil.tagihan_freq_label', lang)}</div>
           <ScrollSegmented

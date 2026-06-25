@@ -316,6 +316,8 @@ export type StringKey =
   | 'home.payday_confirm_sub'
   | 'home.payday_confirm_yes'
   | 'home.payday_confirm_no'
+  // equiv line (shared)
+  | 'equiv.approx'
   // kekayaan card + sheet
   | 'kekayaan.label'
   | 'kekayaan.sheet_title'
@@ -447,6 +449,7 @@ export type StringKey =
   | 'profil.license_err_expired'
   | 'profil.license_success'
   // profil – tagihan
+  | 'profil.tagihan_currency_label'
   | 'profil.tagihan_title_list'
   | 'profil.tagihan_title_edit'
   | 'profil.tagihan_title_add'
@@ -881,6 +884,8 @@ const id: StringDictionary = {
   'home.payday_confirm_yes': 'Udah masuk',
   'home.payday_confirm_no': 'Belum',
 
+  'equiv.approx': '≈ {equiv} · kurs {date}',
+
   'kekayaan.label': 'total kekayaan',
   'kekayaan.sheet_title': 'Rincian Kekayaan',
   'kekayaan.grand_total': 'Total',
@@ -1018,6 +1023,7 @@ const id: StringDictionary = {
   'profil.license_err_expired': 'Kode sudah kadaluarsa.',
   'profil.license_success': 'Lisensi berhasil diaktifkan!',
 
+  'profil.tagihan_currency_label': 'Mata uang',
   'profil.tagihan_title_list': 'Tagihan',
   'profil.tagihan_title_edit': 'Edit tagihan',
   'profil.tagihan_title_add': 'Tambah tagihan',
@@ -1448,6 +1454,8 @@ const en: StringDictionary = {
   'home.payday_confirm_yes': "Yes, it's in",
   'home.payday_confirm_no': 'Not yet',
 
+  'equiv.approx': '≈ {equiv} · rate {date}',
+
   'kekayaan.label': 'total wealth',
   'kekayaan.sheet_title': 'Wealth Breakdown',
   'kekayaan.grand_total': 'Total',
@@ -1585,6 +1593,7 @@ const en: StringDictionary = {
   'profil.license_err_expired': 'Key has expired.',
   'profil.license_success': 'License activated!',
 
+  'profil.tagihan_currency_label': 'Currency',
   'profil.tagihan_title_list': 'Bills',
   'profil.tagihan_title_edit': 'Edit bill',
   'profil.tagihan_title_add': 'Add bill',

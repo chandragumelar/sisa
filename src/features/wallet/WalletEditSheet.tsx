@@ -3,6 +3,7 @@ import type { Wallet } from '@/db/database'
 import { renameWallet, setWalletBalance, deleteWallet } from '@/db/wallets.repository'
 import { addTransactionAndUpdateBalance } from '@/db/transactions.repository'
 import { BottomSheet } from '@/shared/components/BottomSheet'
+import { EquivLine } from '@/shared/components/EquivLine'
 import { formatCurrency, getCurrencySymbol } from '@/shared/utils/formatCurrency'
 import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
 import { useLanguage } from '@/app/providers/useLanguage'
@@ -67,7 +68,7 @@ export function WalletEditSheet({
       walletId: wallet.id!,
       amount: diff,
       type: diff >= 0 ? 'masuk' : 'keluar',
-      currency,
+      currency: wallet.currency,
       label: 'koreksi saldo',
       date: nowMs,
       isFromSavings: false,
@@ -80,11 +81,12 @@ export function WalletEditSheet({
 
   async function handleSesuaikanTransfer() {
     if (!transferTargetId || diff === 0 || isNaN(actual)) return
+    const targetWallet = wallets.find((w) => w.id === transferTargetId)
     await addTransactionAndUpdateBalance({
       walletId: wallet.id!,
       amount: diff,
       type: diff >= 0 ? 'masuk' : 'keluar',
-      currency,
+      currency: wallet.currency,
       label: 'transfer koreksi',
       transferPairId: `adj-${nowMs}`,
       date: nowMs,
@@ -96,7 +98,7 @@ export function WalletEditSheet({
       walletId: transferTargetId,
       amount: -diff,
       type: -diff >= 0 ? 'masuk' : 'keluar',
-      currency,
+      currency: targetWallet?.currency ?? currency,
       label: 'transfer koreksi',
       transferPairId: `adj-${nowMs}`,
       date: nowMs,
@@ -141,7 +143,9 @@ export function WalletEditSheet({
               {t('common.save', lang)}
             </button>
           </div>
-          <div className={styles.balanceDisplay}>{formatCurrency(wallet.balance, currency)}</div>
+          <div className={styles.balanceDisplay}>
+            {formatCurrency(wallet.balance, wallet.currency)}
+          </div>
           <button className={styles.secondaryBtn} onClick={() => setStep('sesuaikan')}>
             {t('profil.wallets_sesuaikan_btn', lang)}
           </button>
@@ -169,7 +173,7 @@ export function WalletEditSheet({
         <div className={styles.form}>
           <div className={styles.fieldLabel}>{t('profil.wallets_balance_label', lang)}</div>
           <div className={styles.amountRow}>
-            <span className={styles.prefix}>{getCurrencySymbol(currency)}</span>
+            <span className={styles.prefix}>{getCurrencySymbol(wallet.currency)}</span>
             <input
               className={styles.amountInput}
               type="text"
@@ -181,10 +185,11 @@ export function WalletEditSheet({
               autoFocus
             />
           </div>
+          <EquivLine amount={actual || 0} currency={wallet.currency} primaryCurrency={currency} />
           {actualRaw !== '' && (
             <div className={`${styles.diffLabel} ${diff < 0 ? styles.diffNeg : styles.diffPos}`}>
               {t('profil.wallets_diff_prefix', lang)} {diff >= 0 ? '+' : ''}
-              {formatCurrency(diff, currency)}
+              {formatCurrency(diff, wallet.currency)}
             </div>
           )}
           <div className={styles.fieldLabel}>{t('profil.wallets_diff_from', lang)}</div>
@@ -229,7 +234,7 @@ export function WalletEditSheet({
                 className={`${styles.optionBtn} ${transferTargetId === w.id ? styles.optionBtnActive : ''}`}
                 onClick={() => setTransferTargetId(w.id!)}
               >
-                {w.name} · {formatCurrency(w.balance, currency)}
+                {w.name} · {formatCurrency(w.balance, w.currency)}
               </button>
             ))}
           <button

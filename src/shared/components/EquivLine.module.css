@@ -1,0 +1,6 @@
+.line {
+  font-size: 11px;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+  margin-top: 4px;
+}
