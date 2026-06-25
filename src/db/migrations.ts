@@ -247,7 +247,7 @@ export function applyMigrations(db: Dexie): void {
       savedScenarios: '++id, savedAt',
       categories: '++id, type',
       allocation: 'id',
-      rates: '[base+target]',
+      rates: '[base+target], base',
     })
     .upgrade((tx) => {
       return tx
