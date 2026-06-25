@@ -7,6 +7,7 @@ import { getSettings } from '@/db/settings.repository'
 import { getAllWallets } from '@/db/wallets.repository'
 import { getActiveTagihan } from '@/db/tagihan.repository'
 import { getPeriodFlows } from '@/db/transactions.repository'
+import { getAllocation } from '@/db/allocation.repository'
 import type { Settings, Wallet } from '@/db/database'
 import {
   calcDaysUntilPayday,
@@ -51,20 +52,20 @@ export function CekDuluPage() {
 
   useEffect(() => {
     let cancelled = false
-    Promise.all([getSettings(), getAllWallets(), getActiveTagihan()]).then(
-      ([settings, wallets, tagihan]) => {
+    Promise.all([getSettings(), getAllWallets(), getActiveTagihan(), getAllocation()]).then(
+      ([settings, wallets, tagihan, allocation]) => {
         if (cancelled || !settings) return
         const currency = settings.activeCurrencyMode || settings.primaryCurrency
         const totalSaldo = wallets
           .filter((w) => w.currency === currency)
           .reduce((s, w) => s + w.balance, 0)
-        const nextPaydayMs = getPaydayDate(nowMs, settings).getTime()
+        const nextPaydayMs = getPaydayDate(nowMs, settings, allocation).getTime()
         const unpaidTagihanTotal = calcUnpaidTagihanTotal(
           tagihan.filter((tg) => tg.currency === currency),
           nowMs,
           nextPaydayMs,
         )
-        const daysUntilPayday = calcDaysUntilPayday(nowMs, settings)
+        const daysUntilPayday = calcDaysUntilPayday(nowMs, settings, allocation)
         const periodStartMs = getPeriodStartDate(nowMs, settings).getTime()
         const hariPeriode = calcHariPeriode(nowMs, settings)
 

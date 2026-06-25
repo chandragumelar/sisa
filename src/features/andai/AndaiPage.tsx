@@ -8,6 +8,7 @@ import { getSettings } from '@/db/settings.repository'
 import { getAllWallets } from '@/db/wallets.repository'
 import { getActiveTagihan } from '@/db/tagihan.repository'
 import { getPeriodFlows } from '@/db/transactions.repository'
+import { getAllocation } from '@/db/allocation.repository'
 import {
   getSavedScenarios,
   saveScenario,
@@ -97,8 +98,8 @@ export function AndaiPage() {
 
   useEffect(() => {
     let cancelled = false
-    Promise.all([getSettings(), getAllWallets(), getActiveTagihan()]).then(
-      ([s, wallets, tagihan]) => {
+    Promise.all([getSettings(), getAllWallets(), getActiveTagihan(), getAllocation()]).then(
+      ([s, wallets, tagihan, allocation]) => {
         if (cancelled || !s) return
         const currency = s.activeCurrencyMode || s.primaryCurrency
         const totalSaldo = wallets
@@ -107,7 +108,7 @@ export function AndaiPage() {
         const unpaidTagihanTotal = calcUnpaidTagihanTotal(
           tagihan.filter((tg) => tg.currency === currency),
           nowMs,
-          getPaydayDate(nowMs, s).getTime(),
+          getPaydayDate(nowMs, s, allocation).getTime(),
         )
         const periodStartMs = getPeriodStartDate(nowMs, s).getTime()
         const hariPeriode = calcHariPeriode(nowMs, s)
@@ -136,7 +137,13 @@ export function AndaiPage() {
             totalSaldo,
             useSaldoFloor: s.incomeType === 'freelance',
           })
-          const bl = buildAndaiBaseline(budget.sisaPeriode, budget.uangMengendap, s, nowMs)
+          const bl = buildAndaiBaseline(
+            budget.sisaPeriode,
+            budget.uangMengendap,
+            s,
+            nowMs,
+            allocation,
+          )
           setBaseline(bl)
           setCurrency(currency)
 

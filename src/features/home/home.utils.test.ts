@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import type { Settings, Transaction } from '@/db/database'
+import type { Settings, Transaction, Allocation } from '@/db/database'
 import {
   calcDaysUntilPayday,
   getPaydayDate,
@@ -586,5 +586,106 @@ describe('needsPaydayConfirmation with allocation', () => {
       periodEndDate: NOW - 1,
     }
     expect(needsPaydayConfirmation(NOW, mix, alloc)).toBe(false)
+  })
+})
+
+// ─── getPaydayDate / calcDaysUntilPayday — freelance allocation ───────────────
+
+function makeAlloc(periodEndDate: number): Allocation {
+  return { id: 1, jatahHarian: 100_000, daysAtLock: 10, lockedAt: 0, periodEndDate }
+}
+
+describe('getPaydayDate — freelance with allocation', () => {
+  // NOW_MS = Jan 10 2024 12:00 UTC. periodEndDate = Jan 20 2024 12:00 UTC (10 days ahead).
+  const PERIOD_END_MS = new Date('2024-01-20T12:00:00Z').getTime()
+  const freelance = makeSettings({ incomeType: 'freelance' })
+
+  it('returns allocation.periodEndDate as Date when set', () => {
+    const result = getPaydayDate(NOW_MS, freelance, makeAlloc(PERIOD_END_MS))
+    expect(result.getTime()).toBe(PERIOD_END_MS)
+  })
+
+  it('fallback to end-of-month when allocation is null', () => {
+    // Jan 2024 has 31 days → fallback payday = Jan 31
+    const result = getPaydayDate(NOW_MS, freelance, null)
+    expect(result.getDate()).toBe(31)
+    expect(result.getMonth()).toBe(0) // January
+  })
+
+  it('fallback to end-of-month when allocation has periodEndDate null', () => {
+    const noEnd: Allocation = {
+      id: 1,
+      jatahHarian: 0,
+      daysAtLock: 0,
+      lockedAt: 0,
+      periodEndDate: null,
+    }
+    const result = getPaydayDate(NOW_MS, freelance, noEnd)
+    expect(result.getDate()).toBe(31)
+  })
+
+  it('fallback to end-of-month when no allocation arg (regression guard)', () => {
+    const result = getPaydayDate(NOW_MS, freelance)
+    expect(result.getDate()).toBe(31)
+  })
+})
+
+describe('calcDaysUntilPayday — freelance with allocation', () => {
+  // NOW_MS = Jan 10 12:00 UTC. Period end = Jan 20 12:00 UTC → 10 calendar days.
+  const PERIOD_END_MS = new Date('2024-01-20T12:00:00Z').getTime()
+  const freelance = makeSettings({ incomeType: 'freelance' })
+
+  it('returns days to periodEndDate when allocation set', () => {
+    const days = calcDaysUntilPayday(NOW_MS, freelance, makeAlloc(PERIOD_END_MS))
+    expect(days).toBe(10)
+  })
+
+  it('consistent: equals round((periodEndDate_dayStart - today_dayStart) / DAY_MS)', () => {
+    const alloc = makeAlloc(PERIOD_END_MS)
+    const days = calcDaysUntilPayday(NOW_MS, freelance, alloc)
+    const todayStart = new Date(
+      new Date(NOW_MS).getFullYear(),
+      new Date(NOW_MS).getMonth(),
+      new Date(NOW_MS).getDate(),
+    ).getTime()
+    const endStart = new Date(
+      new Date(PERIOD_END_MS).getFullYear(),
+      new Date(PERIOD_END_MS).getMonth(),
+      new Date(PERIOD_END_MS).getDate(),
+    ).getTime()
+    expect(days).toBe(Math.max(1, Math.round((endStart - todayStart) / DAY_MS)))
+  })
+
+  it('fallback to end-of-month (21 days) when no allocation', () => {
+    // Jan 10 → Jan 31 = 21 days
+    const days = calcDaysUntilPayday(NOW_MS, freelance, null)
+    expect(days).toBe(21)
+  })
+})
+
+describe('getPaydayDate / calcDaysUntilPayday — tetap/mix ignore allocation', () => {
+  // Regression guard: passing allocation to tetap/mix must not change output.
+  const alloc = makeAlloc(new Date('2024-01-15T12:00:00Z').getTime()) // mid-month period end
+
+  it('tetap: getPaydayDate ignores allocation', () => {
+    const tetap = makeSettings({ incomeType: 'tetap', incomeDay: 25 })
+    expect(getPaydayDate(NOW_MS, tetap, alloc).getTime()).toBe(
+      getPaydayDate(NOW_MS, tetap).getTime(),
+    )
+  })
+
+  it('tetap: calcDaysUntilPayday ignores allocation', () => {
+    const tetap = makeSettings({ incomeType: 'tetap', incomeDay: 25 })
+    expect(calcDaysUntilPayday(NOW_MS, tetap, alloc)).toBe(calcDaysUntilPayday(NOW_MS, tetap))
+  })
+
+  it('mix: getPaydayDate ignores allocation', () => {
+    const mix = makeSettings({ incomeType: 'mix', incomeDay: 25 })
+    expect(getPaydayDate(NOW_MS, mix, alloc).getTime()).toBe(getPaydayDate(NOW_MS, mix).getTime())
+  })
+
+  it('mix: calcDaysUntilPayday ignores allocation', () => {
+    const mix = makeSettings({ incomeType: 'mix', incomeDay: 25 })
+    expect(calcDaysUntilPayday(NOW_MS, mix, alloc)).toBe(calcDaysUntilPayday(NOW_MS, mix))
   })
 })

@@ -1,5 +1,5 @@
 import { calcDaysUntilPayday } from '@/features/home/home.utils'
-import type { Settings } from '@/db/database'
+import type { Settings, Allocation } from '@/db/database'
 
 export type AndaiKind = 'beli' | 'income' | 'tagihan'
 
@@ -73,8 +73,9 @@ export function buildAndaiBaseline(
   uangMengendap: number,
   settings: Settings,
   nowMs: number,
+  allocation?: Allocation | null,
 ): AndaiBaseline {
-  const daysUntilPayday = calcDaysUntilPayday(nowMs, settings)
+  const daysUntilPayday = calcDaysUntilPayday(nowMs, settings, allocation)
   const dailyBudget = daysUntilPayday > 0 ? Math.max(0, sisaPeriode / daysUntilPayday) : 0
   return {
     sisaPeriode,
