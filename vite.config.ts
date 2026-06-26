@@ -7,8 +7,8 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'prompt', // 8.3: prompt user on update, no auto-reload
-      injectRegister: 'auto',
+      registerType: 'prompt',
+      injectRegister: null, // useRegisterSW in UpdateBanner handles registration
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,svg,png,woff2}'],
         navigateFallback: '/index.html',
