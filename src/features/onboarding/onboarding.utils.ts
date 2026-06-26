@@ -1,20 +1,18 @@
 import type { Settings, Wallet, IncomeFrequency, IncomeType, Language } from '@/db/database'
 import type { OnboardingStep, WalletInput } from './onboarding.types'
 
-export const TOTAL_PROGRESS_DOTS = 8
+export const TOTAL_PROGRESS_DOTS = 5
 
 const STEP_PROGRESS: Record<OnboardingStep, number> = {
   language: 1,
-  installGuide: 1,
   license: 2,
-  mentalModel: 3,
-  currency: 4,
-  incomeType: 5,
-  incomeDetail: 5,
-  payConfirm: 5,
-  tagihan: 6,
-  wallet: 7,
-  alokasi: 8,
+  incomeType: 3,
+  incomeDetail: 3,
+  payConfirm: 3,
+  currency: 3,
+  tagihan: 4,
+  wallet: 4,
+  alokasi: 5,
 }
 
 export function getProgressCount(step: OnboardingStep): number {
@@ -27,20 +25,16 @@ export function getNextStep(
 ): OnboardingStep | 'done' {
   switch (current) {
     case 'language':
-      return 'installGuide'
-    case 'installGuide':
       return 'license'
     case 'license':
-      return 'mentalModel'
-    case 'mentalModel':
-      return 'currency'
-    case 'currency':
       return 'incomeType'
     case 'incomeType':
       return 'incomeDetail'
     case 'incomeDetail':
-      return incomeType === 'freelance' ? 'tagihan' : 'payConfirm'
+      return incomeType === 'freelance' ? 'currency' : 'payConfirm'
     case 'payConfirm':
+      return 'currency'
+    case 'currency':
       return 'tagihan'
     case 'tagihan':
       return 'wallet'

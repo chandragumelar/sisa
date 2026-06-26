@@ -16,44 +16,35 @@ import type { WalletInput } from './onboarding.types'
 describe('getProgressCount', () => {
   it('language → 1', () => expect(getProgressCount('language')).toBe(1))
   it('license → 2', () => expect(getProgressCount('license')).toBe(2))
-  it('mentalModel → 3', () => expect(getProgressCount('mentalModel')).toBe(3))
-  it('currency → 4', () => expect(getProgressCount('currency')).toBe(4))
-  it('incomeType → 5', () => expect(getProgressCount('incomeType')).toBe(5))
-  it('incomeDetail → 5 (same dot as incomeType)', () =>
-    expect(getProgressCount('incomeDetail')).toBe(5))
-  it('tagihan → 6', () => expect(getProgressCount('tagihan')).toBe(6))
-  it('wallet → 7', () => expect(getProgressCount('wallet')).toBe(7))
-  it('alokasi → 8', () => expect(getProgressCount('alokasi')).toBe(8))
-  it('alokasi → 8', () => expect(getProgressCount('alokasi')).toBe(8))
+  it('incomeType → 3', () => expect(getProgressCount('incomeType')).toBe(3))
+  it('incomeDetail → 3 (same dot as incomeType)', () =>
+    expect(getProgressCount('incomeDetail')).toBe(3))
+  it('payConfirm → 3 (same dot)', () => expect(getProgressCount('payConfirm')).toBe(3))
+  it('currency → 3 (same dot)', () => expect(getProgressCount('currency')).toBe(3))
+  it('tagihan → 4', () => expect(getProgressCount('tagihan')).toBe(4))
+  it('wallet → 4 (same dot as tagihan)', () => expect(getProgressCount('wallet')).toBe(4))
+  it('alokasi → 5', () => expect(getProgressCount('alokasi')).toBe(5))
   it('max filled equals TOTAL_PROGRESS_DOTS', () => {
     expect(getProgressCount('alokasi')).toBe(TOTAL_PROGRESS_DOTS)
   })
+  it('TOTAL_PROGRESS_DOTS is 5', () => expect(TOTAL_PROGRESS_DOTS).toBe(5))
 })
 
 // ---------------------------------------------------------------------------
 // getNextStep
 // ---------------------------------------------------------------------------
 describe('getNextStep', () => {
-  it('language → installGuide', () => {
-    expect(getNextStep('language', null)).toBe('installGuide')
+  it('language → license', () => {
+    expect(getNextStep('language', null)).toBe('license')
   })
-  it('installGuide → license', () => {
-    expect(getNextStep('installGuide', null)).toBe('license')
-  })
-  it('license → mentalModel', () => {
-    expect(getNextStep('license', null)).toBe('mentalModel')
-  })
-  it('mentalModel → currency', () => {
-    expect(getNextStep('mentalModel', null)).toBe('currency')
-  })
-  it('currency → incomeType', () => {
-    expect(getNextStep('currency', 'tetap')).toBe('incomeType')
+  it('license → incomeType', () => {
+    expect(getNextStep('license', null)).toBe('incomeType')
   })
   it('incomeType → incomeDetail', () => {
     expect(getNextStep('incomeType', 'tetap')).toBe('incomeDetail')
   })
-  it('incomeDetail + freelance → tagihan (skip payConfirm)', () => {
-    expect(getNextStep('incomeDetail', 'freelance')).toBe('tagihan')
+  it('incomeDetail + freelance → currency (skip payConfirm)', () => {
+    expect(getNextStep('incomeDetail', 'freelance')).toBe('currency')
   })
   it('incomeDetail + tetap → payConfirm', () => {
     expect(getNextStep('incomeDetail', 'tetap')).toBe('payConfirm')
@@ -61,8 +52,11 @@ describe('getNextStep', () => {
   it('incomeDetail + mix → payConfirm', () => {
     expect(getNextStep('incomeDetail', 'mix')).toBe('payConfirm')
   })
-  it('payConfirm → tagihan', () => {
-    expect(getNextStep('payConfirm', 'tetap')).toBe('tagihan')
+  it('payConfirm → currency', () => {
+    expect(getNextStep('payConfirm', 'tetap')).toBe('currency')
+  })
+  it('currency → tagihan', () => {
+    expect(getNextStep('currency', null)).toBe('tagihan')
   })
   it('tagihan → wallet', () => {
     expect(getNextStep('tagihan', 'tetap')).toBe('wallet')
