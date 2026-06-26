@@ -11,25 +11,8 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'prompt',
-      injectRegister: null, // useRegisterSW in UpdateBanner handles registration
-      workbox: {
-        skipWaiting: true,
-        clientsClaim: true,
-        globPatterns: ['**/*.{js,css,html,ico,svg,png,woff2}'],
-        navigateFallback: '/index.html',
-        navigateFallbackDenylist: [/^\/(api|_)/],
-        runtimeCaching: [
-          {
-            // Google Fonts — cache-first
-            urlPattern: /^https:\/\/fonts\.(googleapis|gstatic)\.com/,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'google-fonts',
-              expiration: { maxEntries: 20, maxAgeSeconds: 60 * 60 * 24 * 365 },
-            },
-          },
-        ],
-      },
+      injectRegister: null,
+      selfDestroying: true,
       manifest: {
         name: 'SISA',
         short_name: 'SISA',
