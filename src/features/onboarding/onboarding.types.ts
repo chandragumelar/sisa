@@ -3,9 +3,7 @@ import type { FormState } from '@/features/profil/ProfilTagihanSheet.utils'
 
 export type OnboardingStep =
   | 'language'
-  | 'installGuide'
   | 'license'
-  | 'mentalModel'
   | 'incomeType'
   | 'incomeDetail'
   | 'payConfirm'
