@@ -13,6 +13,8 @@ export default defineConfig({
       registerType: 'prompt',
       injectRegister: null, // useRegisterSW in UpdateBanner handles registration
       workbox: {
+        skipWaiting: true,
+        clientsClaim: true,
         globPatterns: ['**/*.{js,css,html,ico,svg,png,woff2}'],
         navigateFallback: '/index.html',
         navigateFallbackDenylist: [/^\/(api|_)/],

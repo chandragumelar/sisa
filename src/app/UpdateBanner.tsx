@@ -18,7 +18,16 @@ export function UpdateBanner() {
     onRegisterError() {},
   })
 
-  // Case 1: new SW is installing and waiting (user has app open during deploy)
+  // Case 1: new SW activated and claimed clients while page was open — auto-reload
+  useEffect(() => {
+    if (!('serviceWorker' in navigator)) return
+    if (!navigator.serviceWorker.controller) return // first install, skip
+    const handler = () => window.location.reload()
+    navigator.serviceWorker.addEventListener('controllerchange', handler)
+    return () => navigator.serviceWorker.removeEventListener('controllerchange', handler)
+  }, [])
+
+  // Case 2: new SW is waiting (workbox prompt path, still show banner)
   useEffect(() => {
     if (needRefresh) setVisible(true)
   }, [needRefresh])
