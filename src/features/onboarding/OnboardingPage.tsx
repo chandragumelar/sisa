@@ -22,11 +22,14 @@ import {
   INITIAL_ACCUMULATED,
   type OnboardingAccumulated,
   type OnboardingStep,
+  type WalletInput,
 } from './onboarding.types'
+import type { FormState } from '@/features/profil/ProfilTagihanSheet.utils'
 import {
   buildSettings,
   buildWalletRecords,
   getNextStep,
+  getPrevStep,
   parseWalletBalance,
 } from './onboarding.utils'
 import { getPaydayDate, calcDaysUntilPayday } from '@/features/home/home.utils'
@@ -47,6 +50,11 @@ export function OnboardingPage() {
   const setLang = useSetLanguage()
   const [step, setStep] = useState<OnboardingStep>('langCurrency')
   const [data, setData] = useState<OnboardingAccumulated>(INITIAL_ACCUMULATED)
+
+  function back() {
+    const prev = getPrevStep(step, data.incomeType)
+    if (prev !== null) setStep(prev)
+  }
 
   function advance(patch: Partial<OnboardingAccumulated> = {}) {
     const next = { ...data, ...patch }
@@ -145,7 +153,7 @@ export function OnboardingPage() {
   }
 
   return (
-    <OnboardingShell step={step}>
+    <OnboardingShell step={step} onBack={step !== 'langCurrency' ? back : undefined}>
       {step === 'langCurrency' && (
         <StepLangCurrency
           onNext={({ language, primaryCurrency }) => advance({ language, primaryCurrency })}
@@ -215,13 +223,34 @@ export function OnboardingPage() {
       {step === 'alokasi' &&
         (() => {
           const currency = data.primaryCurrency ?? 'IDR'
-          const totalSaldo = data.wallets
-            .filter((w) => w.name.trim())
-            .reduce((s, w) => s + parseWalletBalance(w.balance), 0)
-          const tagihanTotal = data.tagihanInputs.reduce(
-            (s, tg) => s + (parseInt(parseNominalRaw(tg.nominalEstimate), 10) || 0),
-            0,
-          )
+          const namedWallets = data.wallets.filter((w) => w.name.trim())
+          const resolveWCur = (w: WalletInput) => w.currency?.trim() || currency
+          const resolveTCur = (tg: FormState) => tg.currency?.trim() || currency
+          const primaryWallets = namedWallets
+            .filter((w) => resolveWCur(w) === currency)
+            .map((w) => ({ name: w.name.trim(), amount: parseWalletBalance(w.balance) }))
+          const otherWallets = namedWallets
+            .filter((w) => resolveWCur(w) !== currency)
+            .map((w) => ({
+              name: w.name.trim(),
+              amount: parseWalletBalance(w.balance),
+              currency: resolveWCur(w),
+            }))
+          const primaryTagihan = data.tagihanInputs
+            .filter((tg) => resolveTCur(tg) === currency)
+            .map((tg) => ({
+              name: tg.name.trim(),
+              amount: parseInt(parseNominalRaw(tg.nominalEstimate), 10) || 0,
+            }))
+          const otherTagihan = data.tagihanInputs
+            .filter((tg) => resolveTCur(tg) !== currency)
+            .map((tg) => ({
+              name: tg.name.trim(),
+              amount: parseInt(parseNominalRaw(tg.nominalEstimate), 10) || 0,
+              currency: resolveTCur(tg),
+            }))
+          const totalSaldo = primaryWallets.reduce((s, w) => s + w.amount, 0)
+          const tagihanTotal = primaryTagihan.reduce((s, tg) => s + tg.amount, 0)
           const nowMs = clock.now()
           const nowDate = new Date(nowMs)
           const effectivePeriodEnd =
@@ -245,6 +274,10 @@ export function OnboardingPage() {
               sisaHari={sisaHari}
               currency={currency}
               periodEndDate={data.periodEndDate}
+              primaryWallets={primaryWallets}
+              primaryTagihan={primaryTagihan}
+              otherWallets={otherWallets}
+              otherTagihan={otherTagihan}
               onPeriodEndDateChange={(ms) => setData((d) => ({ ...d, periodEndDate: ms }))}
               onNext={(operasionalBudget, periodEndDate) =>
                 advance({ operasionalBudget, periodEndDate })
