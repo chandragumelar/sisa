@@ -167,7 +167,6 @@ export type StringKey =
   | 'saldo.anggaran_tooltip'
   | 'saldo.expand_btn'
   | 'saldo.collapse_btn'
-  | 'saldo.rincian_pemasukan'
   | 'saldo.rincian_tagihan'
   | 'saldo.rincian_nabung'
   | 'saldo.rincian_anggaran'
@@ -741,7 +740,6 @@ const id: StringDictionary = {
     'Pemasukan periode dikurangi tagihan belum bayar dan target nabung. Ini uang yang "bebas" untuk operasional harian.',
   'saldo.expand_btn': 'kok bisa segini?',
   'saldo.collapse_btn': 'sembunyikan',
-  'saldo.rincian_pemasukan': 'Gajian',
   'saldo.rincian_tagihan': '− Tagihan belum bayar',
   'saldo.rincian_nabung': '− Udah ditabung',
   'saldo.rincian_anggaran': '= Sisa sekarang',
@@ -1324,7 +1322,6 @@ const en: StringDictionary = {
     'Period income minus unpaid bills and savings targets. This is your free money for daily operations.',
   'saldo.expand_btn': 'how is this calculated?',
   'saldo.collapse_btn': 'hide',
-  'saldo.rincian_pemasukan': 'Income',
   'saldo.rincian_tagihan': '− Unpaid bills',
   'saldo.rincian_nabung': '− Already saved',
   'saldo.rincian_anggaran': '= Left now',

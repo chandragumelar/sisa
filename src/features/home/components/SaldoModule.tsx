@@ -17,8 +17,6 @@ interface Props {
   totalSaldo: number
   tagihanUnpaid: number
   mengendap: number
-  monthlyIncome: number
-  monthlyExpense: number
   mode: BudgetMode
   shortfall: number
   daysUntilPayday: number
@@ -26,7 +24,6 @@ interface Props {
   conditionLabel: string | null
   conditionColor: string | null
   onWalletTap?: (wallet: Wallet) => void
-  onHistoryTap?: () => void
   onAddWalletTap?: () => void
   onEditAlokasi?: () => void
 }
@@ -38,8 +35,6 @@ export function SaldoModule({
   totalSaldo,
   tagihanUnpaid,
   mengendap,
-  monthlyIncome,
-  monthlyExpense,
   mode,
   shortfall,
   daysUntilPayday,
@@ -47,7 +42,6 @@ export function SaldoModule({
   conditionLabel,
   conditionColor,
   onWalletTap,
-  onHistoryTap,
   onAddWalletTap,
   onEditAlokasi,
 }: Props) {
@@ -218,22 +212,6 @@ export function SaldoModule({
                       )}
                     </div>
                   </div>
-
-                  <p className={styles.rincianSectionLabel}>{t('home.bulan_ini', lang)}</p>
-                  <RincianRow
-                    label={t('saldo.rincian_pemasukan', lang)}
-                    value={formatCurrency(monthlyIncome, currency)}
-                  />
-                  <RincianRow
-                    label={t('saldo.rincian_tagihan', lang)}
-                    value={formatCurrency(monthlyExpense, currency)}
-                    minus
-                  />
-                  {onHistoryTap && (
-                    <button className={styles.historyLink} onClick={onHistoryTap}>
-                      {t('home.lihat_riwayat', lang)}
-                    </button>
-                  )}
 
                   <p className={styles.rincianSectionLabel}>{t('home.dompet', lang)}</p>
                   {wallets.length > 0 && (
