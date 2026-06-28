@@ -168,13 +168,19 @@
 /* ── Total zone — tinted strip ────────────────────────── */
 .totalZone {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 6px;
   margin: 0 -16px;
   padding: 12px 16px;
   background: var(--surface-2);
   border-top: 1px solid var(--border-soft);
   border-bottom: 1px solid var(--border-soft);
+}
+
+.totalRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .totalLabel {
@@ -195,23 +201,27 @@
   letter-spacing: -0.5px;
 }
 
-.totalLabelSecondary {
+.totalRowOther {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.totalLabelOther {
   font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 1.1px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
   text-transform: uppercase;
   color: var(--ink-tertiary);
   font-family: var(--font-sans);
-  margin-top: 6px;
 }
 
-.totalNumSecondary {
+.totalNumOther {
   font-family: var(--font-mono);
   font-size: 14px;
   font-weight: 600;
-  color: var(--ink-tertiary);
+  color: var(--ink-secondary);
   font-feature-settings: 'tnum';
-  margin-top: 2px;
 }
 
 /* ── Empty + add ──────────────────────────────────────── */

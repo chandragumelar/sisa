@@ -21,16 +21,16 @@ export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap, on
   const active = tagihan.filter((tg) => tg.isActive)
   const ranked = rankTagihan(active, nowMs)
 
-  const primaryTotal = active.reduce(
-    (sum, tg) => ((tg.currency || currency) === currency ? sum + tg.nominalEstimate : sum),
-    0,
-  )
-  const otherMap = new Map<string, number>()
-  active.forEach((tg) => {
-    const cur = tg.currency || currency
-    if (cur !== currency) otherMap.set(cur, (otherMap.get(cur) ?? 0) + tg.nominalEstimate)
-  })
-  const otherTotals = Array.from(otherMap.entries()).map(([cur, sum]) => ({ cur, sum }))
+  const byCurrency = new Map<string, number>()
+  for (const tg of active) {
+    const c = tg.currency || currency
+    byCurrency.set(c, (byCurrency.get(c) ?? 0) + tg.nominalEstimate)
+  }
+  const primaryTotal = byCurrency.get(currency) ?? 0
+  const otherTotals = [...byCurrency.entries()]
+    .filter(([c]) => c !== currency)
+    .map(([c, sum]) => ({ currency: c, sum }))
+    .sort((a, b) => b.sum - a.sum)
 
   const overdue = ranked.filter((tg) => getTagihanUrgency(tg, nowMs) === 'lewat-tempo')
   const regular = ranked.filter((tg) => getTagihanUrgency(tg, nowMs) !== 'lewat-tempo')
@@ -144,22 +144,16 @@ export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap, on
 
           {/* Total zone — tinted, struk-style */}
           <div className={styles.totalZone}>
-            <div>
+            <div className={styles.totalRow}>
               <span className={styles.totalLabel}>Total</span>
-              {otherTotals.map(({ cur }) => (
-                <div key={cur} className={styles.totalLabelSecondary}>
-                  Total ({cur})
-                </div>
-              ))}
-            </div>
-            <div style={{ textAlign: 'right' }}>
               <span className={styles.totalNum}>{formatCurrency(primaryTotal, currency)}</span>
-              {otherTotals.map(({ cur, sum }) => (
-                <div key={cur} className={styles.totalNumSecondary}>
-                  {formatCurrency(sum, cur)}
-                </div>
-              ))}
             </div>
+            {otherTotals.map(({ currency: c, sum }) => (
+              <div key={c} className={styles.totalRowOther}>
+                <span className={styles.totalLabelOther}>Total · {c}</span>
+                <span className={styles.totalNumOther}>{formatCurrency(sum, c)}</span>
+              </div>
+            ))}
           </div>
 
           <button className={styles.addBtn} onClick={onAddTap}>
