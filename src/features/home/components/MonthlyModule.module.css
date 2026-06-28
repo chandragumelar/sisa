@@ -69,3 +69,17 @@
   font-feature-settings: 'tnum';
   white-space: nowrap;
 }
+
+.historyLink {
+  display: block;
+  width: 100%;
+  text-align: right;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--accent);
+  background: none;
+  border: none;
+  padding: 8px 0 0;
+  cursor: pointer;
+  font-family: var(--font-sans);
+}

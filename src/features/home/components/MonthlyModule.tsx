@@ -8,9 +8,10 @@ interface Props {
   expense: number
   currency: string
   nowMs: number
+  onHistoryTap?: () => void
 }
 
-export function MonthlyModule({ income, expense, currency, nowMs }: Props) {
+export function MonthlyModule({ income, expense, currency, nowMs, onHistoryTap }: Props) {
   const lang = useLanguage()
   const locale = lang === 'en' ? 'en-US' : 'id-ID'
   const monthLabel = new Intl.DateTimeFormat(locale, { month: 'short', year: 'numeric' }).format(
@@ -93,6 +94,11 @@ export function MonthlyModule({ income, expense, currency, nowMs }: Props) {
           </div>
         ))}
       </div>
+      {onHistoryTap && (
+        <button className={styles.historyLink} onClick={onHistoryTap}>
+          {t('home.lihat_riwayat', lang)}
+        </button>
+      )}
     </div>
   )
 }

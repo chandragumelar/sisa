@@ -499,8 +499,6 @@ export function HomePage() {
               .reduce((s, w) => s + w.balance, 0)}
             tagihanUnpaid={unpaidTagihanTotal}
             mengendap={mengendap}
-            monthlyIncome={monthlyIncome}
-            monthlyExpense={monthlyExpense}
             mode={mode}
             shortfall={shortfall}
             daysUntilPayday={daysUntilPayday}
@@ -508,7 +506,6 @@ export function HomePage() {
             conditionLabel={condition?.label ?? null}
             conditionColor={condition?.color ?? null}
             onWalletTap={(w) => setEditWallet(w)}
-            onHistoryTap={() => setHistoryOpen(true)}
             onAddWalletTap={() => setWalletSheetOpen(true)}
             onEditAlokasi={() => setAlokasiSheetOpen(true)}
           />
@@ -528,6 +525,7 @@ export function HomePage() {
             expense={monthlyExpense}
             currency={currency}
             nowMs={nowMs}
+            onHistoryTap={() => setHistoryOpen(true)}
           />
 
           {wallets.some((w) => w.currency !== currency) && (
