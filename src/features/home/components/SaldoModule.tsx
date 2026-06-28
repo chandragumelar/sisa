@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import type { ReactNode } from 'react'
-import type { Wallet } from '@/db/database'
 import type { BudgetMode } from '@/shared/utils/budget.utils'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
 import { useLanguage } from '@/app/providers/useLanguage'
@@ -8,10 +7,7 @@ import { t } from '@/shared/strings/strings'
 import { BottomSheet } from '@/shared/components/BottomSheet'
 import styles from './SaldoModule.module.css'
 
-const WALLET_DOTS = ['#60a5fa', '#f97316', '#34d399', '#a78bfa', '#f472b6']
-
 interface Props {
-  wallets: Wallet[]
   currency: string
   sisaUang: number
   totalSaldo: number
@@ -23,13 +19,10 @@ interface Props {
   nextPaydayMs: number
   conditionLabel: string | null
   conditionColor: string | null
-  onWalletTap?: (wallet: Wallet) => void
-  onAddWalletTap?: () => void
   onEditAlokasi?: () => void
 }
 
 export function SaldoModule({
-  wallets,
   currency,
   sisaUang,
   totalSaldo,
@@ -41,8 +34,6 @@ export function SaldoModule({
   nextPaydayMs,
   conditionLabel,
   conditionColor,
-  onWalletTap,
-  onAddWalletTap,
   onEditAlokasi,
 }: Props) {
   const lang = useLanguage()
@@ -212,39 +203,6 @@ export function SaldoModule({
                       )}
                     </div>
                   </div>
-
-                  <p className={styles.rincianSectionLabel}>{t('home.dompet', lang)}</p>
-                  {wallets.length > 0 && (
-                    <div className={styles.walletList}>
-                      {wallets.map((w, i) => (
-                        <button
-                          key={w.id}
-                          className={styles.walletRow}
-                          style={{
-                            borderBottom:
-                              i < wallets.length - 1 ? '1px solid var(--border-soft)' : 'none',
-                          }}
-                          onClick={() => onWalletTap?.(w)}
-                        >
-                          <div className={styles.walletLeft}>
-                            <span
-                              className={styles.walletDot}
-                              style={{ background: WALLET_DOTS[i % WALLET_DOTS.length] }}
-                            />
-                            <span className={styles.walletName}>{w.name}</span>
-                          </div>
-                          <span className={styles.walletAmt}>
-                            {formatCurrency(w.balance, w.currency)}
-                          </span>
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                  {onAddWalletTap && (
-                    <button className={styles.addWalletInline} onClick={onAddWalletTap}>
-                      {t('home.tambah_dompet', lang)}
-                    </button>
-                  )}
                 </div>
               )}
             </>
