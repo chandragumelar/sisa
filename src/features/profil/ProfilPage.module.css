@@ -238,6 +238,34 @@
   flex: none;
 }
 
+.amountCurrency {
+  padding: 4px 22px 4px 8px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  color: var(--ink);
+  background-color: var(--surface-deep);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23939AA5' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 6px center;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+  flex: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.amountCurrency:hover {
+  border-color: var(--accent);
+}
+
+.amountCurrency:focus-visible {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
 .amountInput {
   flex: 1;
   font-size: 18px;
@@ -299,6 +327,21 @@
   cursor: pointer;
   text-align: left;
   min-width: 0;
+  gap: 8px;
+}
+
+.itemMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.listDate {
+  font-size: 11px;
+  color: var(--muted);
+  font-family: var(--font-sans);
 }
 
 .deleteBtn {
@@ -520,29 +563,4 @@
   padding: 10px 0;
   width: 100%;
   cursor: pointer;
-}
-
-.currencyChips {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  margin-bottom: 12px;
-}
-
-.currencyChip {
-  padding: 5px 12px;
-  border-radius: 100px;
-  border: 1px solid var(--line);
-  background: var(--surface-deep);
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--ink-soft);
-  cursor: pointer;
-  font-family: var(--font-sans);
-  letter-spacing: 0.4px;
-}
-
-.currencyChipActive {
-  border-color: var(--accent);
-  color: var(--accent);
 }

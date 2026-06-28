@@ -242,3 +242,11 @@ export function hasUrgentTagihan(tagihan: Tagihan[], nowMs: number): boolean {
     return u === 'lewat-tempo' || u === 'hari-ini'
   })
 }
+
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des']
+
+export function formatDueDate(tg: Tagihan, nowMs: number): string {
+  const occ = calcNextOccurrence(tg, nowMs)
+  if (!occ) return `tgl ${tg.dueDay}`
+  return `${occ.getDate()} ${MONTHS[occ.getMonth()]}`
+}
