@@ -27,19 +27,6 @@
   color: var(--ink-tertiary);
 }
 
-.addBtn {
-  width: 26px;
-  height: 26px;
-  border-radius: 6px;
-  border: 1px solid var(--border-hair);
-  background: var(--surface);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  flex-shrink: 0;
-}
-
 .totalLbl {
   font-size: 11px;
   color: var(--ink-tertiary);
@@ -244,5 +231,17 @@
   width: 100%;
   background: none;
   border: none;
+  font-family: inherit;
+}
+
+.addLabelBtn {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent);
+  background: none;
+  border: none;
+  padding: 12px 0 0;
+  cursor: pointer;
   font-family: inherit;
 }

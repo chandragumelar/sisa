@@ -3,12 +3,11 @@ import { renameWallet, deleteWallet, setWalletBalance, addWallet } from '@/db/wa
 import { addTransactionAndUpdateBalance } from '@/db/transactions.repository'
 import type { Wallet } from '@/db/database'
 import { BottomSheet } from '@/shared/components/BottomSheet'
-import { CurrencyPickerSheet } from '@/shared/components/CurrencyPickerSheet'
 import { formatCurrency, getCurrencySymbol } from '@/shared/utils/formatCurrency'
 import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
-import type { Currency } from '@/constants/currencies'
+import { ALL_CURRENCIES } from '@/constants/currencies'
 import styles from './ProfilPage.module.css'
 
 interface Props {
@@ -43,7 +42,6 @@ export function ProfilWalletsSheet({
   const [addName, setAddName] = useState('')
   const [addBalance, setAddBalance] = useState('')
   const [addCurrencyCode, setAddCurrencyCode] = useState(currency)
-  const [currencyPickerOpen, setCurrencyPickerOpen] = useState(false)
   const [deleteConfirm, setDeleteConfirm] = useState(false)
 
   function reset() {
@@ -158,11 +156,6 @@ export function ProfilWalletsSheet({
     setAddCurrencyCode(currency)
     await onUpdate()
     setStep('list')
-  }
-
-  function handleAddCurrencySelect(c: Currency) {
-    setAddCurrencyCode(c.code)
-    setCurrencyPickerOpen(false)
   }
 
   const sameCurrencyTargets = selected
@@ -328,13 +321,20 @@ export function ProfilWalletsSheet({
             onChange={(e) => setAddName(e.target.value)}
             autoFocus
           />
-          <div className={styles.fieldLabel}>{t('profil.wallets_currency_label', lang)}</div>
-          <button className={styles.secondaryBtn} onClick={() => setCurrencyPickerOpen(true)}>
-            {addCurrencyCode}
-          </button>
           <div className={styles.fieldLabel}>{t('profil.wallets_initial_balance', lang)}</div>
           <div className={styles.amountRow}>
-            <span className={styles.prefix}>{getCurrencySymbol(addCurrencyCode)}</span>
+            <select
+              className={styles.amountCurrency}
+              value={addCurrencyCode}
+              onChange={(e) => setAddCurrencyCode(e.target.value)}
+              aria-label={t('profil.wallets_currency_label', lang)}
+            >
+              {ALL_CURRENCIES.map((c) => (
+                <option key={c.code} value={c.code}>
+                  {c.code}
+                </option>
+              ))}
+            </select>
             <input
               className={styles.amountInput}
               type="text"
@@ -354,13 +354,6 @@ export function ProfilWalletsSheet({
             {t('common.cancel', lang)}
           </button>
         </div>
-      )}
-
-      {currencyPickerOpen && (
-        <CurrencyPickerSheet
-          onSelect={handleAddCurrencySelect}
-          onDismiss={() => setCurrencyPickerOpen(false)}
-        />
       )}
     </BottomSheet>
   )
