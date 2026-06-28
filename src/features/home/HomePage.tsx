@@ -391,8 +391,7 @@ export function HomePage() {
     reload()
   }
 
-  const currencyTagihan = tagihan.filter((tg) => tg.currency === currency)
-  const lewatTempoCount = currencyTagihan.filter(
+  const lewatTempoCount = tagihan.filter(
     (tg) => tg.isActive && getTagihanUrgency(tg, nowMs) === 'lewat-tempo',
   ).length
 
@@ -482,7 +481,7 @@ export function HomePage() {
           <CekDuluCard
             currency={currency}
             walletCount={wallets.filter((w) => w.currency === currency).length}
-            tagihanCount={currencyTagihan.length}
+            tagihanCount={tagihan.length}
             sisa={sisaPeriode}
             unpaidTagihanTotal={unpaidTagihanTotal}
             onCekDulu={(amount) => navigate('/cek-dulu', { state: { initialAmount: amount } })}
@@ -540,7 +539,7 @@ export function HomePage() {
           )}
 
           <TagihanModule
-            tagihan={currencyTagihan}
+            tagihan={tagihan}
             currency={currency}
             nowMs={nowMs}
             onPayTap={(tg) => setMarkPaidTagihan(tg)}
