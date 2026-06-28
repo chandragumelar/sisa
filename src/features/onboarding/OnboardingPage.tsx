@@ -112,7 +112,7 @@ export function OnboardingPage() {
         dueDay,
         frequency: tg.frequency,
         anchorDate,
-        currency: primaryCurrency,
+        currency: tg.currency || primaryCurrency,
         isActive: true,
         lastPaidAt: null,
         lastPaidAmount: null,
