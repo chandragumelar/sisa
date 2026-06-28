@@ -4,7 +4,8 @@ import type { NominalType } from '@/db/database'
 import { BottomSheet } from '@/shared/components/BottomSheet'
 import { ScrollSegmented } from '@/shared/components/ScrollSegmented'
 import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
-import { getCurrencySymbol } from '@/shared/utils/formatCurrency'
+import { formatCurrency, getCurrencySymbol } from '@/shared/utils/formatCurrency'
+import { POPULAR_CURRENCY_CODES } from '@/constants/currencies'
 import { t } from '@/shared/strings/strings'
 import { TagihanAnchorInput } from '@/features/profil/TagihanAnchorInput'
 import { EMPTY_FORM, FREQ_KEYS, FREQ_LABEL } from '@/features/profil/ProfilTagihanSheet.utils'
@@ -20,7 +21,6 @@ interface Props {
 
 export function StepTagihan({ tagihan, currency, onChange, onNext }: Props) {
   const lang = useLanguage()
-  const currSymbol = getCurrencySymbol(currency)
   const [sheetOpen, setSheetOpen] = useState(false)
   const [form, setForm] = useState<FormState>(EMPTY_FORM)
 
@@ -33,7 +33,8 @@ export function StepTagihan({ tagihan, currency, onChange, onNext }: Props) {
   function handleAdd() {
     const nominal = parseNominalRaw(form.nominalEstimate)
     if (!form.name.trim() || !nominal || nominal === '0') return
-    onChange([...tagihan, form])
+    const item = { ...form, currency: form.currency || currency }
+    onChange([...tagihan, item])
     setForm(EMPTY_FORM)
     setSheetOpen(false)
   }
@@ -42,10 +43,19 @@ export function StepTagihan({ tagihan, currency, onChange, onNext }: Props) {
     onChange(tagihan.filter((_, i) => i !== idx))
   }
 
-  const total = tagihan.reduce(
-    (s, tg) => s + (parseInt(parseNominalRaw(tg.nominalEstimate), 10) || 0),
-    0,
-  )
+  const primaryTotal = tagihan
+    .filter((tg) => (tg.currency || currency) === currency)
+    .reduce((s, tg) => s + (parseInt(parseNominalRaw(tg.nominalEstimate), 10) || 0), 0)
+
+  const otherCurrencies = new Map<string, number>()
+  tagihan.forEach((tg) => {
+    const cur = tg.currency || currency
+    if (cur !== currency) {
+      const amt = parseInt(parseNominalRaw(tg.nominalEstimate), 10) || 0
+      otherCurrencies.set(cur, (otherCurrencies.get(cur) ?? 0) + amt)
+    }
+  })
+
   const canAddItem =
     form.name.trim().length > 0 && parseInt(parseNominalRaw(form.nominalEstimate), 10) > 0
 
@@ -102,8 +112,10 @@ export function StepTagihan({ tagihan, currency, onChange, onNext }: Props) {
                   color: 'var(--ink-primary)',
                 }}
               >
-                {currSymbol}
-                {(parseInt(parseNominalRaw(item.nominalEstimate), 10) || 0).toLocaleString('id-ID')}
+                {formatCurrency(
+                  parseInt(parseNominalRaw(item.nominalEstimate), 10) || 0,
+                  item.currency || currency,
+                )}
               </span>
               <button
                 type="button"
@@ -143,7 +155,7 @@ export function StepTagihan({ tagihan, currency, onChange, onNext }: Props) {
         type="button"
         className="ob-add-dashed"
         onClick={() => {
-          setForm(EMPTY_FORM)
+          setForm({ ...EMPTY_FORM, currency })
           setSheetOpen(true)
         }}
       >
@@ -164,13 +176,20 @@ export function StepTagihan({ tagihan, currency, onChange, onNext }: Props) {
       <div className="ob-footer">
         <div className="ob-footer-total">
           <span>Total tagihan bulanan</span>
-          <span
-            className="ob-footer-total-amt"
-            style={{ color: total > 0 ? 'var(--signal-danger)' : 'var(--ink-tertiary)' }}
-          >
-            {currSymbol}
-            {total.toLocaleString('id-ID')}
-          </span>
+          <div style={{ textAlign: 'right' }}>
+            <span
+              className="ob-footer-total-amt"
+              style={{ color: primaryTotal > 0 ? 'var(--signal-danger)' : 'var(--ink-tertiary)' }}
+            >
+              {formatCurrency(primaryTotal, currency)}
+            </span>
+            {otherCurrencies.size > 0 &&
+              Array.from(otherCurrencies.entries()).map(([cur, amt]) => (
+                <div key={cur} style={{ fontSize: 11, color: 'var(--ink-tertiary)', marginTop: 2 }}>
+                  + {formatCurrency(amt, cur)} mata uang lain
+                </div>
+              ))}
+          </div>
         </div>
         <button
           type="button"
@@ -203,6 +222,20 @@ export function StepTagihan({ tagihan, currency, onChange, onNext }: Props) {
             autoFocus
           />
 
+          <div className={styles.fieldLabel}>{t('profil.tagihan_currency_label', lang)}</div>
+          <div className={styles.currencyChips}>
+            {POPULAR_CURRENCY_CODES.map((code) => (
+              <button
+                key={code}
+                type="button"
+                className={`${styles.currencyChip} ${(form.currency || currency) === code ? styles.currencyChipActive : ''}`}
+                onClick={() => patch('currency')(code)}
+              >
+                {code}
+              </button>
+            ))}
+          </div>
+
           <div className={styles.fieldLabel}>{t('profil.tagihan_nominal_label', lang)}</div>
           <div className={styles.segRow}>
             {(['tetap', 'variabel'] as NominalType[]).map((n) => (
@@ -220,7 +253,9 @@ export function StepTagihan({ tagihan, currency, onChange, onNext }: Props) {
           </div>
 
           <div className={styles.amountRow}>
-            <span className={styles.amountPrefix}>{currSymbol}</span>
+            <span className={styles.amountPrefix}>
+              {getCurrencySymbol(form.currency || currency)}
+            </span>
             <input
               className={styles.amountInput}
               type="text"
