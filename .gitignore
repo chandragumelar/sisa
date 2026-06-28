@@ -27,3 +27,10 @@ licenses.log
 
 # Test coverage
 coverage/
+
+# Docs — only ci-cd-pwa.md, design_system.md, engineering-guidelines-pwa.md are tracked
+docs/card_dompet.html
+docs/card_dompet_prompt.md
+docs/multicurrency_prompt.md
+docs/sisa-redesign-spec.md
+docs/wireframes.html
