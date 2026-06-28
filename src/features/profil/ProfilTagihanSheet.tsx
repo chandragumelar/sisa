@@ -3,11 +3,12 @@ import { addTagihan, updateTagihan, deleteTagihan } from '@/db/tagihan.repositor
 import type { Tagihan, NominalType } from '@/db/database'
 import { BottomSheet } from '@/shared/components/BottomSheet'
 import { EquivLine } from '@/shared/components/EquivLine'
-import { formatCurrency, getCurrencySymbol } from '@/shared/utils/formatCurrency'
+import { formatCurrency } from '@/shared/utils/formatCurrency'
 import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
-import { POPULAR_CURRENCY_CODES } from '@/constants/currencies'
+import { ALL_CURRENCIES } from '@/constants/currencies'
+import { formatDueDate } from '@/features/home/tagihan.utils'
 import { TagihanAnchorInput } from './TagihanAnchorInput'
 import type { AnchorFields } from './TagihanAnchorInput'
 import {
@@ -140,9 +141,12 @@ export function ProfilTagihanSheet({
           {tagihan.map((tg) => (
             <div key={tg.id} className={styles.itemRow}>
               <button className={styles.itemBody} onClick={() => openEdit(tg)}>
-                <span className={styles.listLabel}>{tg.name}</span>
+                <div className={styles.itemMeta}>
+                  <span className={styles.listLabel}>{tg.name}</span>
+                  <span className={styles.listDate}>jatuh tempo {formatDueDate(tg, nowMs)}</span>
+                </div>
                 <span className={styles.listVal}>
-                  {formatCurrency(tg.nominalEstimate, currency)}
+                  {formatCurrency(tg.nominalEstimate, tg.currency || currency)}
                 </span>
               </button>
               {deleteId === tg.id ? (
@@ -180,19 +184,6 @@ export function ProfilTagihanSheet({
             autoFocus
           />
 
-          <div className={styles.fieldLabel}>{t('profil.tagihan_currency_label', lang)}</div>
-          <div className={styles.currencyChips}>
-            {POPULAR_CURRENCY_CODES.map((code) => (
-              <button
-                key={code}
-                className={`${styles.currencyChip} ${(form.currency || currency) === code ? styles.currencyChipActive : ''}`}
-                onClick={() => patch('currency')(code)}
-              >
-                {code}
-              </button>
-            ))}
-          </div>
-
           <div className={styles.fieldLabel}>{t('profil.tagihan_nominal_label', lang)}</div>
           <div className={styles.segmented}>
             {(['tetap', 'variabel'] as NominalType[]).map((n) => (
@@ -208,7 +199,18 @@ export function ProfilTagihanSheet({
             ))}
           </div>
           <div className={styles.amountRow}>
-            <span className={styles.prefix}>{getCurrencySymbol(form.currency || currency)}</span>
+            <select
+              className={styles.amountCurrency}
+              value={form.currency || currency}
+              onChange={(e) => patch('currency')(e.target.value)}
+              aria-label={t('profil.tagihan_currency_label', lang)}
+            >
+              {ALL_CURRENCIES.map((c) => (
+                <option key={c.code} value={c.code}>
+                  {c.code}
+                </option>
+              ))}
+            </select>
             <input
               className={styles.amountInput}
               type="text"

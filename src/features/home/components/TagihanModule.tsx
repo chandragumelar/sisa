@@ -1,6 +1,6 @@
 import type { Tagihan } from '@/db/database'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
-import { rankTagihan, getTagihanUrgency, calcNextOccurrence } from '../tagihan.utils'
+import { rankTagihan, getTagihanUrgency, formatDueDate } from '../tagihan.utils'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
 import styles from './TagihanModule.module.css'
@@ -14,20 +14,23 @@ interface Props {
   onAddTap?: () => void
 }
 
-const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des']
 const MAX_REGULAR = 4
-
-function formatDueDate(tg: Tagihan, nowMs: number): string {
-  const occ = calcNextOccurrence(tg, nowMs)
-  if (!occ) return `tgl ${tg.dueDay}`
-  return `${occ.getDate()} ${MONTHS[occ.getMonth()]}`
-}
 
 export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap, onAddTap }: Props) {
   const lang = useLanguage()
   const active = tagihan.filter((tg) => tg.isActive)
   const ranked = rankTagihan(active, nowMs)
-  const total = active.reduce((sum, tg) => sum + tg.nominalEstimate, 0)
+
+  const primaryTotal = active.reduce(
+    (sum, tg) => ((tg.currency || currency) === currency ? sum + tg.nominalEstimate : sum),
+    0,
+  )
+  const otherMap = new Map<string, number>()
+  active.forEach((tg) => {
+    const cur = tg.currency || currency
+    if (cur !== currency) otherMap.set(cur, (otherMap.get(cur) ?? 0) + tg.nominalEstimate)
+  })
+  const otherTotals = Array.from(otherMap.entries()).map(([cur, sum]) => ({ cur, sum }))
 
   const overdue = ranked.filter((tg) => getTagihanUrgency(tg, nowMs) === 'lewat-tempo')
   const regular = ranked.filter((tg) => getTagihanUrgency(tg, nowMs) !== 'lewat-tempo')
@@ -90,7 +93,7 @@ export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap, on
                 <div className={styles.overdueSub}>Lewat tempo — segera bayar</div>
               </div>
               <span className={styles.overdueAmt}>
-                {formatCurrency(tg.nominalEstimate, currency)}
+                {formatCurrency(tg.nominalEstimate, tg.currency || currency)}
               </span>
               <button className={styles.bayarBtn} onClick={() => onPayTap(tg)}>
                 Bayar
@@ -115,7 +118,9 @@ export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap, on
                 <span className={styles.rowName}>{tg.name}</span>
                 <span className={styles.rowDate}>jatuh tempo {formatDueDate(tg, nowMs)}</span>
               </div>
-              <span className={styles.rowAmt}>{formatCurrency(tg.nominalEstimate, currency)}</span>
+              <span className={styles.rowAmt}>
+                {formatCurrency(tg.nominalEstimate, tg.currency || currency)}
+              </span>
             </button>
           ))}
 
@@ -139,8 +144,22 @@ export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap, on
 
           {/* Total zone — tinted, struk-style */}
           <div className={styles.totalZone}>
-            <span className={styles.totalLabel}>Total</span>
-            <span className={styles.totalNum}>{formatCurrency(total, currency)}</span>
+            <div>
+              <span className={styles.totalLabel}>Total</span>
+              {otherTotals.map(({ cur }) => (
+                <div key={cur} className={styles.totalLabelSecondary}>
+                  Total ({cur})
+                </div>
+              ))}
+            </div>
+            <div style={{ textAlign: 'right' }}>
+              <span className={styles.totalNum}>{formatCurrency(primaryTotal, currency)}</span>
+              {otherTotals.map(({ cur, sum }) => (
+                <div key={cur} className={styles.totalNumSecondary}>
+                  {formatCurrency(sum, cur)}
+                </div>
+              ))}
+            </div>
           </div>
 
           <button className={styles.addBtn} onClick={onAddTap}>
