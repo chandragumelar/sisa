@@ -115,6 +115,20 @@
   flex-shrink: 0;
 }
 
+.amountCurrency {
+  padding: 12px 6px 12px 12px;
+  font-size: 13px;
+  font-family: var(--font-mono);
+  color: var(--ink-tertiary);
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
 .amountInput {
   flex: 1;
   padding: 12px 12px 12px 0;
@@ -125,32 +139,6 @@
   outline: none;
   font-family: var(--font-sans);
   min-width: 0;
-}
-
-/* Currency chips */
-.currencyChips {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.currencyChip {
-  padding: 5px 12px;
-  border-radius: 100px;
-  border: 1px solid var(--border-hair);
-  background: var(--surface-2);
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--ink-tertiary);
-  cursor: pointer;
-  font-family: var(--font-sans);
-  letter-spacing: 0.4px;
-}
-
-.currencyChipActive {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 8%, var(--surface));
 }
 
 /* Buttons */

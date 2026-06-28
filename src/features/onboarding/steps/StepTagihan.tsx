@@ -4,8 +4,8 @@ import type { NominalType } from '@/db/database'
 import { BottomSheet } from '@/shared/components/BottomSheet'
 import { ScrollSegmented } from '@/shared/components/ScrollSegmented'
 import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
-import { formatCurrency, getCurrencySymbol } from '@/shared/utils/formatCurrency'
-import { POPULAR_CURRENCY_CODES } from '@/constants/currencies'
+import { formatCurrency } from '@/shared/utils/formatCurrency'
+import { ALL_CURRENCIES } from '@/constants/currencies'
 import { t } from '@/shared/strings/strings'
 import { TagihanAnchorInput } from '@/features/profil/TagihanAnchorInput'
 import { EMPTY_FORM, FREQ_KEYS, FREQ_LABEL } from '@/features/profil/ProfilTagihanSheet.utils'
@@ -222,20 +222,6 @@ export function StepTagihan({ tagihan, currency, onChange, onNext }: Props) {
             autoFocus
           />
 
-          <div className={styles.fieldLabel}>{t('profil.tagihan_currency_label', lang)}</div>
-          <div className={styles.currencyChips}>
-            {POPULAR_CURRENCY_CODES.map((code) => (
-              <button
-                key={code}
-                type="button"
-                className={`${styles.currencyChip} ${(form.currency || currency) === code ? styles.currencyChipActive : ''}`}
-                onClick={() => patch('currency')(code)}
-              >
-                {code}
-              </button>
-            ))}
-          </div>
-
           <div className={styles.fieldLabel}>{t('profil.tagihan_nominal_label', lang)}</div>
           <div className={styles.segRow}>
             {(['tetap', 'variabel'] as NominalType[]).map((n) => (
@@ -253,9 +239,18 @@ export function StepTagihan({ tagihan, currency, onChange, onNext }: Props) {
           </div>
 
           <div className={styles.amountRow}>
-            <span className={styles.amountPrefix}>
-              {getCurrencySymbol(form.currency || currency)}
-            </span>
+            <select
+              className={styles.amountCurrency}
+              value={form.currency || currency}
+              onChange={(e) => patch('currency')(e.target.value)}
+              aria-label={t('profil.tagihan_currency_label', lang)}
+            >
+              {ALL_CURRENCIES.map((c) => (
+                <option key={c.code} value={c.code}>
+                  {c.code}
+                </option>
+              ))}
+            </select>
             <input
               className={styles.amountInput}
               type="text"
