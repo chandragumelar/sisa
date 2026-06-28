@@ -417,7 +417,6 @@ export type StringKey =
   | 'profil.wallets_diff_from'
   | 'profil.wallets_opt_lupa'
   | 'profil.wallets_opt_transfer'
-  | 'profil.wallets_opt_koreksi'
   | 'profil.wallets_transfer_pick_label'
   | 'profil.wallets_transfer_confirm'
   | 'profil.wallets_initial_balance'
@@ -1001,9 +1000,8 @@ const id: StringDictionary = {
   'profil.wallets_delete_confirm': 'Yakin hapus {name}?',
   'profil.wallets_diff_prefix': 'selisih',
   'profil.wallets_diff_from': 'selisih dari mana?',
-  'profil.wallets_opt_lupa': 'Lupa catat — buat transaksi koreksi',
-  'profil.wallets_opt_transfer': 'Transfer ke wallet lain — 2 transaksi pasangan',
-  'profil.wallets_opt_koreksi': 'Koreksi saja — update angka tanpa transaksi',
+  'profil.wallets_opt_lupa': 'Lupa catat aja',
+  'profil.wallets_opt_transfer': 'Transfer ke dompet lain',
   'profil.wallets_transfer_pick_label': 'pilih dompet tujuan',
   'profil.wallets_transfer_confirm': 'Konfirmasi transfer',
   'profil.wallets_initial_balance': 'saldo awal',
@@ -1585,9 +1583,8 @@ const en: StringDictionary = {
   'profil.wallets_delete_confirm': 'Delete {name}?',
   'profil.wallets_diff_prefix': 'difference',
   'profil.wallets_diff_from': 'what caused the difference?',
-  'profil.wallets_opt_lupa': 'Forgot to log — create a correction transaction',
-  'profil.wallets_opt_transfer': 'Transfer to another wallet — 2 paired transactions',
-  'profil.wallets_opt_koreksi': 'Just correct — update the number, no transaction',
+  'profil.wallets_opt_lupa': 'Forgot to log it',
+  'profil.wallets_opt_transfer': 'Transferred to another wallet',
   'profil.wallets_transfer_pick_label': 'pick target wallet',
   'profil.wallets_transfer_confirm': 'Confirm transfer',
   'profil.wallets_initial_balance': 'opening balance',

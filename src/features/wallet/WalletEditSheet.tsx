@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { Wallet } from '@/db/database'
-import { renameWallet, setWalletBalance, deleteWallet } from '@/db/wallets.repository'
+import { renameWallet, deleteWallet } from '@/db/wallets.repository'
 import { addTransactionAndUpdateBalance } from '@/db/transactions.repository'
 import { BottomSheet } from '@/shared/components/BottomSheet'
 import { EquivLine } from '@/shared/components/EquivLine'
@@ -110,13 +110,6 @@ export function WalletEditSheet({
     handleClose()
   }
 
-  async function handleSesuaikanKoreksi() {
-    if (isNaN(actual)) return
-    await setWalletBalance(wallet.id!, actual)
-    await onUpdate()
-    handleClose()
-  }
-
   const sheetTitle =
     step === 'sesuaikan-transfer'
       ? t('profil.wallets_transfer_pick_label', lang)
@@ -209,13 +202,6 @@ export function WalletEditSheet({
             disabled={!actualRaw || diff === 0}
           >
             {t('profil.wallets_opt_transfer', lang)}
-          </button>
-          <button
-            className={styles.optionBtn}
-            onClick={handleSesuaikanKoreksi}
-            disabled={!actualRaw}
-          >
-            {t('profil.wallets_opt_koreksi', lang)}
           </button>
           <button className={styles.ghostBtn} onClick={() => setStep('detail')}>
             {t('common.cancel', lang)}
