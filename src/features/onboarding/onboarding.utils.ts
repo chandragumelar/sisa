@@ -1,6 +1,30 @@
 import type { Settings, Wallet, IncomeFrequency, IncomeType, Language } from '@/db/database'
 import type { OnboardingStep, WalletInput } from './onboarding.types'
 
+export function getPrevStep(
+  current: OnboardingStep,
+  incomeType: IncomeType | null,
+): OnboardingStep | null {
+  switch (current) {
+    case 'langCurrency':
+      return null
+    case 'license':
+      return 'langCurrency'
+    case 'incomeType':
+      return 'license'
+    case 'incomeDetail':
+      return 'incomeType'
+    case 'payConfirm':
+      return 'incomeDetail'
+    case 'tagihan':
+      return incomeType === 'freelance' ? 'incomeDetail' : 'payConfirm'
+    case 'wallet':
+      return 'tagihan'
+    case 'alokasi':
+      return 'wallet'
+  }
+}
+
 export const TOTAL_PROGRESS_DOTS = 5
 
 const STEP_PROGRESS: Record<OnboardingStep, number> = {
