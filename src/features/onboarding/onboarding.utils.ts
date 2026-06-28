@@ -4,12 +4,11 @@ import type { OnboardingStep, WalletInput } from './onboarding.types'
 export const TOTAL_PROGRESS_DOTS = 5
 
 const STEP_PROGRESS: Record<OnboardingStep, number> = {
-  language: 1,
+  langCurrency: 1,
   license: 2,
   incomeType: 3,
   incomeDetail: 3,
   payConfirm: 3,
-  currency: 3,
   tagihan: 4,
   wallet: 4,
   alokasi: 5,
@@ -24,17 +23,15 @@ export function getNextStep(
   incomeType: IncomeType | null,
 ): OnboardingStep | 'done' {
   switch (current) {
-    case 'language':
+    case 'langCurrency':
       return 'license'
     case 'license':
       return 'incomeType'
     case 'incomeType':
       return 'incomeDetail'
     case 'incomeDetail':
-      return incomeType === 'freelance' ? 'currency' : 'payConfirm'
+      return incomeType === 'freelance' ? 'tagihan' : 'payConfirm'
     case 'payConfirm':
-      return 'currency'
-    case 'currency':
       return 'tagihan'
     case 'tagihan':
       return 'wallet'

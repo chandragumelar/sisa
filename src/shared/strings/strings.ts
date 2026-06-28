@@ -101,7 +101,11 @@ export type StringKey =
   | 'home.transisi_popup_nominal_label'
   | 'home.transisi_popup_confirm'
   | 'home.transisi_popup_cancel'
-  // onboarding step 4c
+  // onboarding step langCurrency (language + main currency combined)
+  | 'ob.langCurrency.currency_label'
+  | 'ob.langCurrency.currency_placeholder'
+  | 'ob.langCurrency.explainer'
+  // onboarding step 4c (kept for reference, no longer rendered)
   | 'ob.step4c.heading'
   | 'ob.step4c.sub'
   | 'ob.step4c.placeholder'
@@ -667,7 +671,12 @@ const id: StringDictionary = {
   'home.transisi_popup_confirm': 'Ya, mulai periode baru',
   'home.transisi_popup_cancel': 'Batal',
 
-  'ob.step4c.heading': 'Mata Uang Patokan',
+  'ob.langCurrency.currency_label': 'Mata Uang Utama',
+  'ob.langCurrency.currency_placeholder': 'Pilih mata uang…',
+  'ob.langCurrency.explainer':
+    'Mata uang utama adalah mata uang yang kamu pakai untuk hampir semua kebutuhan sehari-hari — makan, transport, tagihan, belanja. SISA memakai mata uang ini sebagai dasar semua perhitungan: berapa saldo yang aman kamu pakai, jatah harianmu, sampai sisa uangmu. Pilih mata uang tempat kamu paling banyak hidup dan berbelanja sehari-hari. Kalau punya saldo dalam mata uang lain, nanti tetap bisa ditambahkan per dompet dan otomatis dikonversi ke mata uang utama ini.',
+
+  'ob.step4c.heading': 'Mata Uang Utama',
   'ob.step4c.sub': 'Budget & saldo bebas selalu dihitung dalam mata uang ini.',
   'ob.step4c.placeholder': 'Pilih mata uang…',
   'ob.step4c.next': 'Lanjut',
@@ -1072,8 +1081,8 @@ const id: StringDictionary = {
   'settings.theme_system': 'sistem',
   'settings.dark_note': 'gelap = v2 · belum tersedia',
   'settings.row_language': 'bahasa',
-  'settings.row_patokan_currency': 'Mata Uang Patokan',
-  'settings.row_patokan_currency_sub': 'Dipakai untuk semua perhitungan budget',
+  'settings.row_patokan_currency': 'Mata Uang Utama',
+  'settings.row_patokan_currency_sub': 'Dipakai untuk hampir semua biaya hidupmu',
   'settings.currency_warning_title': 'Ganti mata uang utama',
   'settings.currency_warning_body':
     'Mengubah mata uang utama tidak mengubah angka yang sudah tersimpan. Rp 50.000 akan menjadi $50.000, bukan dikonversi.',
@@ -1245,7 +1254,12 @@ const en: StringDictionary = {
   'home.transisi_popup_confirm': 'Yes, start new period',
   'home.transisi_popup_cancel': 'Cancel',
 
-  'ob.step4c.heading': 'Budgeting Currency',
+  'ob.langCurrency.currency_label': 'Main Currency',
+  'ob.langCurrency.currency_placeholder': 'Choose currency…',
+  'ob.langCurrency.explainer':
+    "Your main currency is the one you use for nearly all your day-to-day needs — food, transport, bills, shopping. SISA uses this currency as the basis for every calculation: how much money is safe to spend, your daily allowance, and your remaining balance. Pick the currency you mostly live and spend in. If you hold balances in other currencies, you can still add them per wallet later and they'll be converted into this main currency automatically.",
+
+  'ob.step4c.heading': 'Main Currency',
   'ob.step4c.sub': 'Your daily budget and free balance are always calculated in this currency.',
   'ob.step4c.placeholder': 'Choose currency…',
   'ob.step4c.next': 'Next',
@@ -1648,8 +1662,8 @@ const en: StringDictionary = {
   'settings.theme_system': 'system',
   'settings.dark_note': 'dark = v2 · not yet available',
   'settings.row_language': 'language',
-  'settings.row_patokan_currency': 'Budgeting Currency',
-  'settings.row_patokan_currency_sub': 'Used for all budget calculations',
+  'settings.row_patokan_currency': 'Main Currency',
+  'settings.row_patokan_currency_sub': 'Used for most of your living costs',
   'settings.currency_warning_title': 'Change main currency',
   'settings.currency_warning_body':
     "Changing your main currency won't convert saved amounts. Rp 50,000 becomes $50,000, not converted.",
