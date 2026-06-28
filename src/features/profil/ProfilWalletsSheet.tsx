@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { renameWallet, deleteWallet, setWalletBalance, addWallet } from '@/db/wallets.repository'
+import { renameWallet, deleteWallet, addWallet } from '@/db/wallets.repository'
 import { addTransactionAndUpdateBalance } from '@/db/transactions.repository'
 import type { Wallet } from '@/db/database'
 import { BottomSheet } from '@/shared/components/BottomSheet'
@@ -128,15 +128,6 @@ export function ProfilWalletsSheet({
       isEarmark: false,
       createdAt: nowMs,
     })
-    await onUpdate()
-    reset()
-  }
-
-  async function handleSesuaikanKoreksi() {
-    if (!selected) return
-    const actual = parseInt(parseNominalRaw(actualBalanceStr), 10)
-    if (isNaN(actual)) return
-    await setWalletBalance(selected.id!, actual)
     await onUpdate()
     reset()
   }
@@ -272,13 +263,6 @@ export function ProfilWalletsSheet({
             disabled={!actualBalanceStr || diff === 0 || sameCurrencyTargets.length === 0}
           >
             {t('profil.wallets_opt_transfer', lang)}
-          </button>
-          <button
-            className={styles.optionBtn}
-            onClick={handleSesuaikanKoreksi}
-            disabled={!actualBalanceStr}
-          >
-            {t('profil.wallets_opt_koreksi', lang)}
           </button>
           <button className={styles.ghostBtn} onClick={() => setStep('detail')}>
             {t('common.cancel', lang)}
