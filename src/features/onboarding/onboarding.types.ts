@@ -2,12 +2,11 @@ import type { IncomeFrequency, IncomeType, Language } from '@/db/database'
 import type { FormState } from '@/features/profil/ProfilTagihanSheet.utils'
 
 export type OnboardingStep =
-  | 'language'
+  | 'langCurrency'
   | 'license'
   | 'incomeType'
   | 'incomeDetail'
   | 'payConfirm'
-  | 'currency'
   | 'tagihan'
   | 'wallet'
   | 'alokasi'

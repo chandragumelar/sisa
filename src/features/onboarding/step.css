@@ -434,3 +434,18 @@
   font-family: var(--font-mono);
   font-feature-settings: 'tnum';
 }
+
+/* Vertical spacer between sections within a step */
+.ob-spacer {
+  height: 24px;
+  flex-shrink: 0;
+}
+
+/* Long explanatory paragraph (awam copy) */
+.ob-explainer {
+  font-size: 13px;
+  color: var(--ink-tertiary);
+  line-height: 1.6;
+  margin-top: 10px;
+  margin-bottom: 0;
+}

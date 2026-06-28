@@ -10,12 +10,11 @@ import { putAllocation } from '@/db/allocation.repository'
 import { computeAnchor } from '@/features/profil/ProfilTagihanSheet.utils'
 import { parseNominalRaw } from '@/shared/utils/formatNominalInput'
 import { OnboardingShell } from './components/OnboardingShell'
-import { Step1Language } from './steps/Step1Language'
+import { StepLangCurrency } from './steps/StepLangCurrency'
 import { Step2License } from './steps/Step2License'
 import { Step4aIncomeType } from './steps/Step4aIncomeType'
 import { Step4bIncomeDetail } from './steps/Step4bIncomeDetail'
 import { StepPayConfirm } from './steps/StepPayConfirm'
-import { Step4cCurrency } from './steps/Step4cCurrency'
 import { Step4dWallet } from './steps/Step4dWallet'
 import { StepTagihan } from './steps/StepTagihan'
 import { StepAlokasi } from './steps/StepAlokasi'
@@ -46,7 +45,7 @@ export function OnboardingPage() {
   const navigate = useNavigate()
   const clock = useClock()
   const setLang = useSetLanguage()
-  const [step, setStep] = useState<OnboardingStep>('language')
+  const [step, setStep] = useState<OnboardingStep>('langCurrency')
   const [data, setData] = useState<OnboardingAccumulated>(INITIAL_ACCUMULATED)
 
   function advance(patch: Partial<OnboardingAccumulated> = {}) {
@@ -147,7 +146,11 @@ export function OnboardingPage() {
 
   return (
     <OnboardingShell step={step}>
-      {step === 'language' && <Step1Language onNext={(lang) => advance({ language: lang })} />}
+      {step === 'langCurrency' && (
+        <StepLangCurrency
+          onNext={({ language, primaryCurrency }) => advance({ language, primaryCurrency })}
+        />
+      )}
       {step === 'license' && <Step2License onNext={() => advance()} />}
       {step === 'incomeType' && (
         <Step4aIncomeType onNext={(incomeType) => advance({ incomeType })} />
@@ -191,9 +194,6 @@ export function OnboardingPage() {
           )}
           onNext={(lastPaydayConfirmed) => advance({ lastPaydayConfirmed })}
         />
-      )}
-      {step === 'currency' && (
-        <Step4cCurrency onNext={(primaryCurrency) => advance({ primaryCurrency })} />
       )}
       {step === 'tagihan' && (
         <StepTagihan
