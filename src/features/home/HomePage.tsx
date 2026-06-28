@@ -52,6 +52,7 @@ import { AlokasiEditSheet } from '@/features/alokasi/AlokasiEditSheet'
 import { getAllocation, putAllocation } from '@/db/allocation.repository'
 import { computeFromAllocation, relock } from '@/shared/utils/budget.utils'
 import { JatahHarianCard } from './components/JatahHarianCard'
+import { WalletsCard } from './components/WalletsCard'
 import { KekayaanCard } from './components/KekayaanCard'
 import { KekayaanSheet } from './components/KekayaanSheet'
 import styles from './HomePage.module.css'
@@ -491,7 +492,6 @@ export function HomePage() {
           />
 
           <SaldoModule
-            wallets={wallets.filter((w) => w.currency === currency)}
             currency={currency}
             sisaUang={sisaUang}
             totalSaldo={wallets
@@ -505,8 +505,6 @@ export function HomePage() {
             nextPaydayMs={nextPaydayMs}
             conditionLabel={condition?.label ?? null}
             conditionColor={condition?.color ?? null}
-            onWalletTap={(w) => setEditWallet(w)}
-            onAddWalletTap={() => setWalletSheetOpen(true)}
             onEditAlokasi={() => setAlokasiSheetOpen(true)}
           />
 
@@ -526,6 +524,16 @@ export function HomePage() {
             currency={currency}
             nowMs={nowMs}
             onHistoryTap={() => setHistoryOpen(true)}
+          />
+
+          <WalletsCard
+            wallets={wallets.filter((w) => w.currency === currency)}
+            currency={currency}
+            totalSaldo={wallets
+              .filter((w) => w.currency === currency)
+              .reduce((s, w) => s + w.balance, 0)}
+            onWalletTap={(w) => setEditWallet(w)}
+            onAddWallet={() => setWalletSheetOpen(true)}
           />
 
           {wallets.some((w) => w.currency !== currency) && (

@@ -549,6 +549,10 @@ export type StringKey =
   | 'home.lihat_riwayat'
   | 'home.dompet'
   | 'home.tambah_dompet'
+  | 'home.wallets_sheet_title'
+  | 'home.wallets_empty_title'
+  | 'home.wallets_empty_sub'
+  | 'home.wallets_more'
   | 'home.atur_alokasi'
   | 'home.banner_gajian_title'
   | 'home.banner_gajian_body'
@@ -746,7 +750,7 @@ const id: StringDictionary = {
   'saldo.rincian_hari_periode': '+ {n} hari periode',
   'saldo.rincian_jatah': '= Jatah Harian',
   'saldo.rincian_udah_jalan': 'Udah jalan {x} hari → sisa {amount}',
-  'saldo.total_saldo_label': 'Total Saldo',
+  'saldo.total_saldo_label': 'total saldo semua dompet',
   'saldo.uang_mengendap_label': 'Uang Mengendap',
   'saldo.uang_mengendap_sub': 'di luar periode ini',
   'saldo.rincian_udah_kepakai': '− Udah kepakai',
@@ -1134,6 +1138,10 @@ const id: StringDictionary = {
   'home.lihat_riwayat': 'lihat riwayat →',
   'home.dompet': 'Dompet',
   'home.tambah_dompet': '+ Tambah dompet',
+  'home.wallets_sheet_title': 'Semua dompet',
+  'home.wallets_empty_title': 'Belum ada dompet',
+  'home.wallets_empty_sub': 'tambah dompet pertama lo untuk mulai lacak saldo',
+  'home.wallets_more': '+ {n} dompet lainnya',
   'home.atur_alokasi': 'atur',
   'home.banner_gajian_title': 'Gajian masuk?',
   'home.banner_gajian_body': 'Gajian masuk? Atur ulang alokasi lo.',
@@ -1328,7 +1336,7 @@ const en: StringDictionary = {
   'saldo.rincian_hari_periode': '+ {n} days in period',
   'saldo.rincian_jatah': '= Daily Budget',
   'saldo.rincian_udah_jalan': '{x} days in → {amount} left',
-  'saldo.total_saldo_label': 'Total Balance',
+  'saldo.total_saldo_label': 'total balance, all wallets',
   'saldo.uang_mengendap_label': 'Parked Money',
   'saldo.uang_mengendap_sub': 'outside this period',
   'saldo.rincian_udah_kepakai': '− Already spent',
@@ -1714,6 +1722,10 @@ const en: StringDictionary = {
   'home.lihat_riwayat': 'view history →',
   'home.dompet': 'Wallets',
   'home.tambah_dompet': '+ Add wallet',
+  'home.wallets_sheet_title': 'All wallets',
+  'home.wallets_empty_title': 'No wallets yet',
+  'home.wallets_empty_sub': 'add your first wallet to start tracking',
+  'home.wallets_more': '+ {n} more wallets',
   'home.atur_alokasi': 'set',
   'home.banner_gajian_title': 'Got paid?',
   'home.banner_gajian_body': 'Got paid? Reallocate your budget.',
