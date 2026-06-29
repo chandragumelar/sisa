@@ -329,6 +329,11 @@ export type StringKey =
   | 'wallets.fallback_note'
   | 'wallets.rate_unavailable'
   | 'wallets.collapse'
+  // push notification permission prompt
+  | 'push.ask_title'
+  | 'push.ask_body'
+  | 'push.ask_cta'
+  | 'push.ask_later'
   // quick log sheet
   | 'quick_log.mode_keluar'
   | 'quick_log.mode_masuk'
@@ -906,6 +911,12 @@ const id: StringDictionary = {
   'wallets.fallback_note': '{currencies} tidak termasuk · kurs belum tersedia',
   'wallets.rate_unavailable': 'kurs belum tersedia',
   'wallets.collapse': 'Sembunyikan',
+
+  'push.ask_title': 'Ingatkan saat jatuh tempo?',
+  'push.ask_body':
+    'Kami kirim notifikasi pas tagihan jatuh tempo dan sehari setelahnya — biar nggak kelewat.',
+  'push.ask_cta': 'Ya, ingatkan',
+  'push.ask_later': 'Nanti aja',
 
   'quick_log.mode_keluar': 'keluar',
   'quick_log.mode_masuk': 'masuk',
@@ -1487,6 +1498,12 @@ const en: StringDictionary = {
   'wallets.fallback_note': '{currencies} not included · rate unavailable',
   'wallets.rate_unavailable': 'rate unavailable',
   'wallets.collapse': 'Hide',
+
+  'push.ask_title': 'Get reminded before due dates?',
+  'push.ask_body':
+    'We send a notification when a bill is due and the day after — so you never miss it.',
+  'push.ask_cta': 'Yes, remind me',
+  'push.ask_later': 'Maybe later',
 
   'quick_log.mode_keluar': 'out',
   'quick_log.mode_masuk': 'in',

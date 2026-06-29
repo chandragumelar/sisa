@@ -53,6 +53,7 @@ import { getAllocation, putAllocation } from '@/db/allocation.repository'
 import { computeFromAllocation, relock } from '@/shared/utils/budget.utils'
 import { JatahHarianCard } from './components/JatahHarianCard'
 import { WalletsCard } from './components/WalletsCard'
+import { syncTagihanReminder, deleteTagihanReminder } from '@/lib/supabase/api'
 import styles from './HomePage.module.css'
 
 interface HomeData {
@@ -331,11 +332,13 @@ export function HomePage() {
     setMarkPaidTagihan(null)
     try {
       const result = await commitTagihanPayment(tg.id!, walletId, amount, tg.currency, dateMs)
+      void syncTagihanReminder({ ...tg, lastPaidAt: dateMs }).catch(() => {})
       reload()
       setToast({
         message: t('home.toast_paid', lang).replace('{name}', tg.name),
         onUndo: async () => {
           await revertTagihanPayment(result)
+          void syncTagihanReminder({ ...tg, lastPaidAt: null }).catch(() => {})
           reload()
           dismissToast()
         },
@@ -360,6 +363,7 @@ export function HomePage() {
 
   async function handleDeleteTagihan(tg: Tagihan) {
     await deleteTagihan(tg.id!)
+    void deleteTagihanReminder(tg.id!).catch(() => {})
     reload()
   }
 
