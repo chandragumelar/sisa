@@ -10,9 +10,12 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
+      strategies: 'injectManifest',
+      srcDir: 'src',
+      filename: 'sw.ts',
       registerType: 'prompt',
       injectRegister: null,
-      selfDestroying: true,
+      injectManifest: {},
       manifest: {
         name: 'SISA',
         short_name: 'SISA',

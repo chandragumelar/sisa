@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { addTagihan, updateTagihan, deleteTagihan } from '@/db/tagihan.repository'
 import { syncTagihanReminder, deleteTagihanReminder } from '@/lib/supabase/api'
+import { canAskPush, enablePush } from '@/lib/push'
 import type { Tagihan, NominalType } from '@/db/database'
 import { BottomSheet } from '@/shared/components/BottomSheet'
 import { EquivLine } from '@/shared/components/EquivLine'
@@ -34,7 +35,7 @@ interface Props {
   initialEditTagihan?: Tagihan | null
 }
 
-type Step = 'list' | 'form'
+type Step = 'list' | 'form' | 'push-ask'
 
 export function ProfilTagihanSheet({
   isOpen,
@@ -114,6 +115,15 @@ export function ProfilTagihanSheet({
       }
       const newId = await addTagihan(newTagihan)
       void syncTagihanReminder({ id: newId, ...newTagihan }).catch(() => {})
+      await onUpdate()
+      const isFirst = tagihan.length === 0
+      if (isFirst && Notification.permission === 'default' && canAskPush()) {
+        setStep('push-ask')
+      } else {
+        setStep('list')
+        onClose()
+      }
+      return
     }
     await onUpdate()
     setStep('list')
@@ -135,6 +145,7 @@ export function ProfilTagihanSheet({
   const titleMap: Record<Step, string> = {
     list: t('profil.tagihan_title_list', lang),
     form: editId ? t('profil.tagihan_title_edit', lang) : t('profil.tagihan_title_add', lang),
+    'push-ask': t('push.ask_title', lang),
   }
 
   return (
@@ -261,6 +272,31 @@ export function ProfilTagihanSheet({
           </button>
           <button className={styles.ghostBtn} onClick={() => setStep('list')}>
             {t('common.cancel', lang)}
+          </button>
+        </div>
+      )}
+
+      {step === 'push-ask' && (
+        <div className={styles.sheetForm}>
+          <p className={styles.emptyNote}>{t('push.ask_body', lang)}</p>
+          <button
+            className={styles.primaryBtn}
+            onClick={async () => {
+              void enablePush().catch(() => {})
+              setStep('list')
+              onClose()
+            }}
+          >
+            {t('push.ask_cta', lang)}
+          </button>
+          <button
+            className={styles.ghostBtn}
+            onClick={() => {
+              setStep('list')
+              onClose()
+            }}
+          >
+            {t('push.ask_later', lang)}
           </button>
         </div>
       )}
