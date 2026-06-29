@@ -17,7 +17,8 @@ export function computeFromAllocation(
   },
 ): AllocationResult {
   const { totalSaldo, tagihanUnpaid, spentSinceLock, spentToday } = params
-  const sisaUang = Math.max(0, allocation.jatahHarian * allocation.daysAtLock - spentSinceLock)
+  const locked = allocation.buatDipakai ?? allocation.jatahHarian * allocation.daysAtLock
+  const sisaUang = Math.max(0, locked - spentSinceLock)
   const mengendap = totalSaldo - tagihanUnpaid - sisaUang
   return { sisaUang, mengendap, jatahHariIni: allocation.jatahHarian, spentToday }
 }
@@ -39,6 +40,7 @@ export function relock(input: RelockInput): Allocation {
     daysAtLock: sisaHari,
     lockedAt: now,
     periodEndDate: periodEndDate ?? null,
+    buatDipakai,
   }
 }
 

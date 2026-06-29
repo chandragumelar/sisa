@@ -258,4 +258,33 @@ export function applyMigrations(db: Dexie): void {
           delete row.activeCurrencyMode
         })
     })
+
+  // v11: allocation gains buatDipakai (original operasional before division).
+  // Backfill existing rows: best approximation is jatahHarian * daysAtLock.
+  // No retroactive correction — small rounding delta preserved as-is; fix takes
+  // effect from next lock event onward.
+  db.version(11)
+    .stores({
+      transactions: '++id, walletId, date, type, currency',
+      wallets: '++id, currency, order',
+      tagihan: '++id, currency, isActive',
+      goals: '++id, currency, order',
+      settings: 'id',
+      license: 'id',
+      meta: 'key',
+      savedScenarios: '++id, savedAt',
+      categories: '++id, type',
+      allocation: 'id',
+      rates: '[base+target], base',
+    })
+    .upgrade((tx) => {
+      return tx
+        .table('allocation')
+        .toCollection()
+        .modify((row) => {
+          if (row.buatDipakai == null) {
+            row.buatDipakai = row.jatahHarian * row.daysAtLock
+          }
+        })
+    })
 }
