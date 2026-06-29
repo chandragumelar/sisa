@@ -66,6 +66,19 @@ export function WalletsCard({ wallets, currency, totalSaldo, onWalletTap, onAddW
         <div className={styles.head}>
           <div className={styles.headRow}>
             <span className={styles.modLabel}>{t('home.dompet', lang)}</span>
+            <button className={styles.addBtn} onClick={onAddWallet} aria-label="Tambah dompet">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 14 14"
+                fill="none"
+                stroke="var(--ink-secondary)"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              >
+                <path d="M7 2.5v9M2.5 7h9" />
+              </svg>
+            </button>
           </div>
           <div className={styles.totalLbl}>{t('saldo.total_saldo_label', lang)}</div>
           <div className={styles.totalAmt}>{formatCurrency(totalSaldo, currency)}</div>
@@ -102,9 +115,6 @@ export function WalletsCard({ wallets, currency, totalSaldo, onWalletTap, onAddW
             </span>
           </button>
         )}
-        <button className={styles.addLabelBtn} onClick={onAddWallet}>
-          {t('home.tambah_dompet', lang)}
-        </button>
       </div>
 
       <BottomSheet
