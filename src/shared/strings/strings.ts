@@ -323,13 +323,12 @@ export type StringKey =
   | 'home.payday_confirm_no'
   // equiv line (shared)
   | 'equiv.approx'
-  // kekayaan card + sheet
-  | 'kekayaan.label'
-  | 'kekayaan.sheet_title'
-  | 'kekayaan.grand_total'
-  | 'kekayaan.rate_note'
-  | 'kekayaan.rate_footer'
-  | 'kekayaan.no_rate'
+  // wallets card — multi-currency
+  | 'wallets.total_label'
+  | 'wallets.total_label_fallback'
+  | 'wallets.fallback_note'
+  | 'wallets.rate_unavailable'
+  | 'wallets.collapse'
   // quick log sheet
   | 'quick_log.mode_keluar'
   | 'quick_log.mode_masuk'
@@ -548,7 +547,6 @@ export type StringKey =
   | 'home.lihat_riwayat'
   | 'home.dompet'
   | 'home.tambah_dompet'
-  | 'home.wallets_sheet_title'
   | 'home.wallets_empty_title'
   | 'home.wallets_empty_sub'
   | 'home.wallets_more'
@@ -903,12 +901,11 @@ const id: StringDictionary = {
 
   'equiv.approx': '≈ {equiv} · kurs {date}',
 
-  'kekayaan.label': 'total kekayaan',
-  'kekayaan.sheet_title': 'Rincian Kekayaan',
-  'kekayaan.grand_total': 'Total',
-  'kekayaan.rate_note': 'kurs per {date}',
-  'kekayaan.rate_footer': 'kurs per {date} · tersimpan lokal, bukan real-time',
-  'kekayaan.no_rate': 'kurs belum tersedia',
+  'wallets.total_label': 'total kekayaan',
+  'wallets.total_label_fallback': 'total kekayaan ({currency})',
+  'wallets.fallback_note': '{currencies} tidak termasuk · kurs belum tersedia',
+  'wallets.rate_unavailable': 'kurs belum tersedia',
+  'wallets.collapse': 'Sembunyikan',
 
   'quick_log.mode_keluar': 'keluar',
   'quick_log.mode_masuk': 'masuk',
@@ -1136,7 +1133,6 @@ const id: StringDictionary = {
   'home.lihat_riwayat': 'lihat riwayat →',
   'home.dompet': 'Dompet',
   'home.tambah_dompet': '+ Tambah dompet',
-  'home.wallets_sheet_title': 'Semua dompet',
   'home.wallets_empty_title': 'Belum ada dompet',
   'home.wallets_empty_sub': 'tambah dompet pertama lo untuk mulai lacak saldo',
   'home.wallets_more': '+ {n} dompet lainnya',
@@ -1486,12 +1482,11 @@ const en: StringDictionary = {
 
   'equiv.approx': '≈ {equiv} · rate {date}',
 
-  'kekayaan.label': 'total wealth',
-  'kekayaan.sheet_title': 'Wealth Breakdown',
-  'kekayaan.grand_total': 'Total',
-  'kekayaan.rate_note': 'rate as of {date}',
-  'kekayaan.rate_footer': 'rate as of {date} · stored locally, not real-time',
-  'kekayaan.no_rate': 'rate not available',
+  'wallets.total_label': 'total wealth',
+  'wallets.total_label_fallback': 'total wealth ({currency})',
+  'wallets.fallback_note': '{currencies} not included · rate unavailable',
+  'wallets.rate_unavailable': 'rate unavailable',
+  'wallets.collapse': 'Hide',
 
   'quick_log.mode_keluar': 'out',
   'quick_log.mode_masuk': 'in',
@@ -1719,7 +1714,6 @@ const en: StringDictionary = {
   'home.lihat_riwayat': 'view history →',
   'home.dompet': 'Wallets',
   'home.tambah_dompet': '+ Add wallet',
-  'home.wallets_sheet_title': 'All wallets',
   'home.wallets_empty_title': 'No wallets yet',
   'home.wallets_empty_sub': 'add your first wallet to start tracking',
   'home.wallets_more': '+ {n} more wallets',

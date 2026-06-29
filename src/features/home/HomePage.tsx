@@ -53,8 +53,6 @@ import { getAllocation, putAllocation } from '@/db/allocation.repository'
 import { computeFromAllocation, relock } from '@/shared/utils/budget.utils'
 import { JatahHarianCard } from './components/JatahHarianCard'
 import { WalletsCard } from './components/WalletsCard'
-import { KekayaanCard } from './components/KekayaanCard'
-import { KekayaanSheet } from './components/KekayaanSheet'
 import styles from './HomePage.module.css'
 
 interface HomeData {
@@ -295,7 +293,6 @@ export function HomePage() {
   const [tagihanSheetOpen, setTagihanSheetOpen] = useState(false)
   const [walletSheetOpen, setWalletSheetOpen] = useState(false)
   const [alokasiSheetOpen, setAlokasiSheetOpen] = useState(false)
-  const [kekayaanSheetOpen, setKekayaanSheetOpen] = useState(false)
 
   if (isLoading || !settings) return null
 
@@ -527,22 +524,11 @@ export function HomePage() {
           />
 
           <WalletsCard
-            wallets={wallets.filter((w) => w.currency === currency)}
-            currency={currency}
-            totalSaldo={wallets
-              .filter((w) => w.currency === currency)
-              .reduce((s, w) => s + w.balance, 0)}
+            wallets={wallets}
+            primaryCurrency={currency}
             onWalletTap={(w) => setEditWallet(w)}
             onAddWallet={() => setWalletSheetOpen(true)}
           />
-
-          {wallets.some((w) => w.currency !== currency) && (
-            <KekayaanCard
-              wallets={wallets}
-              primaryCurrency={currency}
-              onClick={() => setKekayaanSheetOpen(true)}
-            />
-          )}
 
           <TagihanModule
             tagihan={tagihan}
@@ -658,13 +644,6 @@ export function HomePage() {
           reload()
         }}
         initialEditTagihan={editTagihan}
-      />
-
-      <KekayaanSheet
-        isOpen={kekayaanSheetOpen}
-        onClose={() => setKekayaanSheetOpen(false)}
-        wallets={wallets}
-        primaryCurrency={currency}
       />
 
       <QuickLogSheet
