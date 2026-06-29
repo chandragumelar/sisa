@@ -221,3 +221,38 @@ export function recomputeAlokasi({
   const jatahHarianLocked = sisaHari > 0 ? Math.round(operasionalBudget / sisaHari) : 0
   return { mengendap, jatahHarianLocked }
 }
+
+export interface BudgetView {
+  /** Sisa uang operasional yang siap dipakai (live). */
+  sisaUang: number
+  /** Uang mengendap, clamped >= 0. */
+  mengendap: number
+  /** Jatah harian terkunci (allocation) atau turunan income-based. */
+  jatahHariIni: number
+}
+
+/**
+ * Single source of truth untuk memilih antara allocation-path dan income-based path.
+ * Semua konsumer (Home, CekDulu, Andai) wajib pakai ini — jangan copy-paste cabang
+ * if (allocation) sendiri.
+ */
+export function resolveBudgetView(
+  allocation: Allocation | null | undefined,
+  budget: BudgetPeriodeResult,
+  allocParams: {
+    totalSaldo: number
+    tagihanUnpaid: number
+    spentSinceLock: number
+    spentToday: number
+  },
+): BudgetView {
+  if (allocation) {
+    const r = computeFromAllocation(allocation, allocParams)
+    return { sisaUang: r.sisaUang, mengendap: r.mengendap, jatahHariIni: r.jatahHariIni }
+  }
+  return {
+    sisaUang: budget.sisaPeriode,
+    mengendap: Math.max(0, budget.uangMengendap),
+    jatahHariIni: budget.jatahHarian ?? 0,
+  }
+}

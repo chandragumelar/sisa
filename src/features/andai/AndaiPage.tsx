@@ -24,7 +24,7 @@ import {
   isHariPertamaMode,
   calcPemasukanFromAvg,
 } from '@/features/home/home.utils'
-import { calcBudgetPeriode, computeFromAllocation } from '@/shared/utils/budget.utils'
+import { calcBudgetPeriode, resolveBudgetView } from '@/shared/utils/budget.utils'
 import { formatCurrency, getCurrencySymbol } from '@/shared/utils/formatCurrency'
 import { calcAndai, buildAndaiBaseline } from './andai.utils'
 import type { AndaiBaseline, AndaiItem, AndaiKind } from './andai.utils'
@@ -150,24 +150,13 @@ export function AndaiPage() {
               useSaldoFloor: s.incomeType === 'freelance',
             })
 
-            let sisaUangFinal: number
-            let mengendapFinal: number
-
-            if (allocation) {
-              const r = computeFromAllocation(allocation, {
-                totalSaldo,
-                tagihanUnpaid: unpaidTagihanTotal,
-                spentSinceLock,
-                spentToday,
-              })
-              sisaUangFinal = r.sisaUang
-              mengendapFinal = r.mengendap
-            } else {
-              sisaUangFinal = budget.sisaPeriode
-              mengendapFinal = Math.max(0, budget.uangMengendap)
-            }
-
-            const bl = buildAndaiBaseline(sisaUangFinal, mengendapFinal, s, nowMs, allocation)
+            const view = resolveBudgetView(allocation, budget, {
+              totalSaldo,
+              tagihanUnpaid: unpaidTagihanTotal,
+              spentSinceLock,
+              spentToday,
+            })
+            const bl = buildAndaiBaseline(view.sisaUang, view.mengendap, s, nowMs, allocation)
             setBaseline(bl)
             setCurrency(currency)
 

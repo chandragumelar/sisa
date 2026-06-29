@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest'
-import { calcBudgetPeriode, recomputeAlokasi, computeFromAllocation, relock } from './budget.utils'
+import {
+  calcBudgetPeriode,
+  recomputeAlokasi,
+  computeFromAllocation,
+  relock,
+  resolveBudgetView,
+} from './budget.utils'
 import type { BudgetPeriodeInput } from './budget.utils'
 
 function makeInput(overrides: Partial<BudgetPeriodeInput> = {}): BudgetPeriodeInput {
@@ -440,5 +446,89 @@ describe('allocation invariants: masuk does not change sisaUang', () => {
       spentToday: 0,
     })
     expect(6_000_000 - 500_000 - r.mengendap).toBe(r.sisaUang)
+  })
+})
+
+// ─── resolveBudgetView ────────────────────────────────────────────────────────
+
+describe('resolveBudgetView', () => {
+  const alloc = {
+    id: 1 as const,
+    jatahHarian: 57_692,
+    daysAtLock: 26,
+    lockedAt: 0,
+    periodEndDate: null,
+    buatDipakai: 1_500_000,
+  }
+
+  const budgetBase = calcBudgetPeriode(
+    makeInput({ pemasukanPeriode: 5_000_000, unpaidTagihanTotal: 200_000, totalSaldo: 2_000_000 }),
+  )
+
+  it('allocation path: sisaUang = buatDipakai − spentSinceLock', () => {
+    const view = resolveBudgetView(alloc, budgetBase, {
+      totalSaldo: 2_000_000,
+      tagihanUnpaid: 200_000,
+      spentSinceLock: 0,
+      spentToday: 0,
+    })
+    expect(view.sisaUang).toBe(1_500_000)
+    expect(view.mengendap).toBe(300_000) // 2_000_000 − 200_000 − 1_500_000
+    expect(view.jatahHariIni).toBe(57_692)
+  })
+
+  it('allocation path: sisaUang decreases by spentSinceLock', () => {
+    const view = resolveBudgetView(alloc, budgetBase, {
+      totalSaldo: 2_000_000,
+      tagihanUnpaid: 200_000,
+      spentSinceLock: 500_000,
+      spentToday: 0,
+    })
+    expect(view.sisaUang).toBe(1_000_000) // 1_500_000 − 500_000
+  })
+
+  it('null allocation → income-based path uses budget.sisaPeriode', () => {
+    const budget = calcBudgetPeriode(
+      makeInput({
+        pemasukanPeriode: 3_000_000,
+        unpaidTagihanTotal: 500_000,
+        spentThisPeriode: 200_000,
+      }),
+    )
+    const view = resolveBudgetView(null, budget, {
+      totalSaldo: 5_000_000,
+      tagihanUnpaid: 500_000,
+      spentSinceLock: 0,
+      spentToday: 0,
+    })
+    expect(view.sisaUang).toBe(budget.sisaPeriode)
+    expect(view.jatahHariIni).toBe(budget.jatahHarian ?? 0)
+  })
+
+  it('edge: budget.uangMengendap negative → mengendap clamped to 0', () => {
+    // totalSaldo 500k < pemasukanPeriode 3jt → uangMengendap deeply negative
+    const budget = calcBudgetPeriode(
+      makeInput({ pemasukanPeriode: 3_000_000, totalSaldo: 500_000 }),
+    )
+    expect(budget.uangMengendap).toBeLessThan(0)
+    const view = resolveBudgetView(null, budget, {
+      totalSaldo: 500_000,
+      tagihanUnpaid: 0,
+      spentSinceLock: 0,
+      spentToday: 0,
+    })
+    expect(view.mengendap).toBe(0)
+  })
+
+  it('edge: budget.jatahHarian null (hari-gajian) → jatahHariIni = 0', () => {
+    const budget = calcBudgetPeriode(makeInput({ hariPeriode: 0 }))
+    expect(budget.jatahHarian).toBeNull()
+    const view = resolveBudgetView(null, budget, {
+      totalSaldo: 8_000_000,
+      tagihanUnpaid: 0,
+      spentSinceLock: 0,
+      spentToday: 0,
+    })
+    expect(view.jatahHariIni).toBe(0)
   })
 })

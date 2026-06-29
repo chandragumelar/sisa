@@ -50,7 +50,7 @@ import type { QuickLogMode } from '@/features/quickLog/quickLog.utils'
 import { BerbagiKeamananSection } from '@/features/shared-profile/components/BerbagiKeamananSection'
 import { AlokasiEditSheet } from '@/features/alokasi/AlokasiEditSheet'
 import { getAllocation, putAllocation } from '@/db/allocation.repository'
-import { computeFromAllocation, relock } from '@/shared/utils/budget.utils'
+import { relock, resolveBudgetView } from '@/shared/utils/budget.utils'
 import { JatahHarianCard } from './components/JatahHarianCard'
 import { WalletsCard } from './components/WalletsCard'
 import { syncTagihanReminder, deleteTagihanReminder } from '@/lib/supabase/api'
@@ -206,25 +206,15 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
               useSaldoFloor: settings.incomeType === 'freelance',
             })
 
-            let sisaUang: number
-            let mengendap: number
-            let jatahHariIni: number
-
-            if (allocation) {
-              const result = computeFromAllocation(allocation, {
-                totalSaldo: totalSaldoForCalc,
-                tagihanUnpaid: unpaidForCalc,
-                spentSinceLock,
-                spentToday,
-              })
-              sisaUang = result.sisaUang
-              mengendap = result.mengendap
-              jatahHariIni = result.jatahHariIni
-            } else {
-              sisaUang = budget.sisaPeriode
-              mengendap = budget.uangMengendap
-              jatahHariIni = budget.jatahHarian ?? 0
-            }
+            const view = resolveBudgetView(allocation, budget, {
+              totalSaldo: totalSaldoForCalc,
+              tagihanUnpaid: unpaidForCalc,
+              spentSinceLock,
+              spentToday,
+            })
+            const sisaUang = view.sisaUang
+            const mengendap = view.mengendap
+            const jatahHariIni = view.jatahHariIni
 
             setData({
               settings,

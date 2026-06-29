@@ -18,7 +18,7 @@ import {
   calcPemasukanFromAvg,
 } from '@/features/home/home.utils'
 import { calcUnpaidTagihanTotal } from '@/features/home/tagihan.utils'
-import { calcBudgetPeriode, computeFromAllocation } from '@/shared/utils/budget.utils'
+import { calcBudgetPeriode, resolveBudgetView } from '@/shared/utils/budget.utils'
 import { formatCurrency, getCurrencySymbol } from '@/shared/utils/formatCurrency'
 import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
 import { calcCekDulu } from './cekDulu.utils'
@@ -83,61 +83,48 @@ export function CekDuluPage() {
             }
             if (cancelled) return
 
-            let sisaUangFinal: number
-            let mengendapFinal: number
-            let jatahHarianFinal: number
-
-            if (allocation) {
-              const r = computeFromAllocation(allocation, {
-                totalSaldo,
-                tagihanUnpaid: unpaidTagihanTotal,
-                spentSinceLock,
-                spentToday,
-              })
-              sisaUangFinal = r.sisaUang
-              mengendapFinal = r.mengendap
-              jatahHarianFinal = r.jatahHariIni
-            } else {
-              const hariPertama = isHariPertamaMode(settings.lastPaydayConfirmed, income)
-              let effectivePemasukan = income
-              if (hariPertama) {
-                effectivePemasukan = totalSaldo
-              } else if (
-                settings.incomeType === 'freelance' &&
-                settings.avgIncome &&
-                settings.avgIncomeBasis
-              ) {
-                effectivePemasukan = calcPemasukanFromAvg(
-                  settings.avgIncome,
-                  settings.avgIncomeBasis,
-                  hariPeriode,
-                )
-              }
-              const budget = calcBudgetPeriode({
-                pemasukanPeriode: effectivePemasukan,
-                unpaidTagihanTotal,
+            const hariPertama = isHariPertamaMode(settings.lastPaydayConfirmed, income)
+            let effectivePemasukan = income
+            if (hariPertama) {
+              effectivePemasukan = totalSaldo
+            } else if (
+              settings.incomeType === 'freelance' &&
+              settings.avgIncome &&
+              settings.avgIncomeBasis
+            ) {
+              effectivePemasukan = calcPemasukanFromAvg(
+                settings.avgIncome,
+                settings.avgIncomeBasis,
                 hariPeriode,
-                spentThisPeriode: expense,
-                spentToday,
-                totalSaldo,
-                useSaldoFloor: settings.incomeType === 'freelance',
-              })
-              sisaUangFinal = budget.sisaPeriode
-              mengendapFinal = Math.max(0, budget.uangMengendap)
-              jatahHarianFinal = budget.jatahHarian ?? 0
+              )
             }
+            const budget = calcBudgetPeriode({
+              pemasukanPeriode: effectivePemasukan,
+              unpaidTagihanTotal,
+              hariPeriode,
+              spentThisPeriode: expense,
+              spentToday,
+              totalSaldo,
+              useSaldoFloor: settings.incomeType === 'freelance',
+            })
 
+            const view = resolveBudgetView(allocation, budget, {
+              totalSaldo,
+              tagihanUnpaid: unpaidTagihanTotal,
+              spentSinceLock,
+              spentToday,
+            })
             const dailyBudget =
-              daysUntilPayday > 0 ? sisaUangFinal / daysUntilPayday : jatahHarianFinal
+              daysUntilPayday > 0 ? view.sisaUang / daysUntilPayday : view.jatahHariIni
             setData({
               settings,
               wallets,
               totalSaldo,
-              sisaPeriode: sisaUangFinal,
+              sisaPeriode: view.sisaUang,
               dailyBudget,
               daysUntilPayday,
-              mengendap: mengendapFinal,
-              jatahHarian: jatahHarianFinal,
+              mengendap: view.mengendap,
+              jatahHarian: view.jatahHariIni,
             })
           },
         )
