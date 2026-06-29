@@ -10,6 +10,7 @@
 .header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   margin-bottom: 12px;
 }
 
@@ -240,6 +241,19 @@
 }
 
 .addBtn {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  border: 1px solid var(--border-hair);
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.addBtnLabel {
   display: block;
   font-size: 14px;
   font-weight: 700;

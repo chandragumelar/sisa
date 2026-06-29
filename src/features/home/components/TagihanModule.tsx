@@ -57,6 +57,19 @@ export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap, on
           </svg>
           <span className={styles.label}>{t('tagihan_module.title', lang)}</span>
         </div>
+        <button className={styles.addBtn} onClick={onAddTap} aria-label="Tambah tagihan">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 14 14"
+            fill="none"
+            stroke="var(--ink-secondary)"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          >
+            <path d="M7 2.5v9M2.5 7h9" />
+          </svg>
+        </button>
       </div>
 
       <div className={styles.headerDivider} />
@@ -64,7 +77,7 @@ export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap, on
       {active.length === 0 ? (
         <div className={styles.emptyBlock}>
           <p className={styles.emptyText}>{t('tagihan_module.empty_text', lang)}</p>
-          <button className={styles.addBtn} onClick={onAddTap}>
+          <button className={styles.addBtnLabel} onClick={onAddTap}>
             {t('tagihan_module.add', lang)}
           </button>
         </div>
@@ -155,10 +168,6 @@ export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap, on
               </div>
             ))}
           </div>
-
-          <button className={styles.addBtn} onClick={onAddTap}>
-            {t('tagihan_module.add', lang)}
-          </button>
         </>
       )}
     </div>
