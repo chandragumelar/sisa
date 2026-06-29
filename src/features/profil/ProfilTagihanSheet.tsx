@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { addTagihan, updateTagihan, deleteTagihan } from '@/db/tagihan.repository'
+import { syncTagihanReminder, deleteTagihanReminder } from '@/lib/supabase/api'
 import type { Tagihan, NominalType } from '@/db/database'
 import { BottomSheet } from '@/shared/components/BottomSheet'
 import { EquivLine } from '@/shared/components/EquivLine'
@@ -78,7 +79,7 @@ export function ProfilTagihanSheet({
     const { anchorDate, dueDay } = computeAnchor(form, nowMs)
     const formCurrency = form.currency || currency
     if (editId !== null) {
-      await updateTagihan(editId, {
+      const patch = {
         name: form.name.trim(),
         nominalType: form.nominalType,
         nominalEstimate: nominal,
@@ -86,9 +87,19 @@ export function ProfilTagihanSheet({
         frequency: form.frequency,
         anchorDate,
         currency: formCurrency,
-      })
+      }
+      await updateTagihan(editId, patch)
+      const original = tagihan.find((t) => t.id === editId)
+      void syncTagihanReminder({
+        id: editId,
+        ...patch,
+        isActive: original?.isActive ?? true,
+        lastPaidAt: original?.lastPaidAt ?? null,
+        lastPaidAmount: original?.lastPaidAmount ?? null,
+        createdAt: original?.createdAt ?? nowMs,
+      }).catch(() => {})
     } else {
-      await addTagihan({
+      const newTagihan = {
         name: form.name.trim(),
         nominalType: form.nominalType,
         nominalEstimate: nominal,
@@ -100,7 +111,9 @@ export function ProfilTagihanSheet({
         lastPaidAt: null,
         lastPaidAmount: null,
         createdAt: nowMs,
-      })
+      }
+      const newId = await addTagihan(newTagihan)
+      void syncTagihanReminder({ id: newId, ...newTagihan }).catch(() => {})
     }
     await onUpdate()
     setStep('list')
@@ -109,6 +122,7 @@ export function ProfilTagihanSheet({
 
   async function handleDelete(id: number) {
     await deleteTagihan(id)
+    void deleteTagihanReminder(id).catch(() => {})
     setDeleteId(null)
     await onUpdate()
   }

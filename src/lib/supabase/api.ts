@@ -352,3 +352,37 @@ export async function disconnectDevice(anonymousId: string): Promise<boolean> {
   const { error } = await supabase.from('profile_members').delete().eq('anonymous_id', anonymousId)
   return !error
 }
+
+// ---------------------------------------------------------------
+// Tagihan reminder sync
+// ---------------------------------------------------------------
+
+import type { Tagihan } from '@/db/database'
+
+/** Upsert one tagihan to server for reminder scheduling. No-op if no session or id missing. */
+export async function syncTagihanReminder(tagihan: Tagihan): Promise<void> {
+  const anonId = await getAnonymousId()
+  if (!anonId || tagihan.id == null) return
+  await supabase.from('tagihan_reminder').upsert({
+    anonymous_id: anonId,
+    tagihan_local_id: tagihan.id,
+    name: tagihan.name,
+    due_day: tagihan.dueDay,
+    frequency: tagihan.frequency,
+    anchor_date: tagihan.anchorDate,
+    last_paid_at: tagihan.lastPaidAt,
+    is_active: tagihan.isActive,
+    updated_at: new Date().toISOString(),
+  })
+}
+
+/** Delete reminder when tagihan is deleted locally. No-op if no session. */
+export async function deleteTagihanReminder(localId: number): Promise<void> {
+  const anonId = await getAnonymousId()
+  if (!anonId) return
+  await supabase
+    .from('tagihan_reminder')
+    .delete()
+    .eq('anonymous_id', anonId)
+    .eq('tagihan_local_id', localId)
+}
