@@ -103,6 +103,7 @@ export interface Settings {
   avgIncome: number | null // freelance/mix: estimated income per avgIncomeBasis period
   avgIncomeBasis: IncomeFrequency | null // period basis for avgIncome
   fixedIncome: number | null // tetap/mix: nominal salary per period; used as pemasukanPeriode fallback
+  pushAsked?: boolean // true once user has been shown the push permission sheet
 }
 
 // Singleton row — always id=1. Use db.allocation.put({ id: 1, ... }).
