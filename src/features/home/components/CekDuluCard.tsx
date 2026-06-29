@@ -195,21 +195,6 @@ export function CekDuluCard({
           <>
             <div className={styles.headerRow}>
               <div className={styles.eyebrow}>{t('actions.cek_label', lang)}</div>
-              <span className={styles.badgeAkurat}>
-                <svg
-                  width="9"
-                  height="9"
-                  viewBox="0 0 12 12"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M2 6L5 9L10 3" />
-                </svg>
-                {t('cek.badge_akurat', lang)}
-              </span>
             </div>
 
             <div className={styles.heading}>

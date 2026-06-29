@@ -52,22 +52,6 @@
   font-family: var(--font-sans);
 }
 
-.badgeAkurat {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--signal-safe);
-  background: color-mix(in srgb, var(--signal-safe) 12%, transparent);
-  border: 1px solid color-mix(in srgb, var(--signal-safe) 30%, transparent);
-  border-radius: 4px;
-  padding: 2px 6px;
-  font-family: var(--font-sans);
-}
-
 .ctaBtn {
   width: 100%;
   background: var(--accent);
