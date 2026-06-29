@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { addTagihan, updateTagihan, deleteTagihan } from '@/db/tagihan.repository'
 import { syncTagihanReminder, deleteTagihanReminder } from '@/lib/supabase/api'
-import { canAskPush, enablePush } from '@/lib/push'
+import { shouldAskPush, markPushAsked } from '@/lib/push'
+import { PushAskSheet } from '@/shared/components/PushAskSheet'
 import type { Tagihan, NominalType } from '@/db/database'
 import { BottomSheet } from '@/shared/components/BottomSheet'
 import { EquivLine } from '@/shared/components/EquivLine'
@@ -35,7 +36,7 @@ interface Props {
   initialEditTagihan?: Tagihan | null
 }
 
-type Step = 'list' | 'form' | 'push-ask'
+type Step = 'list' | 'form'
 
 export function ProfilTagihanSheet({
   isOpen,
@@ -52,6 +53,7 @@ export function ProfilTagihanSheet({
   const [editId, setEditId] = useState<number | null>(null)
   const [form, setForm] = useState<FormState>(EMPTY_FORM)
   const [deleteId, setDeleteId] = useState<number | null>(null)
+  const [pushAskOpen, setPushAskOpen] = useState(false)
 
   useEffect(() => {
     if (!isOpen) return
@@ -116,9 +118,11 @@ export function ProfilTagihanSheet({
       const newId = await addTagihan(newTagihan)
       void syncTagihanReminder({ id: newId, ...newTagihan }).catch(() => {})
       await onUpdate()
-      const isFirst = tagihan.length === 0
-      if (isFirst && Notification.permission === 'default' && canAskPush()) {
-        setStep('push-ask')
+      if (await shouldAskPush()) {
+        await markPushAsked()
+        setStep('list')
+        onClose()
+        setPushAskOpen(true)
       } else {
         setStep('list')
         onClose()
@@ -145,161 +149,138 @@ export function ProfilTagihanSheet({
   const titleMap: Record<Step, string> = {
     list: t('profil.tagihan_title_list', lang),
     form: editId ? t('profil.tagihan_title_edit', lang) : t('profil.tagihan_title_add', lang),
-    'push-ask': t('push.ask_title', lang),
   }
 
   return (
-    <BottomSheet
-      isOpen={isOpen}
-      onClose={() => {
-        setStep('list')
-        setDeleteId(null)
-        onClose()
-      }}
-      title={titleMap[step]}
-    >
-      {step === 'list' && (
-        <div className={styles.sheetForm}>
-          {tagihan.length === 0 && (
-            <div className={styles.emptyNote}>{t('profil.tagihan_empty', lang)}</div>
-          )}
-          {tagihan.map((tg) => (
-            <div key={tg.id} className={styles.itemRow}>
-              <button className={styles.itemBody} onClick={() => openEdit(tg)}>
-                <div className={styles.itemMeta}>
-                  <span className={styles.listLabel}>{tg.name}</span>
-                  <span className={styles.listDate}>jatuh tempo {formatDueDate(tg, nowMs)}</span>
-                </div>
-                <span className={styles.listVal}>
-                  {formatCurrency(tg.nominalEstimate, tg.currency || currency)}
-                </span>
-              </button>
-              {deleteId === tg.id ? (
-                <div className={styles.inlineConfirm}>
-                  <button className={styles.dangerBtn} onClick={() => handleDelete(tg.id!)}>
-                    {t('common.delete', lang)}
-                  </button>
-                  <button className={styles.ghostBtn} onClick={() => setDeleteId(null)}>
-                    {t('common.cancel', lang)}
-                  </button>
-                </div>
-              ) : (
-                <button className={styles.deleteBtn} onClick={() => setDeleteId(tg.id!)}>
-                  ✕
+    <>
+      <BottomSheet
+        isOpen={isOpen}
+        onClose={() => {
+          setStep('list')
+          setDeleteId(null)
+          onClose()
+        }}
+        title={titleMap[step]}
+      >
+        {step === 'list' && (
+          <div className={styles.sheetForm}>
+            {tagihan.length === 0 && (
+              <div className={styles.emptyNote}>{t('profil.tagihan_empty', lang)}</div>
+            )}
+            {tagihan.map((tg) => (
+              <div key={tg.id} className={styles.itemRow}>
+                <button className={styles.itemBody} onClick={() => openEdit(tg)}>
+                  <div className={styles.itemMeta}>
+                    <span className={styles.listLabel}>{tg.name}</span>
+                    <span className={styles.listDate}>jatuh tempo {formatDueDate(tg, nowMs)}</span>
+                  </div>
+                  <span className={styles.listVal}>
+                    {formatCurrency(tg.nominalEstimate, tg.currency || currency)}
+                  </span>
                 </button>
-              )}
-            </div>
-          ))}
-          {showAdd && (
-            <button className={styles.ghostBtn} onClick={openAdd}>
-              {t('profil.tagihan_add_btn', lang)}
-            </button>
-          )}
-        </div>
-      )}
-
-      {step === 'form' && (
-        <div className={styles.sheetForm}>
-          <div className={styles.fieldLabel}>{t('profil.tagihan_name_label', lang)}</div>
-          <input
-            className={styles.fieldInput}
-            placeholder={t('profil.tagihan_name_placeholder', lang)}
-            value={form.name}
-            onChange={(e) => patch('name')(e.target.value)}
-            autoFocus
-          />
-
-          <div className={styles.fieldLabel}>{t('profil.tagihan_nominal_label', lang)}</div>
-          <div className={styles.segmented}>
-            {(['tetap', 'variabel'] as NominalType[]).map((n) => (
-              <button
-                key={n}
-                className={`${styles.seg} ${form.nominalType === n ? styles.segActive : ''}`}
-                onClick={() => patch('nominalType')(n)}
-              >
-                {n === 'tetap'
-                  ? t('profil.tagihan_fixed', lang)
-                  : t('profil.tagihan_variable', lang)}
-              </button>
+                {deleteId === tg.id ? (
+                  <div className={styles.inlineConfirm}>
+                    <button className={styles.dangerBtn} onClick={() => handleDelete(tg.id!)}>
+                      {t('common.delete', lang)}
+                    </button>
+                    <button className={styles.ghostBtn} onClick={() => setDeleteId(null)}>
+                      {t('common.cancel', lang)}
+                    </button>
+                  </div>
+                ) : (
+                  <button className={styles.deleteBtn} onClick={() => setDeleteId(tg.id!)}>
+                    ✕
+                  </button>
+                )}
+              </div>
             ))}
+            {showAdd && (
+              <button className={styles.ghostBtn} onClick={openAdd}>
+                {t('profil.tagihan_add_btn', lang)}
+              </button>
+            )}
           </div>
-          <div className={styles.amountRow}>
-            <select
-              className={styles.amountCurrency}
-              value={form.currency || currency}
-              onChange={(e) => patch('currency')(e.target.value)}
-              aria-label={t('profil.tagihan_currency_label', lang)}
-            >
-              {ALL_CURRENCIES.map((c) => (
-                <option key={c.code} value={c.code}>
-                  {c.code}
-                </option>
-              ))}
-            </select>
+        )}
+
+        {step === 'form' && (
+          <div className={styles.sheetForm}>
+            <div className={styles.fieldLabel}>{t('profil.tagihan_name_label', lang)}</div>
             <input
-              className={styles.amountInput}
-              type="text"
-              inputMode="numeric"
-              placeholder="0"
-              value={form.nominalEstimate}
-              onChange={(e) =>
-                patch('nominalEstimate')(formatNominalDisplay(parseNominalRaw(e.target.value)))
-              }
+              className={styles.fieldInput}
+              placeholder={t('profil.tagihan_name_placeholder', lang)}
+              value={form.name}
+              onChange={(e) => patch('name')(e.target.value)}
+              autoFocus
             />
+
+            <div className={styles.fieldLabel}>{t('profil.tagihan_nominal_label', lang)}</div>
+            <div className={styles.segmented}>
+              {(['tetap', 'variabel'] as NominalType[]).map((n) => (
+                <button
+                  key={n}
+                  className={`${styles.seg} ${form.nominalType === n ? styles.segActive : ''}`}
+                  onClick={() => patch('nominalType')(n)}
+                >
+                  {n === 'tetap'
+                    ? t('profil.tagihan_fixed', lang)
+                    : t('profil.tagihan_variable', lang)}
+                </button>
+              ))}
+            </div>
+            <div className={styles.amountRow}>
+              <select
+                className={styles.amountCurrency}
+                value={form.currency || currency}
+                onChange={(e) => patch('currency')(e.target.value)}
+                aria-label={t('profil.tagihan_currency_label', lang)}
+              >
+                {ALL_CURRENCIES.map((c) => (
+                  <option key={c.code} value={c.code}>
+                    {c.code}
+                  </option>
+                ))}
+              </select>
+              <input
+                className={styles.amountInput}
+                type="text"
+                inputMode="numeric"
+                placeholder="0"
+                value={form.nominalEstimate}
+                onChange={(e) =>
+                  patch('nominalEstimate')(formatNominalDisplay(parseNominalRaw(e.target.value)))
+                }
+              />
+            </div>
+            <EquivLine
+              amount={parseInt(parseNominalRaw(form.nominalEstimate), 10) || 0}
+              currency={form.currency || currency}
+              primaryCurrency={currency}
+            />
+
+            <div className={styles.fieldLabel}>{t('profil.tagihan_freq_label', lang)}</div>
+            <ScrollSegmented
+              items={FREQ_KEYS.map((f) => ({ value: f, label: t(FREQ_LABEL[f], lang) }))}
+              value={form.frequency}
+              onChange={(f) => patch('frequency')(f)}
+            />
+
+            <TagihanAnchorInput
+              frequency={form.frequency}
+              fields={form}
+              onChange={patchAnchor}
+              lang={lang}
+            />
+
+            <button className={styles.primaryBtn} onClick={handleSave} disabled={!form.name.trim()}>
+              {t('common.save', lang)}
+            </button>
+            <button className={styles.ghostBtn} onClick={() => setStep('list')}>
+              {t('common.cancel', lang)}
+            </button>
           </div>
-          <EquivLine
-            amount={parseInt(parseNominalRaw(form.nominalEstimate), 10) || 0}
-            currency={form.currency || currency}
-            primaryCurrency={currency}
-          />
-
-          <div className={styles.fieldLabel}>{t('profil.tagihan_freq_label', lang)}</div>
-          <ScrollSegmented
-            items={FREQ_KEYS.map((f) => ({ value: f, label: t(FREQ_LABEL[f], lang) }))}
-            value={form.frequency}
-            onChange={(f) => patch('frequency')(f)}
-          />
-
-          <TagihanAnchorInput
-            frequency={form.frequency}
-            fields={form}
-            onChange={patchAnchor}
-            lang={lang}
-          />
-
-          <button className={styles.primaryBtn} onClick={handleSave} disabled={!form.name.trim()}>
-            {t('common.save', lang)}
-          </button>
-          <button className={styles.ghostBtn} onClick={() => setStep('list')}>
-            {t('common.cancel', lang)}
-          </button>
-        </div>
-      )}
-
-      {step === 'push-ask' && (
-        <div className={styles.sheetForm}>
-          <p className={styles.emptyNote}>{t('push.ask_body', lang)}</p>
-          <button
-            className={styles.primaryBtn}
-            onClick={async () => {
-              void enablePush().catch(() => {})
-              setStep('list')
-              onClose()
-            }}
-          >
-            {t('push.ask_cta', lang)}
-          </button>
-          <button
-            className={styles.ghostBtn}
-            onClick={() => {
-              setStep('list')
-              onClose()
-            }}
-          >
-            {t('push.ask_later', lang)}
-          </button>
-        </div>
-      )}
-    </BottomSheet>
+        )}
+      </BottomSheet>
+      <PushAskSheet isOpen={pushAskOpen} onClose={() => setPushAskOpen(false)} />
+    </>
   )
 }
