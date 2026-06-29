@@ -18,7 +18,7 @@ import {
   calcPemasukanFromAvg,
 } from '@/features/home/home.utils'
 import { calcUnpaidTagihanTotal } from '@/features/home/tagihan.utils'
-import { calcBudgetPeriode } from '@/shared/utils/budget.utils'
+import { calcBudgetPeriode, computeFromAllocation } from '@/shared/utils/budget.utils'
 import { formatCurrency, getCurrencySymbol } from '@/shared/utils/formatCurrency'
 import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
 import { calcCekDulu } from './cekDulu.utils'
@@ -69,47 +69,78 @@ export function CekDuluPage() {
         const periodStartMs = getPeriodStartDate(nowMs, settings).getTime()
         const hariPeriode = calcHariPeriode(nowMs, settings)
 
-        getPeriodFlows(currency, periodStartMs, nowMs).then(({ income, expense, spentToday }) => {
-          if (cancelled) return
-          const hariPertama = isHariPertamaMode(settings.lastPaydayConfirmed, income)
-          let effectivePemasukan = income
-          if (hariPertama) {
-            effectivePemasukan = totalSaldo
-          } else if (
-            settings.incomeType === 'freelance' &&
-            settings.avgIncome &&
-            settings.avgIncomeBasis
-          ) {
-            effectivePemasukan = calcPemasukanFromAvg(
-              settings.avgIncome,
-              settings.avgIncomeBasis,
-              hariPeriode,
-            )
-          }
-          const budget = calcBudgetPeriode({
-            pemasukanPeriode: effectivePemasukan,
-            unpaidTagihanTotal,
-            hariPeriode,
-            spentThisPeriode: expense,
-            spentToday,
-            totalSaldo,
-            useSaldoFloor: settings.incomeType === 'freelance',
-          })
-          const dailyBudget =
-            budget.jatahHarian !== null && daysUntilPayday > 0
-              ? budget.sisaPeriode / daysUntilPayday
-              : budget.jatahHarian
-          setData({
-            settings,
-            wallets,
-            totalSaldo,
-            sisaPeriode: budget.sisaPeriode,
-            dailyBudget,
-            daysUntilPayday,
-            mengendap: Math.max(0, budget.uangMengendap),
-            jatahHarian: budget.jatahHarian ?? 0,
-          })
-        })
+        getPeriodFlows(currency, periodStartMs, nowMs).then(
+          async ({ income, expense, spentToday }) => {
+            if (cancelled) return
+            let spentSinceLock = 0
+            if (allocation) {
+              const { expense: sinceLock } = await getPeriodFlows(
+                currency,
+                allocation.lockedAt,
+                nowMs,
+              )
+              spentSinceLock = sinceLock
+            }
+            if (cancelled) return
+
+            let sisaUangFinal: number
+            let mengendapFinal: number
+            let jatahHarianFinal: number
+
+            if (allocation) {
+              const r = computeFromAllocation(allocation, {
+                totalSaldo,
+                tagihanUnpaid: unpaidTagihanTotal,
+                spentSinceLock,
+                spentToday,
+              })
+              sisaUangFinal = r.sisaUang
+              mengendapFinal = r.mengendap
+              jatahHarianFinal = r.jatahHariIni
+            } else {
+              const hariPertama = isHariPertamaMode(settings.lastPaydayConfirmed, income)
+              let effectivePemasukan = income
+              if (hariPertama) {
+                effectivePemasukan = totalSaldo
+              } else if (
+                settings.incomeType === 'freelance' &&
+                settings.avgIncome &&
+                settings.avgIncomeBasis
+              ) {
+                effectivePemasukan = calcPemasukanFromAvg(
+                  settings.avgIncome,
+                  settings.avgIncomeBasis,
+                  hariPeriode,
+                )
+              }
+              const budget = calcBudgetPeriode({
+                pemasukanPeriode: effectivePemasukan,
+                unpaidTagihanTotal,
+                hariPeriode,
+                spentThisPeriode: expense,
+                spentToday,
+                totalSaldo,
+                useSaldoFloor: settings.incomeType === 'freelance',
+              })
+              sisaUangFinal = budget.sisaPeriode
+              mengendapFinal = Math.max(0, budget.uangMengendap)
+              jatahHarianFinal = budget.jatahHarian ?? 0
+            }
+
+            const dailyBudget =
+              daysUntilPayday > 0 ? sisaUangFinal / daysUntilPayday : jatahHarianFinal
+            setData({
+              settings,
+              wallets,
+              totalSaldo,
+              sisaPeriode: sisaUangFinal,
+              dailyBudget,
+              daysUntilPayday,
+              mengendap: mengendapFinal,
+              jatahHarian: jatahHarianFinal,
+            })
+          },
+        )
       },
     )
     return () => {
