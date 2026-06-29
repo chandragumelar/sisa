@@ -24,7 +24,7 @@ import {
   isHariPertamaMode,
   calcPemasukanFromAvg,
 } from '@/features/home/home.utils'
-import { calcBudgetPeriode } from '@/shared/utils/budget.utils'
+import { calcBudgetPeriode, computeFromAllocation } from '@/shared/utils/budget.utils'
 import { formatCurrency, getCurrencySymbol } from '@/shared/utils/formatCurrency'
 import { calcAndai, buildAndaiBaseline } from './andai.utils'
 import type { AndaiBaseline, AndaiItem, AndaiKind } from './andai.utils'
@@ -113,44 +113,69 @@ export function AndaiPage() {
         const periodStartMs = getPeriodStartDate(nowMs, s).getTime()
         const hariPeriode = calcHariPeriode(nowMs, s)
 
-        getPeriodFlows(currency, periodStartMs, nowMs).then(({ income, expense, spentToday }) => {
-          if (cancelled) return
-          const hariPertama = isHariPertamaMode(s.lastPaydayConfirmed, income)
-          let effectivePemasukan = income
-          if (hariPertama) {
-            effectivePemasukan = totalSaldo
-          } else if (income === 0 && s.fixedIncome && s.fixedIncome > 0) {
-            effectivePemasukan = s.fixedIncome
-          } else if (
-            (s.incomeType === 'freelance' || s.incomeType === 'mix') &&
-            s.avgIncome &&
-            s.avgIncomeBasis
-          ) {
-            effectivePemasukan = calcPemasukanFromAvg(s.avgIncome, s.avgIncomeBasis, hariPeriode)
-          }
-          const budget = calcBudgetPeriode({
-            pemasukanPeriode: effectivePemasukan,
-            unpaidTagihanTotal,
-            hariPeriode,
-            spentThisPeriode: expense,
-            spentToday,
-            totalSaldo,
-            useSaldoFloor: s.incomeType === 'freelance',
-          })
-          const bl = buildAndaiBaseline(
-            budget.sisaPeriode,
-            budget.uangMengendap,
-            s,
-            nowMs,
-            allocation,
-          )
-          setBaseline(bl)
-          setCurrency(currency)
+        getPeriodFlows(currency, periodStartMs, nowMs).then(
+          async ({ income, expense, spentToday }) => {
+            if (cancelled) return
+            let spentSinceLock = 0
+            if (allocation) {
+              const { expense: sinceLock } = await getPeriodFlows(
+                currency,
+                allocation.lockedAt,
+                nowMs,
+              )
+              spentSinceLock = sinceLock
+            }
+            if (cancelled) return
 
-          getSavedScenarios().then((rows) => {
-            if (!cancelled) setSavedScenarios(rows)
-          })
-        })
+            const hariPertama = isHariPertamaMode(s.lastPaydayConfirmed, income)
+            let effectivePemasukan = income
+            if (hariPertama) {
+              effectivePemasukan = totalSaldo
+            } else if (income === 0 && s.fixedIncome && s.fixedIncome > 0) {
+              effectivePemasukan = s.fixedIncome
+            } else if (
+              (s.incomeType === 'freelance' || s.incomeType === 'mix') &&
+              s.avgIncome &&
+              s.avgIncomeBasis
+            ) {
+              effectivePemasukan = calcPemasukanFromAvg(s.avgIncome, s.avgIncomeBasis, hariPeriode)
+            }
+            const budget = calcBudgetPeriode({
+              pemasukanPeriode: effectivePemasukan,
+              unpaidTagihanTotal,
+              hariPeriode,
+              spentThisPeriode: expense,
+              spentToday,
+              totalSaldo,
+              useSaldoFloor: s.incomeType === 'freelance',
+            })
+
+            let sisaUangFinal: number
+            let mengendapFinal: number
+
+            if (allocation) {
+              const r = computeFromAllocation(allocation, {
+                totalSaldo,
+                tagihanUnpaid: unpaidTagihanTotal,
+                spentSinceLock,
+                spentToday,
+              })
+              sisaUangFinal = r.sisaUang
+              mengendapFinal = r.mengendap
+            } else {
+              sisaUangFinal = budget.sisaPeriode
+              mengendapFinal = Math.max(0, budget.uangMengendap)
+            }
+
+            const bl = buildAndaiBaseline(sisaUangFinal, mengendapFinal, s, nowMs, allocation)
+            setBaseline(bl)
+            setCurrency(currency)
+
+            getSavedScenarios().then((rows) => {
+              if (!cancelled) setSavedScenarios(rows)
+            })
+          },
+        )
       },
     )
     return () => {
