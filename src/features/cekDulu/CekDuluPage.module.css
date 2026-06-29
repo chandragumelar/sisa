@@ -273,13 +273,6 @@
   color: var(--ink-tertiary);
 }
 
-.rowDelta {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--ink-tertiary);
-  text-align: right;
-}
-
 .rowSubNote {
   font-family: var(--font-sans);
   font-size: 11px;

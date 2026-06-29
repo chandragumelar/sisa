@@ -215,9 +215,7 @@ export function CekDuluPage() {
           <span className={styles.nominalCaret} />
         </div>
         <div className={styles.nominalContext}>
-          {t('cek_dulu.context_line', lang)
-            .replace('{days}', String(daysUntilPayday))
-            .replace('{amount}', formatCurrency(totalSaldo, currency))}
+          {t('cek_dulu.context_line', lang).replace('{days}', String(daysUntilPayday))}
         </div>
       </div>
 
@@ -245,13 +243,6 @@ export function CekDuluPage() {
               )}
             </span>
           </div>
-          {nominal > 0 && (
-            <div className={styles.rowDelta}>
-              {formatCurrency(result.dailyDelta, currency)}
-              {t('cek_dulu.daily_unit', lang)} · {daysUntilPayday}{' '}
-              {t(daysUntilPayday === 1 ? 'common.day' : 'common.days', lang)}
-            </div>
-          )}
         </div>
 
         {/* Row 2 — muncul saat nembus operasional */}
@@ -259,10 +250,7 @@ export function CekDuluPage() {
           <>
             <div className={styles.cmpDivider} />
             <div className={styles.cmpRow}>
-              <div className={styles.rowLabel}>
-                {t('cek_dulu.sisa_label', lang)}
-                <span className={styles.newFlag}>{t('cek_dulu.new_flag', lang)}</span>
-              </div>
+              <div className={styles.rowLabel}>{t('cek_dulu.sisa_label', lang)}</div>
               <div className={styles.cmpValues}>
                 <span className={styles.valueBefore}>
                   {formatCurrency(result.sisaBefore, currency)}

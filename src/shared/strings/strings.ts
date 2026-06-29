@@ -934,7 +934,7 @@ const id: StringDictionary = {
   'cek_dulu.sub': 'aman ga gue beli ini?',
   'cek_dulu.close_aria': 'Tutup',
   'cek_dulu.price_label': 'harga barang',
-  'cek_dulu.context_line': 'sampai gajian: {days} hari lagi · saldo total {amount}',
+  'cek_dulu.context_line': '{days} hari lagi menuju gajian',
   'cek_dulu.col_now': 'sekarang',
   'cek_dulu.col_after': 'kalau beli',
   'cek_dulu.daily_label': 'jatah harian sampai gajian',
@@ -951,7 +951,7 @@ const id: StringDictionary = {
   'cek_dulu.insight_days':
     'Harga ini setara {n} hari jatah harian lo — bayangkan sejumlah hari itu sudah "dipesan" duluan oleh pembelian ini.',
   'cek_dulu.insight_portion':
-    'Pembelian ini makan {pct}% dari total sisa lo sampai gajian. Semakin besar angkanya, semakin sempit ruang gerak untuk kebutuhan lain bulan ini.',
+    'Pembelian ini memakan {pct}% dari sisa uang lo sekarang. Semakin besar persennya, semakin sempit ruang gerak untuk kebutuhan lain bulan ini.',
   'cek_dulu.insight_recovery':
     'Pembelian ini nyentuh tabungan lo. Butuh sekitar {n} hari nabung konsisten buat balik ke posisi sekarang — pastiin ini worth it dulu.',
 
@@ -1521,7 +1521,7 @@ const en: StringDictionary = {
   'cek_dulu.sub': 'can I buy this right now?',
   'cek_dulu.close_aria': 'Close',
   'cek_dulu.price_label': 'item price',
-  'cek_dulu.context_line': 'until payday: {days} days · total balance {amount}',
+  'cek_dulu.context_line': '{days} days until payday',
   'cek_dulu.col_now': 'now',
   'cek_dulu.col_after': 'if you buy',
   'cek_dulu.daily_label': 'daily budget until payday',
@@ -1538,7 +1538,7 @@ const en: StringDictionary = {
   'cek_dulu.insight_days':
     'This costs {n} days of your daily budget — imagine those days already claimed before they even start.',
   'cek_dulu.insight_portion':
-    'This purchase takes {pct}% of your remaining balance until payday. The bigger that number, the less wiggle room you have for everything else this month.',
+    'This purchase takes {pct}% of your remaining money right now. The bigger the percentage, the less wiggle room you have for everything else this month.',
   'cek_dulu.insight_recovery':
     "This dips into your savings. It'll take around {n} days of consistent saving to get back to where you are now — make sure it's worth it.",
 
