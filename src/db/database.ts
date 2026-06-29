@@ -113,6 +113,7 @@ export interface Allocation {
   daysAtLock: number
   lockedAt: number
   periodEndDate: number | null
+  buatDipakai: number // original operasional budget before division; source-of-truth for sisaUang
 }
 
 // Singleton row — always id=1. Use db.license.put({ id: 1, ... }).

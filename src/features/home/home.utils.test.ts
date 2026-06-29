@@ -559,6 +559,7 @@ describe('needsPaydayConfirmation with allocation', () => {
       daysAtLock: 10,
       lockedAt: 0,
       periodEndDate: NOW + 86_400_000,
+      buatDipakai: 1_000_000,
     }
     expect(needsPaydayConfirmation(NOW, baseFreelance, alloc)).toBe(false)
   })
@@ -570,6 +571,7 @@ describe('needsPaydayConfirmation with allocation', () => {
       daysAtLock: 10,
       lockedAt: 0,
       periodEndDate: NOW - 1,
+      buatDipakai: 1_000_000,
     }
     expect(needsPaydayConfirmation(NOW, baseFreelance, alloc)).toBe(true)
   })
@@ -582,6 +584,7 @@ describe('needsPaydayConfirmation with allocation', () => {
       daysAtLock: 10,
       lockedAt: 0,
       periodEndDate: NOW - 1,
+      buatDipakai: 1_000_000,
     }
     expect(needsPaydayConfirmation(NOW, mix, alloc)).toBe(false)
   })
@@ -590,7 +593,14 @@ describe('needsPaydayConfirmation with allocation', () => {
 // ─── getPaydayDate / calcDaysUntilPayday — freelance allocation ───────────────
 
 function makeAlloc(periodEndDate: number): Allocation {
-  return { id: 1, jatahHarian: 100_000, daysAtLock: 10, lockedAt: 0, periodEndDate }
+  return {
+    id: 1,
+    jatahHarian: 100_000,
+    daysAtLock: 10,
+    lockedAt: 0,
+    periodEndDate,
+    buatDipakai: 1_000_000,
+  }
 }
 
 describe('getPaydayDate — freelance with allocation', () => {
@@ -617,6 +627,7 @@ describe('getPaydayDate — freelance with allocation', () => {
       daysAtLock: 0,
       lockedAt: 0,
       periodEndDate: null,
+      buatDipakai: 0,
     }
     const result = getPaydayDate(NOW_MS, freelance, noEnd)
     expect(result.getDate()).toBe(31)

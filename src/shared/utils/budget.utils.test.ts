@@ -272,6 +272,7 @@ describe('computeFromAllocation', () => {
     daysAtLock: 10,
     lockedAt: 0,
     periodEndDate: null,
+    buatDipakai: 1_000_000,
   }
 
   it('sisaUang decreases as spentSinceLock increases', () => {
@@ -389,6 +390,7 @@ describe('allocation invariants: masuk does not change sisaUang', () => {
     daysAtLock: 10,
     lockedAt: 0,
     periodEndDate: null,
+    buatDipakai: 1_000_000,
   }
 
   it('masuk Rp1jt: sisaUang unchanged, mengendap +1jt, jatahHarian tetap', () => {
