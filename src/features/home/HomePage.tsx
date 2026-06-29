@@ -54,6 +54,8 @@ import { computeFromAllocation, relock } from '@/shared/utils/budget.utils'
 import { JatahHarianCard } from './components/JatahHarianCard'
 import { WalletsCard } from './components/WalletsCard'
 import { syncTagihanReminder, deleteTagihanReminder } from '@/lib/supabase/api'
+import { shouldAskPush, markPushAsked } from '@/lib/push'
+import { PushAskSheet } from '@/shared/components/PushAskSheet'
 import styles from './HomePage.module.css'
 
 interface HomeData {
@@ -294,6 +296,16 @@ export function HomePage() {
   const [tagihanSheetOpen, setTagihanSheetOpen] = useState(false)
   const [walletSheetOpen, setWalletSheetOpen] = useState(false)
   const [alokasiSheetOpen, setAlokasiSheetOpen] = useState(false)
+  const [pushAskOpen, setPushAskOpen] = useState(false)
+
+  useEffect(() => {
+    void shouldAskPush().then((v) => {
+      if (v) {
+        void markPushAsked()
+        setPushAskOpen(true)
+      }
+    })
+  }, [])
 
   if (isLoading || !settings) return null
 
@@ -687,6 +699,8 @@ export function HomePage() {
             />
           )
         })()}
+
+      <PushAskSheet isOpen={pushAskOpen} onClose={() => setPushAskOpen(false)} />
     </div>
   )
 }
