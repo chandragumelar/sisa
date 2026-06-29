@@ -5,8 +5,8 @@ export async function getActiveTagihan(): Promise<Tagihan[]> {
   return db.tagihan.filter((t) => !!t.isActive).sortBy('dueDay')
 }
 
-export async function addTagihan(tagihan: Omit<Tagihan, 'id'>): Promise<void> {
-  await db.tagihan.add(tagihan)
+export async function addTagihan(tagihan: Omit<Tagihan, 'id'>): Promise<number> {
+  return (await db.tagihan.add(tagihan)) as number
 }
 
 export async function markTagihanPaid(id: number, paidAt: number, amount: number): Promise<void> {

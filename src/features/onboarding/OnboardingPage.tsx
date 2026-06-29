@@ -6,6 +6,7 @@ import { useSetLanguage } from '@/app/providers/useLanguage'
 import { saveSettings } from '@/db/settings.repository'
 import { addWallet } from '@/db/wallets.repository'
 import { addTagihan } from '@/db/tagihan.repository'
+import { syncTagihanReminder } from '@/lib/supabase/api'
 import { putAllocation } from '@/db/allocation.repository'
 import { computeAnchor } from '@/features/profil/ProfilTagihanSheet.utils'
 import { parseNominalRaw } from '@/shared/utils/formatNominalInput'
@@ -105,7 +106,7 @@ export function OnboardingPage() {
     for (const tg of final.tagihanInputs) {
       const nominal = parseInt(parseNominalRaw(tg.nominalEstimate), 10) || 0
       const { anchorDate, dueDay } = computeAnchor(tg, nowMs)
-      await addTagihan({
+      const newTagihan = {
         name: tg.name.trim(),
         nominalType: tg.nominalType,
         nominalEstimate: nominal,
@@ -117,7 +118,9 @@ export function OnboardingPage() {
         lastPaidAt: null,
         lastPaidAmount: null,
         createdAt: nowMs,
-      })
+      }
+      const newId = await addTagihan(newTagihan)
+      void syncTagihanReminder({ id: newId, ...newTagihan }).catch(() => {})
     }
 
     if (final.operasionalBudget != null) {
