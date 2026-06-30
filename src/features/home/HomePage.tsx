@@ -14,6 +14,7 @@ import {
   getMonthlyFlows,
   getPeriodFlows,
   deleteTransactionAndRevertBalance,
+  getTransactionsByDateRange,
 } from '@/db/transactions.repository'
 import { t } from '@/shared/strings/strings'
 import type { Language, Settings, Wallet, Tagihan, Allocation } from '@/db/database'
@@ -28,6 +29,7 @@ import {
   calcPemasukanFromAvg,
 } from './home.utils'
 import { calcUnpaidTagihanTotal, getTagihanUrgency } from './tagihan.utils'
+import { sumExpense, sumIncome, spendPct } from '@/features/insight/insight.utils'
 import { shouldShowBackupReminder, calcBackupUrgency } from './backup-reminder.utils'
 import { calcBudgetPeriode, type BudgetMode } from '@/shared/utils/budget.utils'
 import { BRAND_STUDIO_WITH_COLLAB } from '@/constants/brand'
@@ -287,6 +289,8 @@ export function HomePage() {
   const [walletSheetOpen, setWalletSheetOpen] = useState(false)
   const [alokasiSheetOpen, setAlokasiSheetOpen] = useState(false)
   const [pushAskOpen, setPushAskOpen] = useState(false)
+  const [teaserExpense, setTeaserExpense] = useState(0)
+  const [teaserIncome, setTeaserIncome] = useState(0)
 
   useEffect(() => {
     void shouldAskPush().then((v) => {
@@ -296,6 +300,18 @@ export function HomePage() {
       }
     })
   }, [])
+
+  useEffect(() => {
+    const today = new Date(nowMs)
+    const monthStart = new Date(today.getFullYear(), today.getMonth(), 1).getTime()
+    const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 1).getTime()
+    getTransactionsByDateRange(monthStart, monthEnd)
+      .then((txs) => {
+        setTeaserExpense(sumExpense(txs))
+        setTeaserIncome(sumIncome(txs))
+      })
+      .catch(() => {})
+  }, [nowMs])
 
   if (isLoading || !settings) return null
 
@@ -544,6 +560,17 @@ export function HomePage() {
             onRowTap={(tg) => setDetailTagihan(tg)}
             onAddTap={() => setTagihanSheetOpen(true)}
           />
+
+          <button className={styles.insightTeaser} onClick={() => navigate('/insight')}>
+            {teaserExpense === 0
+              ? t('home.insight_teaser_clean', lang)
+              : teaserIncome === 0
+                ? t('home.insight_teaser_generic', lang)
+                : t('home.insight_teaser_ratio', lang).replace(
+                    '{pct}',
+                    String(spendPct(teaserExpense, teaserIncome) ?? 0),
+                  )}
+          </button>
 
           <BerbagiKeamananSection />
         </div>

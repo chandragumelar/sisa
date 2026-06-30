@@ -554,6 +554,9 @@ export type StringKey =
   // home — new allocation model strings
   | 'home.sisa_uang'
   | 'home.sisa_uang_tooltip'
+  | 'home.insight_teaser_ratio'
+  | 'home.insight_teaser_clean'
+  | 'home.insight_teaser_generic'
   | 'home.expand_show'
   | 'home.expand_hide'
   | 'home.duit_di_mana'
@@ -1208,6 +1211,9 @@ const id: StringDictionary = {
 
   'home.sisa_uang': 'SISA UANG',
   'home.sisa_uang_tooltip': 'Total saldo − tagihan belum dibayar − Uang Mengendap',
+  'home.insight_teaser_ratio': 'Bulan ini lo pakai {pct}% dari pemasukan →',
+  'home.insight_teaser_clean': 'Belum ada pengeluaran bulan ini. Awal yang bersih →',
+  'home.insight_teaser_generic': 'Lihat ringkasan keuanganmu →',
   'home.expand_show': 'kok bisa segini?',
   'home.expand_hide': 'sembunyikan',
   'home.duit_di_mana': 'Duit lo ada di mana',
@@ -1858,6 +1864,9 @@ const en: StringDictionary = {
 
   'home.sisa_uang': 'MONEY LEFT',
   'home.sisa_uang_tooltip': 'Total balance − unpaid bills − Parked Money',
+  'home.insight_teaser_ratio': "You've used {pct}% of income this month →",
+  'home.insight_teaser_clean': 'No spending yet this month. Clean start →',
+  'home.insight_teaser_generic': 'View your spending summary →',
   'home.expand_show': 'how is this possible?',
   'home.expand_hide': 'hide',
   'home.duit_di_mana': 'Where your money is',
