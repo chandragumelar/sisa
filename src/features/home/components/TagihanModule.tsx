@@ -1,4 +1,3 @@
-import { Fragment } from 'react'
 import { ChevronRight } from 'lucide-react'
 import type { Tagihan } from '@/db/database'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
@@ -62,9 +61,10 @@ export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap, on
         ? ('idr_paid' as const)
         : ('unpaid' as const)
 
-  const ctxTemplate = t('tagihan_module.ctx_total', lang)
-  const [ctxBeforeTotal, ctxAfterTotalStr = ''] = ctxTemplate.split('{total}')
-  const [ctxBetween = '', ctxAfterPaid = ''] = ctxAfterTotalStr.split('{paid}')
+  const ctxTotalTmpl = t('tagihan_module.ctx_total', lang)
+  const [ctxTotalPre, ctxTotalPost = ''] = ctxTotalTmpl.split('{total}')
+  const ctxPaidTmpl = t('tagihan_module.ctx_paid', lang)
+  const [ctxPaidPre, ctxPaidPost = ''] = ctxPaidTmpl.split('{paid}')
 
   const overdue = ranked.filter((tg) => getTagihanUrgency(tg, nowMs) === 'lewat-tempo')
   const regular = ranked.filter((tg) => getTagihanUrgency(tg, nowMs) !== 'lewat-tempo')
@@ -79,19 +79,6 @@ export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap, on
       {/* Header */}
       <div className={styles.header}>
         <div className={styles.headerLeft}>
-          <svg
-            width="12"
-            height="12"
-            viewBox="0 0 12 12"
-            fill="none"
-            stroke="var(--ink-tertiary)"
-            strokeWidth="1.2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <circle cx="6" cy="6" r="4.5" />
-            <path d="M6 3.5V6L7.8 7.8" />
-          </svg>
           <span className={styles.label}>{t('tagihan_module.title', lang)}</span>
         </div>
         <button className={styles.addBtn} onClick={onAddTap} aria-label="Tambah tagihan">
@@ -239,16 +226,18 @@ export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap, on
                   </div>
                 </div>
                 <div className={styles.tzDivider} />
-                <span className={styles.tzCtx}>
-                  {'Total '}
-                  <span className={styles.tzCtxNum}>{formatCurrency(idrTotal, currency)}</span>
+                <div className={styles.tzCtx}>
+                  <span>
+                    {ctxTotalPre}
+                    <span className={styles.tzCtxNum}>{formatCurrency(idrTotal, currency)}</span>
+                    {ctxTotalPost}
+                  </span>
                   {foreignRows.map((fr) => (
-                    <Fragment key={fr.code}>
-                      {' · '}
+                    <span key={fr.code}>
                       <span className={styles.tzCtxNum}>{fr.totalFormatted}</span>
-                    </Fragment>
+                    </span>
                   ))}
-                </span>
+                </div>
               </>
             ) : (
               <>
@@ -286,11 +275,6 @@ export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap, on
                         <span className={fr.paid ? styles.tzForeignAmtPaid : styles.tzForeignAmt}>
                           {fr.totalFormatted}
                         </span>
-                        <span className={fr.paid ? styles.tzPillPaid : styles.tzPillUnpaid}>
-                          {fr.paid
-                            ? t('tagihan_module.pill_paid', lang)
-                            : t('tagihan_module.pill_unpaid', lang)}
-                        </span>
                       </div>
                     ))}
                   </div>
@@ -298,13 +282,18 @@ export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap, on
 
                 <div className={styles.tzDivider} />
 
-                <span className={styles.tzCtx}>
-                  {ctxBeforeTotal}
-                  <span className={styles.tzCtxNum}>{formatCurrency(idrTotal, currency)}</span>
-                  {ctxBetween}
-                  <span className={styles.tzCtxNum}>{formatCurrency(idrPaid, currency)}</span>
-                  {ctxAfterPaid}
-                </span>
+                <div className={styles.tzCtx}>
+                  <span>
+                    {ctxTotalPre}
+                    <span className={styles.tzCtxNum}>{formatCurrency(idrTotal, currency)}</span>
+                    {ctxTotalPost}
+                  </span>
+                  <span>
+                    {ctxPaidPre}
+                    <span className={styles.tzCtxNum}>{formatCurrency(idrPaid, currency)}</span>
+                    {ctxPaidPost}
+                  </span>
+                </div>
               </>
             )}
           </div>

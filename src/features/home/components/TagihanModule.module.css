@@ -346,22 +346,23 @@
 
 .tzForeignRow {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
 }
 
 .tzForeignAmt {
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 22px;
+  font-weight: 700;
   font-family: var(--font-mono);
-  color: var(--ink-secondary);
+  color: var(--ink-primary);
+  letter-spacing: -0.5px;
+  line-height: 1.1;
 }
 
 .tzForeignAmtPaid {
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 18px;
+  font-weight: 700;
   font-family: var(--font-mono);
   color: var(--ink-tertiary);
+  letter-spacing: -0.3px;
   text-decoration: line-through;
   text-decoration-color: var(--ink-tertiary);
 }
@@ -374,6 +375,9 @@
 
 /* context row */
 .tzCtx {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
   font-size: 11px;
   color: var(--ink-tertiary);
   font-family: var(--font-sans);
