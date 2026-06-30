@@ -129,7 +129,7 @@ export function OnboardingPage() {
         incomeFrequency: final.incomeFrequency ?? 'bulanan',
         incomeAnchorDate: final.incomeAnchorDate,
         incomeDay: final.incomeDay,
-        weekendBehavior: null,
+        weekendBehavior: 'tetap',
       } as import('@/db/database').Settings
       const totalSaldoForAlokasi = final.wallets
         .filter((w) => w.name.trim())
@@ -199,7 +199,7 @@ export function OnboardingPage() {
               incomeFrequency: data.incomeFrequency ?? 'bulanan',
               incomeAnchorDate: data.incomeAnchorDate,
               incomeDay: data.incomeDay,
-              weekendBehavior: null,
+              weekendBehavior: 'tetap',
             } as import('@/db/database').Settings).getTime(),
             data.incomeFrequency ?? 'bulanan',
           )}
@@ -267,7 +267,7 @@ export function OnboardingPage() {
                   incomeFrequency: data.incomeFrequency ?? 'bulanan',
                   incomeAnchorDate: data.incomeAnchorDate,
                   incomeDay: data.incomeDay,
-                  weekendBehavior: null,
+                  weekendBehavior: 'tetap',
                 } as import('@/db/database').Settings)
           return (
             <StepAlokasi

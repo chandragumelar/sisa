@@ -18,8 +18,8 @@ export function ProfilIncomeSheet({ isOpen, onClose, settings, onUpdate }: Props
   const lang = useLanguage()
   const [incomeType, setIncomeType] = useState<IncomeType>(settings.incomeType)
   const [incomeDay, setIncomeDay] = useState(String(settings.incomeDay ?? 25))
-  const [weekendBehavior, setWeekendBehavior] = useState<WeekendBehavior | null>(
-    settings.weekendBehavior,
+  const [weekendBehavior, setWeekendBehavior] = useState<WeekendBehavior>(
+    settings.weekendBehavior ?? 'tetap',
   )
   const [saving, setSaving] = useState(false)
 
@@ -47,7 +47,6 @@ export function ProfilIncomeSheet({ isOpen, onClose, settings, onUpdate }: Props
     ['maju-jumat', t('profil.income_weekend_maju', lang)],
     ['mundur-senin', t('profil.income_weekend_mundur', lang)],
     ['tetap', t('profil.income_weekend_tetap', lang)],
-    ['tidak-konsisten', t('profil.income_weekend_inconsistent', lang)],
   ]
 
   return (

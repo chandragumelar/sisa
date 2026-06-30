@@ -94,7 +94,7 @@ describe('buildSettings', () => {
     expect(s.incomeType).toBe('tetap')
     expect(s.incomeDay).toBe(25)
     expect(s.primaryCurrency).toBe('IDR')
-    expect(s.weekendBehavior).toBeNull()
+    expect(s.weekendBehavior).toBe('tetap')
     expect(s.lastExportedAt).toBeNull()
   })
 

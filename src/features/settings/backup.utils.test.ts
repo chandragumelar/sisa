@@ -18,7 +18,7 @@ const SETTINGS: BackupData['settings'] = {
   lastPaydayConfirmed: null,
   fixedIncome: null,
   primaryCurrency: 'IDR',
-  weekendBehavior: null,
+  weekendBehavior: 'tetap',
   onboardingCompleted: true,
   lastExportedAt: null,
 }

@@ -95,7 +95,7 @@ export function buildSettings(data: CompletedOnboardingData): Settings {
     avgIncomeBasis: data.avgIncomeBasis,
     lastPaydayConfirmed: data.lastPaydayConfirmed,
     primaryCurrency: data.primaryCurrency,
-    weekendBehavior: null,
+    weekendBehavior: 'tetap',
     onboardingCompleted: true,
     lastExportedAt: null,
   }
