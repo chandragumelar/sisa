@@ -575,6 +575,59 @@ export type StringKey =
   | 'home.jatah_lewat_badge'
   | 'home.jatah_lewat_title'
   | 'home.jatah_besok'
+  // insight
+  | 'insight.prev_month_aria'
+  | 'insight.next_month_aria'
+  | 'insight.hero_hemat'
+  | 'insight.hero_hemat_sub'
+  | 'insight.hero_boros'
+  | 'insight.hero_boros_sub'
+  | 'insight.hero_ratio'
+  | 'insight.hero_ratio_sub'
+  | 'insight.hero_neutral_calm'
+  | 'insight.hero_neutral_fresh'
+  | 'insight.hero_neutral_sub'
+  | 'insight.card_monthly'
+  | 'insight.metric_net'
+  | 'insight.metric_keluar'
+  | 'insight.metric_masuk'
+  | 'insight.monthly_label_expense'
+  | 'insight.monthly_label_income'
+  | 'insight.monthly_delta_less'
+  | 'insight.monthly_delta_more'
+  | 'insight.monthly_empty'
+  | 'insight.monthly_empty_sub'
+  | 'insight.card_category'
+  | 'insight.cat_empty'
+  | 'insight.cat_empty_sub'
+  | 'insight.cat_delta_up'
+  | 'insight.cat_delta_down'
+  | 'insight.cat_no_prev'
+  | 'insight.card_spend_pct'
+  | 'insight.spend_pct_from'
+  | 'insight.spend_pct_used'
+  | 'insight.spend_pct_left'
+  | 'insight.spend_pct_empty'
+  | 'insight.spend_pct_empty_sub'
+  | 'insight.card_daily'
+  | 'insight.daily_avg_sub'
+  | 'insight.daily_target_label'
+  | 'insight.daily_ok'
+  | 'insight.daily_over'
+  | 'insight.daily_no_target'
+  | 'insight.daily_actual_label'
+  | 'insight.daily_target_amt_label'
+  | 'insight.daily_empty'
+  | 'insight.daily_empty_sub'
+  | 'insight.card_ranking'
+  | 'insight.ranking_vs'
+  | 'insight.ranking_empty'
+  | 'insight.ranking_empty_sub'
+  | 'insight.card_top_tx'
+  | 'insight.top_tx_empty'
+  | 'insight.top_tx_empty_sub'
+  | 'insight.fx_skip'
+  | 'insight.nav_aria'
 
 export type StringDictionary = Record<StringKey, string>
 
@@ -1176,6 +1229,60 @@ const id: StringDictionary = {
   'home.jatah_lewat_badge': '⚠ Lewat',
   'home.jatah_lewat_title': 'Hari ini lewat {n}',
   'home.jatah_besok': 'Besok jatahmu nyusut jadi {n}',
+
+  // insight
+  'insight.prev_month_aria': 'Bulan sebelumnya',
+  'insight.next_month_aria': 'Bulan berikutnya',
+  'insight.hero_hemat': 'Bulan ini lo lebih hemat {pct}% dari {month}.',
+  'insight.hero_hemat_sub': 'pengeluaran turun {amount} dari bulan lalu',
+  'insight.hero_boros': 'Bulan ini lo lebih boros {pct}% dari {month}.',
+  'insight.hero_boros_sub': 'pengeluaran naik {amount} dari bulan lalu',
+  'insight.hero_ratio': 'Bulan ini lo pakai {pct}% dari pemasukan.',
+  'insight.hero_ratio_sub': 'sisa {amount} dari total {income}',
+  'insight.hero_neutral_calm': 'Bulan yang kalem.',
+  'insight.hero_neutral_fresh': 'Awal yang bersih.',
+  'insight.hero_neutral_sub': 'Mulai catat buat lihat insight',
+  'insight.card_monthly': 'Uang Bulanan',
+  'insight.metric_net': 'Net',
+  'insight.metric_keluar': 'Keluar',
+  'insight.metric_masuk': 'Masuk',
+  'insight.monthly_label_expense': 'Pengeluaran',
+  'insight.monthly_label_income': 'Pemasukan',
+  'insight.monthly_delta_less': '↓ pengeluaran {pct}% vs {month}',
+  'insight.monthly_delta_more': '↑ pengeluaran {pct}% vs {month}',
+  'insight.monthly_empty': 'Datanya masih ngumpul,\nbalik lagi nanti ya.',
+  'insight.monthly_empty_sub': 'butuh minimal 2 minggu data',
+  'insight.card_category': 'Kategori Bulanan',
+  'insight.cat_empty': 'Belum ada transaksi\nberkategori bulan ini.',
+  'insight.cat_empty_sub': 'catatan pertama = data pertama insight',
+  'insight.cat_delta_up': '↑ naik {pct}% dari {month}',
+  'insight.cat_delta_down': '↓ turun {pct}% dari {month}',
+  'insight.cat_no_prev': 'baru bulan ini',
+  'insight.card_spend_pct': 'Persen Pengeluaran dari Pemasukan',
+  'insight.spend_pct_from': 'dari pemasukan bulan ini',
+  'insight.spend_pct_used': 'dipakai · {amount}',
+  'insight.spend_pct_left': 'sisa · {amount}',
+  'insight.spend_pct_empty': 'Tambahkan pemasukan dulu\nbiar rasionya bisa dihitung.',
+  'insight.spend_pct_empty_sub': 'atur pemasukan di pengaturan profil',
+  'insight.card_daily': 'Pengeluaran Harian',
+  'insight.daily_avg_sub': 'rata-rata per hari bulan ini',
+  'insight.daily_target_label': 'target per hari',
+  'insight.daily_ok': '↓ masih di bawah target harian',
+  'insight.daily_over': '↑ di atas target harian',
+  'insight.daily_no_target': 'Atur target di alokasi',
+  'insight.daily_actual_label': 'aktual · {amount}/hari',
+  'insight.daily_target_amt_label': 'target · {amount}/hari',
+  'insight.daily_empty': 'Catat beberapa pengeluaran dulu,\nbaru rata-rata harian muncul.',
+  'insight.daily_empty_sub': 'data mulai terlihat setelah 3 hari',
+  'insight.card_ranking': 'Klasemen Kategori',
+  'insight.ranking_vs': 'dibanding {month}',
+  'insight.ranking_empty': 'Belum ada kategori\nyang dicatat bulan ini.',
+  'insight.ranking_empty_sub': 'kasih kategori ke tiap transaksi ya',
+  'insight.card_top_tx': 'Transaksi Terbesar',
+  'insight.top_tx_empty': 'Belum ada transaksi\nbulan ini.',
+  'insight.top_tx_empty_sub': 'transaksi pertama kamu bakal muncul di sini',
+  'insight.fx_skip': 'beberapa transaksi mata uang lain belum terhitung',
+  'insight.nav_aria': 'Lihat insight',
 }
 
 const en: StringDictionary = {
@@ -1772,6 +1879,60 @@ const en: StringDictionary = {
   'home.jatah_lewat_badge': '⚠ Over',
   'home.jatah_lewat_title': 'Today over by {n}',
   'home.jatah_besok': "Tomorrow's budget drops to {n}",
+
+  // insight
+  'insight.prev_month_aria': 'Previous month',
+  'insight.next_month_aria': 'Next month',
+  'insight.hero_hemat': 'You spent {pct}% less than {month}.',
+  'insight.hero_hemat_sub': 'spending down {amount} from last month',
+  'insight.hero_boros': 'You spent {pct}% more than {month}.',
+  'insight.hero_boros_sub': 'spending up {amount} from last month',
+  'insight.hero_ratio': 'You used {pct}% of your income this month.',
+  'insight.hero_ratio_sub': '{amount} left from total {income}',
+  'insight.hero_neutral_calm': 'A calm month.',
+  'insight.hero_neutral_fresh': 'A clean start.',
+  'insight.hero_neutral_sub': 'Start logging to see insights',
+  'insight.card_monthly': 'Monthly Overview',
+  'insight.metric_net': 'Net',
+  'insight.metric_keluar': 'Out',
+  'insight.metric_masuk': 'In',
+  'insight.monthly_label_expense': 'Spent',
+  'insight.monthly_label_income': 'Earned',
+  'insight.monthly_delta_less': '↓ spending {pct}% vs {month}',
+  'insight.monthly_delta_more': '↑ spending {pct}% vs {month}',
+  'insight.monthly_empty': 'Data is still collecting,\ncheck back soon.',
+  'insight.monthly_empty_sub': 'needs at least 2 weeks of data',
+  'insight.card_category': 'Monthly Categories',
+  'insight.cat_empty': 'No categorised transactions\nthis month.',
+  'insight.cat_empty_sub': 'first log = first insight data',
+  'insight.cat_delta_up': '↑ up {pct}% from {month}',
+  'insight.cat_delta_down': '↓ down {pct}% from {month}',
+  'insight.cat_no_prev': 'new this month',
+  'insight.card_spend_pct': 'Spend Rate',
+  'insight.spend_pct_from': 'of income this month',
+  'insight.spend_pct_used': 'spent · {amount}',
+  'insight.spend_pct_left': 'left · {amount}',
+  'insight.spend_pct_empty': 'Add your income first\nso the ratio can be calculated.',
+  'insight.spend_pct_empty_sub': 'set income in profile settings',
+  'insight.card_daily': 'Daily Spending',
+  'insight.daily_avg_sub': 'daily average this month',
+  'insight.daily_target_label': 'target per day',
+  'insight.daily_ok': '↓ below daily target',
+  'insight.daily_over': '↑ above daily target',
+  'insight.daily_no_target': 'Set target in allocation',
+  'insight.daily_actual_label': 'actual · {amount}/day',
+  'insight.daily_target_amt_label': 'target · {amount}/day',
+  'insight.daily_empty': 'Log a few expenses first,\nthen the daily average will appear.',
+  'insight.daily_empty_sub': 'visible after 3 days of data',
+  'insight.card_ranking': 'Category Ranking',
+  'insight.ranking_vs': 'vs {month}',
+  'insight.ranking_empty': 'No categories\nlogged this month.',
+  'insight.ranking_empty_sub': 'add a category to each transaction',
+  'insight.card_top_tx': 'Biggest Transactions',
+  'insight.top_tx_empty': 'No transactions\nthis month yet.',
+  'insight.top_tx_empty_sub': 'your first transaction will appear here',
+  'insight.fx_skip': 'some foreign currency transactions excluded',
+  'insight.nav_aria': 'View insights',
 }
 
 const strings: Record<Language, StringDictionary> = { id, en }

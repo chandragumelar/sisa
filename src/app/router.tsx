@@ -8,6 +8,7 @@ import { AjakPasanganPage } from '@/features/shared-profile/AjakPasanganPage'
 import { GabungKodePage } from '@/features/shared-profile/GabungKodePage'
 import { BerbagiKeamananPage } from '@/features/shared-profile/BerbagiKeamananPage'
 import { PulihkanPage } from '@/features/shared-profile/PulihkanPage'
+import { InsightPage } from '@/features/insight/InsightPage'
 import { RequireOnboarding, RequireSetupPending } from './guards'
 
 export const router = createBrowserRouter([
@@ -80,6 +81,14 @@ export const router = createBrowserRouter([
     element: (
       <RequireOnboarding>
         <PulihkanPage />
+      </RequireOnboarding>
+    ),
+  },
+  {
+    path: '/insight',
+    element: (
+      <RequireOnboarding>
+        <InsightPage />
       </RequireOnboarding>
     ),
   },

@@ -3,10 +3,34 @@
   background: var(--canvas);
   border-top: 1px solid var(--border-soft);
   flex-shrink: 0;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.insightBtn {
+  flex-shrink: 0;
+  width: 46px;
+  height: 46px;
+  border-radius: var(--radius-button);
+  border: 1px solid var(--border-hair);
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--ink-secondary);
+  box-shadow: var(--shadow-card);
+  transition: background 0.15s;
+}
+
+.insightBtn:active {
+  background: var(--surface-2);
 }
 
 .catatBtn {
-  width: 100%;
+  flex: 1;
+  width: auto;
   background: var(--surface);
   border: 1px solid var(--border-hair);
   border-radius: var(--radius-button);
