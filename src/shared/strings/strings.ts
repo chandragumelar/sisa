@@ -439,7 +439,6 @@ export type StringKey =
   | 'profil.income_weekend_maju'
   | 'profil.income_weekend_mundur'
   | 'profil.income_weekend_tetap'
-  | 'profil.income_weekend_inconsistent'
   | 'profil.income_freelance_note'
   | 'profil.income_save'
   // profil – license
@@ -1028,7 +1027,6 @@ const id: StringDictionary = {
   'profil.income_weekend_maju': 'Maju ke Jumat',
   'profil.income_weekend_mundur': 'Mundur ke Senin',
   'profil.income_weekend_tetap': 'Tetap di hari itu',
-  'profil.income_weekend_inconsistent': 'Tidak konsisten',
   'profil.income_freelance_note':
     'Freelance: sisa = saldo minimum akhir bulan. Payday = hari terakhir bulan.',
   'profil.income_save': 'Simpan',
@@ -1615,7 +1613,6 @@ const en: StringDictionary = {
   'profil.income_weekend_maju': 'Move earlier (Friday)',
   'profil.income_weekend_mundur': 'Push back (Monday)',
   'profil.income_weekend_tetap': 'Keep on that day',
-  'profil.income_weekend_inconsistent': 'Inconsistent',
   'profil.income_freelance_note':
     'Freelance: balance = min end-of-month balance. Payday = last day of month.',
   'profil.income_save': 'Save',

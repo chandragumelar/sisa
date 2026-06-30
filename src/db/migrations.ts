@@ -37,6 +37,16 @@ export function buildV3MigrationPatch(record: {
   return { frequency, anchorDate }
 }
 
+/**
+ * Backfill weekendBehavior for v12: null and 'tidak-konsisten' → 'tetap'.
+ * Exported for unit testing — called inside the Dexie upgrade callback.
+ */
+export function applyV12WeekendBehaviorFix(row: Record<string, unknown>): void {
+  if (row.weekendBehavior == null || row.weekendBehavior === 'tidak-konsisten') {
+    row.weekendBehavior = 'tetap'
+  }
+}
+
 export function applyMigrations(db: Dexie): void {
   // v1 — initial schema. No upgrade callback (nothing to migrate from).
   db.version(1).stores({
@@ -286,5 +296,23 @@ export function applyMigrations(db: Dexie): void {
             row.buatDipakai = row.jatahHarian * row.daysAtLock
           }
         })
+    })
+
+  db.version(12)
+    .stores({
+      transactions: '++id, walletId, date, type, currency',
+      wallets: '++id, currency, order',
+      tagihan: '++id, currency, isActive',
+      goals: '++id, currency, order',
+      settings: 'id',
+      license: 'id',
+      meta: 'key',
+      savedScenarios: '++id, savedAt',
+      categories: '++id, type',
+      allocation: 'id',
+      rates: '[base+target], base',
+    })
+    .upgrade((tx) => {
+      return tx.table('settings').toCollection().modify(applyV12WeekendBehaviorFix)
     })
 }

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buildV3MigrationPatch } from './migrations'
+import { buildV3MigrationPatch, applyV12WeekendBehaviorFix } from './migrations'
 
 describe('buildV3MigrationPatch', () => {
   it('rutin dueDay=15 → bulanan, anchorDate = day 15 of createdAt month', () => {
@@ -48,5 +48,33 @@ describe('buildV3MigrationPatch', () => {
     expect(record.recurrenceType).toBe('rutin')
     expect(record.dueDay).toBe(5)
     expect(Object.keys(patch)).toEqual(['frequency', 'anchorDate'])
+  })
+})
+
+describe('applyV12WeekendBehaviorFix', () => {
+  it('null weekendBehavior → tetap', () => {
+    const row: Record<string, unknown> = { weekendBehavior: null }
+    applyV12WeekendBehaviorFix(row)
+    expect(row.weekendBehavior).toBe('tetap')
+  })
+
+  it('undefined weekendBehavior → tetap', () => {
+    const row: Record<string, unknown> = {}
+    applyV12WeekendBehaviorFix(row)
+    expect(row.weekendBehavior).toBe('tetap')
+  })
+
+  it("'tidak-konsisten' → tetap", () => {
+    const row: Record<string, unknown> = { weekendBehavior: 'tidak-konsisten' }
+    applyV12WeekendBehaviorFix(row)
+    expect(row.weekendBehavior).toBe('tetap')
+  })
+
+  it("valid values unchanged: 'maju-jumat', 'mundur-senin', 'tetap'", () => {
+    for (const val of ['maju-jumat', 'mundur-senin', 'tetap']) {
+      const row: Record<string, unknown> = { weekendBehavior: val }
+      applyV12WeekendBehaviorFix(row)
+      expect(row.weekendBehavior).toBe(val)
+    }
   })
 })
