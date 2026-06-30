@@ -190,10 +190,10 @@ describe('isTagihanPaidThisPeriod', () => {
     expect(isTagihanPaidThisPeriod(makeTagihan({ lastPaidAt: JAN15_MIDNIGHT }), NOW_MS)).toBe(true)
   })
 
-  it('paid before due day this month → not yet paid', () => {
-    // Jan 5 payment for Jan 15 occurrence: Jan5 < Jan15midnight → not paid
+  it('paid early this month → paid (advance payment valid)', () => {
+    // Jan 5 payment for Jan 15 occurrence: monthStart=Jan1, Jan5 >= Jan1 → paid
     const paidAt = new Date(2026, 0, 5).getTime()
-    expect(isTagihanPaidThisPeriod(makeTagihan({ lastPaidAt: paidAt }), NOW_MS)).toBe(false)
+    expect(isTagihanPaidThisPeriod(makeTagihan({ lastPaidAt: paidAt }), NOW_MS)).toBe(true)
   })
 
   it('paid last month → not paid for this month', () => {
@@ -226,6 +226,50 @@ describe('isTagihanPaidThisPeriod', () => {
     expect(
       isTagihanPaidThisPeriod(makeTagihan({ frequency: 'sekali', lastPaidAt: null }), NOW_MS),
     ).toBe(false)
+  })
+
+  describe('advance payment + reset scenarios', () => {
+    it('a. due 30, today Jul 1, paid Jul 1 → paid (advance payment counts)', () => {
+      const JUL1_NOON = new Date('2026-07-01T12:00:00Z').getTime()
+      const JUL1_MORNING = new Date(2026, 6, 1, 9, 0, 0).getTime()
+      const tg = makeTagihan({
+        dueDay: 30,
+        anchorDate: new Date(2026, 0, 1).getTime(),
+        createdAt: new Date(2026, 0, 1).getTime(),
+        lastPaidAt: JUL1_MORNING,
+      })
+      expect(isTagihanPaidThisPeriod(tg, JUL1_NOON)).toBe(true)
+    })
+
+    it('b. overdue then paid late same month → paid', () => {
+      // dueDay=1, today=Jul 5, paid Jul 5 late for Jul 1 occurrence
+      // calcNextOccurrence skips Jul 1 (paid) → returns Aug 1 (upcoming)
+      // monthStart=Jul1, Jul5 >= Jul1 → paid
+      const JUL5_NOON = new Date('2026-07-05T12:00:00Z').getTime()
+      const JUL5_MORNING = new Date(2026, 6, 5, 9, 0, 0).getTime()
+      const tg = makeTagihan({
+        dueDay: 1,
+        anchorDate: new Date(2026, 0, 1).getTime(),
+        createdAt: new Date(2026, 0, 1).getTime(),
+        lastPaidAt: JUL5_MORNING,
+      })
+      expect(isTagihanPaidThisPeriod(tg, JUL5_NOON)).toBe(true)
+    })
+
+    it('c. paid Jun 30, now Aug 1 → new period, not yet paid (monthly reset)', () => {
+      // dueDay=30, lastPaidAt=Jun30 (paid previous period)
+      // now=Aug1: calcNextOccurrence returns Jul30 (overdue, unpaid)
+      // overdue path → isOccurrencePaid(Jul30) = Jun30 >= Jul30 → false
+      const AUG1_NOON = new Date('2026-08-01T12:00:00Z').getTime()
+      const JUN30_MIDNIGHT = new Date(2026, 5, 30).getTime()
+      const tg = makeTagihan({
+        dueDay: 30,
+        anchorDate: new Date(2026, 0, 1).getTime(),
+        createdAt: new Date(2026, 0, 1).getTime(),
+        lastPaidAt: JUN30_MIDNIGHT,
+      })
+      expect(isTagihanPaidThisPeriod(tg, AUG1_NOON)).toBe(false)
+    })
   })
 })
 
