@@ -47,7 +47,7 @@ export function TagihanDetailSheet({
           </span>
         </div>
         <div className={styles.row}>
-          <span className={styles.rowLabel}>{t('tagihan_detail.status', lang)}</span>
+          <span className={styles.rowLabel}>{t('tagihan_detail.due_date_label', lang)}</span>
           <span className={styles.rowValue}>
             {t('tagihan_detail.due_day', lang).replace('{day}', String(tagihan.dueDay))}
           </span>

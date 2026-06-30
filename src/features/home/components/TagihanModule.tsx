@@ -1,6 +1,12 @@
+import { ChevronRight } from 'lucide-react'
 import type { Tagihan } from '@/db/database'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
-import { rankTagihan, getTagihanUrgency, formatDueDate } from '../tagihan.utils'
+import {
+  rankTagihan,
+  getTagihanUrgency,
+  formatDueDate,
+  isTagihanPaidThisPeriod,
+} from '../tagihan.utils'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
 import styles from './TagihanModule.module.css'
@@ -34,7 +40,10 @@ export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap, on
 
   const overdue = ranked.filter((tg) => getTagihanUrgency(tg, nowMs) === 'lewat-tempo')
   const regular = ranked.filter((tg) => getTagihanUrgency(tg, nowMs) !== 'lewat-tempo')
-  const visibleRegular = regular.slice(0, MAX_REGULAR)
+  const sortedRegular = [...regular].sort(
+    (a, b) => Number(isTagihanPaidThisPeriod(a, nowMs)) - Number(isTagihanPaidThisPeriod(b, nowMs)),
+  )
+  const visibleRegular = sortedRegular.slice(0, MAX_REGULAR)
   const hiddenCount = regular.length - visibleRegular.length
 
   return (
@@ -114,28 +123,43 @@ export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap, on
             </div>
           ))}
 
-          {/* Regular rows — 2-col: name+date left, amount right */}
-          {visibleRegular.map((tg, i) => (
-            <button
-              key={tg.id}
-              className={styles.row}
-              style={{
-                borderBottom:
-                  i < visibleRegular.length - 1 || hiddenCount > 0
-                    ? '1px solid var(--border-soft)'
-                    : 'none',
-              }}
-              onClick={() => onRowTap(tg)}
-            >
-              <div className={styles.rowInfo}>
-                <span className={styles.rowName}>{tg.name}</span>
-                <span className={styles.rowDate}>jatuh tempo {formatDueDate(tg, nowMs)}</span>
-              </div>
-              <span className={styles.rowAmt}>
-                {formatCurrency(tg.nominalEstimate, tg.currency || currency)}
-              </span>
-            </button>
-          ))}
+          {/* Regular rows — 2-col: name+date left, chip+amount+chevron right */}
+          {visibleRegular.map((tg, i) => {
+            const paid = isTagihanPaidThisPeriod(tg, nowMs)
+            return (
+              <button
+                key={tg.id}
+                className={`${styles.row} ${paid ? styles.rowPaid : ''}`}
+                style={{
+                  borderBottom:
+                    i < visibleRegular.length - 1 || hiddenCount > 0
+                      ? '1px solid var(--border-soft)'
+                      : 'none',
+                }}
+                onClick={() => onRowTap(tg)}
+              >
+                <div className={styles.rowInfo}>
+                  <span className={paid ? styles.rowNamePaid : styles.rowName}>{tg.name}</span>
+                  <span className={styles.rowDate}>
+                    {paid
+                      ? t('tagihan_module.chip_paid', lang)
+                      : `jatuh tempo ${formatDueDate(tg, nowMs)}`}
+                  </span>
+                </div>
+                <div className={styles.rowRight}>
+                  <span className={paid ? styles.chipPaid : styles.chipUnpaid}>
+                    {paid
+                      ? t('tagihan_module.chip_paid', lang)
+                      : t('tagihan_module.chip_unpaid', lang)}
+                  </span>
+                  <span className={paid ? styles.rowAmtPaid : styles.rowAmt}>
+                    {formatCurrency(tg.nominalEstimate, tg.currency || currency)}
+                  </span>
+                  <ChevronRight size={14} stroke="var(--ink-tertiary)" />
+                </div>
+              </button>
+            )
+          })}
 
           {hiddenCount > 0 && (
             <button className={styles.expandRow} onClick={onAddTap}>
