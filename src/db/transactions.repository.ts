@@ -114,7 +114,10 @@ export async function getRecentTransactions(limit = 100): Promise<Transaction[]>
  *
  * income       = sum of masuk amounts in window
  * expense      = sum of abs(keluar + tagihan) amounts in window, excluding isFromSavings
- * spentToday   = expense subset where date >= today midnight
+ * spentToday   = daily spend subset: date >= today midnight, excludes tagihan settlements
+ *                (tagihanId != null). Tagihan settlements are already accounted for in
+ *                tagihanUnpaid — counting them in spentToday would double-penalise jatah harian.
+ *                Manual keluar (no tagihanId) still counts toward spentToday.
  */
 export async function getPeriodFlows(
   currency: string,
@@ -135,10 +138,12 @@ export async function getPeriodFlows(
   const isOperationalSpend = (t: (typeof txs)[number]) =>
     (t.type === 'keluar' || t.type === 'tagihan') && !t.isFromSavings
 
+  const isDailySpend = (t: (typeof txs)[number]) => isOperationalSpend(t) && t.tagihanId == null
+
   const expense = txs.filter(isOperationalSpend).reduce((s, t) => s + Math.abs(t.amount), 0)
 
   const spentToday = txs
-    .filter((t) => t.date >= todayStart && isOperationalSpend(t))
+    .filter((t) => t.date >= todayStart && isDailySpend(t))
     .reduce((s, t) => s + Math.abs(t.amount), 0)
 
   return { income, expense, spentToday }
