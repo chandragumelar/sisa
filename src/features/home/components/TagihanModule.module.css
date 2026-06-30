@@ -228,63 +228,160 @@
   font-weight: 600;
 }
 
-/* ── Total zone — tinted strip ────────────────────────── */
+/* ── Total zone — redesigned ──────────────────────────── */
 .totalZone {
+  margin: 0 -16px;
+  padding: 13px 16px 12px;
+  background: var(--surface-2);
+  border-top: 1px solid var(--border-hair);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.totalZoneAllPaid {
+  background: var(--signal-safe-bg);
+  border-top: 1px solid var(--signal-safe-br);
+}
+
+/* all_paid reward */
+.tzRewardRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tzAllPaidHero {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--signal-safe);
+  font-family: var(--font-sans);
+  letter-spacing: -0.1px;
+}
+
+.tzAllPaidSub {
+  font-size: 11px;
+  color: var(--signal-safe);
+  font-family: var(--font-sans);
+  opacity: 0.7;
+  margin-top: 1px;
+}
+
+/* hero block */
+.tzHero {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.tzHeroLabel {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+}
+
+.tzHeroNum {
+  font-size: 22px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--ink-primary);
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+}
+
+/* idr_paid — "Rp 0 strikethrough + pill" */
+.tzIdrPaidRow {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.tzHeroNumPaid {
+  font-size: 18px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--ink-tertiary);
+  letter-spacing: -0.3px;
+  text-decoration: line-through;
+  text-decoration-color: var(--signal-safe);
+}
+
+/* pills */
+.tzPillPaid {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  color: var(--signal-safe);
+  background: var(--signal-safe-bg);
+  border: 1px solid var(--signal-safe-br);
+  border-radius: 5px;
+  padding: 2px 7px;
+  line-height: 1.4;
+}
+
+.tzPillUnpaid {
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  color: var(--signal-caution);
+  background: var(--signal-caution-bg);
+  border: 1px solid var(--signal-caution-br);
+  border-radius: 5px;
+  padding: 2px 7px;
+  line-height: 1.4;
+}
+
+/* foreign currency rows */
+.tzForeignList {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  margin: 0 -16px;
-  padding: 12px 16px;
-  background: var(--surface-2);
-  border-top: 1px solid var(--border-soft);
-  border-bottom: 1px solid var(--border-soft);
 }
 
-.totalRow {
+.tzForeignRow {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-}
-
-.totalLabel {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 1.1px;
-  text-transform: uppercase;
-  color: var(--ink-tertiary);
-  font-family: var(--font-sans);
-}
-
-.totalNum {
-  font-family: var(--font-mono);
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--ink-primary);
-  font-feature-settings: 'tnum';
-  letter-spacing: -0.5px;
-}
-
-.totalRowOther {
-  display: flex;
   align-items: center;
-  justify-content: space-between;
 }
 
-.totalLabelOther {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.8px;
-  text-transform: uppercase;
-  color: var(--ink-tertiary);
-  font-family: var(--font-sans);
-}
-
-.totalNumOther {
+.tzForeignAmt {
+  font-size: 13px;
+  font-weight: 500;
   font-family: var(--font-mono);
-  font-size: 14px;
-  font-weight: 600;
   color: var(--ink-secondary);
-  font-feature-settings: 'tnum';
+}
+
+.tzForeignAmtPaid {
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--font-mono);
+  color: var(--ink-tertiary);
+  text-decoration: line-through;
+  text-decoration-color: var(--ink-tertiary);
+}
+
+/* divider */
+.tzDivider {
+  height: 1px;
+  background: var(--border-soft);
+}
+
+/* context row */
+.tzCtx {
+  font-size: 11px;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+}
+
+.tzCtxNum {
+  font-family: var(--font-mono);
+  font-weight: 500;
 }
 
 /* ── Empty + add ──────────────────────────────────────── */
