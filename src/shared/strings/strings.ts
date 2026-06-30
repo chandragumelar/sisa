@@ -205,6 +205,8 @@ export type StringKey =
   | 'tagihan_module.more'
   | 'tagihan_module.swipe_hint'
   | 'tagihan_module.add'
+  | 'tagihan_module.chip_unpaid'
+  | 'tagihan_module.chip_paid'
   // notif card
   | 'notif.both'
   | 'notif.overdue'
@@ -285,6 +287,7 @@ export type StringKey =
   | 'mark_paid.insufficient'
   | 'mark_paid.submit'
   // tagihan detail sheet
+  | 'tagihan_detail.due_date_label'
   | 'tagihan_detail.nominal'
   | 'tagihan_detail.due_day'
   | 'tagihan_detail.status'
@@ -785,6 +788,8 @@ const id: StringDictionary = {
   'tagihan_module.more': '{n} tagihan lainnya',
   'tagihan_module.swipe_hint': 'geser kiri untuk tandai dibayar',
   'tagihan_module.add': '+ Tambah tagihan',
+  'tagihan_module.chip_unpaid': 'Belum dibayar',
+  'tagihan_module.chip_paid': 'Lunas',
 
   'notif.both': '{n} komitmen lewat tempo & jatuh tempo hari ini',
   'notif.overdue': '{n} komitmen lewat tempo',
@@ -866,6 +871,7 @@ const id: StringDictionary = {
   'mark_paid.insufficient': 'Saldo {wallet} tidak cukup untuk pembayaran ini.',
   'mark_paid.submit': 'Tandai Dibayar',
 
+  'tagihan_detail.due_date_label': 'Jatuh tempo',
   'tagihan_detail.nominal': 'Nominal',
   'tagihan_detail.due_day': 'Tgl {day}',
   'tagihan_detail.status': 'Status',
@@ -1371,6 +1377,8 @@ const en: StringDictionary = {
   'tagihan_module.more': '{n} more bills',
   'tagihan_module.swipe_hint': 'swipe left to mark as paid',
   'tagihan_module.add': '+ Add bill',
+  'tagihan_module.chip_unpaid': 'Unpaid',
+  'tagihan_module.chip_paid': 'Paid',
 
   'notif.both': '{n} commitments overdue & due today',
   'notif.overdue': '{n} commitments overdue',
@@ -1452,6 +1460,7 @@ const en: StringDictionary = {
   'mark_paid.insufficient': 'Not enough balance in {wallet} for this payment.',
   'mark_paid.submit': 'Mark as Paid',
 
+  'tagihan_detail.due_date_label': 'Due date',
   'tagihan_detail.nominal': 'Amount',
   'tagihan_detail.due_day': 'Day {day}',
   'tagihan_detail.status': 'Status',

@@ -135,6 +135,56 @@
   font-family: var(--font-sans);
 }
 
+.rowPaid {
+  opacity: 0.55;
+}
+
+.rowNamePaid {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-primary);
+  font-family: var(--font-sans);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-decoration: line-through;
+}
+
+.rowRight {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.chipUnpaid {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--signal-caution);
+  background: var(--signal-caution-bg);
+  border: 1px solid var(--signal-caution-br);
+  border-radius: 4px;
+  padding: 2px 5px;
+  font-family: var(--font-sans);
+  white-space: nowrap;
+}
+
+.chipPaid {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--signal-safe);
+  background: var(--signal-safe-bg);
+  border: 1px solid var(--signal-safe-br);
+  border-radius: 4px;
+  padding: 2px 5px;
+  font-family: var(--font-sans);
+  white-space: nowrap;
+}
+
 .rowAmt {
   font-family: var(--font-mono);
   font-size: 14px;
@@ -144,6 +194,18 @@
   text-align: right;
   font-feature-settings: 'tnum';
   white-space: nowrap;
+}
+
+.rowAmtPaid {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-primary);
+  flex-shrink: 0;
+  text-align: right;
+  font-feature-settings: 'tnum';
+  white-space: nowrap;
+  text-decoration: line-through;
 }
 
 /* ── Expand ───────────────────────────────────────────── */
