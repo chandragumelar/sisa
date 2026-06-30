@@ -1,3 +1,4 @@
+import { Fragment } from 'react'
 import { ChevronRight } from 'lucide-react'
 import type { Tagihan } from '@/db/database'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
@@ -27,16 +28,43 @@ export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap, on
   const active = tagihan.filter((tg) => tg.isActive)
   const ranked = rankTagihan(active, nowMs)
 
-  const byCurrency = new Map<string, number>()
+  const currencyMap = new Map<string, { total: number; paid: number }>()
   for (const tg of active) {
     const c = tg.currency || currency
-    byCurrency.set(c, (byCurrency.get(c) ?? 0) + tg.nominalEstimate)
+    const prev = currencyMap.get(c) ?? { total: 0, paid: 0 }
+    currencyMap.set(c, {
+      total: prev.total + tg.nominalEstimate,
+      paid: prev.paid + (isTagihanPaidThisPeriod(tg, nowMs) ? tg.nominalEstimate : 0),
+    })
   }
-  const primaryTotal = byCurrency.get(currency) ?? 0
-  const otherTotals = [...byCurrency.entries()]
+  const idrData = currencyMap.get(currency) ?? { total: 0, paid: 0 }
+  const heroUnpaidIDR = idrData.total - idrData.paid
+  const idrPaid = idrData.paid
+  const idrTotal = idrData.total
+
+  const foreignRows = [...currencyMap.entries()]
     .filter(([c]) => c !== currency)
-    .map(([c, sum]) => ({ currency: c, sum }))
-    .sort((a, b) => b.sum - a.sum)
+    .map(([code, { total, paid }]) => ({
+      code,
+      totalFormatted: formatCurrency(total, code),
+      paid: total > 0 && paid === total,
+    }))
+    .sort((a, b) => a.code.localeCompare(b.code))
+
+  const allPaid = active.length > 0 && active.every((tg) => isTagihanPaidThisPeriod(tg, nowMs))
+  const hasForeign = foreignRows.length > 0
+
+  const totalZoneState = allPaid
+    ? ('all_paid' as const)
+    : !hasForeign
+      ? ('idr_only' as const)
+      : heroUnpaidIDR === 0
+        ? ('idr_paid' as const)
+        : ('unpaid' as const)
+
+  const ctxTemplate = t('tagihan_module.ctx_total', lang)
+  const [ctxBeforeTotal, ctxAfterTotalStr = ''] = ctxTemplate.split('{total}')
+  const [ctxBetween = '', ctxAfterPaid = ''] = ctxAfterTotalStr.split('{paid}')
 
   const overdue = ranked.filter((tg) => getTagihanUrgency(tg, nowMs) === 'lewat-tempo')
   const regular = ranked.filter((tg) => getTagihanUrgency(tg, nowMs) !== 'lewat-tempo')
@@ -179,18 +207,106 @@ export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap, on
             </button>
           )}
 
-          {/* Total zone — tinted, struk-style */}
-          <div className={styles.totalZone}>
-            <div className={styles.totalRow}>
-              <span className={styles.totalLabel}>Total</span>
-              <span className={styles.totalNum}>{formatCurrency(primaryTotal, currency)}</span>
-            </div>
-            {otherTotals.map(({ currency: c, sum }) => (
-              <div key={c} className={styles.totalRowOther}>
-                <span className={styles.totalLabelOther}>Total · {c}</span>
-                <span className={styles.totalNumOther}>{formatCurrency(sum, c)}</span>
-              </div>
-            ))}
+          {/* Total zone — redesigned */}
+          <div
+            className={`${styles.totalZone}${totalZoneState === 'all_paid' ? ` ${styles.totalZoneAllPaid}` : ''}`}
+          >
+            {totalZoneState === 'all_paid' ? (
+              <>
+                <div className={styles.tzRewardRow}>
+                  <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+                    <circle
+                      cx="11"
+                      cy="11"
+                      r="10"
+                      fill="var(--signal-safe-bg)"
+                      stroke="var(--signal-safe-br)"
+                      strokeWidth="1.2"
+                    />
+                    <path
+                      d="M6.5 11l3 3 6-6.5"
+                      stroke="var(--signal-safe)"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  <div>
+                    <div className={styles.tzAllPaidHero}>{t('tagihan_module.all_paid', lang)}</div>
+                    <div className={styles.tzAllPaidSub}>
+                      {t('tagihan_module.all_paid_sub', lang).replace('{n}', String(active.length))}
+                    </div>
+                  </div>
+                </div>
+                <div className={styles.tzDivider} />
+                <span className={styles.tzCtx}>
+                  {'Total '}
+                  <span className={styles.tzCtxNum}>{formatCurrency(idrTotal, currency)}</span>
+                  {foreignRows.map((fr) => (
+                    <Fragment key={fr.code}>
+                      {' · '}
+                      <span className={styles.tzCtxNum}>{fr.totalFormatted}</span>
+                    </Fragment>
+                  ))}
+                </span>
+              </>
+            ) : (
+              <>
+                <div className={styles.tzHero}>
+                  <span className={styles.tzHeroLabel}>
+                    {t('tagihan_module.unpaid_label', lang)}
+                  </span>
+                  {totalZoneState === 'idr_paid' ? (
+                    <div className={styles.tzIdrPaidRow}>
+                      <span className={styles.tzHeroNumPaid}>{formatCurrency(0, currency)}</span>
+                      <span className={styles.tzPillPaid}>
+                        <svg width="9" height="9" viewBox="0 0 9 9" fill="none" aria-hidden="true">
+                          <path
+                            d="M1.5 4.5l2 2 4-4"
+                            stroke="var(--signal-safe)"
+                            strokeWidth="1.3"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                        {t('tagihan_module.idr_lunas', lang)}
+                      </span>
+                    </div>
+                  ) : (
+                    <span className={styles.tzHeroNum}>
+                      {formatCurrency(heroUnpaidIDR, currency)}
+                    </span>
+                  )}
+                </div>
+
+                {hasForeign && (
+                  <div className={styles.tzForeignList}>
+                    {foreignRows.map((fr) => (
+                      <div key={fr.code} className={styles.tzForeignRow}>
+                        <span className={fr.paid ? styles.tzForeignAmtPaid : styles.tzForeignAmt}>
+                          {fr.totalFormatted}
+                        </span>
+                        <span className={fr.paid ? styles.tzPillPaid : styles.tzPillUnpaid}>
+                          {fr.paid
+                            ? t('tagihan_module.pill_paid', lang)
+                            : t('tagihan_module.pill_unpaid', lang)}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <div className={styles.tzDivider} />
+
+                <span className={styles.tzCtx}>
+                  {ctxBeforeTotal}
+                  <span className={styles.tzCtxNum}>{formatCurrency(idrTotal, currency)}</span>
+                  {ctxBetween}
+                  <span className={styles.tzCtxNum}>{formatCurrency(idrPaid, currency)}</span>
+                  {ctxAfterPaid}
+                </span>
+              </>
+            )}
           </div>
         </>
       )}
