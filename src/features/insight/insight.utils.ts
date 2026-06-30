@@ -1,0 +1,188 @@
+import type { Transaction } from '@/db/database'
+import type { Language } from '@/db/database'
+
+export type ChartMetric = 'net' | 'keluar' | 'masuk'
+
+export interface CategoryRow {
+  name: string
+  amount: number
+  prevAmount: number
+  deltaPct: number | null
+  highlighted: boolean // delta >= 30% upward spike
+}
+
+export interface TopTx {
+  label: string
+  category: string
+  date: number
+  amount: number
+}
+
+export interface MonthBar {
+  year: number
+  month: number // 0-indexed
+  net: number
+  keluar: number
+  masuk: number
+}
+
+export type HeroVariant =
+  | { kind: 'comparative'; hemat: boolean; deltaPct: number; deltaAmount: number }
+  | { kind: 'ratio'; pct: number; remaining: number; income: number }
+  | { kind: 'neutral'; hasExpense: boolean }
+
+export interface InsightData {
+  currTxs: Transaction[]
+  prevTxs: Transaction[]
+  allTxs: Transaction[]
+  jatahHarian: number | null
+  hasForeignSkipped: boolean
+}
+
+/** month is 0-indexed */
+export function getMonthBounds(year: number, month: number): { startMs: number; endMs: number } {
+  return {
+    startMs: new Date(year, month, 1).getTime(),
+    endMs: new Date(year, month + 1, 1).getTime(),
+  }
+}
+
+function isOpEx(t: Transaction): boolean {
+  return (t.type === 'keluar' || t.type === 'tagihan') && !t.isFromSavings && !t.isEarmark
+}
+
+function isIncome(t: Transaction): boolean {
+  return t.type === 'masuk' && !t.isEarmark
+}
+
+export function sumExpense(txs: Transaction[]): number {
+  return txs.filter(isOpEx).reduce((s, t) => s + Math.abs(t.amount), 0)
+}
+
+export function sumIncome(txs: Transaction[]): number {
+  return txs.filter(isIncome).reduce((s, t) => s + t.amount, 0)
+}
+
+export function spendPct(expense: number, income: number): number | null {
+  if (income <= 0) return null
+  return Math.round((expense / income) * 100)
+}
+
+export function dailyAvg(expense: number, daysElapsed: number): number {
+  if (daysElapsed <= 0) return 0
+  return Math.round(expense / daysElapsed)
+}
+
+export function buildHeroVariant(
+  currExpense: number,
+  currIncome: number,
+  prevExpense: number | null,
+): HeroVariant {
+  if (prevExpense !== null && prevExpense > 0) {
+    const delta = prevExpense - currExpense
+    const deltaPct = Math.abs(Math.round((delta / prevExpense) * 100))
+    return { kind: 'comparative', hemat: delta >= 0, deltaPct, deltaAmount: Math.abs(delta) }
+  }
+  if (currIncome > 0) {
+    const pct = spendPct(currExpense, currIncome) ?? 0
+    return { kind: 'ratio', pct, remaining: currIncome - currExpense, income: currIncome }
+  }
+  return { kind: 'neutral', hasExpense: currExpense > 0 }
+}
+
+export function aggregateByCategory(txs: Transaction[]): Map<string, number> {
+  const map = new Map<string, number>()
+  for (const t of txs) {
+    if (!isOpEx(t)) continue
+    const cat = t.category ?? 'Lainnya'
+    map.set(cat, (map.get(cat) ?? 0) + Math.abs(t.amount))
+  }
+  return map
+}
+
+const CATEGORY_CAP = 15
+const HIGHLIGHT_THRESHOLD = 30
+
+export function buildCategoryRanking(
+  curr: Map<string, number>,
+  prev: Map<string, number>,
+): CategoryRow[] {
+  const sorted = [...curr.entries()].sort((a, b) => b[1] - a[1])
+  const capped = sorted.slice(0, CATEGORY_CAP)
+  const rest = sorted.slice(CATEGORY_CAP)
+
+  const rows: CategoryRow[] = capped.map(([name, amount]) => {
+    const prevAmount = prev.get(name) ?? 0
+    const deltaPct = prevAmount > 0 ? Math.round(((amount - prevAmount) / prevAmount) * 100) : null
+    return {
+      name,
+      amount,
+      prevAmount,
+      deltaPct,
+      highlighted: deltaPct !== null && deltaPct >= HIGHLIGHT_THRESHOLD,
+    }
+  })
+
+  if (rest.length > 0) {
+    const restAmount = rest.reduce((s, [, v]) => s + v, 0)
+    rows.push({
+      name: 'Lainnya',
+      amount: restAmount,
+      prevAmount: 0,
+      deltaPct: null,
+      highlighted: false,
+    })
+  }
+
+  return rows
+}
+
+export function buildTop5(txs: Transaction[]): TopTx[] {
+  return txs
+    .filter(isOpEx)
+    .sort((a, b) => Math.abs(b.amount) - Math.abs(a.amount))
+    .slice(0, 5)
+    .map((t) => ({
+      label: t.label ?? t.category ?? 'Transaksi',
+      category: t.category ?? 'Lainnya',
+      date: t.date,
+      amount: Math.abs(t.amount),
+    }))
+}
+
+export function buildChartData(
+  allTxs: Transaction[],
+  endYear: number,
+  endMonth: number, // 0-indexed, inclusive
+): MonthBar[] {
+  return Array.from({ length: 12 }, (_, i) => {
+    const d = new Date(endYear, endMonth - 11 + i, 1)
+    const y = d.getFullYear()
+    const m = d.getMonth()
+    const { startMs, endMs } = getMonthBounds(y, m)
+    const monthTxs = allTxs.filter((t) => t.date >= startMs && t.date < endMs)
+    const keluar = sumExpense(monthTxs)
+    const masuk = sumIncome(monthTxs)
+    return { year: y, month: m, net: masuk - keluar, keluar, masuk }
+  })
+}
+
+export function formatTxDate(dateMs: number, lang: Language): string {
+  return new Date(dateMs).toLocaleDateString(lang === 'id' ? 'id-ID' : 'en-US', {
+    day: 'numeric',
+    month: 'short',
+  })
+}
+
+export function formatMonthShort(year: number, month: number, lang: Language): string {
+  return new Date(year, month, 1).toLocaleDateString(lang === 'id' ? 'id-ID' : 'en-US', {
+    month: 'short',
+  })
+}
+
+export function formatMonthLong(year: number, month: number, lang: Language): string {
+  return new Date(year, month, 1).toLocaleDateString(lang === 'id' ? 'id-ID' : 'en-US', {
+    month: 'long',
+    year: 'numeric',
+  })
+}

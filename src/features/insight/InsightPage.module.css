@@ -1,0 +1,520 @@
+/* ── Layout ───────────────────────────────────────────── */
+.shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  background: var(--canvas);
+}
+
+.page {
+  max-width: 430px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 14px calc(72px + env(safe-area-inset-bottom, 0px));
+}
+
+/* ── Month nav ───────────────────────────────────────── */
+.monthNav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 0 16px;
+  gap: 0;
+}
+
+.navBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  font-size: 22px;
+  line-height: 1;
+  transition: background 0.1s;
+  font-family: inherit;
+}
+
+.navBtn:hover:not(:disabled) {
+  background: var(--accent-bg);
+}
+
+.navBtn:disabled {
+  color: var(--ink-tertiary);
+  cursor: default;
+}
+
+.navMonth {
+  font-size: 15px;
+  font-weight: 700;
+  min-width: 140px;
+  text-align: center;
+  color: var(--ink-primary);
+  font-family: var(--font-sans);
+  text-transform: capitalize;
+}
+
+/* ── Card base ───────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border-hair);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 16px;
+  margin-bottom: 10px;
+}
+
+.cardFlush {
+  padding: 16px 0 0;
+}
+
+.cardFlushPad {
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.cardLabel {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+  margin-bottom: 10px;
+}
+
+.cardHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.cardHeaderRow .cardLabel {
+  margin-bottom: 0;
+}
+
+/* ── Numbers ─────────────────────────────────────────── */
+.bigNum {
+  font-family: var(--font-mono);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--ink-primary);
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+}
+
+.footerLabel {
+  font-size: 12px;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+}
+
+.footerNum {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink-primary);
+  margin-top: 3px;
+}
+
+/* ── Delta labels ────────────────────────────────────── */
+.deltaPos {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--signal-safe);
+  font-family: var(--font-sans);
+}
+
+.deltaAlert {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--signal-caution);
+  font-family: var(--font-sans);
+}
+
+.deltaMute {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+}
+
+/* ── Empty states ────────────────────────────────────── */
+.emptyBlock {
+  padding: 20px 0 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+}
+
+.emptyMsg {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-secondary);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.emptySub {
+  font-size: 11px;
+  color: var(--ink-tertiary);
+  margin: 0;
+}
+
+/* ── Metric pills (card ②) ───────────────────────────── */
+.metricPills {
+  display: flex;
+  gap: 4px;
+}
+
+.pill {
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--border-hair);
+  background: none;
+  cursor: pointer;
+  color: var(--ink-tertiary);
+  transition: all 0.12s;
+  line-height: 1.4;
+}
+
+.pillActive {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+/* ── Bar chart ───────────────────────────────────────── */
+.barsWrap {
+  margin: 14px 0 0;
+}
+
+/* ── Monthly footer ──────────────────────────────────── */
+.hdiv {
+  height: 1px;
+  background: var(--border-soft);
+  margin: 12px 0;
+}
+
+.monthlyFooter {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* ── Category select (card ③) ────────────────────────── */
+.catSelect {
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  color: var(--ink-secondary);
+  background: var(--surface-2);
+  border: 1px solid var(--border-hair);
+  border-radius: 6px;
+  padding: 4px 8px;
+  cursor: pointer;
+  outline: none;
+  max-width: 140px;
+}
+
+.catDetailWrap {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.catDetailRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.catDetailMonth {
+  font-size: 11px;
+  color: var(--ink-secondary);
+  width: 28px;
+  flex-shrink: 0;
+  font-family: var(--font-sans);
+  text-transform: capitalize;
+}
+
+.catDetailMonthMuted {
+  color: var(--ink-tertiary);
+}
+
+.catDetailTrack {
+  flex: 1;
+  height: 7px;
+  background: var(--border-hair);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.catDetailFill {
+  height: 100%;
+  border-radius: 4px;
+}
+
+.catDetailAmt {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  width: 70px;
+  text-align: right;
+  flex-shrink: 0;
+  color: var(--ink-primary);
+}
+
+.catDetailAmtMuted {
+  color: var(--ink-tertiary);
+}
+
+/* ── Spend pct bar (card ④) ──────────────────────────── */
+.pctRow {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.pctFrom {
+  font-size: 13px;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+}
+
+.btrack {
+  height: 8px;
+  background: var(--border-hair);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 12px 0 5px;
+}
+
+.bfill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.blegend {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+}
+
+/* ── Daily card (card ⑤) ─────────────────────────────── */
+.dailyRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.dailyTarget {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink-tertiary);
+  margin-top: 3px;
+}
+
+.dailyTrack {
+  height: 12px;
+  background: var(--border-hair);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-top: 16px;
+}
+
+.dailyFill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 6px;
+  opacity: 0.85;
+}
+
+/* ── Ranking rows (card ⑥) ───────────────────────────── */
+.rankRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+}
+
+.rankRowHighlight {
+  background: var(--signal-caution-bg);
+  margin: 0;
+}
+
+.rankNum {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink-tertiary);
+  width: 14px;
+  flex-shrink: 0;
+  text-align: right;
+  font-family: var(--font-sans);
+}
+
+.rankName {
+  font-size: 13px;
+  font-weight: 500;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-sans);
+}
+
+.rankBar {
+  flex: 2;
+  height: 5px;
+  background: var(--border-hair);
+  border-radius: 3px;
+  overflow: hidden;
+  min-width: 40px;
+}
+
+.rankBarFill {
+  height: 100%;
+  border-radius: 3px;
+}
+
+.rankAmt {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink-primary);
+  white-space: nowrap;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.rankDelta {
+  width: 40px;
+  text-align: right;
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--font-sans);
+}
+
+.rankingVs {
+  font-size: 11px;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+}
+
+/* ── Top tx rows (card ⑦) ────────────────────────────── */
+.txRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+}
+
+.txRowMuted {
+  opacity: 0.65;
+}
+
+.txRank {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink-tertiary);
+  width: 14px;
+  text-align: right;
+  flex-shrink: 0;
+  font-family: var(--font-sans);
+}
+
+.txInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.txName {
+  font-size: 13px;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-sans);
+  color: var(--ink-primary);
+}
+
+.txDate {
+  font-size: 11px;
+  color: var(--ink-tertiary);
+  margin-top: 1px;
+  font-family: var(--font-sans);
+}
+
+.txAmt {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+  color: var(--ink-primary);
+}
+
+.txSectionLabel {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+  color: var(--ink-secondary);
+  padding: 10px 0 4px;
+  font-family: var(--font-sans);
+}
+
+.txSectionLabelMuted {
+  color: var(--ink-tertiary);
+}
+
+/* ── Hero card ───────────────────────────────────────── */
+.heroHeadline {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.45;
+  letter-spacing: -0.2px;
+  text-wrap: pretty;
+  color: var(--ink-primary);
+  margin: 0;
+  font-family: var(--font-sans);
+}
+
+.heroSub {
+  font-size: 12px;
+  color: var(--ink-tertiary);
+  margin: 8px 0 0;
+  font-family: var(--font-sans);
+}
+
+/* ── Loading ─────────────────────────────────────────── */
+.loadingBlock {
+  height: 200px;
+}
+
+/* ── FX skip note ────────────────────────────────────── */
+.fxSkip {
+  font-size: 11px;
+  color: var(--ink-tertiary);
+  text-align: center;
+  margin: 0 0 8px;
+  font-family: var(--font-sans);
+}
