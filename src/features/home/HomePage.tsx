@@ -30,7 +30,6 @@ import {
 } from './home.utils'
 import { calcUnpaidTagihanTotal, getTagihanUrgency } from './tagihan.utils'
 import { sumExpense, sumIncome, spendPct } from '@/features/insight/insight.utils'
-import { formatCurrency } from '@/shared/utils/formatCurrency'
 import { shouldShowBackupReminder, calcBackupUrgency } from './backup-reminder.utils'
 import { calcBudgetPeriode, type BudgetMode } from '@/shared/utils/budget.utils'
 import { BRAND_STUDIO_WITH_COLLAB } from '@/constants/brand'
