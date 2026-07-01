@@ -20,6 +20,7 @@ import {
   buildCategoryRanking,
   buildTop5,
   buildChartData,
+  buildCategoryTrend,
   formatMonthShort,
   formatMonthLong,
   type InsightData,
@@ -125,6 +126,9 @@ export function InsightPage() {
   const prevCatMap = data ? aggregateByCategory(data.prevTxs) : new Map()
   const ranking = buildCategoryRanking(currCatMap, prevCatMap)
   const effectiveCat = selectedCat || ranking[0]?.name || ''
+  const categoryTrend = data
+    ? buildCategoryTrend(data.allTxs, effectiveCat, viewYear, viewMonth)
+    : []
   const currTop5 = data ? buildTop5(data.currTxs) : []
 
   // Auto-select category when ranking loads
@@ -210,7 +214,7 @@ export function InsightPage() {
               rows={ranking}
               selected={effectiveCat}
               onSelect={setSelectedCat}
-              currExpense={currExpense}
+              trend={categoryTrend}
               prevMonthShort={prevMonthShort}
               currency={currency}
               lang={lang}

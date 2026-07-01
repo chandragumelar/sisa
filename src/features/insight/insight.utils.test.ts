@@ -10,6 +10,7 @@ import {
   buildCategoryRanking,
   buildTop5,
   buildChartData,
+  buildCategoryTrend,
   formatMonthShort,
   buildDailyHeatmap,
   heatBucket,
@@ -305,6 +306,49 @@ describe('buildChartData', () => {
     expect(bars).toHaveLength(12)
     expect(bars[0].month).toBe(6) // July 2024 = month 6
     expect(bars[0].year).toBe(2024)
+  })
+})
+
+describe('buildCategoryTrend', () => {
+  it('single-month data → length 1 (leading empties stripped)', () => {
+    const tx = makeTx(1, 'keluar', -100_000, 'Makan', 'Nasi', '2025-06-10')
+    const bars = buildCategoryTrend([tx], 'Makan', 2025, 5)
+    expect(bars).toHaveLength(1)
+    expect(bars[0].year).toBe(2025)
+    expect(bars[0].month).toBe(5)
+    expect(bars[0].amount).toBe(100_000)
+  })
+
+  it('only matches the requested category', () => {
+    const makan = makeTx(1, 'keluar', -100_000, 'Makan', 'Nasi', '2025-06-10')
+    const kopi = makeTx(2, 'keluar', -50_000, 'Kopi', 'Kopi', '2025-06-10')
+    const bars = buildCategoryTrend([makan, kopi], 'Makan', 2025, 5)
+    expect(bars).toHaveLength(1)
+    expect(bars[0].amount).toBe(100_000) // kopi excluded
+  })
+
+  it('income excluded (isOpEx filter)', () => {
+    const income = makeTx(1, 'masuk', 5_000_000, 'Makan', 'Gaji', '2025-06-10')
+    const bars = buildCategoryTrend([income], 'Makan', 2025, 5)
+    expect(bars).toHaveLength(1)
+    expect(bars[0].amount).toBe(0)
+  })
+
+  it('gap in middle preserved', () => {
+    // Makan in Apr (month 3) and Jun (month 5), nothing in May
+    const apr = makeTx(1, 'keluar', -100_000, 'Makan', '', '2025-04-10')
+    const jun = makeTx(2, 'keluar', -200_000, 'Makan', '', '2025-06-10')
+    const bars = buildCategoryTrend([apr, jun], 'Makan', 2025, 5)
+    expect(bars).toHaveLength(3)
+    expect(bars[0].month).toBe(3) // Apr
+    expect(bars[1].amount).toBe(0) // May gap preserved
+    expect(bars[2].month).toBe(5) // Jun
+  })
+
+  it('no data → returns 1 bar (current month, amount 0)', () => {
+    const bars = buildCategoryTrend([], 'Makan', 2025, 5)
+    expect(bars).toHaveLength(1)
+    expect(bars[0].amount).toBe(0)
   })
 })
 

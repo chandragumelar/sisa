@@ -192,6 +192,39 @@ export function formatMonthShort(year: number, month: number, lang: Language): s
   return `${name}-${yy}`.toLowerCase()
 }
 
+export interface CategoryMonthBar {
+  year: number
+  month: number // 0-indexed
+  amount: number
+}
+
+export function buildCategoryTrend(
+  allTxs: Transaction[],
+  category: string,
+  endYear: number,
+  endMonth: number,
+): CategoryMonthBar[] {
+  const WINDOW = 12
+  const all = Array.from({ length: WINDOW }, (_, i) => {
+    const d = new Date(endYear, endMonth - 11 + i, 1)
+    const y = d.getFullYear()
+    const m = d.getMonth()
+    const { startMs, endMs } = getMonthBounds(y, m)
+    const amount = allTxs
+      .filter(
+        (t) =>
+          isOpEx(t) &&
+          t.date >= startMs &&
+          t.date < endMs &&
+          (t.category ?? 'Lainnya') === category,
+      )
+      .reduce((s, t) => s + Math.abs(t.amount), 0)
+    return { year: y, month: m, amount }
+  })
+  const firstActive = all.findIndex((b) => b.amount > 0)
+  return all.slice(firstActive === -1 ? all.length - 1 : firstActive)
+}
+
 export interface DayCell {
   day: number
   total: number
