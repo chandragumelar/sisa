@@ -142,6 +142,23 @@ export function isTagihanPaidThisPeriod(tagihan: Tagihan, nowMs: number): boolea
   if (tagihan.frequency === 'sekali') return true
   const occ = calcNextOccurrence(tagihan, nowMs)
   if (occ === null) return false
+
+  const today = new Date(nowMs)
+  const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime()
+
+  // Overdue: calcNextOccurrence only returns unpaid past occurrences here
+  if (occ.getTime() < todayMidnight) {
+    return isOccurrencePaid(tagihan, occ.getTime())
+  }
+
+  // Upcoming bulanan: monthly reset rule (§5) — any payment this calendar month counts,
+  // regardless of exact due date (handles advance payments + late overdue pay in same month)
+  if (tagihan.frequency === 'bulanan') {
+    const monthStart = new Date(today.getFullYear(), today.getMonth(), 1).getTime()
+    return tagihan.lastPaidAt >= monthStart
+  }
+
+  // Non-bulanan upcoming: unchanged behaviour
   return isOccurrencePaid(tagihan, occ.getTime())
 }
 
