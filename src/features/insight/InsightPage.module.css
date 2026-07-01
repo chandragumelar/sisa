@@ -269,43 +269,11 @@
   color: var(--ink-tertiary);
 }
 
-/* ── Arc ring (card ③) ───────────────────────────────── */
-.ringWrap {
-  position: relative;
-  width: 110px;
-  height: 110px;
-  margin: 12px auto 0;
-}
-
-.ringsvg {
-  display: block;
-}
-
-.ringCenter {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.ringAmount {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--ink-primary);
-  text-align: center;
-  letter-spacing: -0.3px;
-  padding: 0 4px;
-  line-height: 1.2;
-}
-
 .catPctLabel {
   font-size: 11px;
   color: var(--ink-tertiary);
   font-family: var(--font-sans);
-  text-align: center;
-  margin: 6px 0 0;
+  margin: 4px 0 0;
 }
 
 /* ── Spend pct bar (card ④) ──────────────────────────── */

@@ -1,24 +1,22 @@
 import type { Language } from '@/db/database'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
 import { t } from '@/shared/strings/strings'
-import type { CategoryRow } from './insight.utils'
+import type { CategoryRow, CategoryMonthBar } from './insight.utils'
+import { formatMonthShort } from './insight.utils'
 import styles from './InsightPage.module.css'
 
-const CX = 55
-const CY = 55
-const R = 42
-const CIRCUMFERENCE = 2 * Math.PI * R // ≈ 263.9
-
-function arcDash(proportion: number): string {
-  const fill = Math.max(0, Math.min(proportion, 1)) * CIRCUMFERENCE
-  return `${fill} ${CIRCUMFERENCE}`
-}
+const BAR_W = 20
+const GAP = 4
+const H = 54
+const PAD_T = 6
+const LABEL_H = 18
+const SVG_H = PAD_T + H + LABEL_H
 
 interface Props {
   rows: CategoryRow[]
   selected: string
   onSelect: (cat: string) => void
-  currExpense: number
+  trend: CategoryMonthBar[]
   prevMonthShort: string
   currency: string
   lang: Language
@@ -28,7 +26,7 @@ export function InsightCategoryCard({
   rows,
   selected,
   onSelect,
-  currExpense,
+  trend,
   prevMonthShort,
   currency,
   lang,
@@ -49,10 +47,6 @@ export function InsightCategoryCard({
 
   const row = rows.find((r) => r.name === selected) ?? rows[0]
 
-  const currProportion = currExpense > 0 ? row.amount / currExpense : 0
-  const prevProportion = currExpense > 0 && row.prevAmount > 0 ? row.prevAmount / currExpense : 0
-  const currPct = Math.round(currProportion * 100)
-
   let deltaText = ''
   let deltaClass = styles.deltaMute
   if (row.deltaPct === null) {
@@ -72,6 +66,11 @@ export function InsightCategoryCard({
     deltaClass = styles.deltaMute
   }
 
+  const n = trend.length
+  const svgW = n * (BAR_W + GAP) - GAP
+  const maxAmt = Math.max(...trend.map((b) => b.amount), 1)
+  const labelY = PAD_T + H + 4
+
   return (
     <div className={styles.card}>
       <div className={styles.cardHeaderRow}>
@@ -90,56 +89,53 @@ export function InsightCategoryCard({
         </select>
       </div>
 
-      <div className={styles.ringWrap}>
-        <svg
-          width="110"
-          height="110"
-          viewBox="0 0 110 110"
-          className={styles.ringsvg}
-          aria-hidden="true"
-        >
-          {/* Full track */}
-          <circle cx={CX} cy={CY} r={R} fill="none" stroke="var(--border-hair)" strokeWidth="10" />
-          {/* Prev month arc (redup reference) */}
-          {prevProportion > 0 && (
-            <circle
-              cx={CX}
-              cy={CY}
-              r={R}
-              fill="none"
-              stroke="var(--ink-tertiary)"
-              strokeWidth="10"
-              strokeOpacity="0.35"
-              strokeDasharray={arcDash(prevProportion)}
-              strokeLinecap="round"
-              transform={`rotate(-90 ${CX} ${CY})`}
-            />
-          )}
-          {/* Curr month arc */}
-          <circle
-            cx={CX}
-            cy={CY}
-            r={R}
-            fill="none"
-            stroke="var(--accent)"
-            strokeWidth="10"
-            strokeDasharray={arcDash(currProportion)}
-            strokeLinecap="round"
-            transform={`rotate(-90 ${CX} ${CY})`}
-          />
-        </svg>
-
-        <div className={styles.ringCenter}>
-          <div className={styles.ringAmount}>{formatCurrency(row.amount, currency)}</div>
-        </div>
+      <div className={styles.bigNum} style={{ marginTop: 8 }}>
+        {formatCurrency(row.amount, currency)}
       </div>
-
-      <p className={styles.catPctLabel}>
-        {t('insight.cat_pct_of_total', lang).replace('{pct}', String(currPct))}
-      </p>
       <p className={`${deltaClass}`} style={{ marginTop: 4 }}>
         {deltaText}
       </p>
+      <p className={styles.catPctLabel}>
+        {t('insight.cat_pct_of_total', lang).replace('{pct}', String(row.pctOfTotal))}
+      </p>
+
+      <div className={styles.barsWrap}>
+        <svg viewBox={`0 0 ${svgW} ${SVG_H}`} width="100%" height={SVG_H} aria-hidden>
+          {trend.map((bar, i) => {
+            const isLast = i === n - 1
+            const fill = isLast ? 'var(--accent)' : 'var(--border-hair)'
+            const barH = Math.max((bar.amount / maxAmt) * H, 1)
+            return (
+              <rect
+                key={i}
+                x={i * (BAR_W + GAP)}
+                y={PAD_T + H - barH}
+                width={BAR_W}
+                height={barH}
+                fill={fill}
+                rx="2"
+              />
+            )
+          })}
+          {trend.map((bar, i) => {
+            const cx = i * (BAR_W + GAP) + BAR_W / 2
+            return (
+              <text
+                key={`lbl-${i}`}
+                x={cx}
+                y={labelY}
+                textAnchor="end"
+                fontSize="8"
+                fill="var(--ink-tertiary)"
+                fontFamily="var(--font-sans)"
+                transform={`rotate(-40, ${cx}, ${labelY})`}
+              >
+                {formatMonthShort(bar.year, bar.month, lang)}
+              </text>
+            )
+          })}
+        </svg>
+      </div>
     </div>
   )
 }
