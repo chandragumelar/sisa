@@ -13,49 +13,38 @@
   padding: 0 14px calc(72px + env(safe-area-inset-bottom, 0px));
 }
 
-/* ── Month nav ───────────────────────────────────────── */
-.monthNav {
+/* ── Page header ─────────────────────────────────────── */
+.pageHeader {
+  max-width: 430px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 6px 14px 10px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 12px 0 16px;
-  gap: 0;
+  gap: 10px;
 }
 
-.navBtn {
-  background: none;
-  border: none;
-  cursor: pointer;
+.backBtn {
   width: 36px;
   height: 36px;
-  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--accent);
-  font-size: 22px;
-  line-height: 1;
-  transition: background 0.1s;
-  font-family: inherit;
+  background: var(--surface);
+  border: 1px solid var(--border-hair);
+  border-radius: 10px;
+  cursor: pointer;
+  color: var(--ink-primary);
+  flex-shrink: 0;
 }
 
-.navBtn:hover:not(:disabled) {
-  background: var(--accent-bg);
-}
-
-.navBtn:disabled {
-  color: var(--ink-tertiary);
-  cursor: default;
-}
-
-.navMonth {
-  font-size: 15px;
+.pageTitle {
+  font-size: 16px;
   font-weight: 700;
-  min-width: 140px;
-  text-align: center;
   color: var(--ink-primary);
   font-family: var(--font-sans);
   text-transform: capitalize;
+  letter-spacing: -0.1px;
 }
 
 /* ── Card base ───────────────────────────────────────── */
@@ -280,6 +269,45 @@
   color: var(--ink-tertiary);
 }
 
+/* ── Arc ring (card ③) ───────────────────────────────── */
+.ringWrap {
+  position: relative;
+  width: 110px;
+  height: 110px;
+  margin: 12px auto 0;
+}
+
+.ringsvg {
+  display: block;
+}
+
+.ringCenter {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ringAmount {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-primary);
+  text-align: center;
+  letter-spacing: -0.3px;
+  padding: 0 4px;
+  line-height: 1.2;
+}
+
+.catPctLabel {
+  font-size: 11px;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+  text-align: center;
+  margin: 6px 0 0;
+}
+
 /* ── Spend pct bar (card ④) ──────────────────────────── */
 .pctRow {
   display: flex;
@@ -332,19 +360,47 @@
   margin-top: 3px;
 }
 
-.dailyTrack {
-  height: 12px;
+.bulletTrack {
+  position: relative;
+  height: 10px;
   background: var(--border-hair);
-  border-radius: 6px;
-  overflow: hidden;
-  margin-top: 16px;
+  border-radius: 5px;
+  margin-top: 14px;
+  overflow: visible;
 }
 
-.dailyFill {
+.bulletFill {
   height: 100%;
   background: var(--accent);
-  border-radius: 6px;
+  border-radius: 5px;
   opacity: 0.85;
+}
+
+.bulletFillOver {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 5px;
+  opacity: 0.85;
+}
+
+.bulletMarker {
+  position: absolute;
+  top: -3px;
+  width: 2px;
+  height: 16px;
+  background: var(--ink-primary);
+  border-radius: 1px;
+  transform: translateX(-50%);
+}
+
+.bulletMarkerOver {
+  position: absolute;
+  top: -3px;
+  width: 2px;
+  height: 16px;
+  background: var(--signal-caution);
+  border-radius: 1px;
+  transform: translateX(-50%);
 }
 
 /* ── Ranking rows (card ⑥) ───────────────────────────── */

@@ -559,6 +559,7 @@ export type StringKey =
   | 'home.insight_teaser_clean'
   | 'home.insight_teaser_spend_only'
   | 'home.insight_teaser_generic'
+  | 'home.insight_card_label'
   | 'home.insight_card_cta'
   | 'home.expand_show'
   | 'home.expand_hide'
@@ -582,8 +583,7 @@ export type StringKey =
   | 'home.jatah_lewat_title'
   | 'home.jatah_besok'
   // insight
-  | 'insight.prev_month_aria'
-  | 'insight.next_month_aria'
+  | 'insight.back_aria'
   | 'insight.hero_hemat'
   | 'insight.hero_hemat_sub'
   | 'insight.hero_boros'
@@ -609,6 +609,7 @@ export type StringKey =
   | 'insight.cat_delta_up'
   | 'insight.cat_delta_down'
   | 'insight.cat_no_prev'
+  | 'insight.cat_pct_of_total'
   | 'insight.card_spend_pct'
   | 'insight.spend_pct_from'
   | 'insight.spend_pct_used'
@@ -814,13 +815,13 @@ const id: StringDictionary = {
     'Pemasukan periode dikurangi tagihan belum bayar dan target nabung. Ini uang yang "bebas" untuk operasional harian.',
   'saldo.expand_btn': 'kok bisa segini?',
   'saldo.collapse_btn': 'sembunyikan',
-  'saldo.rincian_tagihan': '− Tagihan belum bayar',
+  'saldo.rincian_tagihan': '− Tagihan belum dibayar',
   'saldo.rincian_nabung': '− Udah ditabung',
   'saldo.rincian_anggaran': '= Sisa sekarang',
   'saldo.rincian_hari_periode': '+ {n} hari periode',
   'saldo.rincian_jatah': '= Jatah Harian',
   'saldo.rincian_udah_jalan': 'Udah jalan {x} hari → sisa {amount}',
-  'saldo.total_saldo_label': 'total uang',
+  'saldo.total_saldo_label': 'total semua wallet',
   'saldo.uang_mengendap_label': 'Uang Mengendap',
   'saldo.uang_mengendap_sub': 'di luar periode ini',
   'saldo.rincian_udah_kepakai': '− Udah kepakai',
@@ -1202,23 +1203,25 @@ const id: StringDictionary = {
   'settings.delete_type_placeholder': 'HAPUS',
   'settings.delete_confirm_btn': 'Hapus semua data',
 
-  'alokasi.buat_dipakai': 'Buat dipakai',
+  'alokasi.buat_dipakai': 'Uang operasional sehari-hari',
   'alokasi.uang_mengendap': 'Uang Mengendap',
   'alokasi.mengendap_note': 'Uang Mengendap boleh Rp 0.',
   'alokasi.jatah_harian_approx': 'Jatah harian ≈',
   'alokasi.sampai_gajian': 'sampai gajian berikutnya',
   'alokasi.sampai_akhir_bulan': 'sampai akhir bulan',
   'alokasi.atur_ulang_title': 'Atur ulang alokasi',
-  'alokasi.bisa_kamu_atur': 'Bisa kamu atur',
-  'alokasi.ubah_dipakai': 'Ubah buat dipakai',
+  'alokasi.bisa_kamu_atur': 'Nominal yang bisa kamu atur',
+  'alokasi.ubah_dipakai': 'Atur alokasi uangmu',
   'alokasi.mengendap_auto': 'OTOMATIS',
 
-  'home.sisa_uang': 'SISA UANG',
-  'home.sisa_uang_tooltip': 'Total saldo − tagihan belum dibayar − Uang Mengendap',
+  'home.sisa_uang': 'SISA UANGMU',
+  'home.sisa_uang_tooltip':
+    'Ini uang yang aman kamu pakai sampai gajian berikutnya.\n\nHitungannya:\nTotal saldo semua wallet\n− Tagihan yang belum dibayar\n− Uang Mengendap (yang sengaja kamu diamkan, bukan buat dipakai)\n= Sisa uangmu\n\nJatah harian dihitung dari angka ini dibagi sisa hari sampai gajian.',
   'home.insight_teaser_ratio': 'Bulan ini lo pakai {pct}% dari pemasukan',
   'home.insight_teaser_clean': 'Belum ada pengeluaran bulan ini. Awal yang bersih',
   'home.insight_teaser_spend_only': 'Bulan ini lo udah keluar {jumlah}',
   'home.insight_teaser_generic': 'Catatan pertamamu bakal muncul jadi insight di sini',
+  'home.insight_card_label': 'INSIGHT',
   'home.insight_card_cta': 'Lihat Insight →',
   'home.expand_show': 'kok bisa segini?',
   'home.expand_hide': 'sembunyikan',
@@ -1243,8 +1246,7 @@ const id: StringDictionary = {
   'home.jatah_besok': 'Besok jatahmu nyusut jadi {n}',
 
   // insight
-  'insight.prev_month_aria': 'Bulan sebelumnya',
-  'insight.next_month_aria': 'Bulan berikutnya',
+  'insight.back_aria': 'Kembali',
   'insight.hero_hemat': 'Bulan ini lo lebih hemat {pct}% dari {month}.',
   'insight.hero_hemat_sub': 'pengeluaran turun {amount} dari bulan lalu',
   'insight.hero_boros': 'Bulan ini lo lebih boros {pct}% dari {month}.',
@@ -1270,6 +1272,7 @@ const id: StringDictionary = {
   'insight.cat_delta_up': '↑ naik {pct}% dari {month}',
   'insight.cat_delta_down': '↓ turun {pct}% dari {month}',
   'insight.cat_no_prev': 'baru bulan ini',
+  'insight.cat_pct_of_total': '{pct}% dari pengeluaran bulan ini',
   'insight.card_spend_pct': 'Persen Pengeluaran dari Pemasukan',
   'insight.spend_pct_from': 'dari pemasukan bulan ini',
   'insight.spend_pct_used': 'dipakai · {amount}',
@@ -1290,7 +1293,7 @@ const id: StringDictionary = {
   'insight.ranking_vs': 'dibanding {month}',
   'insight.ranking_empty': 'Belum ada kategori\nyang dicatat bulan ini.',
   'insight.ranking_empty_sub': 'kasih kategori ke tiap transaksi ya',
-  'insight.card_top_tx': 'Transaksi Terbesar',
+  'insight.card_top_tx': '5 Transaksi Besar',
   'insight.top_tx_empty': 'Belum ada transaksi\nbulan ini.',
   'insight.top_tx_empty_sub': 'transaksi pertama kamu bakal muncul di sini',
   'insight.fx_skip': 'beberapa transaksi mata uang lain belum terhitung',
@@ -1478,7 +1481,7 @@ const en: StringDictionary = {
   'saldo.rincian_hari_periode': '+ {n} days in period',
   'saldo.rincian_jatah': '= Daily Budget',
   'saldo.rincian_udah_jalan': '{x} days in → {amount} left',
-  'saldo.total_saldo_label': 'total money',
+  'saldo.total_saldo_label': 'total wallets',
   'saldo.uang_mengendap_label': 'Parked Money',
   'saldo.uang_mengendap_sub': 'outside this period',
   'saldo.rincian_udah_kepakai': '− Already spent',
@@ -1858,23 +1861,25 @@ const en: StringDictionary = {
   'settings.delete_type_placeholder': 'DELETE',
   'settings.delete_confirm_btn': 'Delete all data',
 
-  'alokasi.buat_dipakai': 'For spending',
+  'alokasi.buat_dipakai': 'Daily operational money',
   'alokasi.uang_mengendap': 'Parked Money',
   'alokasi.mengendap_note': 'Parked Money can be Rp 0.',
   'alokasi.jatah_harian_approx': 'Daily budget ≈',
   'alokasi.sampai_gajian': 'until next payday',
   'alokasi.sampai_akhir_bulan': 'until end of month',
   'alokasi.atur_ulang_title': 'Reallocate',
-  'alokasi.bisa_kamu_atur': 'Available to allocate',
-  'alokasi.ubah_dipakai': 'Change spending amount',
+  'alokasi.bisa_kamu_atur': 'Amount you can allocate',
+  'alokasi.ubah_dipakai': 'Set your allocation',
   'alokasi.mengendap_auto': 'AUTO',
 
-  'home.sisa_uang': 'MONEY LEFT',
-  'home.sisa_uang_tooltip': 'Total balance − unpaid bills − Parked Money',
+  'home.sisa_uang': 'YOUR MONEY LEFT',
+  'home.sisa_uang_tooltip':
+    "This is the money that's safe to spend until your next payday.\n\nHow it's calculated:\nTotal balance across all wallets\n− Unpaid bills\n− Parked Money (money you set aside, not for spending)\n= Your money left\n\nYour daily budget comes from this divided by days remaining until payday.",
   'home.insight_teaser_ratio': "You've used {pct}% of income this month",
   'home.insight_teaser_clean': 'No spending yet this month. Clean start',
   'home.insight_teaser_spend_only': "You've spent {jumlah} this month",
   'home.insight_teaser_generic': 'Your first entries will show up as insights here',
+  'home.insight_card_label': 'INSIGHTS',
   'home.insight_card_cta': 'View Insights →',
   'home.expand_show': 'how is this possible?',
   'home.expand_hide': 'hide',
@@ -1899,8 +1904,7 @@ const en: StringDictionary = {
   'home.jatah_besok': "Tomorrow's budget drops to {n}",
 
   // insight
-  'insight.prev_month_aria': 'Previous month',
-  'insight.next_month_aria': 'Next month',
+  'insight.back_aria': 'Back',
   'insight.hero_hemat': 'You spent {pct}% less than {month}.',
   'insight.hero_hemat_sub': 'spending down {amount} from last month',
   'insight.hero_boros': 'You spent {pct}% more than {month}.',
@@ -1926,6 +1930,7 @@ const en: StringDictionary = {
   'insight.cat_delta_up': '↑ up {pct}% from {month}',
   'insight.cat_delta_down': '↓ down {pct}% from {month}',
   'insight.cat_no_prev': 'new this month',
+  'insight.cat_pct_of_total': "{pct}% of this month's spending",
   'insight.card_spend_pct': 'Spend Rate',
   'insight.spend_pct_from': 'of income this month',
   'insight.spend_pct_used': 'spent · {amount}',
@@ -1946,7 +1951,7 @@ const en: StringDictionary = {
   'insight.ranking_vs': 'vs {month}',
   'insight.ranking_empty': 'No categories\nlogged this month.',
   'insight.ranking_empty_sub': 'add a category to each transaction',
-  'insight.card_top_tx': 'Biggest Transactions',
+  'insight.card_top_tx': '5 Biggest Transactions',
   'insight.top_tx_empty': 'No transactions\nthis month yet.',
   'insight.top_tx_empty_sub': 'your first transaction will appear here',
   'insight.fx_skip': 'some foreign currency transactions excluded',

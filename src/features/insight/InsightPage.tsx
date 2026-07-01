@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { ChevronLeft } from 'lucide-react'
 import { useClock } from '@/app/providers/useClock'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { getSettings } from '@/db/settings.repository'
@@ -33,11 +35,14 @@ import styles from './InsightPage.module.css'
 export function InsightPage() {
   const clock = useClock()
   const lang = useLanguage()
+  const navigate = useNavigate()
   const nowMs = clock.now()
   const today = new Date(nowMs)
 
-  const [viewYear, setViewYear] = useState(today.getFullYear())
-  const [viewMonth, setViewMonth] = useState(today.getMonth())
+  // Locked to current month — no navigation
+  const viewYear = today.getFullYear()
+  const viewMonth = today.getMonth()
+
   const [metric, setMetric] = useState<ChartMetric>('net')
   const [selectedCat, setSelectedCat] = useState('')
   const [data, setData] = useState<InsightData | null>(null)
@@ -100,41 +105,18 @@ export function InsightPage() {
     return () => {
       cancelled = true
     }
-  }, [viewYear, viewMonth])
-
-  function prevMonth() {
-    if (viewMonth === 0) {
-      setViewYear((y) => y - 1)
-      setViewMonth(11)
-    } else setViewMonth((m) => m - 1)
-    setSelectedCat('')
-  }
-
-  function nextMonth() {
-    const now = new Date(nowMs)
-    if (viewYear === now.getFullYear() && viewMonth === now.getMonth()) return
-    if (viewMonth === 11) {
-      setViewYear((y) => y + 1)
-      setViewMonth(0)
-    } else setViewMonth((m) => m + 1)
-    setSelectedCat('')
-  }
-
-  const isCurrentMonth = viewYear === today.getFullYear() && viewMonth === today.getMonth()
-  const isNextDisabled = isCurrentMonth
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const prevY = viewMonth === 0 ? viewYear - 1 : viewYear
   const prevM = viewMonth === 0 ? 11 : viewMonth - 1
-  const currMonthShort = formatMonthShort(viewYear, viewMonth, lang)
   const prevMonthShort = formatMonthShort(prevY, prevM, lang)
+  const prevMonthLong = formatMonthLong(prevY, prevM, lang)
 
   const currExpense = data ? sumExpense(data.currTxs) : 0
   const currIncome = data ? sumIncome(data.currTxs) : 0
   const prevExpense = data ? sumExpense(data.prevTxs) : 0
   const pct = spendPct(currExpense, currIncome)
-  const daysElapsed = isCurrentMonth
-    ? today.getDate()
-    : new Date(viewYear, viewMonth + 1, 0).getDate()
+  const daysElapsed = today.getDate()
   const avgDaily = dailyAvg(currExpense, daysElapsed)
   const hero = data
     ? buildHeroVariant(currExpense, currIncome, prevExpense > 0 ? prevExpense : null)
@@ -145,7 +127,6 @@ export function InsightPage() {
   const ranking = buildCategoryRanking(currCatMap, prevCatMap)
   const effectiveCat = selectedCat || ranking[0]?.name || ''
   const currTop5 = data ? buildTop5(data.currTxs) : []
-  const prevTop5 = data ? buildTop5(data.prevTxs) : []
 
   // Auto-select category when ranking loads
   useEffect(() => {
@@ -185,27 +166,18 @@ export function InsightPage() {
 
   return (
     <div className={styles.shell}>
-      <main className={styles.page}>
-        {/* Month nav */}
-        <div className={styles.monthNav}>
-          <button
-            className={styles.navBtn}
-            onClick={prevMonth}
-            aria-label={t('insight.prev_month_aria', lang)}
-          >
-            ‹
-          </button>
-          <span className={styles.navMonth}>{formatMonthLong(viewYear, viewMonth, lang)}</span>
-          <button
-            className={styles.navBtn}
-            onClick={nextMonth}
-            disabled={isNextDisabled}
-            aria-label={t('insight.next_month_aria', lang)}
-          >
-            ›
-          </button>
-        </div>
+      <header className={styles.pageHeader}>
+        <button
+          className={styles.backBtn}
+          onClick={() => navigate(-1)}
+          aria-label={t('insight.back_aria', lang)}
+        >
+          <ChevronLeft size={18} strokeWidth={1.8} />
+        </button>
+        <span className={styles.pageTitle}>{formatMonthLong(viewYear, viewMonth, lang)}</span>
+      </header>
 
+      <main className={styles.page}>
         {loading ? (
           <div className={styles.loadingBlock} />
         ) : (
@@ -238,7 +210,7 @@ export function InsightPage() {
               rows={ranking}
               selected={effectiveCat}
               onSelect={setSelectedCat}
-              currMonthShort={currMonthShort}
+              currExpense={currExpense}
               prevMonthShort={prevMonthShort}
               currency={currency}
               lang={lang}
@@ -281,7 +253,7 @@ export function InsightPage() {
               )}
             </div>
 
-            {/* ⑤ Daily */}
+            {/* ⑤ Daily — bullet chart */}
             <div className={styles.card}>
               <div className={styles.cardLabel}>{t('insight.card_daily', lang)}</div>
               {currExpense === 0 ? (
@@ -326,32 +298,43 @@ export function InsightPage() {
                       </div>
                     )}
                   </div>
-                  {data?.jatahHarian != null && data.jatahHarian > 0 && (
-                    <>
-                      <div className={styles.dailyTrack}>
-                        <div
-                          className={styles.dailyFill}
-                          style={{
-                            width: `${Math.min(Math.round((avgDaily / data.jatahHarian) * 100), 100)}%`,
-                          }}
-                        />
-                      </div>
-                      <div className={styles.blegend}>
-                        <span>
-                          {t('insight.daily_actual_label', lang).replace(
-                            '{amount}',
-                            formatCurrency(avgDaily, currency),
-                          )}
-                        </span>
-                        <span>
-                          {t('insight.daily_target_amt_label', lang).replace(
-                            '{amount}',
-                            formatCurrency(data.jatahHarian, currency),
-                          )}
-                        </span>
-                      </div>
-                    </>
-                  )}
+                  {data?.jatahHarian != null &&
+                    data.jatahHarian > 0 &&
+                    (() => {
+                      const target = data.jatahHarian
+                      const isOver = avgDaily > target
+                      const domain = Math.max(avgDaily, target) * 1.15
+                      const fillPct = Math.min((avgDaily / domain) * 100, 100)
+                      const markerPct = (target / domain) * 100
+                      return (
+                        <>
+                          <div className={styles.bulletTrack}>
+                            <div
+                              className={isOver ? styles.bulletFillOver : styles.bulletFill}
+                              style={{ width: `${fillPct}%` }}
+                            />
+                            <div
+                              className={isOver ? styles.bulletMarkerOver : styles.bulletMarker}
+                              style={{ left: `${markerPct}%` }}
+                            />
+                          </div>
+                          <div className={styles.blegend}>
+                            <span>
+                              {t('insight.daily_actual_label', lang).replace(
+                                '{amount}',
+                                formatCurrency(avgDaily, currency),
+                              )}
+                            </span>
+                            <span>
+                              {t('insight.daily_target_amt_label', lang).replace(
+                                '{amount}',
+                                formatCurrency(target, currency),
+                              )}
+                            </span>
+                          </div>
+                        </>
+                      )
+                    })()}
                   {data?.jatahHarian == null && (
                     <p className={styles.deltaMute} style={{ marginTop: 8, fontSize: 11 }}>
                       {t('insight.daily_no_target', lang)}
@@ -364,20 +347,13 @@ export function InsightPage() {
             {/* ⑥ Ranking */}
             <InsightRankingCard
               rows={ranking}
-              prevMonthShort={prevMonthShort}
+              prevMonthLong={prevMonthLong}
               currency={currency}
               lang={lang}
             />
 
-            {/* ⑦ Top transactions */}
-            <InsightTopTxCard
-              currTop={currTop5}
-              prevTop={prevTop5}
-              currency={currency}
-              currMonthShort={currMonthShort}
-              prevMonthShort={prevMonthShort}
-              lang={lang}
-            />
+            {/* ⑦ Top transactions — current month only */}
+            <InsightTopTxCard currTop={currTop5} currency={currency} lang={lang} />
           </>
         )}
       </main>

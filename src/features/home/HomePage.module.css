@@ -162,18 +162,17 @@
 }
 
 .insightCard {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  text-align: left;
   background: var(--surface);
   border: 1px solid var(--border-hair);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-card);
   padding: var(--pad-card);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
   cursor: pointer;
-  width: 100%;
-  text-align: left;
   font-family: inherit;
 }
 
@@ -181,19 +180,33 @@
   opacity: 0.7;
 }
 
+.insightCardTop {
+  display: flex;
+  align-items: center;
+}
+
+.insightCardLabel {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+}
+
 .insightCardText {
   font-size: 13px;
   color: var(--ink-secondary);
-  line-height: 1.4;
+  line-height: 1.45;
   font-family: var(--font-sans);
-  flex: 1;
 }
 
-.insightCardBtn {
+.insightCardCta {
+  display: block;
+  text-align: right;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--accent);
-  white-space: nowrap;
   font-family: var(--font-sans);
-  flex-shrink: 0;
+  margin-top: 2px;
 }
