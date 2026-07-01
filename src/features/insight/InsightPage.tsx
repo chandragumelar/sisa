@@ -256,7 +256,6 @@ export function InsightPage() {
             {/* ⑤ Daily — heatmap */}
             <InsightDailyCard
               currTxs={data?.currTxs ?? []}
-              jatahHarian={data?.jatahHarian ?? null}
               viewYear={viewYear}
               viewMonth={viewMonth}
               currency={currency}
