@@ -217,42 +217,24 @@
   margin-top: 1px;
 }
 
-.insightBars {
+.insightSplitTrack {
   display: flex;
-  gap: 4px;
-  height: 52px;
-  align-items: center;
-  margin: 6px 0 2px;
+  height: 10px;
+  border-radius: 999px;
+  overflow: hidden;
+  margin: 8px 0 4px;
 }
 
-.insightBarWrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+.insightSplitSpend {
   height: 100%;
-  flex: 1;
-}
-
-.insightBarUp {
-  width: 100%;
-  border-radius: 3px 3px 0 0;
-  background: var(--signal-safe);
-  min-height: 2px;
-}
-
-.insightBarDown {
-  width: 100%;
-  border-radius: 0 0 3px 3px;
   background: var(--signal-caution);
-  min-height: 2px;
+  flex-shrink: 0;
 }
 
-.insightBarBaseline {
-  width: 100%;
-  height: 1px;
-  background: var(--border-hair);
-  flex-shrink: 0;
+.insightSplitSafe {
+  height: 100%;
+  background: var(--signal-safe);
+  flex: 1;
 }
 
 .insightCta {
