@@ -195,7 +195,7 @@ export function formatMonthShort(year: number, month: number, lang: Language): s
 export interface DayCell {
   day: number
   total: number
-  txs: { label: string; amount: number }[]
+  txs: { label: string; category: string; amount: number }[]
 }
 
 export function buildDailyHeatmap(txs: Transaction[], year: number, month: number): DayCell[] {
@@ -214,7 +214,8 @@ export function buildDailyHeatmap(txs: Transaction[], year: number, month: numbe
     const amt = Math.abs(tx.amount)
     cells[idx].total += amt
     cells[idx].txs.push({
-      label: tx.label ?? tx.category ?? 'Transaksi',
+      label: tx.label ?? '',
+      category: tx.category ?? '',
       amount: amt,
     })
   }

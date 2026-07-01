@@ -22,7 +22,7 @@ const DAY_HEADERS_EN = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 interface SheetDay {
   day: number
   total: number
-  txs: { label: string; amount: number }[]
+  txs: { label: string; category: string; amount: number }[]
 }
 
 export function InsightDailyCard({ currTxs, viewYear, viewMonth, currency, lang }: Props) {
@@ -132,12 +132,20 @@ export function InsightDailyCard({ currTxs, viewYear, viewMonth, currency, lang 
               <div className={styles.shEmptyBody}>{t('insight.daily_sheet_empty', lang)}</div>
             ) : (
               <div className={styles.shBody}>
-                {sheetDay.txs.map((tx, i) => (
-                  <div key={i} className={styles.shTx}>
-                    <span className={styles.shTxN}>{tx.label}</span>
-                    <span className={styles.shTxA}>{formatCurrency(tx.amount, currency)}</span>
-                  </div>
-                ))}
+                {sheetDay.txs.map((tx, i) => {
+                  const lbl = tx.label.trim()
+                  const cat = tx.category.trim()
+                  const display =
+                    lbl && cat
+                      ? `${lbl} · ${cat}`
+                      : lbl || cat || t('insight.daily_tx_fallback', lang)
+                  return (
+                    <div key={i} className={styles.shTx}>
+                      <span className={styles.shTxN}>{display}</span>
+                      <span className={styles.shTxA}>{formatCurrency(tx.amount, currency)}</span>
+                    </div>
+                  )
+                })}
               </div>
             )}
             {sheetDay.txs.length > 0 && (

@@ -330,6 +330,7 @@ describe('buildDailyHeatmap', () => {
     expect(cells[9].total).toBe(80_000) // day 10 = index 9
     expect(cells[9].txs).toHaveLength(1)
     expect(cells[9].txs[0].label).toBe('Nasi Goreng')
+    expect(cells[9].txs[0].category).toBe('Makan')
   })
 
   it('income txs are excluded (isOpEx filter)', () => {
@@ -338,18 +339,39 @@ describe('buildDailyHeatmap', () => {
     expect(cells[24].total).toBe(0)
   })
 
-  it('label resolution: label ?? category ?? fallback', () => {
-    const withLabel = makeTx(1, 'keluar', -10_000, 'Makan', 'Custom Label', '2025-06-01')
+  it('label and category stored separately — no collapse', () => {
+    const tx = makeTx(1, 'keluar', -10_000, 'Makan', 'Nasi Goreng', '2025-06-01')
+    const cells = buildDailyHeatmap([tx], 2025, 5)
+    expect(cells[0].txs[0].label).toBe('Nasi Goreng')
+    expect(cells[0].txs[0].category).toBe('Makan')
+  })
+
+  it('tx without label → label is empty string, category preserved', () => {
     const noLabel = { ...makeTx(2, 'keluar', -10_000, 'Makan', '', '2025-06-02'), label: undefined }
-    const noLabelNoCat = {
-      ...makeTx(3, 'keluar', -10_000, '', '', '2025-06-03'),
+    const cells = buildDailyHeatmap([noLabel], 2025, 5)
+    expect(cells[1].txs[0].label).toBe('')
+    expect(cells[1].txs[0].category).toBe('Makan')
+  })
+
+  it('tx without category → category is empty string, label preserved', () => {
+    const noCat = {
+      ...makeTx(3, 'keluar', -10_000, '', 'Custom Note', '2025-06-03'),
+      category: undefined,
+    }
+    const cells = buildDailyHeatmap([noCat], 2025, 5)
+    expect(cells[2].txs[0].label).toBe('Custom Note')
+    expect(cells[2].txs[0].category).toBe('')
+  })
+
+  it('tx without label and category → both empty strings', () => {
+    const bare = {
+      ...makeTx(4, 'keluar', -10_000, '', '', '2025-06-04'),
       label: undefined,
       category: undefined,
     }
-    const cells = buildDailyHeatmap([withLabel, noLabel, noLabelNoCat], 2025, 5)
-    expect(cells[0].txs[0].label).toBe('Custom Label')
-    expect(cells[1].txs[0].label).toBe('Makan')
-    expect(cells[2].txs[0].label).toBe('Transaksi')
+    const cells = buildDailyHeatmap([bare], 2025, 5)
+    expect(cells[3].txs[0].label).toBe('')
+    expect(cells[3].txs[0].category).toBe('')
   })
 })
 
