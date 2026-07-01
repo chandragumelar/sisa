@@ -1,6 +1,7 @@
 import type { Language } from '@/db/database'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
 import { t } from '@/shared/strings/strings'
+import { formatMonthShort } from './insight.utils'
 import type { MonthBar, ChartMetric } from './insight.utils'
 import styles from './InsightPage.module.css'
 
@@ -19,24 +20,35 @@ interface Props {
 const METRICS: ChartMetric[] = ['net', 'keluar', 'masuk']
 const BAR_W = 20
 const GAP = 4
-const SVG_H = 66
 const H = 54
 const PAD_T = 6
-const SVG_W = 12 * (BAR_W + GAP) - GAP
+const LABEL_H = 18
+const SVG_H = PAD_T + H + LABEL_H
 
-function BarChart({ data, metric }: { data: MonthBar[]; metric: ChartMetric }) {
+function BarChart({
+  data,
+  metric,
+  lang,
+}: {
+  data: MonthBar[]
+  metric: ChartMetric
+  lang: Language
+}) {
+  const n = data.length
+  const svgW = n * (BAR_W + GAP) - GAP
   const values = data.map((d) => d[metric])
   const maxAbs = Math.max(...values.map((v) => Math.abs(v)), 1)
   const midY = PAD_T + H / 2
+  const labelY = PAD_T + H + 4
 
   return (
-    <svg viewBox={`0 0 ${SVG_W} ${SVG_H}`} width="100%" height={SVG_H} aria-hidden>
+    <svg viewBox={`0 0 ${svgW} ${SVG_H}`} width="100%" height={SVG_H} aria-hidden>
       {metric === 'net' && (
-        <line x1="0" y1={midY} x2={SVG_W} y2={midY} stroke="var(--border-soft)" strokeWidth="1" />
+        <line x1="0" y1={midY} x2={svgW} y2={midY} stroke="var(--border-soft)" strokeWidth="1" />
       )}
       {data.map((bar, i) => {
         const val = bar[metric]
-        const isLast = i === data.length - 1
+        const isLast = i === n - 1
         const fill = isLast ? 'var(--accent)' : 'var(--border-hair)'
         if (metric === 'net') {
           const barH = Math.max((Math.abs(val) / maxAbs) * (H / 2), 1)
@@ -64,6 +76,23 @@ function BarChart({ data, metric }: { data: MonthBar[]; metric: ChartMetric }) {
             fill={fill}
             rx="2"
           />
+        )
+      })}
+      {data.map((bar, i) => {
+        const cx = i * (BAR_W + GAP) + BAR_W / 2
+        return (
+          <text
+            key={`lbl-${i}`}
+            x={cx}
+            y={labelY}
+            textAnchor="end"
+            fontSize="8"
+            fill="var(--ink-tertiary)"
+            fontFamily="var(--font-sans)"
+            transform={`rotate(-40, ${cx}, ${labelY})`}
+          >
+            {formatMonthShort(bar.year, bar.month, lang)}
+          </text>
         )
       })}
     </svg>
@@ -144,7 +173,7 @@ export function InsightMonthlyCard({
             </p>
           )}
           <div className={styles.barsWrap}>
-            <BarChart data={chartData} metric={metric} />
+            <BarChart data={chartData} metric={metric} lang={lang} />
           </div>
           <div className={styles.hdiv} />
           <div className={styles.monthlyFooter}>
