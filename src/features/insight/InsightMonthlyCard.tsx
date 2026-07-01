@@ -9,6 +9,7 @@ interface Props {
   currExpense: number
   currIncome: number
   prevExpense: number
+  prevIncome: number
   prevMonthShort: string
   chartData: MonthBar[]
   metric: ChartMetric
@@ -103,6 +104,7 @@ export function InsightMonthlyCard({
   currExpense,
   currIncome,
   prevExpense,
+  prevIncome,
   prevMonthShort,
   chartData,
   metric,
@@ -111,28 +113,47 @@ export function InsightMonthlyCard({
   lang,
 }: Props) {
   const net = currIncome - currExpense
-  const hasPrev = prevExpense > 0
+  const prevNet = prevIncome - prevExpense
 
   let bigNum = ''
   let deltaLine: { text: string; positive: boolean } | null = null
 
-  if (metric === 'net') {
-    bigNum = (net >= 0 ? '+' : '') + formatCurrency(net, currency)
-    if (hasPrev) {
-      const prevNet = 0 // prev income unknown here; compare expense only
-      void prevNet
+  if (metric === 'keluar') {
+    bigNum = formatCurrency(currExpense, currency)
+    if (prevExpense > 0) {
       const deltaPct = Math.round(Math.abs((currExpense - prevExpense) / prevExpense) * 100)
       const less = currExpense <= prevExpense
-      const key = less ? 'insight.monthly_delta_less' : 'insight.monthly_delta_more'
       deltaLine = {
-        text: t(key, lang).replace('{pct}', String(deltaPct)).replace('{month}', prevMonthShort),
+        text: t(less ? 'insight.monthly_delta_less' : 'insight.monthly_delta_more', lang)
+          .replace('{pct}', String(deltaPct))
+          .replace('{month}', prevMonthShort),
         positive: less,
       }
     }
-  } else if (metric === 'keluar') {
-    bigNum = formatCurrency(currExpense, currency)
-  } else {
+  } else if (metric === 'masuk') {
     bigNum = formatCurrency(currIncome, currency)
+    if (prevIncome > 0) {
+      const deltaPct = Math.round(Math.abs((currIncome - prevIncome) / prevIncome) * 100)
+      const up = currIncome >= prevIncome
+      deltaLine = {
+        text: t(up ? 'insight.monthly_delta_income_up' : 'insight.monthly_delta_income_down', lang)
+          .replace('{pct}', String(deltaPct))
+          .replace('{month}', prevMonthShort),
+        positive: up,
+      }
+    }
+  } else {
+    // net
+    bigNum = (net >= 0 ? '+' : '') + formatCurrency(net, currency)
+    if (prevExpense > 0 || prevIncome > 0) {
+      const diff = net - prevNet
+      deltaLine = {
+        text: t(diff >= 0 ? 'insight.monthly_delta_net_up' : 'insight.monthly_delta_net_down', lang)
+          .replace('{amount}', formatCurrency(Math.abs(diff), currency))
+          .replace('{month}', prevMonthShort),
+        positive: diff >= 0,
+      }
+    }
   }
 
   const isEmpty = currExpense === 0 && currIncome === 0
