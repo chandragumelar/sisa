@@ -461,6 +461,21 @@
   flex-shrink: 0;
 }
 
+.rankAmtCol {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
+.rankAmtPct {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  color: var(--ink-tertiary);
+  white-space: nowrap;
+  line-height: 1.3;
+}
+
 .rankDelta {
   width: 40px;
   text-align: right;
