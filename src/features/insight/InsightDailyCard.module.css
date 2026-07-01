@@ -75,11 +75,6 @@
   background: var(--heat-5);
 }
 
-/* over-budget ring */
-.over {
-  box-shadow: 0 0 0 2px var(--signal-caution);
-}
-
 /* date number inside cell */
 .hmDn {
   position: absolute;
@@ -148,33 +143,6 @@
 }
 .hmSw[data-h='5'] {
   background: var(--heat-5);
-}
-
-.hmCautionGrp {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  margin-left: auto;
-  flex-shrink: 0;
-}
-
-.hmCautionSw {
-  width: 12px;
-  height: 12px;
-  border-radius: 3px;
-  background: var(--heat-2);
-  box-shadow: 0 0 0 2px var(--signal-caution);
-  flex-shrink: 0;
-}
-
-/* ── Sparse note ─────────────────────────────────────── */
-.hmNote {
-  text-align: center;
-  font-size: 11px;
-  color: var(--ink-tertiary);
-  margin-top: 12px;
-  line-height: 1.5;
-  font-family: var(--font-sans);
 }
 
 /* ── Bottom sheet content ────────────────────────────── */
@@ -247,8 +215,4 @@
   font-family: var(--font-mono);
   font-size: 15px;
   font-weight: 700;
-}
-
-.shFootTotalWarn {
-  color: var(--signal-caution);
 }

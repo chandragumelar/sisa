@@ -623,10 +623,8 @@ export type StringKey =
   | 'insight.card_daily'
   | 'insight.daily_empty'
   | 'insight.daily_empty_sub'
-  | 'insight.daily_sparse_note'
   | 'insight.daily_legend_low'
   | 'insight.daily_legend_high'
-  | 'insight.daily_legend_over'
   | 'insight.daily_sheet_empty'
   | 'insight.daily_sheet_total'
   | 'insight.card_ranking'
@@ -1286,13 +1284,11 @@ const id: StringDictionary = {
   'insight.spend_pct_left': 'sisa · {amount}',
   'insight.spend_pct_empty': 'Tambahkan pemasukan dulu\nbiar rasionya bisa dihitung.',
   'insight.spend_pct_empty_sub': 'atur pemasukan di pengaturan profil',
-  'insight.card_daily': 'Pengeluaran Harian',
+  'insight.card_daily': 'Ritme Harian',
   'insight.daily_empty': 'Belum ada pengeluaran\nbulan ini.',
   'insight.daily_empty_sub': 'mulai mencatat — pola kamu bakal muncul di sini',
-  'insight.daily_sparse_note': 'pola muncul setelah beberapa hari',
-  'insight.daily_legend_low': 'sepi',
-  'insight.daily_legend_high': 'padat',
-  'insight.daily_legend_over': 'lewat jatah',
+  'insight.daily_legend_low': 'sedikit',
+  'insight.daily_legend_high': 'banyak',
   'insight.daily_sheet_empty': 'Tidak ada transaksi hari ini.',
   'insight.daily_sheet_total': 'Total',
   'insight.card_ranking': 'Klasemen Kategori',
@@ -1947,13 +1943,11 @@ const en: StringDictionary = {
   'insight.spend_pct_left': 'left · {amount}',
   'insight.spend_pct_empty': 'Add your income first\nso the ratio can be calculated.',
   'insight.spend_pct_empty_sub': 'set income in profile settings',
-  'insight.card_daily': 'Daily Spending',
+  'insight.card_daily': 'Daily Rhythm',
   'insight.daily_empty': 'No expenses yet\nthis month.',
   'insight.daily_empty_sub': 'start logging — your patterns will show up here',
-  'insight.daily_sparse_note': 'patterns show up after a few days',
-  'insight.daily_legend_low': 'quiet',
-  'insight.daily_legend_high': 'busy',
-  'insight.daily_legend_over': 'over budget',
+  'insight.daily_legend_low': 'few',
+  'insight.daily_legend_high': 'many',
   'insight.daily_sheet_empty': 'No transactions this day.',
   'insight.daily_sheet_total': 'Total',
   'insight.card_ranking': 'Category Ranking',

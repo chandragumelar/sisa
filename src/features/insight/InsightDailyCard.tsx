@@ -10,7 +10,6 @@ import insightStyles from './InsightPage.module.css'
 
 interface Props {
   currTxs: Transaction[]
-  jatahHarian: number | null
   viewYear: number
   viewMonth: number
   currency: string
@@ -26,14 +25,7 @@ interface SheetDay {
   txs: { label: string; amount: number }[]
 }
 
-export function InsightDailyCard({
-  currTxs,
-  jatahHarian,
-  viewYear,
-  viewMonth,
-  currency,
-  lang,
-}: Props) {
+export function InsightDailyCard({ currTxs, viewYear, viewMonth, currency, lang }: Props) {
   const [sheetDay, setSheetDay] = useState<SheetDay | null>(null)
 
   const cells = buildDailyHeatmap(currTxs, viewYear, viewMonth)
@@ -41,7 +33,6 @@ export function InsightDailyCard({
   const activeDays = cells.filter((c) => c.total > 0).length
 
   const isEmpty = activeDays === 0
-  const isSparse = !isEmpty && activeDays < 3
 
   // Offset: which column day 1 falls on (Mon=0 … Sun=6)
   const firstDow = new Date(viewYear, viewMonth, 1).getDay()
@@ -66,8 +57,6 @@ export function InsightDailyCard({
         { weekday: 'long', day: 'numeric', month: 'long' },
       )
     : ''
-
-  const isOver = (total: number) => jatahHarian != null && jatahHarian > 0 && total > jatahHarian
 
   const dayHeaders = lang === 'id' ? DAY_HEADERS_ID : DAY_HEADERS_EN
 
@@ -100,15 +89,12 @@ export function InsightDailyCard({
               }
               const cell = cells[dayIdx]
               const heat = heatBucket(cell.total, maxDay)
-              const over = isOver(cell.total)
               const idle = cell.total === 0
 
               return (
                 <div
                   key={i}
-                  className={[styles.hmCell, over ? styles.over : '', idle ? styles.idle : '']
-                    .filter(Boolean)
-                    .join(' ')}
+                  className={[styles.hmCell, idle ? styles.idle : ''].filter(Boolean).join(' ')}
                   data-h={heat}
                   onClick={idle ? undefined : () => openSheet(dayIdx)}
                   role={idle ? undefined : 'button'}
@@ -135,15 +121,7 @@ export function InsightDailyCard({
               ))}
             </div>
             <span className={styles.hmLl}>{t('insight.daily_legend_high', lang)}</span>
-            {jatahHarian != null && (
-              <div className={styles.hmCautionGrp}>
-                <div className={styles.hmCautionSw} />
-                <span className={styles.hmLl}>{t('insight.daily_legend_over', lang)}</span>
-              </div>
-            )}
           </div>
-
-          {isSparse && <p className={styles.hmNote}>{t('insight.daily_sparse_note', lang)}</p>}
         </>
       )}
 
@@ -163,13 +141,9 @@ export function InsightDailyCard({
               </div>
             )}
             {sheetDay.txs.length > 0 && (
-              <div
-                className={`${styles.shFoot} ${isOver(sheetDay.total) ? styles.shFootWarn : ''}`}
-              >
+              <div className={styles.shFoot}>
                 <span className={styles.shFootLbl}>{t('insight.daily_sheet_total', lang)}</span>
-                <span
-                  className={`${styles.shFootTotal} ${isOver(sheetDay.total) ? styles.shFootTotalWarn : ''}`}
-                >
+                <span className={styles.shFootTotal}>
                   {formatCurrency(sheetDay.total, currency)}
                 </span>
               </div>
