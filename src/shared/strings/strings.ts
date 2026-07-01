@@ -555,10 +555,8 @@ export type StringKey =
   // home — new allocation model strings
   | 'home.sisa_uang'
   | 'home.sisa_uang_tooltip'
-  | 'home.insight_teaser_ratio'
-  | 'home.insight_teaser_clean'
-  | 'home.insight_teaser_spend_only'
   | 'home.insight_teaser_generic'
+  | 'home.insight_net_sub'
   | 'home.insight_card_label'
   | 'home.insight_card_cta'
   | 'home.expand_show'
@@ -1219,10 +1217,8 @@ const id: StringDictionary = {
   'home.sisa_uang': 'SISA UANGMU',
   'home.sisa_uang_tooltip':
     'Ini uang yang aman kamu pakai sampai gajian berikutnya.\n\nHitungannya:\nTotal saldo semua wallet\n− Tagihan yang belum dibayar\n− Uang Mengendap (yang sengaja kamu diamkan, bukan buat dipakai)\n= Sisa uangmu\n\nJatah harian dihitung dari angka ini dibagi sisa hari sampai gajian.',
-  'home.insight_teaser_ratio': 'Bulan ini lo pakai {pct}% dari pemasukan',
-  'home.insight_teaser_clean': 'Belum ada pengeluaran bulan ini. Awal yang bersih',
-  'home.insight_teaser_spend_only': 'Bulan ini lo udah keluar {jumlah}',
   'home.insight_teaser_generic': 'Catatan pertamamu bakal muncul jadi insight di sini',
+  'home.insight_net_sub': 'net bulan ini',
   'home.insight_card_label': 'INSIGHT',
   'home.insight_card_cta': 'Lihat Insight →',
   'home.expand_show': 'kok bisa segini?',
@@ -1879,10 +1875,8 @@ const en: StringDictionary = {
   'home.sisa_uang': 'YOUR MONEY LEFT',
   'home.sisa_uang_tooltip':
     "This is the money that's safe to spend until your next payday.\n\nHow it's calculated:\nTotal balance across all wallets\n− Unpaid bills\n− Parked Money (money you set aside, not for spending)\n= Your money left\n\nYour daily budget comes from this divided by days remaining until payday.",
-  'home.insight_teaser_ratio': "You've used {pct}% of income this month",
-  'home.insight_teaser_clean': 'No spending yet this month. Clean start',
-  'home.insight_teaser_spend_only': "You've spent {jumlah} this month",
   'home.insight_teaser_generic': 'Your first entries will show up as insights here',
+  'home.insight_net_sub': 'net this month',
   'home.insight_card_label': 'INSIGHTS',
   'home.insight_card_cta': 'View Insights →',
   'home.expand_show': 'how is this possible?',

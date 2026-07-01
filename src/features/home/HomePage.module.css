@@ -201,6 +201,70 @@
   font-family: var(--font-sans);
 }
 
+.insightNet {
+  font-family: var(--font-mono);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ink-primary);
+  letter-spacing: -0.4px;
+  line-height: 1.1;
+}
+
+.insightNetSub {
+  font-size: 11px;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+  margin-top: 1px;
+}
+
+.insightBars {
+  display: flex;
+  gap: 4px;
+  height: 52px;
+  align-items: center;
+  margin: 6px 0 2px;
+}
+
+.insightBarWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  flex: 1;
+}
+
+.insightBarUp {
+  width: 100%;
+  border-radius: 3px 3px 0 0;
+  background: var(--signal-safe);
+  min-height: 2px;
+}
+
+.insightBarDown {
+  width: 100%;
+  border-radius: 0 0 3px 3px;
+  background: var(--signal-caution);
+  min-height: 2px;
+}
+
+.insightBarBaseline {
+  width: 100%;
+  height: 1px;
+  background: var(--border-hair);
+  flex-shrink: 0;
+}
+
+.insightCta {
+  display: block;
+  text-align: right;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--accent);
+  font-family: var(--font-sans);
+  margin-top: 2px;
+}
+
 .insightCardCta {
   display: block;
   text-align: right;

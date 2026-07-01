@@ -17,6 +17,7 @@ import {
   getTransactionsByDateRange,
 } from '@/db/transactions.repository'
 import { t } from '@/shared/strings/strings'
+import { formatCurrency } from '@/shared/utils/formatCurrency'
 import type { Language, Settings, Wallet, Tagihan, Allocation } from '@/db/database'
 import {
   calcDaysUntilPayday,
@@ -29,7 +30,7 @@ import {
   calcPemasukanFromAvg,
 } from './home.utils'
 import { calcUnpaidTagihanTotal, getTagihanUrgency } from './tagihan.utils'
-import { sumExpense, sumIncome, spendPct } from '@/features/insight/insight.utils'
+import { sumExpense, sumIncome } from '@/features/insight/insight.utils'
 import { shouldShowBackupReminder, calcBackupUrgency } from './backup-reminder.utils'
 import { calcBudgetPeriode, type BudgetMode } from '@/shared/utils/budget.utils'
 import { BRAND_STUDIO_WITH_COLLAB } from '@/constants/brand'
@@ -565,16 +566,44 @@ export function HomePage() {
             <div className={styles.insightCardTop}>
               <span className={styles.insightCardLabel}>{t('home.insight_card_label', lang)}</span>
             </div>
-            <span className={styles.insightCardText}>
-              {teaserExpense > 0 && teaserIncome > 0
-                ? t('home.insight_teaser_ratio', lang).replace(
-                    '{pct}',
-                    String(spendPct(teaserExpense, teaserIncome) ?? 0),
+            {teaserExpense === 0 && teaserIncome === 0 ? (
+              <span className={styles.insightCardText}>
+                {t('home.insight_teaser_generic', lang)}
+              </span>
+            ) : (
+              <>
+                {(() => {
+                  const net = teaserIncome - teaserExpense
+                  const maxVal = Math.max(teaserIncome, teaserExpense, 1)
+                  const HALF_H = 24 // px per half
+                  const incomeH = Math.round((teaserIncome / maxVal) * HALF_H)
+                  const expenseH = Math.round((teaserExpense / maxVal) * HALF_H)
+                  return (
+                    <>
+                      <div className={styles.insightNet}>
+                        {(net >= 0 ? '+' : '') + formatCurrency(net, currency)}
+                      </div>
+                      <div className={styles.insightNetSub}>{t('home.insight_net_sub', lang)}</div>
+                      <div className={styles.insightBars}>
+                        {/* income bar — grows upward */}
+                        <div className={styles.insightBarWrap}>
+                          <div className={styles.insightBarUp} style={{ height: incomeH || 2 }} />
+                          <div className={styles.insightBarBaseline} />
+                        </div>
+                        {/* expense bar — grows downward */}
+                        <div className={styles.insightBarWrap}>
+                          <div className={styles.insightBarBaseline} />
+                          <div
+                            className={styles.insightBarDown}
+                            style={{ height: expenseH || 2 }}
+                          />
+                        </div>
+                      </div>
+                    </>
                   )
-                : teaserIncome > 0
-                  ? t('home.insight_teaser_clean', lang)
-                  : t('home.insight_teaser_generic', lang)}
-            </span>
+                })()}
+              </>
+            )}
             <span className={styles.insightCardCta}>{t('home.insight_card_cta', lang)}</span>
           </button>
 
