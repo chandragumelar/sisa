@@ -115,6 +115,7 @@ export function InsightPage() {
   const currExpense = data ? sumExpense(data.currTxs) : 0
   const currIncome = data ? sumIncome(data.currTxs) : 0
   const prevExpense = data ? sumExpense(data.prevTxs) : 0
+  const prevIncome = data ? sumIncome(data.prevTxs) : 0
   const pct = spendPct(currExpense, currIncome)
   const daysElapsed = today.getDate()
   const avgDaily = dailyAvg(currExpense, daysElapsed)
@@ -197,6 +198,7 @@ export function InsightPage() {
               currExpense={currExpense}
               currIncome={currIncome}
               prevExpense={prevExpense}
+              prevIncome={prevIncome}
               prevMonthShort={prevMonthShort}
               chartData={chartData}
               metric={metric}

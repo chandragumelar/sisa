@@ -601,6 +601,10 @@ export type StringKey =
   | 'insight.monthly_label_income'
   | 'insight.monthly_delta_less'
   | 'insight.monthly_delta_more'
+  | 'insight.monthly_delta_income_up'
+  | 'insight.monthly_delta_income_down'
+  | 'insight.monthly_delta_net_up'
+  | 'insight.monthly_delta_net_down'
   | 'insight.monthly_empty'
   | 'insight.monthly_empty_sub'
   | 'insight.card_category'
@@ -1264,6 +1268,10 @@ const id: StringDictionary = {
   'insight.monthly_label_income': 'Pemasukan',
   'insight.monthly_delta_less': '↓ pengeluaran {pct}% vs {month}',
   'insight.monthly_delta_more': '↑ pengeluaran {pct}% vs {month}',
+  'insight.monthly_delta_income_up': '↑ pemasukan {pct}% vs {month}',
+  'insight.monthly_delta_income_down': '↓ pemasukan {pct}% vs {month}',
+  'insight.monthly_delta_net_up': '↑ selisih {amount} vs {month}',
+  'insight.monthly_delta_net_down': '↓ selisih {amount} vs {month}',
   'insight.monthly_empty': 'Datanya masih ngumpul,\nbalik lagi nanti ya.',
   'insight.monthly_empty_sub': 'butuh minimal 2 minggu data',
   'insight.card_category': 'Kategori Bulanan',
@@ -1922,6 +1930,10 @@ const en: StringDictionary = {
   'insight.monthly_label_income': 'Earned',
   'insight.monthly_delta_less': '↓ spending {pct}% vs {month}',
   'insight.monthly_delta_more': '↑ spending {pct}% vs {month}',
+  'insight.monthly_delta_income_up': '↑ income {pct}% vs {month}',
+  'insight.monthly_delta_income_down': '↓ income {pct}% vs {month}',
+  'insight.monthly_delta_net_up': '↑ {amount} better vs {month}',
+  'insight.monthly_delta_net_down': '↓ {amount} worse vs {month}',
   'insight.monthly_empty': 'Data is still collecting,\ncheck back soon.',
   'insight.monthly_empty_sub': 'needs at least 2 weeks of data',
   'insight.card_category': 'Monthly Categories',
