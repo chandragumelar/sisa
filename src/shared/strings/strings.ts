@@ -621,15 +621,14 @@ export type StringKey =
   | 'insight.spend_pct_empty'
   | 'insight.spend_pct_empty_sub'
   | 'insight.card_daily'
-  | 'insight.daily_avg_sub'
-  | 'insight.daily_target_label'
-  | 'insight.daily_ok'
-  | 'insight.daily_over'
-  | 'insight.daily_no_target'
-  | 'insight.daily_actual_label'
-  | 'insight.daily_target_amt_label'
   | 'insight.daily_empty'
   | 'insight.daily_empty_sub'
+  | 'insight.daily_sparse_note'
+  | 'insight.daily_legend_low'
+  | 'insight.daily_legend_high'
+  | 'insight.daily_legend_over'
+  | 'insight.daily_sheet_empty'
+  | 'insight.daily_sheet_total'
   | 'insight.card_ranking'
   | 'insight.ranking_vs'
   | 'insight.ranking_empty'
@@ -1288,15 +1287,14 @@ const id: StringDictionary = {
   'insight.spend_pct_empty': 'Tambahkan pemasukan dulu\nbiar rasionya bisa dihitung.',
   'insight.spend_pct_empty_sub': 'atur pemasukan di pengaturan profil',
   'insight.card_daily': 'Pengeluaran Harian',
-  'insight.daily_avg_sub': 'rata-rata per hari bulan ini',
-  'insight.daily_target_label': 'target per hari',
-  'insight.daily_ok': '↓ masih di bawah target harian',
-  'insight.daily_over': '↑ di atas target harian',
-  'insight.daily_no_target': 'Atur target di alokasi',
-  'insight.daily_actual_label': 'aktual · {amount}/hari',
-  'insight.daily_target_amt_label': 'target · {amount}/hari',
-  'insight.daily_empty': 'Catat beberapa pengeluaran dulu,\nbaru rata-rata harian muncul.',
-  'insight.daily_empty_sub': 'data mulai terlihat setelah 3 hari',
+  'insight.daily_empty': 'Belum ada pengeluaran\nbulan ini.',
+  'insight.daily_empty_sub': 'mulai mencatat — pola kamu bakal muncul di sini',
+  'insight.daily_sparse_note': 'pola muncul setelah beberapa hari',
+  'insight.daily_legend_low': 'sepi',
+  'insight.daily_legend_high': 'padat',
+  'insight.daily_legend_over': 'lewat jatah',
+  'insight.daily_sheet_empty': 'Tidak ada transaksi hari ini.',
+  'insight.daily_sheet_total': 'Total',
   'insight.card_ranking': 'Klasemen Kategori',
   'insight.ranking_vs': 'dibanding {month}',
   'insight.ranking_empty': 'Belum ada kategori\nyang dicatat bulan ini.',
@@ -1950,15 +1948,14 @@ const en: StringDictionary = {
   'insight.spend_pct_empty': 'Add your income first\nso the ratio can be calculated.',
   'insight.spend_pct_empty_sub': 'set income in profile settings',
   'insight.card_daily': 'Daily Spending',
-  'insight.daily_avg_sub': 'daily average this month',
-  'insight.daily_target_label': 'target per day',
-  'insight.daily_ok': '↓ below daily target',
-  'insight.daily_over': '↑ above daily target',
-  'insight.daily_no_target': 'Set target in allocation',
-  'insight.daily_actual_label': 'actual · {amount}/day',
-  'insight.daily_target_amt_label': 'target · {amount}/day',
-  'insight.daily_empty': 'Log a few expenses first,\nthen the daily average will appear.',
-  'insight.daily_empty_sub': 'visible after 3 days of data',
+  'insight.daily_empty': 'No expenses yet\nthis month.',
+  'insight.daily_empty_sub': 'start logging — your patterns will show up here',
+  'insight.daily_sparse_note': 'patterns show up after a few days',
+  'insight.daily_legend_low': 'quiet',
+  'insight.daily_legend_high': 'busy',
+  'insight.daily_legend_over': 'over budget',
+  'insight.daily_sheet_empty': 'No transactions this day.',
+  'insight.daily_sheet_total': 'Total',
   'insight.card_ranking': 'Category Ranking',
   'insight.ranking_vs': 'vs {month}',
   'insight.ranking_empty': 'No categories\nlogged this month.',
