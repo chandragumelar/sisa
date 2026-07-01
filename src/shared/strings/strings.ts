@@ -214,6 +214,7 @@ export type StringKey =
   | 'tagihan_module.all_paid'
   | 'tagihan_module.all_paid_sub'
   | 'tagihan_module.ctx_total'
+  | 'tagihan_module.ctx_paid'
   // notif card
   | 'notif.both'
   | 'notif.overdue'
@@ -853,13 +854,14 @@ const id: StringDictionary = {
   'tagihan_module.add': '+ Tambah tagihan',
   'tagihan_module.chip_unpaid': 'Belum dibayar',
   'tagihan_module.chip_paid': 'Lunas',
-  'tagihan_module.unpaid_label': 'Sisa belum dibayar',
+  'tagihan_module.unpaid_label': 'Total tagihan belum dibayar',
   'tagihan_module.pill_unpaid': 'belum dibayar',
   'tagihan_module.pill_paid': 'lunas',
   'tagihan_module.idr_lunas': 'IDR · lunas',
   'tagihan_module.all_paid': 'Semua lunas',
   'tagihan_module.all_paid_sub': '{n} tagihan · bulan ini',
-  'tagihan_module.ctx_total': 'Total {total} · sudah {paid}',
+  'tagihan_module.ctx_total': 'Total {total}',
+  'tagihan_module.ctx_paid': 'Sudah {paid}',
 
   'notif.both': '{n} komitmen lewat tempo & jatuh tempo hari ini',
   'notif.overdue': '{n} komitmen lewat tempo',
@@ -1506,13 +1508,14 @@ const en: StringDictionary = {
   'tagihan_module.add': '+ Add bill',
   'tagihan_module.chip_unpaid': 'Unpaid',
   'tagihan_module.chip_paid': 'Paid',
-  'tagihan_module.unpaid_label': 'Unpaid balance',
+  'tagihan_module.unpaid_label': 'Total unpaid bills',
   'tagihan_module.pill_unpaid': 'unpaid',
   'tagihan_module.pill_paid': 'paid',
   'tagihan_module.idr_lunas': 'IDR · paid',
   'tagihan_module.all_paid': 'All paid',
   'tagihan_module.all_paid_sub': '{n} bills · this month',
-  'tagihan_module.ctx_total': 'Total {total} · paid {paid}',
+  'tagihan_module.ctx_total': 'Total {total}',
+  'tagihan_module.ctx_paid': 'Paid {paid}',
 
   'notif.both': '{n} commitments overdue & due today',
   'notif.overdue': '{n} commitments overdue',
