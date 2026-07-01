@@ -574,30 +574,20 @@ export function HomePage() {
               <>
                 {(() => {
                   const net = teaserIncome - teaserExpense
-                  const maxVal = Math.max(teaserIncome, teaserExpense, 1)
-                  const HALF_H = 24 // px per half
-                  const incomeH = Math.round((teaserIncome / maxVal) * HALF_H)
-                  const expenseH = Math.round((teaserExpense / maxVal) * HALF_H)
+                  const denom = Math.max(teaserIncome, teaserExpense, 1)
+                  const spendPct = Math.min((teaserExpense / denom) * 100, 100)
                   return (
                     <>
                       <div className={styles.insightNet}>
                         {(net >= 0 ? '+' : '') + formatCurrency(net, currency)}
                       </div>
                       <div className={styles.insightNetSub}>{t('home.insight_net_sub', lang)}</div>
-                      <div className={styles.insightBars}>
-                        {/* income bar — grows upward */}
-                        <div className={styles.insightBarWrap}>
-                          <div className={styles.insightBarUp} style={{ height: incomeH || 2 }} />
-                          <div className={styles.insightBarBaseline} />
-                        </div>
-                        {/* expense bar — grows downward */}
-                        <div className={styles.insightBarWrap}>
-                          <div className={styles.insightBarBaseline} />
-                          <div
-                            className={styles.insightBarDown}
-                            style={{ height: expenseH || 2 }}
-                          />
-                        </div>
+                      <div className={styles.insightSplitTrack}>
+                        <div
+                          className={styles.insightSplitSpend}
+                          style={{ width: `${spendPct}%` }}
+                        />
+                        <div className={styles.insightSplitSafe} />
                       </div>
                     </>
                   )
