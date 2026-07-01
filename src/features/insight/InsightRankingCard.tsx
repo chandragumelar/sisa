@@ -6,12 +6,12 @@ import styles from './InsightPage.module.css'
 
 interface Props {
   rows: CategoryRow[]
-  prevMonthShort: string
+  prevMonthLong: string
   currency: string
   lang: Language
 }
 
-export function InsightRankingCard({ rows, prevMonthShort, currency, lang }: Props) {
+export function InsightRankingCard({ rows, prevMonthLong, currency, lang }: Props) {
   if (rows.length === 0) {
     return (
       <div className={styles.card}>
@@ -33,7 +33,7 @@ export function InsightRankingCard({ rows, prevMonthShort, currency, lang }: Pro
       <div className={`${styles.cardHeaderRow} ${styles.cardFlushPad}`}>
         <span className={styles.cardLabel}>{t('insight.card_ranking', lang)}</span>
         <span className={styles.rankingVs}>
-          {t('insight.ranking_vs', lang).replace('{month}', prevMonthShort)}
+          {t('insight.ranking_vs', lang).replace('{month}', prevMonthLong)}
         </span>
       </div>
 
@@ -55,7 +55,7 @@ export function InsightRankingCard({ rows, prevMonthShort, currency, lang }: Pro
             className={`${styles.rankRow} ${row.highlighted ? styles.rankRowHighlight : ''}`}
             style={{
               borderBottom: isLast ? 'none' : '1px solid var(--border-soft)',
-              paddingBottom: isLast ? 4 : undefined,
+              paddingBottom: isLast ? 16 : undefined,
               borderRadius:
                 isLast && row.highlighted ? '0 0 var(--radius-card) var(--radius-card)' : undefined,
             }}

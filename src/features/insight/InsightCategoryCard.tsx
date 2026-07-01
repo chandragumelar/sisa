@@ -4,11 +4,21 @@ import { t } from '@/shared/strings/strings'
 import type { CategoryRow } from './insight.utils'
 import styles from './InsightPage.module.css'
 
+const CX = 55
+const CY = 55
+const R = 42
+const CIRCUMFERENCE = 2 * Math.PI * R // ≈ 263.9
+
+function arcDash(proportion: number): string {
+  const fill = Math.max(0, Math.min(proportion, 1)) * CIRCUMFERENCE
+  return `${fill} ${CIRCUMFERENCE}`
+}
+
 interface Props {
   rows: CategoryRow[]
   selected: string
   onSelect: (cat: string) => void
-  currMonthShort: string
+  currExpense: number
   prevMonthShort: string
   currency: string
   lang: Language
@@ -18,7 +28,7 @@ export function InsightCategoryCard({
   rows,
   selected,
   onSelect,
-  currMonthShort,
+  currExpense,
   prevMonthShort,
   currency,
   lang,
@@ -38,11 +48,10 @@ export function InsightCategoryCard({
   }
 
   const row = rows.find((r) => r.name === selected) ?? rows[0]
-  const maxAmount = rows[0].amount // already sorted desc
 
-  const currWidth = maxAmount > 0 ? Math.round((row.amount / maxAmount) * 100) : 0
-  const prevWidth =
-    maxAmount > 0 && row.prevAmount > 0 ? Math.round((row.prevAmount / maxAmount) * 100) : 0
+  const currProportion = currExpense > 0 ? row.amount / currExpense : 0
+  const prevProportion = currExpense > 0 && row.prevAmount > 0 ? row.prevAmount / currExpense : 0
+  const currPct = Math.round(currProportion * 100)
 
   let deltaText = ''
   let deltaClass = styles.deltaMute
@@ -81,37 +90,56 @@ export function InsightCategoryCard({
         </select>
       </div>
 
-      <div className={styles.bigNum}>{formatCurrency(row.amount, currency)}</div>
-      <p className={`${deltaClass}`} style={{ marginTop: 7 }}>
-        {deltaText}
-      </p>
+      <div className={styles.ringWrap}>
+        <svg
+          width="110"
+          height="110"
+          viewBox="0 0 110 110"
+          className={styles.ringsvg}
+          aria-hidden="true"
+        >
+          {/* Full track */}
+          <circle cx={CX} cy={CY} r={R} fill="none" stroke="var(--border-hair)" strokeWidth="10" />
+          {/* Prev month arc (redup reference) */}
+          {prevProportion > 0 && (
+            <circle
+              cx={CX}
+              cy={CY}
+              r={R}
+              fill="none"
+              stroke="var(--ink-tertiary)"
+              strokeWidth="10"
+              strokeOpacity="0.35"
+              strokeDasharray={arcDash(prevProportion)}
+              strokeLinecap="round"
+              transform={`rotate(-90 ${CX} ${CY})`}
+            />
+          )}
+          {/* Curr month arc */}
+          <circle
+            cx={CX}
+            cy={CY}
+            r={R}
+            fill="none"
+            stroke="var(--accent)"
+            strokeWidth="10"
+            strokeDasharray={arcDash(currProportion)}
+            strokeLinecap="round"
+            transform={`rotate(-90 ${CX} ${CY})`}
+          />
+        </svg>
 
-      <div className={styles.catDetailWrap}>
-        <div className={styles.catDetailRow}>
-          <span className={styles.catDetailMonth}>{currMonthShort}</span>
-          <div className={styles.catDetailTrack}>
-            <div
-              className={styles.catDetailFill}
-              style={{ width: `${currWidth}%`, background: 'var(--accent)', opacity: 0.85 }}
-            />
-          </div>
-          <span className={styles.catDetailAmt}>{formatCurrency(row.amount, currency)}</span>
-        </div>
-        <div className={styles.catDetailRow}>
-          <span className={`${styles.catDetailMonth} ${styles.catDetailMonthMuted}`}>
-            {prevMonthShort}
-          </span>
-          <div className={styles.catDetailTrack}>
-            <div
-              className={styles.catDetailFill}
-              style={{ width: `${prevWidth}%`, background: 'var(--border-hair)' }}
-            />
-          </div>
-          <span className={`${styles.catDetailAmt} ${styles.catDetailAmtMuted}`}>
-            {row.prevAmount > 0 ? formatCurrency(row.prevAmount, currency) : '—'}
-          </span>
+        <div className={styles.ringCenter}>
+          <div className={styles.ringAmount}>{formatCurrency(row.amount, currency)}</div>
         </div>
       </div>
+
+      <p className={styles.catPctLabel}>
+        {t('insight.cat_pct_of_total', lang).replace('{pct}', String(currPct))}
+      </p>
+      <p className={`${deltaClass}`} style={{ marginTop: 4 }}>
+        {deltaText}
+      </p>
     </div>
   )
 }

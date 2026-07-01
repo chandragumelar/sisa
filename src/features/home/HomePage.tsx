@@ -563,6 +563,9 @@ export function HomePage() {
           />
 
           <button className={styles.insightCard} onClick={() => navigate('/insight')}>
+            <div className={styles.insightCardTop}>
+              <span className={styles.insightCardLabel}>{t('home.insight_card_label', lang)}</span>
+            </div>
             <span className={styles.insightCardText}>
               {teaserExpense > 0 && teaserIncome > 0
                 ? t('home.insight_teaser_ratio', lang).replace(
@@ -571,14 +574,9 @@ export function HomePage() {
                   )
                 : teaserIncome > 0
                   ? t('home.insight_teaser_clean', lang)
-                  : teaserExpense > 0
-                    ? t('home.insight_teaser_spend_only', lang).replace(
-                        '{jumlah}',
-                        formatCurrency(teaserExpense, currency),
-                      )
-                    : t('home.insight_teaser_generic', lang)}
+                  : t('home.insight_teaser_generic', lang)}
             </span>
-            <span className={styles.insightCardBtn}>{t('home.insight_card_cta', lang)}</span>
+            <span className={styles.insightCardCta}>{t('home.insight_card_cta', lang)}</span>
           </button>
 
           <BerbagiKeamananSection />

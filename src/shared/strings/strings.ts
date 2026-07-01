@@ -559,6 +559,7 @@ export type StringKey =
   | 'home.insight_teaser_clean'
   | 'home.insight_teaser_spend_only'
   | 'home.insight_teaser_generic'
+  | 'home.insight_card_label'
   | 'home.insight_card_cta'
   | 'home.expand_show'
   | 'home.expand_hide'
@@ -582,8 +583,7 @@ export type StringKey =
   | 'home.jatah_lewat_title'
   | 'home.jatah_besok'
   // insight
-  | 'insight.prev_month_aria'
-  | 'insight.next_month_aria'
+  | 'insight.back_aria'
   | 'insight.hero_hemat'
   | 'insight.hero_hemat_sub'
   | 'insight.hero_boros'
@@ -609,6 +609,7 @@ export type StringKey =
   | 'insight.cat_delta_up'
   | 'insight.cat_delta_down'
   | 'insight.cat_no_prev'
+  | 'insight.cat_pct_of_total'
   | 'insight.card_spend_pct'
   | 'insight.spend_pct_from'
   | 'insight.spend_pct_used'
@@ -1219,6 +1220,7 @@ const id: StringDictionary = {
   'home.insight_teaser_clean': 'Belum ada pengeluaran bulan ini. Awal yang bersih',
   'home.insight_teaser_spend_only': 'Bulan ini lo udah keluar {jumlah}',
   'home.insight_teaser_generic': 'Catatan pertamamu bakal muncul jadi insight di sini',
+  'home.insight_card_label': 'INSIGHT',
   'home.insight_card_cta': 'Lihat Insight →',
   'home.expand_show': 'kok bisa segini?',
   'home.expand_hide': 'sembunyikan',
@@ -1243,8 +1245,7 @@ const id: StringDictionary = {
   'home.jatah_besok': 'Besok jatahmu nyusut jadi {n}',
 
   // insight
-  'insight.prev_month_aria': 'Bulan sebelumnya',
-  'insight.next_month_aria': 'Bulan berikutnya',
+  'insight.back_aria': 'Kembali',
   'insight.hero_hemat': 'Bulan ini lo lebih hemat {pct}% dari {month}.',
   'insight.hero_hemat_sub': 'pengeluaran turun {amount} dari bulan lalu',
   'insight.hero_boros': 'Bulan ini lo lebih boros {pct}% dari {month}.',
@@ -1270,6 +1271,7 @@ const id: StringDictionary = {
   'insight.cat_delta_up': '↑ naik {pct}% dari {month}',
   'insight.cat_delta_down': '↓ turun {pct}% dari {month}',
   'insight.cat_no_prev': 'baru bulan ini',
+  'insight.cat_pct_of_total': '{pct}% dari pengeluaran bulan ini',
   'insight.card_spend_pct': 'Persen Pengeluaran dari Pemasukan',
   'insight.spend_pct_from': 'dari pemasukan bulan ini',
   'insight.spend_pct_used': 'dipakai · {amount}',
@@ -1290,7 +1292,7 @@ const id: StringDictionary = {
   'insight.ranking_vs': 'dibanding {month}',
   'insight.ranking_empty': 'Belum ada kategori\nyang dicatat bulan ini.',
   'insight.ranking_empty_sub': 'kasih kategori ke tiap transaksi ya',
-  'insight.card_top_tx': 'Transaksi Terbesar',
+  'insight.card_top_tx': '5 Transaksi Besar',
   'insight.top_tx_empty': 'Belum ada transaksi\nbulan ini.',
   'insight.top_tx_empty_sub': 'transaksi pertama kamu bakal muncul di sini',
   'insight.fx_skip': 'beberapa transaksi mata uang lain belum terhitung',
@@ -1875,6 +1877,7 @@ const en: StringDictionary = {
   'home.insight_teaser_clean': 'No spending yet this month. Clean start',
   'home.insight_teaser_spend_only': "You've spent {jumlah} this month",
   'home.insight_teaser_generic': 'Your first entries will show up as insights here',
+  'home.insight_card_label': 'INSIGHTS',
   'home.insight_card_cta': 'View Insights →',
   'home.expand_show': 'how is this possible?',
   'home.expand_hide': 'hide',
@@ -1899,8 +1902,7 @@ const en: StringDictionary = {
   'home.jatah_besok': "Tomorrow's budget drops to {n}",
 
   // insight
-  'insight.prev_month_aria': 'Previous month',
-  'insight.next_month_aria': 'Next month',
+  'insight.back_aria': 'Back',
   'insight.hero_hemat': 'You spent {pct}% less than {month}.',
   'insight.hero_hemat_sub': 'spending down {amount} from last month',
   'insight.hero_boros': 'You spent {pct}% more than {month}.',
@@ -1926,6 +1928,7 @@ const en: StringDictionary = {
   'insight.cat_delta_up': '↑ up {pct}% from {month}',
   'insight.cat_delta_down': '↓ down {pct}% from {month}',
   'insight.cat_no_prev': 'new this month',
+  'insight.cat_pct_of_total': "{pct}% of this month's spending",
   'insight.card_spend_pct': 'Spend Rate',
   'insight.spend_pct_from': 'of income this month',
   'insight.spend_pct_used': 'spent · {amount}',
@@ -1946,7 +1949,7 @@ const en: StringDictionary = {
   'insight.ranking_vs': 'vs {month}',
   'insight.ranking_empty': 'No categories\nlogged this month.',
   'insight.ranking_empty_sub': 'add a category to each transaction',
-  'insight.card_top_tx': 'Biggest Transactions',
+  'insight.card_top_tx': '5 Biggest Transactions',
   'insight.top_tx_empty': 'No transactions\nthis month yet.',
   'insight.top_tx_empty_sub': 'your first transaction will appear here',
   'insight.fx_skip': 'some foreign currency transactions excluded',
