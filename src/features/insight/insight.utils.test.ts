@@ -169,6 +169,45 @@ describe('buildCategoryRanking — delta', () => {
   it('empty → empty array', () => {
     expect(buildCategoryRanking(new Map(), new Map())).toEqual([])
   })
+
+  it('pctOfTotal: each row has non-negative integer 0–100', () => {
+    const curr = aggregateByCategory(juniTxs)
+    const rows = buildCategoryRanking(curr, new Map())
+    for (const row of rows) {
+      expect(row.pctOfTotal).toBeGreaterThanOrEqual(0)
+      expect(row.pctOfTotal).toBeLessThanOrEqual(100)
+      expect(Number.isInteger(row.pctOfTotal)).toBe(true)
+    }
+  })
+
+  it('pctOfTotal: sum of all rows ≈ 100 (rounding tolerance ±2)', () => {
+    const curr = aggregateByCategory(juniTxs)
+    const rows = buildCategoryRanking(curr, new Map())
+    const sum = rows.reduce((s, r) => s + r.pctOfTotal, 0)
+    expect(sum).toBeGreaterThanOrEqual(98)
+    expect(sum).toBeLessThanOrEqual(102)
+  })
+
+  it('pctOfTotal with Lainnya: >15 categories — sum still ≈ 100', () => {
+    const big = new Map(Array.from({ length: 20 }, (_, i) => [`Cat${i + 1}`, (20 - i) * 1000]))
+    const rows = buildCategoryRanking(big, new Map())
+    const sum = rows.reduce((s, r) => s + r.pctOfTotal, 0)
+    expect(sum).toBeGreaterThanOrEqual(98)
+    expect(sum).toBeLessThanOrEqual(102)
+    // Lainnya (last row) must also have a valid pct
+    expect(rows[rows.length - 1].pctOfTotal).toBeGreaterThan(0)
+  })
+
+  it('pctOfTotal: total 0 → all pctOfTotal 0, no NaN', () => {
+    const empty = buildCategoryRanking(new Map(), new Map())
+    expect(empty).toHaveLength(0)
+    // Explicit guard: single cat with 0 amount is impossible via aggregateByCategory,
+    // but if total=0 is forced via map, pctOfTotal must be 0
+    const zeroCurr = new Map([['Test', 0]])
+    const zeroRows = buildCategoryRanking(zeroCurr, new Map())
+    expect(zeroRows[0].pctOfTotal).toBe(0)
+    expect(Number.isNaN(zeroRows[0].pctOfTotal)).toBe(false)
+  })
 })
 
 describe('buildTop5', () => {

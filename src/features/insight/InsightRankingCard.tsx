@@ -72,7 +72,10 @@ export function InsightRankingCard({ rows, prevMonthLong, currency, lang }: Prop
                 }}
               />
             </div>
-            <span className={styles.rankAmt}>{formatCurrency(row.amount, currency)}</span>
+            <div className={styles.rankAmtCol}>
+              <span className={styles.rankAmt}>{formatCurrency(row.amount, currency)}</span>
+              <span className={styles.rankAmtPct}>{row.pctOfTotal}%</span>
+            </div>
             <span className={`${styles.rankDelta} ${deltaClass}`}>{deltaText}</span>
           </div>
         )

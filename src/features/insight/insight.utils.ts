@@ -9,6 +9,7 @@ export interface CategoryRow {
   prevAmount: number
   deltaPct: number | null
   highlighted: boolean // delta >= 30% upward spike
+  pctOfTotal: number // 0–100, rounded, share of total curr expense
 }
 
 export interface TopTx {
@@ -111,6 +112,9 @@ export function buildCategoryRanking(
   const capped = sorted.slice(0, CATEGORY_CAP)
   const rest = sorted.slice(CATEGORY_CAP)
 
+  // Total across ALL categories (before cap) — pct denominator
+  const total = sorted.reduce((s, [, v]) => s + v, 0)
+
   const rows: CategoryRow[] = capped.map(([name, amount]) => {
     const prevAmount = prev.get(name) ?? 0
     const deltaPct = prevAmount > 0 ? Math.round(((amount - prevAmount) / prevAmount) * 100) : null
@@ -120,6 +124,7 @@ export function buildCategoryRanking(
       prevAmount,
       deltaPct,
       highlighted: deltaPct !== null && deltaPct >= HIGHLIGHT_THRESHOLD,
+      pctOfTotal: total > 0 ? Math.round((amount / total) * 100) : 0,
     }
   })
 
@@ -131,6 +136,7 @@ export function buildCategoryRanking(
       prevAmount: 0,
       deltaPct: null,
       highlighted: false,
+      pctOfTotal: total > 0 ? Math.round((restAmount / total) * 100) : 0,
     })
   }
 
