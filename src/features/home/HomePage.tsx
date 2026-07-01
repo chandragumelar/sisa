@@ -30,6 +30,7 @@ import {
 } from './home.utils'
 import { calcUnpaidTagihanTotal, getTagihanUrgency } from './tagihan.utils'
 import { sumExpense, sumIncome, spendPct } from '@/features/insight/insight.utils'
+import { formatCurrency } from '@/shared/utils/formatCurrency'
 import { shouldShowBackupReminder, calcBackupUrgency } from './backup-reminder.utils'
 import { calcBudgetPeriode, type BudgetMode } from '@/shared/utils/budget.utils'
 import { BRAND_STUDIO_WITH_COLLAB } from '@/constants/brand'
@@ -561,15 +562,23 @@ export function HomePage() {
             onAddTap={() => setTagihanSheetOpen(true)}
           />
 
-          <button className={styles.insightTeaser} onClick={() => navigate('/insight')}>
-            {teaserExpense === 0
-              ? t('home.insight_teaser_clean', lang)
-              : teaserIncome === 0
-                ? t('home.insight_teaser_generic', lang)
-                : t('home.insight_teaser_ratio', lang).replace(
+          <button className={styles.insightCard} onClick={() => navigate('/insight')}>
+            <span className={styles.insightCardText}>
+              {teaserExpense > 0 && teaserIncome > 0
+                ? t('home.insight_teaser_ratio', lang).replace(
                     '{pct}',
                     String(spendPct(teaserExpense, teaserIncome) ?? 0),
-                  )}
+                  )
+                : teaserIncome > 0
+                  ? t('home.insight_teaser_clean', lang)
+                  : teaserExpense > 0
+                    ? t('home.insight_teaser_spend_only', lang).replace(
+                        '{jumlah}',
+                        formatCurrency(teaserExpense, currency),
+                      )
+                    : t('home.insight_teaser_generic', lang)}
+            </span>
+            <span className={styles.insightCardBtn}>{t('home.insight_card_cta', lang)}</span>
           </button>
 
           <BerbagiKeamananSection />
