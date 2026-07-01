@@ -344,65 +344,6 @@
   font-family: var(--font-sans);
 }
 
-/* ── Daily card (card ⑤) ─────────────────────────────── */
-.dailyRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 8px;
-}
-
-.dailyTarget {
-  font-family: var(--font-mono);
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--ink-tertiary);
-  margin-top: 3px;
-}
-
-.bulletTrack {
-  position: relative;
-  height: 10px;
-  background: var(--border-hair);
-  border-radius: 5px;
-  margin-top: 14px;
-  overflow: visible;
-}
-
-.bulletFill {
-  height: 100%;
-  background: var(--accent);
-  border-radius: 5px;
-  opacity: 0.85;
-}
-
-.bulletFillOver {
-  height: 100%;
-  background: var(--accent);
-  border-radius: 5px;
-  opacity: 0.85;
-}
-
-.bulletMarker {
-  position: absolute;
-  top: -3px;
-  width: 2px;
-  height: 16px;
-  background: var(--ink-primary);
-  border-radius: 1px;
-  transform: translateX(-50%);
-}
-
-.bulletMarkerOver {
-  position: absolute;
-  top: -3px;
-  width: 2px;
-  height: 16px;
-  background: var(--signal-caution);
-  border-radius: 1px;
-  transform: translateX(-50%);
-}
-
 /* ── Ranking rows (card ⑥) ───────────────────────────── */
 .rankRow {
   display: flex;

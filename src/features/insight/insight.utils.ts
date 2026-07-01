@@ -192,6 +192,46 @@ export function formatMonthShort(year: number, month: number, lang: Language): s
   return `${name}-${yy}`.toLowerCase()
 }
 
+export interface DayCell {
+  day: number
+  total: number
+  txs: { label: string; amount: number }[]
+}
+
+export function buildDailyHeatmap(txs: Transaction[], year: number, month: number): DayCell[] {
+  const daysInMonth = new Date(year, month + 1, 0).getDate()
+  const cells: DayCell[] = Array.from({ length: daysInMonth }, (_, i) => ({
+    day: i + 1,
+    total: 0,
+    txs: [],
+  }))
+
+  for (const tx of txs) {
+    if (!isOpEx(tx)) continue
+    const d = new Date(tx.date)
+    if (d.getFullYear() !== year || d.getMonth() !== month) continue
+    const idx = d.getDate() - 1
+    const amt = Math.abs(tx.amount)
+    cells[idx].total += amt
+    cells[idx].txs.push({
+      label: tx.label ?? tx.category ?? 'Transaksi',
+      amount: amt,
+    })
+  }
+
+  return cells
+}
+
+export function heatBucket(total: number, maxDay: number): number {
+  if (total === 0 || maxDay === 0) return 0
+  const ratio = total / maxDay
+  if (ratio <= 0.2) return 1
+  if (ratio <= 0.4) return 2
+  if (ratio <= 0.6) return 3
+  if (ratio <= 0.8) return 4
+  return 5
+}
+
 export function formatMonthLong(year: number, month: number, lang: Language): string {
   return new Date(year, month, 1).toLocaleDateString(lang === 'id' ? 'id-ID' : 'en-US', {
     month: 'long',

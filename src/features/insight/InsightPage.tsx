@@ -15,7 +15,6 @@ import {
   sumExpense,
   sumIncome,
   spendPct,
-  dailyAvg,
   buildHeroVariant,
   aggregateByCategory,
   buildCategoryRanking,
@@ -28,6 +27,7 @@ import {
 } from './insight.utils'
 import { InsightMonthlyCard } from './InsightMonthlyCard'
 import { InsightCategoryCard } from './InsightCategoryCard'
+import { InsightDailyCard } from './InsightDailyCard'
 import { InsightRankingCard } from './InsightRankingCard'
 import { InsightTopTxCard } from './InsightTopTxCard'
 import styles from './InsightPage.module.css'
@@ -117,8 +117,6 @@ export function InsightPage() {
   const prevExpense = data ? sumExpense(data.prevTxs) : 0
   const prevIncome = data ? sumIncome(data.prevTxs) : 0
   const pct = spendPct(currExpense, currIncome)
-  const daysElapsed = today.getDate()
-  const avgDaily = dailyAvg(currExpense, daysElapsed)
   const hero = data
     ? buildHeroVariant(currExpense, currIncome, prevExpense > 0 ? prevExpense : null)
     : null
@@ -255,96 +253,15 @@ export function InsightPage() {
               )}
             </div>
 
-            {/* ⑤ Daily — bullet chart */}
-            <div className={styles.card}>
-              <div className={styles.cardLabel}>{t('insight.card_daily', lang)}</div>
-              {currExpense === 0 ? (
-                <div className={styles.emptyBlock}>
-                  <p className={styles.emptyMsg} style={{ whiteSpace: 'pre-line' }}>
-                    {t('insight.daily_empty', lang)}
-                  </p>
-                  <p className={styles.emptySub}>{t('insight.daily_empty_sub', lang)}</p>
-                </div>
-              ) : (
-                <>
-                  <div className={styles.dailyRow}>
-                    <div>
-                      <div className={styles.bigNum} style={{ fontSize: 24 }}>
-                        {formatCurrency(avgDaily, currency)}
-                      </div>
-                      <div className={styles.footerLabel}>{t('insight.daily_avg_sub', lang)}</div>
-                      {data?.jatahHarian != null && (
-                        <p
-                          className={
-                            avgDaily <= data.jatahHarian ? styles.deltaPos : styles.deltaAlert
-                          }
-                          style={{ marginTop: 6 }}
-                        >
-                          {t(
-                            avgDaily <= data.jatahHarian
-                              ? 'insight.daily_ok'
-                              : 'insight.daily_over',
-                            lang,
-                          )}
-                        </p>
-                      )}
-                    </div>
-                    {data?.jatahHarian != null && (
-                      <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                        <div className={styles.footerLabel}>
-                          {t('insight.daily_target_label', lang)}
-                        </div>
-                        <div className={styles.dailyTarget}>
-                          {formatCurrency(data.jatahHarian, currency)}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                  {data?.jatahHarian != null &&
-                    data.jatahHarian > 0 &&
-                    (() => {
-                      const target = data.jatahHarian
-                      const isOver = avgDaily > target
-                      const domain = Math.max(avgDaily, target) * 1.15
-                      const fillPct = Math.min((avgDaily / domain) * 100, 100)
-                      const markerPct = (target / domain) * 100
-                      return (
-                        <>
-                          <div className={styles.bulletTrack}>
-                            <div
-                              className={isOver ? styles.bulletFillOver : styles.bulletFill}
-                              style={{ width: `${fillPct}%` }}
-                            />
-                            <div
-                              className={isOver ? styles.bulletMarkerOver : styles.bulletMarker}
-                              style={{ left: `${markerPct}%` }}
-                            />
-                          </div>
-                          <div className={styles.blegend}>
-                            <span>
-                              {t('insight.daily_actual_label', lang).replace(
-                                '{amount}',
-                                formatCurrency(avgDaily, currency),
-                              )}
-                            </span>
-                            <span>
-                              {t('insight.daily_target_amt_label', lang).replace(
-                                '{amount}',
-                                formatCurrency(target, currency),
-                              )}
-                            </span>
-                          </div>
-                        </>
-                      )
-                    })()}
-                  {data?.jatahHarian == null && (
-                    <p className={styles.deltaMute} style={{ marginTop: 8, fontSize: 11 }}>
-                      {t('insight.daily_no_target', lang)}
-                    </p>
-                  )}
-                </>
-              )}
-            </div>
+            {/* ⑤ Daily — heatmap */}
+            <InsightDailyCard
+              currTxs={data?.currTxs ?? []}
+              jatahHarian={data?.jatahHarian ?? null}
+              viewYear={viewYear}
+              viewMonth={viewMonth}
+              currency={currency}
+              lang={lang}
+            />
 
             {/* ⑥ Ranking */}
             <InsightRankingCard

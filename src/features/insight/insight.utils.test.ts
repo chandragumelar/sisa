@@ -11,6 +11,8 @@ import {
   buildTop5,
   buildChartData,
   formatMonthShort,
+  buildDailyHeatmap,
+  heatBucket,
 } from './insight.utils'
 
 type TxType = Transaction['type']
@@ -303,6 +305,77 @@ describe('buildChartData', () => {
     expect(bars).toHaveLength(12)
     expect(bars[0].month).toBe(6) // July 2024 = month 6
     expect(bars[0].year).toBe(2024)
+  })
+})
+
+describe('buildDailyHeatmap', () => {
+  it('returns exactly daysInMonth cells', () => {
+    const cells = buildDailyHeatmap([], 2025, 5) // June = 30 days
+    expect(cells).toHaveLength(30)
+    expect(cells[0].day).toBe(1)
+    expect(cells[29].day).toBe(30)
+  })
+
+  it('day without txs → total 0, txs empty', () => {
+    const cells = buildDailyHeatmap([], 2025, 5)
+    for (const c of cells) {
+      expect(c.total).toBe(0)
+      expect(c.txs).toHaveLength(0)
+    }
+  })
+
+  it('sums opex txs into correct day', () => {
+    const tx = makeTx(1, 'keluar', -80_000, 'Makan', 'Nasi Goreng', '2025-06-10')
+    const cells = buildDailyHeatmap([tx], 2025, 5)
+    expect(cells[9].total).toBe(80_000) // day 10 = index 9
+    expect(cells[9].txs).toHaveLength(1)
+    expect(cells[9].txs[0].label).toBe('Nasi Goreng')
+  })
+
+  it('income txs are excluded (isOpEx filter)', () => {
+    const income = makeTx(1, 'masuk', 5_000_000, 'Pemasukan', 'Gaji', '2025-06-25')
+    const cells = buildDailyHeatmap([income], 2025, 5)
+    expect(cells[24].total).toBe(0)
+  })
+
+  it('label resolution: label ?? category ?? fallback', () => {
+    const withLabel = makeTx(1, 'keluar', -10_000, 'Makan', 'Custom Label', '2025-06-01')
+    const noLabel = { ...makeTx(2, 'keluar', -10_000, 'Makan', '', '2025-06-02'), label: undefined }
+    const noLabelNoCat = {
+      ...makeTx(3, 'keluar', -10_000, '', '', '2025-06-03'),
+      label: undefined,
+      category: undefined,
+    }
+    const cells = buildDailyHeatmap([withLabel, noLabel, noLabelNoCat], 2025, 5)
+    expect(cells[0].txs[0].label).toBe('Custom Label')
+    expect(cells[1].txs[0].label).toBe('Makan')
+    expect(cells[2].txs[0].label).toBe('Transaksi')
+  })
+})
+
+describe('heatBucket', () => {
+  it('total 0 → bucket 0', () => {
+    expect(heatBucket(0, 500_000)).toBe(0)
+  })
+
+  it('maxDay 0 → bucket 0 (guard)', () => {
+    expect(heatBucket(100_000, 0)).toBe(0)
+  })
+
+  it('ratio 0–20% → bucket 1', () => {
+    expect(heatBucket(100_000, 600_000)).toBe(1) // 16.7%
+  })
+
+  it('ratio 20–40% → bucket 2', () => {
+    expect(heatBucket(200_000, 600_000)).toBe(2) // 33.3%
+  })
+
+  it('ratio 60–80% → bucket 4', () => {
+    expect(heatBucket(420_000, 600_000)).toBe(4) // 70%
+  })
+
+  it('ratio = 100% → bucket 5', () => {
+    expect(heatBucket(600_000, 600_000)).toBe(5)
   })
 })
 

@@ -61,6 +61,14 @@
   --line: var(--border-hair);
   --font-display: var(--font-sans);
 
+  /* ── Data-viz: heat palette (heatmap calendar) ───────── */
+  --heat-0: var(--surface-3);
+  --heat-1: #dbeafe;
+  --heat-2: #93c5fd;
+  --heat-3: #60a5fa;
+  --heat-4: #2563eb;
+  --heat-5: var(--accent);
+
   /* Verdict aliases (used by CekDulu + existing CSS) */
   --aman-bg: #f0fdf4;
   --aman-fg: #14532d;
