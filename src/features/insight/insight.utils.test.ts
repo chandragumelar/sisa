@@ -10,6 +10,7 @@ import {
   buildCategoryRanking,
   buildTop5,
   buildChartData,
+  formatMonthShort,
 } from './insight.utils'
 
 type TxType = Transaction['type']
@@ -219,21 +220,70 @@ describe('buildHeroVariant', () => {
 })
 
 describe('buildChartData', () => {
-  it('returns exactly 12 bars', () => {
-    const bars = buildChartData(juniTxs, 2025, 5) // Juni = month 5
-    expect(bars).toHaveLength(12)
+  it('single-month data → length 1 (leading empties stripped)', () => {
+    // juniTxs only has data in Juni 2025 (month 5); endMonth = 5
+    const bars = buildChartData(juniTxs, 2025, 5)
+    expect(bars).toHaveLength(1)
+    expect(bars[0].year).toBe(2025)
+    expect(bars[0].month).toBe(5)
+    expect(bars[0].keluar).toBe(sumExpense(juniTxs))
   })
 
-  it('last bar = view month data', () => {
+  it('last bar = view month even when it has data', () => {
     const bars = buildChartData(juniTxs, 2025, 5)
-    const last = bars[11]
+    const last = bars[bars.length - 1]
     expect(last.year).toBe(2025)
     expect(last.month).toBe(5)
-    expect(last.keluar).toBe(sumExpense(juniTxs))
   })
 
-  it('empty txs → all zero bars', () => {
+  it('empty txs → returns 1 bar (current month, all zeros)', () => {
     const bars = buildChartData([], 2025, 5)
-    expect(bars.every((b) => b.net === 0 && b.keluar === 0 && b.masuk === 0)).toBe(true)
+    expect(bars).toHaveLength(1)
+    expect(bars[0].year).toBe(2025)
+    expect(bars[0].month).toBe(5)
+    expect(bars[0].net).toBe(0)
+  })
+
+  it('gap in middle preserved — no leading empties trimmed past first active month', () => {
+    // Data in Apr (month 3) and Jun (month 5), nothing in May (month 4)
+    const aprTx = makeTx(999, 'keluar', -100_000, 'Test', 'Test', '2025-04-15')
+    const junTx = makeTx(998, 'keluar', -200_000, 'Test', 'Test', '2025-06-15')
+    const bars = buildChartData([aprTx, junTx], 2025, 5)
+    // Apr is first active → strip months before Apr (8 leading empties gone)
+    // Keep Apr, May (gap), Jun = 3 bars
+    expect(bars).toHaveLength(3)
+    expect(bars[0].month).toBe(3) // Apr
+    expect(bars[1].keluar).toBe(0) // May gap preserved
+    expect(bars[2].month).toBe(5) // Jun
+  })
+
+  it('data in oldest slot → all 12 bars kept (no stripping)', () => {
+    // Tx in July 2024 = the oldest slot when endMonth is June 2025
+    const oldTx = makeTx(800, 'keluar', -50_000, 'Test', 'Test', '2024-07-15')
+    const bars = buildChartData([oldTx], 2025, 5)
+    expect(bars).toHaveLength(12)
+    expect(bars[0].month).toBe(6) // July 2024 = month 6
+    expect(bars[0].year).toBe(2024)
+  })
+})
+
+describe('formatMonthShort', () => {
+  it('returns mmm-yy format in lowercase (ID)', () => {
+    const result = formatMonthShort(2025, 6, 'id') // Juli 2025
+    expect(result).toMatch(/^[a-z]+-25$/)
+    expect(result.endsWith('-25')).toBe(true)
+  })
+
+  it('returns mmm-yy format in lowercase (EN)', () => {
+    const result = formatMonthShort(2026, 11, 'en') // Dec 2026
+    expect(result).toBe('dec-26')
+  })
+
+  it('cross-year distinguishable — dec-25 vs jan-26', () => {
+    const dec = formatMonthShort(2025, 11, 'en')
+    const jan = formatMonthShort(2026, 0, 'en')
+    expect(dec).toBe('dec-25')
+    expect(jan).toBe('jan-26')
+    expect(dec).not.toBe(jan)
   })
 })

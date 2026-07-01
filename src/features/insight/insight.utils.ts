@@ -155,7 +155,8 @@ export function buildChartData(
   endYear: number,
   endMonth: number, // 0-indexed, inclusive
 ): MonthBar[] {
-  return Array.from({ length: 12 }, (_, i) => {
+  const WINDOW = 12
+  const all = Array.from({ length: WINDOW }, (_, i) => {
     const d = new Date(endYear, endMonth - 11 + i, 1)
     const y = d.getFullYear()
     const m = d.getMonth()
@@ -165,6 +166,10 @@ export function buildChartData(
     const masuk = sumIncome(monthTxs)
     return { year: y, month: m, net: masuk - keluar, keluar, masuk }
   })
+  // Strip leading empty months (no activity). Gaps in the middle are kept.
+  // Current month (last) is always retained even if empty.
+  const firstActive = all.findIndex((b) => b.keluar > 0 || b.masuk > 0)
+  return all.slice(firstActive === -1 ? all.length - 1 : firstActive)
 }
 
 export function formatTxDate(dateMs: number, lang: Language): string {
@@ -175,9 +180,10 @@ export function formatTxDate(dateMs: number, lang: Language): string {
 }
 
 export function formatMonthShort(year: number, month: number, lang: Language): string {
-  return new Date(year, month, 1).toLocaleDateString(lang === 'id' ? 'id-ID' : 'en-US', {
-    month: 'short',
-  })
+  const date = new Date(year, month, 1)
+  const name = date.toLocaleDateString(lang === 'id' ? 'id-ID' : 'en-US', { month: 'short' })
+  const yy = String(year).slice(-2)
+  return `${name}-${yy}`.toLowerCase()
 }
 
 export function formatMonthLong(year: number, month: number, lang: Language): string {
