@@ -161,6 +161,7 @@
   color: var(--ink-secondary);
   font-family: var(--font-sans);
   margin: 0;
+  white-space: pre-line;
 }
 
 /* ── Expand / collapse ───────────────────────────────────── */
