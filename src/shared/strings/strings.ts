@@ -558,6 +558,7 @@ export type StringKey =
   | 'home.insight_teaser_generic'
   | 'home.insight_net_sub'
   | 'home.insight_card_label'
+  | 'home.insight_card_label_dynamic'
   | 'home.insight_card_cta'
   | 'home.expand_show'
   | 'home.expand_hide'
@@ -1219,10 +1220,11 @@ const id: StringDictionary = {
   'home.sisa_uang': 'SISA UANGMU',
   'home.sisa_uang_tooltip':
     'Ini uang yang aman kamu pakai sampai gajian berikutnya.\n\nHitungannya:\nTotal saldo semua wallet\n− Tagihan yang belum dibayar\n− Uang Mengendap (yang sengaja kamu diamkan, bukan buat dipakai)\n= Sisa uangmu\n\nJatah harian dihitung dari angka ini dibagi sisa hari sampai gajian.',
-  'home.insight_teaser_generic': 'Catatan pertamamu bakal muncul jadi insight di sini',
+  'home.insight_teaser_generic': 'Catatan pertamamu bakal muncul jadi pola di sini',
   'home.insight_net_sub': 'net bulan ini',
   'home.insight_card_label': 'INSIGHT',
-  'home.insight_card_cta': 'Lihat Insight →',
+  'home.insight_card_label_dynamic': 'POLA {cur}MU',
+  'home.insight_card_cta': 'Lihat Pola →',
   'home.expand_show': 'kok bisa segini?',
   'home.expand_hide': 'sembunyikan',
   'home.duit_di_mana': 'Duit lo ada di mana',
@@ -1258,7 +1260,7 @@ const id: StringDictionary = {
   'insight.hero_ratio_sub': 'sisa {amount} dari total {income}',
   'insight.hero_neutral_calm': 'Bulan yang kalem.',
   'insight.hero_neutral_fresh': 'Awal yang bersih.',
-  'insight.hero_neutral_sub': 'Mulai catat buat lihat insight',
+  'insight.hero_neutral_sub': 'Mulai catat buat lihat pola',
   'insight.card_monthly': 'Uang Bulanan',
   'insight.metric_net': 'Net',
   'insight.metric_keluar': 'Keluar',
@@ -1275,7 +1277,7 @@ const id: StringDictionary = {
   'insight.monthly_empty_sub': 'butuh minimal 2 minggu data',
   'insight.card_category': 'Kategori Bulanan',
   'insight.cat_empty': 'Belum ada transaksi\nberkategori bulan ini.',
-  'insight.cat_empty_sub': 'catatan pertama = data pertama insight',
+  'insight.cat_empty_sub': 'catatan pertama = data pola pertama',
   'insight.cat_delta_up': '↑ naik {pct}% dari {month}',
   'insight.cat_delta_down': '↓ turun {pct}% dari {month}',
   'insight.cat_no_prev': 'baru bulan ini',
@@ -1301,7 +1303,7 @@ const id: StringDictionary = {
   'insight.card_top_tx': '5 Transaksi Besar',
   'insight.top_tx_empty': 'Belum ada transaksi\nbulan ini.',
   'insight.top_tx_empty_sub': 'transaksi pertama kamu bakal muncul di sini',
-  'insight.nav_aria': 'Lihat insight',
+  'insight.nav_aria': 'Lihat pola',
 }
 
 const en: StringDictionary = {
@@ -1882,6 +1884,7 @@ const en: StringDictionary = {
   'home.insight_teaser_generic': 'Your first entries will show up as insights here',
   'home.insight_net_sub': 'net this month',
   'home.insight_card_label': 'INSIGHTS',
+  'home.insight_card_label_dynamic': 'YOUR {cur} INSIGHTS',
   'home.insight_card_cta': 'View Insights →',
   'home.expand_show': 'how is this possible?',
   'home.expand_hide': 'hide',

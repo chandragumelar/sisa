@@ -18,6 +18,7 @@ import {
 } from '@/db/transactions.repository'
 import { t } from '@/shared/strings/strings'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
+import { getCurrencyLabel } from '@/constants/currencies'
 import type { Language, Settings, Wallet, Tagihan, Allocation } from '@/db/database'
 import {
   calcDaysUntilPayday,
@@ -564,7 +565,12 @@ export function HomePage() {
 
           <button className={styles.insightCard} onClick={() => navigate('/insight')}>
             <div className={styles.insightCardTop}>
-              <span className={styles.insightCardLabel}>{t('home.insight_card_label', lang)}</span>
+              <span className={styles.insightCardLabel}>
+                {t('home.insight_card_label_dynamic', lang).replace(
+                  '{cur}',
+                  getCurrencyLabel(currency, lang),
+                )}
+              </span>
             </div>
             {teaserExpense === 0 && teaserIncome === 0 ? (
               <span className={styles.insightCardText}>
