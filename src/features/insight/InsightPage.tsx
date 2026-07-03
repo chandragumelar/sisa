@@ -6,7 +6,6 @@ import { useLanguage } from '@/app/providers/useLanguage'
 import { getSettings } from '@/db/settings.repository'
 import { getAllocation } from '@/db/allocation.repository'
 import { getTransactionsByDateRange } from '@/db/transactions.repository'
-import { getRate, refreshRatesIfStale } from '@/shared/utils/fx'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
 import { t } from '@/shared/strings/strings'
 import type { Transaction } from '@/db/database'
@@ -62,25 +61,7 @@ export function InsightPage() {
       const fetchStart = new Date(viewYear, viewMonth - 12, 1).getTime()
       const rawTxs = await getTransactionsByDateRange(fetchStart, fetchEnd)
 
-      const foreignCurrencies = [
-        ...new Set(rawTxs.filter((t) => t.currency !== primary).map((t) => t.currency)),
-      ]
-      if (foreignCurrencies.length > 0) await refreshRatesIfStale(primary, foreignCurrencies)
-
-      const normalized: Transaction[] = []
-      let hasForeignSkipped = false
-      for (const tx of rawTxs) {
-        if (tx.currency === primary) {
-          normalized.push(tx)
-        } else {
-          const rate = await getRate(tx.currency, primary)
-          if (rate !== null) {
-            normalized.push({ ...tx, amount: tx.amount * rate, currency: primary })
-          } else {
-            hasForeignSkipped = true
-          }
-        }
-      }
+      const normalized: Transaction[] = rawTxs.filter((tx) => tx.currency === primary)
 
       const { startMs: cStart, endMs: cEnd } = getMonthBounds(viewYear, viewMonth)
       const prevM = viewMonth === 0 ? 11 : viewMonth - 1
@@ -94,7 +75,6 @@ export function InsightPage() {
           prevTxs: normalized.filter((tx) => tx.date >= pStart && tx.date < pEnd),
           allTxs: normalized,
           jatahHarian: allocation?.jatahHarian ?? null,
-          hasForeignSkipped,
         })
         setLoading(false)
       }
@@ -185,10 +165,6 @@ export function InsightPage() {
           <div className={styles.loadingBlock} />
         ) : (
           <>
-            {data?.hasForeignSkipped && (
-              <p className={styles.fxSkip}>{t('insight.fx_skip', lang)}</p>
-            )}
-
             {/* ① Hero */}
             <div className={styles.card}>
               <p className={styles.heroHeadline}>{headline}</p>

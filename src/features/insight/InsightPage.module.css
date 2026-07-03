@@ -489,12 +489,3 @@
 .loadingBlock {
   height: 200px;
 }
-
-/* ── FX skip note ────────────────────────────────────── */
-.fxSkip {
-  font-size: 11px;
-  color: var(--ink-tertiary);
-  text-align: center;
-  margin: 0 0 8px;
-  font-family: var(--font-sans);
-}
