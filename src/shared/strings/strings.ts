@@ -633,7 +633,6 @@ export type StringKey =
   | 'insight.card_top_tx'
   | 'insight.top_tx_empty'
   | 'insight.top_tx_empty_sub'
-  | 'insight.fx_skip'
   | 'insight.nav_aria'
 
 export type StringDictionary = Record<StringKey, string>
@@ -1296,7 +1295,6 @@ const id: StringDictionary = {
   'insight.card_top_tx': '5 Transaksi Besar',
   'insight.top_tx_empty': 'Belum ada transaksi\nbulan ini.',
   'insight.top_tx_empty_sub': 'transaksi pertama kamu bakal muncul di sini',
-  'insight.fx_skip': 'beberapa transaksi mata uang lain belum terhitung',
   'insight.nav_aria': 'Lihat insight',
 }
 
@@ -1954,7 +1952,6 @@ const en: StringDictionary = {
   'insight.card_top_tx': '5 Biggest Transactions',
   'insight.top_tx_empty': 'No transactions\nthis month yet.',
   'insight.top_tx_empty_sub': 'your first transaction will appear here',
-  'insight.fx_skip': 'some foreign currency transactions excluded',
   'insight.nav_aria': 'View insights',
 }
 

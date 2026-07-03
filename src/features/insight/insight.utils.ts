@@ -37,7 +37,6 @@ export interface InsightData {
   prevTxs: Transaction[]
   allTxs: Transaction[]
   jatahHarian: number | null
-  hasForeignSkipped: boolean
 }
 
 /** month is 0-indexed */
