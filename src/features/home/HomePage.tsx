@@ -11,7 +11,7 @@ import {
   deleteTagihan,
 } from '@/db/tagihan.repository'
 import {
-  getMonthlyFlows,
+  getMonthlyFlowsByCurrency,
   getPeriodFlows,
   deleteTransactionAndRevertBalance,
   getTransactionsByDateRange,
@@ -65,8 +65,8 @@ interface HomeData {
   settings: Settings | null
   wallets: Wallet[]
   tagihan: Tagihan[]
-  monthlyIncome: number
-  monthlyExpense: number
+  monthlyIncomeByCurrency: Record<string, number>
+  monthlyExpenseByCurrency: Record<string, number>
   // allocation path
   allocation: Allocation | null
   sisaUang: number
@@ -116,8 +116,8 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
     settings: null,
     wallets: [],
     tagihan: [],
-    monthlyIncome: 0,
-    monthlyExpense: 0,
+    monthlyIncomeByCurrency: {},
+    monthlyExpenseByCurrency: {},
     allocation: null,
     sisaUang: 0,
     mengendap: 0,
@@ -162,11 +162,11 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
         const hariPeriode = calcHariPeriode(nowMs, settings)
 
         Promise.all([
-          getMonthlyFlows(currency, monthStart, monthEnd),
+          getMonthlyFlowsByCurrency(monthStart, monthEnd),
           getPeriodFlows(currency, periodStartMs, nowMs),
         ]).then(
           async ([
-            { income: monthlyIncome, expense: monthlyExpense },
+            { income: monthlyIncomeByCurrency, expense: monthlyExpenseByCurrency },
             { income, expense, spentToday },
           ]) => {
             if (cancelled) return
@@ -223,8 +223,8 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
               settings,
               wallets,
               tagihan,
-              monthlyIncome,
-              monthlyExpense,
+              monthlyIncomeByCurrency,
+              monthlyExpenseByCurrency,
               allocation,
               sisaUang,
               mengendap,
@@ -264,8 +264,8 @@ export function HomePage() {
     settings,
     wallets,
     tagihan,
-    monthlyIncome,
-    monthlyExpense,
+    monthlyIncomeByCurrency,
+    monthlyExpenseByCurrency,
     allocation,
     sisaUang,
     mengendap,
@@ -539,9 +539,9 @@ export function HomePage() {
           )}
 
           <MonthlyModule
-            income={monthlyIncome}
-            expense={monthlyExpense}
-            currency={currency}
+            incomeByCurrency={monthlyIncomeByCurrency}
+            expenseByCurrency={monthlyExpenseByCurrency}
+            primaryCurrency={currency}
             nowMs={nowMs}
             onHistoryTap={() => setHistoryOpen(true)}
           />
