@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSharedProfileCtx } from './SharedProfileContext'
+import { clearAllData, localHasData } from '@/db/backup.repository'
 import type { RpcError } from '@/lib/supabase/types'
 import styles from './GabungKodePage.module.css'
 
@@ -51,6 +52,8 @@ export function GabungKodePage() {
   const [screen, setScreen] = useState<Screen>('input')
   const [previewName, setPreviewName] = useState('')
   const [error, setError] = useState<RpcError | null>(null)
+  const [localData, setLocalData] = useState(false)
+  const [agreed, setAgreed] = useState(false)
 
   const inputRefs = [
     useRef<HTMLInputElement>(null),
@@ -117,6 +120,7 @@ export function GabungKodePage() {
       const result = await previewCode(fullCode)
       if (result.ok) {
         setPreviewName(result.profile_name)
+        setLocalData(await localHasData())
         setScreen('confirm')
       } else {
         setError(result.error)
@@ -132,6 +136,7 @@ export function GabungKodePage() {
     try {
       const result = await joinWithCode(fullCode, 'Pengguna')
       if (result.ok) {
+        await clearAllData()
         setScreen('success')
       } else {
         setError(result.error)
@@ -146,6 +151,8 @@ export function GabungKodePage() {
     setChars(['', '', '', ''])
     setError(null)
     setScreen('input')
+    setAgreed(false)
+    setLocalData(false)
     setTimeout(() => inputRefs[0].current?.focus(), 50)
   }
 
@@ -275,25 +282,62 @@ export function GabungKodePage() {
             ))}
           </div>
 
-          <div className={styles.confirmWarning}>
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="var(--signal-caution)"
-              strokeWidth="2"
-              strokeLinecap="round"
-            >
-              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-              <line x1="12" y1="9" x2="12" y2="13" />
-              <line x1="12" y1="17" x2="12.01" y2="17" />
-            </svg>
-            <span>Aksi ini tidak bisa dibatalkan tanpa melepas koneksi secara manual.</span>
-          </div>
+          {localData ? (
+            <div className={styles.dangerWarning}>
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="var(--signal-danger)"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                <line x1="12" y1="9" x2="12" y2="13" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
+              <span>
+                Catatan keuangan di HP ini akan digantikan oleh dompet bersama. Data lama tidak bisa
+                dikembalikan.
+              </span>
+            </div>
+          ) : (
+            <div className={styles.confirmWarning}>
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="var(--signal-caution)"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                <line x1="12" y1="9" x2="12" y2="13" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
+              <span>Aksi ini tidak bisa dibatalkan tanpa melepas koneksi secara manual.</span>
+            </div>
+          )}
+
+          {localData && (
+            <label className={styles.checkboxRow}>
+              <input
+                type="checkbox"
+                checked={agreed}
+                onChange={(e) => setAgreed(e.target.checked)}
+              />
+              <span>Saya mengerti dan setuju data lama di HP ini akan diganti.</span>
+            </label>
+          )}
 
           <div className={styles.confirmActions}>
-            <button className={styles.btnPrimary} onClick={handleConfirm} disabled={loading}>
+            <button
+              className={styles.btnPrimary}
+              onClick={handleConfirm}
+              disabled={loading || (localData && !agreed)}
+            >
               {loading ? 'Menghubungkan...' : 'Ya, Gabung Sekarang'}
             </button>
             <button className={styles.btnGhost} onClick={handleReset}>
