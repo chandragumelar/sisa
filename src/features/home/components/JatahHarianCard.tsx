@@ -1,6 +1,7 @@
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
+import { getCurrencyLabel } from '@/constants/currencies'
 import styles from './JatahHarianCard.module.css'
 
 interface Props {
@@ -13,6 +14,7 @@ interface Props {
 
 export function JatahHarianCard({ jatahHariIni, spentToday, sisaUang, sisaHari, currency }: Props) {
   const lang = useLanguage()
+  const curLabel = getCurrencyLabel(currency, lang)
   const isOver = spentToday > jatahHariIni
   const pct = jatahHariIni > 0 ? Math.min(100, Math.round((spentToday / jatahHariIni) * 100)) : 0
   const lebih = spentToday - jatahHariIni
@@ -21,7 +23,9 @@ export function JatahHarianCard({ jatahHariIni, spentToday, sisaUang, sisaHari, 
   return (
     <div className={`${styles.card} ${isOver ? styles.cardOver : ''}`}>
       <div className={styles.headerRow}>
-        <span className={styles.label}>{t('home.jatah_harian_label', lang)}</span>
+        <span className={styles.label}>
+          {t('home.jatah_harian_dynamic', lang).replace('{cur}', curLabel)}
+        </span>
         {isOver && <span className={styles.overBadge}>{t('home.jatah_lewat_badge', lang)}</span>}
       </div>
 

@@ -77,6 +77,14 @@ export function getCurrencyByCode(code: string): Currency | undefined {
   return ALL_CURRENCIES.find((c) => c.code === code)
 }
 
+export function getCurrencyLabel(code: string, lang: 'id' | 'en'): string {
+  const currency = getCurrencyByCode(code)
+  if (!currency) return code
+  const parts = currency.name.split(' ')
+  const lastWord = parts[parts.length - 1] ?? code
+  return lang === 'id' ? lastWord.toLowerCase() : lastWord
+}
+
 export function getPopularCurrencies(): Currency[] {
   return POPULAR_CURRENCY_CODES.map((code) => ALL_CURRENCIES.find((c) => c.code === code)).filter(
     (c): c is Currency => c !== undefined,
