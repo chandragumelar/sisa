@@ -163,3 +163,27 @@ export async function getMonthlyFlows(
   const expense = txs.filter((t) => t.type === 'keluar').reduce((s, t) => s + Math.abs(t.amount), 0)
   return { income, expense }
 }
+
+export async function getMonthlyFlowsByCurrency(
+  monthStartMs: number,
+  monthEndMs: number,
+): Promise<{ income: Record<string, number>; expense: Record<string, number> }> {
+  const txs = await db.transactions
+    .where('date')
+    .between(monthStartMs, monthEndMs, true, false)
+    .filter((t) => !t.isEarmark)
+    .toArray()
+
+  const income: Record<string, number> = {}
+  const expense: Record<string, number> = {}
+
+  for (const t of txs) {
+    if (t.type === 'masuk') {
+      income[t.currency] = (income[t.currency] ?? 0) + t.amount
+    } else if (t.type === 'keluar') {
+      expense[t.currency] = (expense[t.currency] ?? 0) + Math.abs(t.amount)
+    }
+  }
+
+  return { income, expense }
+}
