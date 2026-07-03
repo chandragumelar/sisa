@@ -580,6 +580,9 @@ export type StringKey =
   | 'home.jatah_lewat_badge'
   | 'home.jatah_lewat_title'
   | 'home.jatah_besok'
+  | 'home.sisa_uang_dynamic'
+  | 'home.jatah_harian_dynamic'
+  | 'cek.card_title_dynamic'
   // insight
   | 'insight.back_aria'
   | 'insight.hero_hemat'
@@ -1241,6 +1244,9 @@ const id: StringDictionary = {
   'home.jatah_lewat_badge': '⚠ Lewat',
   'home.jatah_lewat_title': 'Hari ini lewat {n}',
   'home.jatah_besok': 'Besok jatahmu nyusut jadi {n}',
+  'home.sisa_uang_dynamic': 'SISA {cur}MU',
+  'home.jatah_harian_dynamic': 'Jatah Harian {cur}mu',
+  'cek.card_title_dynamic': 'Cek Dulu {cur}mu',
 
   // insight
   'insight.back_aria': 'Kembali',
@@ -1898,6 +1904,9 @@ const en: StringDictionary = {
   'home.jatah_lewat_badge': '⚠ Over',
   'home.jatah_lewat_title': 'Today over by {n}',
   'home.jatah_besok': "Tomorrow's budget drops to {n}",
+  'home.sisa_uang_dynamic': 'YOUR {cur} LEFT',
+  'home.jatah_harian_dynamic': 'Your {cur} Daily Budget',
+  'cek.card_title_dynamic': 'Check Your {cur} First',
 
   // insight
   'insight.back_aria': 'Back',

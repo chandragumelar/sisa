@@ -3,6 +3,7 @@ import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
 import { formatCurrency, getCurrencySymbol } from '@/shared/utils/formatCurrency'
 import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
+import { getCurrencyLabel } from '@/constants/currencies'
 import styles from './CekDuluCard.module.css'
 
 interface Props {
@@ -38,6 +39,7 @@ export function CekDuluCard({
 }: Props) {
   const lang = useLanguage()
   const [amountStr, setAmountStr] = useState('')
+  const curLabel = getCurrencyLabel(currency, lang)
   const cardState = getCardState(walletCount, tagihanCount)
   const hasTagihan = tagihanCount > 0
   const missingItem = !hasTagihan ? t('cek.item_tagihan', lang) : t('cek.item_wallet', lang)
@@ -55,7 +57,9 @@ export function CekDuluCard({
         {/* ── State 0: empty ── */}
         {cardState === 0 && (
           <>
-            <div className={styles.eyebrow}>{t('actions.cek_label', lang)}</div>
+            <div className={styles.eyebrow}>
+              {t('cek.card_title_dynamic', lang).replace('{cur}', curLabel)}
+            </div>
             <div className={styles.emptyIcon}>
               <svg
                 width="32"
@@ -95,7 +99,9 @@ export function CekDuluCard({
         {cardState === 1 && (
           <>
             <div className={styles.headerRow}>
-              <div className={styles.eyebrow}>{t('actions.cek_label', lang)}</div>
+              <div className={styles.eyebrow}>
+                {t('cek.card_title_dynamic', lang).replace('{cur}', curLabel)}
+              </div>
               <span className={styles.badgeEstimasi}>{t('cek.badge_estimasi', lang)}</span>
             </div>
 
@@ -194,7 +200,9 @@ export function CekDuluCard({
         {cardState === 2 && (
           <>
             <div className={styles.headerRow}>
-              <div className={styles.eyebrow}>{t('actions.cek_label', lang)}</div>
+              <div className={styles.eyebrow}>
+                {t('cek.card_title_dynamic', lang).replace('{cur}', curLabel)}
+              </div>
             </div>
 
             <div className={styles.heading}>
