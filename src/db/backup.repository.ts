@@ -56,3 +56,12 @@ export async function clearAllData(): Promise<void> {
     },
   )
 }
+
+export async function localHasData(): Promise<boolean> {
+  const [tx, w, t] = await Promise.all([
+    db.transactions.count(),
+    db.wallets.count(),
+    db.tagihan.count(),
+  ])
+  return tx > 0 || w > 0 || t > 0
+}
