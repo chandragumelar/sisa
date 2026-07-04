@@ -5,14 +5,48 @@ import styles from './BerbagiKeamananPage.module.css'
 
 export function BerbagiKeamananPage() {
   const navigate = useNavigate()
-  const { status, profile, members, anonymousId, disconnect } = useSharedProfileCtx()
+  const { status, profile, members, anonymousId, disconnect, regenerateRecovery } =
+    useSharedProfileCtx()
   const [disconnecting, setDisconnecting] = useState(false)
   const [confirmDisconnect, setConfirmDisconnect] = useState(false)
+
+  const [showRegenConfirm, setShowRegenConfirm] = useState(false)
+  const [regenLoading, setRegenLoading] = useState(false)
+  const [regenCode, setRegenCode] = useState<string | null>(null)
+  const [regenError, setRegenError] = useState<string | null>(null)
+  const [regenCopied, setRegenCopied] = useState(false)
 
   async function handleDisconnect() {
     setDisconnecting(true)
     await disconnect()
     navigate('/')
+  }
+
+  async function handleRegenConfirm() {
+    setRegenLoading(true)
+    setRegenError(null)
+    const result = await regenerateRecovery()
+    setRegenLoading(false)
+    if ('raw' in result) {
+      setRegenCode(result.raw)
+    } else {
+      setRegenError('Gagal membuat ulang kode. Coba lagi.')
+    }
+  }
+
+  function handleCloseRegen() {
+    setShowRegenConfirm(false)
+    setRegenCode(null)
+    setRegenError(null)
+    setRegenCopied(false)
+  }
+
+  function handleCopyRegenCode() {
+    if (!regenCode) return
+    navigator.clipboard.writeText(regenCode).then(() => {
+      setRegenCopied(true)
+      setTimeout(() => setRegenCopied(false), 2000)
+    })
   }
 
   if (status === 'loading') return null
@@ -128,6 +162,9 @@ export function BerbagiKeamananPage() {
               Jika ganti HP, buka SISA dan pilih &ldquo;Pulihkan Profil Lama&rdquo; lalu masukkan
               kode yang sudah kamu simpan.
             </div>
+            <button className={styles.regenTriggerBtn} onClick={() => setShowRegenConfirm(true)}>
+              Buat Ulang Kode Pemulihan
+            </button>
           </div>
 
           {/* Disconnect confirmation overlay */}
@@ -150,6 +187,53 @@ export function BerbagiKeamananPage() {
                 <button className={styles.btnGhost} onClick={() => setConfirmDisconnect(false)}>
                   Batal
                 </button>
+              </div>
+            </div>
+          )}
+
+          {/* Regenerate recovery code overlay */}
+          {showRegenConfirm && (
+            <div className={styles.confirmOverlay} onClick={handleCloseRegen}>
+              <div className={styles.confirmSheet} onClick={(e) => e.stopPropagation()}>
+                <div className={styles.confirmHandle} />
+
+                {regenCode ? (
+                  <>
+                    <div className={styles.confirmTitle}>Kode pemulihan baru</div>
+                    <div className={styles.confirmDesc}>
+                      Simpan kode ini baik-baik. Kode lama sudah hangus dan tidak bisa dipakai lagi.
+                    </div>
+                    <div className={styles.regenCodeBox}>
+                      <div className={styles.regenCodeLabel}>KODE PEMULIHAN</div>
+                      <div className={styles.regenCodeValue}>{regenCode}</div>
+                    </div>
+                    <button className={styles.btnSecondary} onClick={handleCopyRegenCode}>
+                      {regenCopied ? 'Tersalin!' : 'Salin Kode'}
+                    </button>
+                    <button className={styles.btnGhost} onClick={handleCloseRegen}>
+                      Selesai
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <div className={styles.confirmTitle}>Buat ulang kode pemulihan?</div>
+                    <div className={styles.confirmDesc}>
+                      Kode pemulihan lama akan langsung hangus dan tidak bisa dipakai lagi. Simpan
+                      kode baru baik-baik.
+                    </div>
+                    {regenError && <div className={styles.regenErrorText}>{regenError}</div>}
+                    <button
+                      className={styles.btnPrimary}
+                      onClick={handleRegenConfirm}
+                      disabled={regenLoading}
+                    >
+                      {regenLoading ? 'Memproses...' : 'Ya, Buat Ulang'}
+                    </button>
+                    <button className={styles.btnGhost} onClick={handleCloseRegen}>
+                      Batal
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           )}

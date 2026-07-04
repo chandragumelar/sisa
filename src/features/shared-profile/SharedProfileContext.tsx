@@ -19,6 +19,8 @@ type SharedProfileCtx = SharedProfileState & {
     name: string,
     displayName: string,
   ) => Promise<CreateProfileResult & { recoveryCode?: string }>
+  /** Invalidate existing recovery codes and generate a fresh one. Returns raw code on success. */
+  regenerateRecovery: () => Promise<{ raw: string } | { error: string }>
 }
 
 const SharedProfileContext = createContext<SharedProfileCtx | null>(null)
