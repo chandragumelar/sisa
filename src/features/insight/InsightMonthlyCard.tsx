@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import type { Language } from '@/db/database'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
 import { t } from '@/shared/strings/strings'
@@ -19,22 +20,30 @@ interface Props {
 }
 
 const METRICS: ChartMetric[] = ['net', 'keluar', 'masuk']
-const BAR_W = 20
-const GAP = 4
-const H = 54
-const PAD_T = 6
-const LABEL_H = 18
+const BAR_W = 32
+const GAP = 8
+const H = 96
+const PAD_T = 8
+const LABEL_H = 20
 const SVG_H = PAD_T + H + LABEL_H
 
 function BarChart({
   data,
   metric,
+  currency,
   lang,
 }: {
   data: MonthBar[]
   metric: ChartMetric
+  currency: string
   lang: Language
 }) {
+  const [selectedBar, setSelectedBar] = useState<number | null>(null)
+
+  useEffect(() => {
+    setSelectedBar(null)
+  }, [metric])
+
   const n = data.length
   const svgW = n * (BAR_W + GAP) - GAP
   const values = data.map((d) => d[metric])
@@ -43,7 +52,7 @@ function BarChart({
   const labelY = PAD_T + H + 4
 
   return (
-    <svg viewBox={`0 0 ${svgW} ${SVG_H}`} width="100%" height={SVG_H} aria-hidden>
+    <svg viewBox={`0 0 ${svgW} ${SVG_H}`} width="100%" height={SVG_H} role="img">
       {metric === 'net' && (
         <line x1="0" y1={midY} x2={svgW} y2={midY} stroke="var(--border-soft)" strokeWidth="1" />
       )}
@@ -51,6 +60,7 @@ function BarChart({
         const val = bar[metric]
         const isLast = i === n - 1
         const fill = isLast ? 'var(--accent)' : 'var(--border-hair)'
+        const sel = selectedBar === i
         if (metric === 'net') {
           const barH = Math.max((Math.abs(val) / maxAbs) * (H / 2), 1)
           const negative = val < 0
@@ -62,7 +72,11 @@ function BarChart({
               width={BAR_W}
               height={barH}
               fill={negative && isLast ? 'var(--signal-caution)' : fill}
+              stroke={sel ? 'var(--accent)' : undefined}
+              strokeWidth={sel ? 1.5 : undefined}
               rx="2"
+              style={{ cursor: 'pointer' }}
+              onClick={() => setSelectedBar(sel ? null : i)}
             />
           )
         }
@@ -75,10 +89,43 @@ function BarChart({
             width={BAR_W}
             height={barH}
             fill={fill}
+            stroke={sel ? 'var(--accent)' : undefined}
+            strokeWidth={sel ? 1.5 : undefined}
             rx="2"
+            style={{ cursor: 'pointer' }}
+            onClick={() => setSelectedBar(sel ? null : i)}
           />
         )
       })}
+      {selectedBar !== null &&
+        (() => {
+          const bar = data[selectedBar]
+          const i = selectedBar
+          const val = bar[metric]
+          const barX = i * (BAR_W + GAP) + BAR_W / 2
+          let barTopY: number
+          if (metric === 'net') {
+            const barH = Math.max((Math.abs(val) / maxAbs) * (H / 2), 1)
+            barTopY = val < 0 ? midY : midY - barH
+          } else {
+            const barH = Math.max((val / maxAbs) * H, 1)
+            barTopY = PAD_T + H - barH
+          }
+          const nomY = Math.max(barTopY - 4, 10)
+          return (
+            <text
+              x={barX}
+              y={nomY}
+              textAnchor="middle"
+              fontSize="10"
+              fontWeight={600}
+              fill="var(--ink-primary)"
+              fontFamily="var(--font-sans)"
+            >
+              {formatCurrency(val, currency)}
+            </text>
+          )
+        })()}
       {data.map((bar, i) => {
         const cx = i * (BAR_W + GAP) + BAR_W / 2
         return (
@@ -87,7 +134,7 @@ function BarChart({
             x={cx}
             y={labelY}
             textAnchor="end"
-            fontSize="8"
+            fontSize="10"
             fill="var(--ink-tertiary)"
             fontFamily="var(--font-sans)"
             transform={`rotate(-40, ${cx}, ${labelY})`}
@@ -194,7 +241,7 @@ export function InsightMonthlyCard({
             </p>
           )}
           <div className={styles.barsWrap}>
-            <BarChart data={chartData} metric={metric} lang={lang} />
+            <BarChart data={chartData} metric={metric} currency={currency} lang={lang} />
           </div>
           <div className={styles.hdiv} />
           <div className={styles.monthlyFooter}>

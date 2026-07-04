@@ -14,7 +14,6 @@ import {
   sumExpense,
   sumIncome,
   spendPct,
-  buildHeroVariant,
   aggregateByCategory,
   buildCategoryRanking,
   buildTop5,
@@ -98,9 +97,6 @@ export function InsightPage() {
   const prevExpense = data ? sumExpense(data.prevTxs) : 0
   const prevIncome = data ? sumIncome(data.prevTxs) : 0
   const pct = spendPct(currExpense, currIncome)
-  const hero = data
-    ? buildHeroVariant(currExpense, currIncome, prevExpense > 0 ? prevExpense : null)
-    : null
   const chartData = data ? buildChartData(data.allTxs, viewYear, viewMonth) : []
   const currCatMap = data ? aggregateByCategory(data.currTxs) : new Map()
   const prevCatMap = data ? aggregateByCategory(data.prevTxs) : new Map()
@@ -115,37 +111,6 @@ export function InsightPage() {
   useEffect(() => {
     if (!selectedCat && ranking.length > 0) setSelectedCat(ranking[0].name)
   }, [ranking.length]) // eslint-disable-line react-hooks/exhaustive-deps
-
-  function heroText(): { headline: string; sub: string } {
-    if (!hero) return { headline: '', sub: '' }
-    if (hero.kind === 'comparative') {
-      const key = hero.hemat ? 'insight.hero_hemat' : 'insight.hero_boros'
-      const subKey = hero.hemat ? 'insight.hero_hemat_sub' : 'insight.hero_boros_sub'
-      return {
-        headline: t(key, lang)
-          .replace('{pct}', String(hero.deltaPct))
-          .replace('{month}', prevMonthShort),
-        sub: t(subKey, lang).replace('{amount}', formatCurrency(hero.deltaAmount, currency)),
-      }
-    }
-    if (hero.kind === 'ratio') {
-      return {
-        headline: t('insight.hero_ratio', lang).replace('{pct}', String(hero.pct)),
-        sub: t('insight.hero_ratio_sub', lang)
-          .replace('{amount}', formatCurrency(Math.max(hero.remaining, 0), currency))
-          .replace('{income}', formatCurrency(hero.income, currency)),
-      }
-    }
-    return {
-      headline: t(
-        hero.hasExpense ? 'insight.hero_neutral_calm' : 'insight.hero_neutral_fresh',
-        lang,
-      ),
-      sub: t('insight.hero_neutral_sub', lang),
-    }
-  }
-
-  const { headline, sub } = heroText()
 
   return (
     <div className={styles.shell}>
@@ -165,13 +130,7 @@ export function InsightPage() {
           <div className={styles.loadingBlock} />
         ) : (
           <>
-            {/* ① Hero */}
-            <div className={styles.card}>
-              <p className={styles.heroHeadline}>{headline}</p>
-              {sub ? <p className={styles.heroSub}>{sub}</p> : null}
-            </div>
-
-            {/* ② Monthly chart */}
+            {/* ① Monthly chart */}
             <InsightMonthlyCard
               currExpense={currExpense}
               currIncome={currIncome}
