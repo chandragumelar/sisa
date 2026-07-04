@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSharedProfileCtx } from './SharedProfileContext'
 import { BottomSheet } from '@/shared/components/BottomSheet'
+import { useLanguage } from '@/app/providers/useLanguage'
+import { t } from '@/shared/strings/strings'
 import type { JoinCode } from '@/lib/supabase/types'
 import styles from './AjakPasanganPage.module.css'
 
@@ -19,6 +21,7 @@ function formatCode(raw: string): string {
 
 export function AjakPasanganPage() {
   const navigate = useNavigate()
+  const lang = useLanguage()
   const { status, generateCode, profileId } = useSharedProfileCtx()
 
   const [joinCode, setJoinCode] = useState<JoinCode | null>(null)
@@ -69,7 +72,11 @@ export function AjakPasanganPage() {
   return (
     <div className={styles.page}>
       <div className={styles.header}>
-        <button className={styles.backBtn} onClick={() => navigate(-1)} aria-label="Kembali">
+        <button
+          className={styles.backBtn}
+          onClick={() => navigate(-1)}
+          aria-label={t('common.back_aria', lang)}
+        >
           <svg
             width="18"
             height="18"
@@ -176,7 +183,7 @@ export function AjakPasanganPage() {
               >
                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
               </svg>
-              Bagikan via WhatsApp
+              {t('pair.share_wa', lang)}
             </button>
             <button className={styles.btnGhost} onClick={loadCode} disabled={loading}>
               Buat Kode Baru
@@ -189,7 +196,7 @@ export function AjakPasanganPage() {
       <BottomSheet
         isOpen={shareSheetOpen}
         onClose={() => setShareSheetOpen(false)}
-        title="Bagikan via WhatsApp"
+        title={t('pair.share_wa', lang)}
       >
         {joinCode && (
           <div className={styles.shareSheet}>

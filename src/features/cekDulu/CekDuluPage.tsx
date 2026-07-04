@@ -163,7 +163,11 @@ export function CekDuluPage() {
   return (
     <div className={styles.page}>
       <div className={styles.head}>
-        <button className={styles.backBtn} onClick={() => navigate(-1)} aria-label="Kembali">
+        <button
+          className={styles.backBtn}
+          onClick={() => navigate(-1)}
+          aria-label={t('common.back_aria', lang)}
+        >
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <path
               d="M10 3L5 8L10 13"

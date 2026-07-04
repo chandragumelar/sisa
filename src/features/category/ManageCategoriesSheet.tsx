@@ -11,6 +11,8 @@ import {
 } from '@/db/categories.repository'
 import { BottomSheet } from '@/shared/components/BottomSheet'
 import { FALLBACK_CATEGORY, ICON_PICKER_OPTIONS } from './category.types'
+import { useLanguage } from '@/app/providers/useLanguage'
+import { t } from '@/shared/strings/strings'
 import styles from './ManageCategoriesSheet.module.css'
 
 interface Props {
@@ -47,6 +49,7 @@ function IconPicker({ value, onChange }: { value: string; onChange: (name: strin
 }
 
 export function ManageCategoriesSheet({ isOpen, onClose }: Props) {
+  const lang = useLanguage()
   const [tab, setTab] = useState<TabType>('expense')
   const [categories, setCategories] = useState<Category[]>([])
   const [editingId, setEditingId] = useState<number | null>(null)
@@ -114,16 +117,16 @@ export function ManageCategoriesSheet({ isOpen, onClose }: Props) {
   }
 
   return (
-    <BottomSheet isOpen={isOpen} onClose={onClose} title="Kelola Kategori">
+    <BottomSheet isOpen={isOpen} onClose={onClose} title={t('cat.manage_title', lang)}>
       {/* Tab toggle */}
       <div className={styles.tabRow}>
-        {(['expense', 'income'] as TabType[]).map((t) => (
+        {(['expense', 'income'] as TabType[]).map((tabType) => (
           <button
-            key={t}
-            className={`${styles.tabBtn} ${tab === t ? styles.tabBtnActive : ''}`}
-            onClick={() => setTab(t)}
+            key={tabType}
+            className={`${styles.tabBtn} ${tab === tabType ? styles.tabBtnActive : ''}`}
+            onClick={() => setTab(tabType)}
           >
-            {t === 'expense' ? 'Pengeluaran' : 'Pemasukan'}
+            {tabType === 'expense' ? 'Pengeluaran' : 'Pemasukan'}
           </button>
         ))}
       </div>
@@ -145,10 +148,18 @@ export function ManageCategoriesSheet({ isOpen, onClose }: Props) {
                 />
                 <IconPicker value={editIcon} onChange={setEditIcon} />
                 <div className={styles.editActions}>
-                  <button className={styles.iconBtn} onClick={saveEdit} aria-label="Simpan">
+                  <button
+                    className={styles.iconBtn}
+                    onClick={saveEdit}
+                    aria-label={t('common.save', lang)}
+                  >
                     <Check size={14} strokeWidth={2} />
                   </button>
-                  <button className={styles.iconBtn} onClick={cancelEdit} aria-label="Batal">
+                  <button
+                    className={styles.iconBtn}
+                    onClick={cancelEdit}
+                    aria-label={t('common.cancel', lang)}
+                  >
                     <X size={14} strokeWidth={2} />
                   </button>
                 </div>
@@ -166,14 +177,14 @@ export function ManageCategoriesSheet({ isOpen, onClose }: Props) {
                   <button
                     className={`${styles.iconBtn} ${styles.iconBtnDanger}`}
                     onClick={() => confirmDelete(cat.id!)}
-                    aria-label="Hapus"
+                    aria-label={t('common.delete', lang)}
                   >
                     <Trash2 size={14} strokeWidth={2} />
                   </button>
                   <button
                     className={styles.iconBtn}
                     onClick={() => setDeletingId(null)}
-                    aria-label="Batal"
+                    aria-label={t('common.cancel', lang)}
                   >
                     <X size={14} strokeWidth={2} />
                   </button>
@@ -216,15 +227,23 @@ export function ManageCategoriesSheet({ isOpen, onClose }: Props) {
               className={styles.editInput}
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
-              placeholder="Nama kategori baru"
+              placeholder={t('cat.new_placeholder', lang)}
               autoFocus
             />
             <IconPicker value={newIcon} onChange={setNewIcon} />
             <div className={styles.editActions}>
-              <button className={styles.iconBtn} onClick={saveNew} aria-label="Simpan">
+              <button
+                className={styles.iconBtn}
+                onClick={saveNew}
+                aria-label={t('common.save', lang)}
+              >
                 <Check size={14} strokeWidth={2} />
               </button>
-              <button className={styles.iconBtn} onClick={cancelAdd} aria-label="Batal">
+              <button
+                className={styles.iconBtn}
+                onClick={cancelAdd}
+                aria-label={t('common.cancel', lang)}
+              >
                 <X size={14} strokeWidth={2} />
               </button>
             </div>

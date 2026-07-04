@@ -27,7 +27,11 @@ export function HubungkanPasanganPage() {
   return (
     <div className={styles.page}>
       <div className={styles.header}>
-        <button className={styles.backBtn} onClick={() => navigate(-1)} aria-label="Kembali">
+        <button
+          className={styles.backBtn}
+          onClick={() => navigate(-1)}
+          aria-label={t('common.back_aria', lang)}
+        >
           <svg
             width="18"
             height="18"

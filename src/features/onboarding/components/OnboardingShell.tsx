@@ -2,6 +2,8 @@ import { useRef, type ReactNode } from 'react'
 import { ChevronLeft } from 'lucide-react'
 import type { OnboardingStep } from '../onboarding.types'
 import { getProgressCount, TOTAL_PROGRESS_DOTS } from '../onboarding.utils'
+import { useLanguage } from '@/app/providers/useLanguage'
+import { t } from '@/shared/strings/strings'
 import styles from './OnboardingShell.module.css'
 
 interface OnboardingShellProps {
@@ -11,6 +13,7 @@ interface OnboardingShellProps {
 }
 
 export function OnboardingShell({ step, children, onBack }: OnboardingShellProps) {
+  const lang = useLanguage()
   const filled = getProgressCount(step)
   const filledStr = String(filled).padStart(2, '0')
   const totalStr = String(TOTAL_PROGRESS_DOTS).padStart(2, '0')
@@ -37,7 +40,11 @@ export function OnboardingShell({ step, children, onBack }: OnboardingShellProps
         <div className={styles.header}>
           <div className={styles.headerRow}>
             {onBack && (
-              <button className={styles.backBtn} onClick={onBack} aria-label="Kembali">
+              <button
+                className={styles.backBtn}
+                onClick={onBack}
+                aria-label={t('common.back_aria', lang)}
+              >
                 <ChevronLeft size={18} />
               </button>
             )}
