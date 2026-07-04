@@ -8,7 +8,7 @@ export function BerbagiKeamananSection() {
 
   return (
     <div className={styles.card}>
-      <div className={styles.label}>BERBAGI &amp; KEAMANAN</div>
+      <div className={styles.label}>AKUN &amp; DATA</div>
       <button className={styles.statusRow} onClick={() => navigate('/berbagi-keamanan')}>
         {status === 'connected' ? (
           <>
