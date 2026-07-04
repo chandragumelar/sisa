@@ -5,8 +5,16 @@ import styles from './BerbagiKeamananPage.module.css'
 
 export function BerbagiKeamananPage() {
   const navigate = useNavigate()
-  const { status, profile, members, anonymousId, disconnect, regenerateRecovery, createProfile } =
-    useSharedProfileCtx()
+  const {
+    status,
+    profile,
+    profileId,
+    members,
+    anonymousId,
+    disconnect,
+    regenerateRecovery,
+    createProfile,
+  } = useSharedProfileCtx()
   const [disconnecting, setDisconnecting] = useState(false)
   const [confirmDisconnect, setConfirmDisconnect] = useState(false)
 
@@ -256,7 +264,7 @@ export function BerbagiKeamananPage() {
         </>
       )}
 
-      {status === 'solo' && (
+      {status === 'solo' && !profileId && (
         <div className={styles.soloState}>
           <div className={styles.soloIcon}>
             <svg
@@ -264,33 +272,43 @@ export function BerbagiKeamananPage() {
               height="32"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="var(--ink-tertiary)"
+              stroke="var(--signal-caution)"
               strokeWidth="1.5"
               strokeLinecap="round"
+              strokeLinejoin="round"
             >
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-              <circle cx="9" cy="7" r="4" />
-              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
             </svg>
           </div>
-          <div className={styles.soloTitle}>Belum terhubung</div>
+          <div className={styles.soloTitle}>Amankan datamu</div>
           <div className={styles.soloDesc}>
-            Amankan datamu ke cloud biar nggak hilang saat ganti HP. Nanti kamu juga bisa ajak
-            pasangan kalau mau.
+            Simpan datamu ke cloud biar nggak hilang saat ganti HP. Kamu akan dapat kode pemulihan
+            untuk berjaga-jaga.
           </div>
           <button className={styles.btnPrimary} onClick={handleAmankanData} disabled={securing}>
             {securing ? 'Mengamankan…' : 'Amankan Data'}
           </button>
           {secureError && <div className={styles.regenErrorText}>{secureError}</div>}
-          <button className={styles.btnSecondary} onClick={() => navigate('/ajak-pasangan')}>
+          <button className={styles.btnGhost} onClick={() => navigate('/pulihkan')}>
+            Sudah punya profil? Pulihkan di sini
+          </button>
+        </div>
+      )}
+
+      {status === 'solo' && !!profileId && (
+        <div className={styles.soloState}>
+          <div className={styles.soloSafeStatus}>
+            <span className={styles.soloSafeDot} />
+            <span className={styles.soloSafeLabel}>Data aman di cloud</span>
+          </div>
+          <div className={styles.soloDivider} />
+          <div className={styles.soloTitle}>Hubungkan Pasangan</div>
+          <div className={styles.soloDesc}>Kelola keuangan bareng pasangan di satu profil.</div>
+          <button className={styles.btnPrimary} onClick={() => navigate('/ajak-pasangan')}>
             Ajak Pasangan
           </button>
           <button className={styles.btnSecondary} onClick={() => navigate('/gabung-kode')}>
             Gabung dengan Kode
-          </button>
-          <button className={styles.btnGhost} onClick={() => navigate('/pulihkan')}>
-            Pulihkan Profil Lama
           </button>
         </div>
       )}
