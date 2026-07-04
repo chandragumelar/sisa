@@ -16,6 +16,7 @@ import { ProfilIncomeSheet } from '@/features/profil/ProfilIncomeSheet'
 import { ProfilLicenseSheet } from '@/features/profil/ProfilLicenseSheet'
 import { ManageCategoriesSheet } from '@/features/category/ManageCategoriesSheet'
 import { t, toLocale } from '@/shared/strings/strings'
+import { useSharedProfileCtx } from '@/features/shared-profile/SharedProfileContext'
 import {
   buildBackupJSON,
   buildTransactionsCSV,
@@ -38,6 +39,7 @@ export function SettingsPage() {
   const setLang = useSetLanguage()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  const { status: sharingStatus } = useSharedProfileCtx()
   const [data, setData] = useState<PageData | null>(null)
   const [activeSheet, setActiveSheet] = useState<'income' | 'license' | 'categories' | null>(null)
   const [importPreview, setImportPreview] = useState<{
@@ -237,6 +239,19 @@ export function SettingsPage() {
             <div className={styles.rowSub}>{t('settings.row_patokan_currency_sub', lang)}</div>
           </div>
           <span className={styles.rowSub}>{settings.primaryCurrency}</span>
+        </button>
+      </div>
+
+      {/* Berbagi & Keamanan */}
+      <div className={styles.sectionLabel}>{t('settings.section_sharing_label', lang)}</div>
+      <div className={styles.card}>
+        <button className={styles.actionRow} onClick={() => navigate('/berbagi-keamanan')}>
+          <span className={styles.rowLabel}>{t('settings.section_sharing', lang)}</span>
+          <span className={styles.rowSub}>
+            {sharingStatus === 'connected'
+              ? t('settings.row_sharing_connected', lang)
+              : t('settings.row_sharing_solo', lang)}
+          </span>
         </button>
       </div>
 
