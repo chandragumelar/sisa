@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useSharedProfileCtx } from './SharedProfileContext'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
-import styles from './BerbagiKeamananPage.module.css'
+import styles from './accountData.module.css'
 
 export function HubungkanPasanganPage() {
   const navigate = useNavigate()
@@ -62,8 +62,7 @@ export function HubungkanPasanganPage() {
           </div>
           <div className={styles.soloTitle}>{t('pair.gate_title', lang)}</div>
           <div className={styles.soloDesc}>{t('pair.gate_desc', lang)}</div>
-          {/* TODO(PR-C): arahkan ke halaman Amankan Data bersih */}
-          <button className={styles.btnPrimary} onClick={() => navigate('/berbagi-keamanan')}>
+          <button className={styles.btnPrimary} onClick={() => navigate('/kode-pemulihan')}>
             {t('pair.gate_cta', lang)}
           </button>
         </div>

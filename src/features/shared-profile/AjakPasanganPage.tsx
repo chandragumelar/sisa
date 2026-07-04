@@ -147,7 +147,7 @@ export function AjakPasanganPage() {
                   Amankan datamu dulu sebelum ajak pasangan. Buka Amankan Data untuk simpan ke
                   cloud.
                 </div>
-                <button className={styles.btnPrimary} onClick={() => navigate('/berbagi-keamanan')}>
+                <button className={styles.btnPrimary} onClick={() => navigate('/kode-pemulihan')}>
                   Amankan Data
                 </button>
               </>

@@ -34,6 +34,24 @@ export type StringKey =
   | 'pair.disconnect_confirm_desc'
   | 'pair.disconnect_yes'
   | 'pair.disconnecting'
+  | 'recovery.title_secure'
+  | 'recovery.title_regen'
+  | 'recovery.secure_title'
+  | 'recovery.secure_desc'
+  | 'recovery.secure_cta'
+  | 'recovery.secure_error'
+  | 'recovery.protected'
+  | 'recovery.regen_hint'
+  | 'recovery.regen_cta'
+  | 'recovery.regen_confirm_title'
+  | 'recovery.regen_confirm_desc'
+  | 'recovery.regen_yes'
+  | 'recovery.regen_error'
+  | 'recovery.code_label'
+  | 'recovery.code_warning'
+  | 'recovery.copy'
+  | 'recovery.copied'
+  | 'recovery.done'
   // update banner
   | 'update_banner.msg'
   | 'update_banner.reload'
@@ -712,6 +730,29 @@ const id: StringDictionary = {
     'Perangkat ini akan keluar dari profil bersama. Data yang sudah ada tidak hilang, tapi tidak akan sync lagi.',
   'pair.disconnect_yes': 'Ya, Putuskan',
   'pair.disconnecting': 'Memutuskan...',
+
+  'recovery.title_secure': 'Amankan Data',
+  'recovery.title_regen': 'Kode Pemulihan',
+  'recovery.secure_title': 'Amankan datamu',
+  'recovery.secure_desc':
+    'Simpan datamu ke cloud biar nggak hilang saat ganti HP. Kamu akan dapat kode pemulihan untuk berjaga-jaga.',
+  'recovery.secure_cta': 'Amankan Data',
+  'recovery.secure_error': 'Gagal mengamankan data. Coba lagi.',
+  'recovery.protected': 'Profil terlindungi via kode pemulihan',
+  'recovery.regen_hint':
+    'Jika ganti HP, buka SISA dan pilih "Pulihkan Profil Lama" lalu masukkan kode yang sudah kamu simpan.',
+  'recovery.regen_cta': 'Buat Ulang Kode Pemulihan',
+  'recovery.regen_confirm_title': 'Buat ulang kode pemulihan?',
+  'recovery.regen_confirm_desc':
+    'Kode pemulihan lama akan langsung hangus dan tidak bisa dipakai lagi. Simpan kode baru baik-baik.',
+  'recovery.regen_yes': 'Ya, Buat Ulang',
+  'recovery.regen_error': 'Gagal membuat ulang kode. Coba lagi.',
+  'recovery.code_label': 'KODE PEMULIHAN',
+  'recovery.code_warning':
+    'Simpan kode ini baik-baik. Kode lama sudah hangus dan tidak bisa dipakai lagi.',
+  'recovery.copy': 'Salin Kode',
+  'recovery.copied': 'Tersalin!',
+  'recovery.done': 'Selesai',
 
   'update_banner.msg': 'versi baru tersedia',
   'update_banner.reload': 'muat ulang ›',
@@ -1418,6 +1459,29 @@ const en: StringDictionary = {
     'This device will leave the shared profile. Existing data stays, but it will no longer sync.',
   'pair.disconnect_yes': 'Yes, Disconnect',
   'pair.disconnecting': 'Disconnecting...',
+
+  'recovery.title_secure': 'Secure Data',
+  'recovery.title_regen': 'Recovery Code',
+  'recovery.secure_title': 'Secure your data',
+  'recovery.secure_desc':
+    "Back up to the cloud so you won't lose data when switching phones. You'll get a recovery code just in case.",
+  'recovery.secure_cta': 'Secure Data',
+  'recovery.secure_error': 'Failed to secure data. Try again.',
+  'recovery.protected': 'Profile protected via recovery code',
+  'recovery.regen_hint':
+    'If you switch phones, open SISA and pick "Recover Old Profile", then enter the code you saved.',
+  'recovery.regen_cta': 'Regenerate Recovery Code',
+  'recovery.regen_confirm_title': 'Regenerate recovery code?',
+  'recovery.regen_confirm_desc':
+    'Your old recovery code will expire immediately and can no longer be used. Save the new one carefully.',
+  'recovery.regen_yes': 'Yes, Regenerate',
+  'recovery.regen_error': 'Failed to regenerate code. Try again.',
+  'recovery.code_label': 'RECOVERY CODE',
+  'recovery.code_warning':
+    'Save this code carefully. The old one has expired and can no longer be used.',
+  'recovery.copy': 'Copy Code',
+  'recovery.copied': 'Copied!',
+  'recovery.done': 'Done',
 
   'update_banner.msg': 'new version available',
   'update_banner.reload': 'reload ›',

@@ -6,7 +6,7 @@ import { AndaiPage } from '@/features/andai/AndaiPage'
 import { SettingsPage } from '@/features/settings/SettingsPage'
 import { AjakPasanganPage } from '@/features/shared-profile/AjakPasanganPage'
 import { GabungKodePage } from '@/features/shared-profile/GabungKodePage'
-import { BerbagiKeamananPage } from '@/features/shared-profile/BerbagiKeamananPage'
+import { KodePemulihanPage } from '@/features/shared-profile/KodePemulihanPage'
 import { HubungkanPasanganPage } from '@/features/shared-profile/HubungkanPasanganPage'
 import { PulihkanPage } from '@/features/shared-profile/PulihkanPage'
 import { InsightPage } from '@/features/insight/InsightPage'
@@ -70,10 +70,10 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: '/berbagi-keamanan',
+    path: '/kode-pemulihan',
     element: (
       <RequireOnboarding>
-        <BerbagiKeamananPage />
+        <KodePemulihanPage />
       </RequireOnboarding>
     ),
   },
