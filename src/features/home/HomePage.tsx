@@ -575,7 +575,7 @@ export function HomePage() {
               <>
                 {(() => {
                   const { weekday, weekend, total } = teaserSplit
-                  const C = 2 * Math.PI * 32
+                  const C = 2 * Math.PI * 46
                   const wdLen = (weekday / total) * C
                   const weekdayPct = Math.round((weekday / total) * 100)
                   const weekendPct = 100 - weekdayPct
@@ -586,40 +586,40 @@ export function HomePage() {
                       </span>
                       <div className={styles.insightDonutWrap}>
                         <svg
-                          viewBox="0 0 80 80"
-                          width="80"
-                          height="80"
+                          viewBox="0 0 112 112"
+                          width="112"
+                          height="112"
                           className={styles.insightDonutSvg}
                           aria-hidden
                         >
                           <circle
-                            cx="40"
-                            cy="40"
-                            r="32"
+                            cx="56"
+                            cy="56"
+                            r="46"
                             fill="none"
                             stroke="var(--surface-2)"
-                            strokeWidth="14"
+                            strokeWidth="18"
                           />
                           <circle
-                            cx="40"
-                            cy="40"
-                            r="32"
+                            cx="56"
+                            cy="56"
+                            r="46"
                             fill="none"
                             stroke="var(--accent)"
-                            strokeWidth="14"
+                            strokeWidth="18"
                             strokeDasharray={`${wdLen} ${C - wdLen}`}
-                            transform="rotate(-90 40 40)"
+                            transform="rotate(-90 56 56)"
                           />
                           <circle
-                            cx="40"
-                            cy="40"
-                            r="32"
+                            cx="56"
+                            cy="56"
+                            r="46"
                             fill="none"
                             stroke="var(--signal-caution)"
-                            strokeWidth="14"
+                            strokeWidth="18"
                             strokeDasharray={`${C - wdLen} ${wdLen}`}
                             strokeDashoffset={-wdLen}
-                            transform="rotate(-90 40 40)"
+                            transform="rotate(-90 56 56)"
                           />
                         </svg>
                         <div className={styles.insightDonutLegend}>
