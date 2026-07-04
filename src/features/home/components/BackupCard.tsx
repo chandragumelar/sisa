@@ -16,53 +16,24 @@ function BackupGuideSheet({ onClose }: { onClose: () => void }) {
         <div className={styles.sheetHandle} />
         <div className={styles.sheetTitle}>{t('backup.guide_title', lang)}</div>
 
-        {lang === 'en' ? (
-          <>
-            <div className={styles.step}>
-              <span className={styles.stepNum}>1</span>
-              <span className={styles.stepText}>
-                Open <strong>Settings → Data & Backup</strong> from the bottom menu.
-              </span>
-            </div>
-            <div className={styles.step}>
-              <span className={styles.stepNum}>2</span>
-              <span className={styles.stepText}>
-                Tap <strong>Export backup</strong> — a <code>.json</code> file will be saved to your
-                device.
-              </span>
-            </div>
-            <div className={styles.step}>
-              <span className={styles.stepNum}>3</span>
-              <span className={styles.stepText}>
-                Store it in Google Drive, iCloud, or anywhere you trust. If you switch phones,
-                import it from there.
-              </span>
-            </div>
-          </>
-        ) : (
-          <>
-            <div className={styles.step}>
-              <span className={styles.stepNum}>1</span>
-              <span className={styles.stepText}>
-                Buka <strong>Pengaturan → Backup & Ekspor</strong> di menu bawah.
-              </span>
-            </div>
-            <div className={styles.step}>
-              <span className={styles.stepNum}>2</span>
-              <span className={styles.stepText}>
-                Ketuk <strong>Ekspor data</strong> — file <code>.json</code> akan tersimpan ke
-                perangkat lo.
-              </span>
-            </div>
-            <div className={styles.step}>
-              <span className={styles.stepNum}>3</span>
-              <span className={styles.stepText}>
-                Simpan file itu di Google Drive, iCloud, atau mana saja yang lo percaya. Kalau ganti
-                HP, impor lagi dari sana.
-              </span>
-            </div>
-          </>
-        )}
+        <div className={styles.step}>
+          <span className={styles.stepNum}>1</span>
+          <span className={styles.stepText}>
+            {t('backup.guide_s1a', lang)} <strong>{t('backup.guide_s1_strong', lang)}</strong>{' '}
+            {t('backup.guide_s1b', lang)}
+          </span>
+        </div>
+        <div className={styles.step}>
+          <span className={styles.stepNum}>2</span>
+          <span className={styles.stepText}>
+            {t('backup.guide_s2a', lang)} <strong>{t('backup.guide_s2_strong', lang)}</strong>{' '}
+            {t('backup.guide_s2b', lang)}
+          </span>
+        </div>
+        <div className={styles.step}>
+          <span className={styles.stepNum}>3</span>
+          <span className={styles.stepText}>{t('backup.guide_s3', lang)}</span>
+        </div>
 
         <button className={styles.sheetClose} onClick={onClose}>
           {t('backup.guide_got_it', lang)}
