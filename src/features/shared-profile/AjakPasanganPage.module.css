@@ -42,76 +42,6 @@
   margin-top: 1px;
 }
 
-/* ── Recovery Code Step ──────────────────────────────── */
-.recoveryWrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 16px;
-}
-
-.recoveryIcon {
-  width: 64px;
-  height: 64px;
-  background: var(--signal-safe-bg);
-  border-radius: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.recoveryTitle {
-  font-family: var(--font-sans);
-  font-size: 20px;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  color: var(--ink-primary);
-}
-
-.recoveryDesc {
-  font-family: var(--font-sans);
-  font-size: 13px;
-  color: var(--ink-secondary);
-  line-height: 1.5;
-  max-width: 300px;
-}
-
-.recoveryCodeBox {
-  background: var(--surface);
-  border: 1.5px dashed var(--border-hair);
-  border-radius: var(--radius-card);
-  padding: 20px 24px;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.recoveryCodeLabel {
-  font-family: var(--font-sans);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  color: var(--ink-tertiary);
-  text-transform: uppercase;
-  margin-bottom: 10px;
-}
-
-.recoveryCodeValue {
-  font-family: var(--font-mono);
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  color: var(--ink-primary);
-  word-break: break-all;
-}
-
-.recoveryActions {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 100%;
-}
-
 /* ── Join Code Step ──────────────────────────────────── */
 .codeWrap {
   display: flex;
@@ -249,6 +179,14 @@
   font-size: 13px;
   color: var(--signal-danger);
   text-align: center;
+}
+
+.gateText {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--ink-secondary);
+  text-align: center;
+  line-height: 1.5;
 }
 
 /* ── Buttons ─────────────────────────────────────────── */
