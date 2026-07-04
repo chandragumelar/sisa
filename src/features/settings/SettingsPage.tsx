@@ -16,7 +16,6 @@ import { ProfilIncomeSheet } from '@/features/profil/ProfilIncomeSheet'
 import { ProfilLicenseSheet } from '@/features/profil/ProfilLicenseSheet'
 import { ManageCategoriesSheet } from '@/features/category/ManageCategoriesSheet'
 import { t, toLocale } from '@/shared/strings/strings'
-import { useSharedProfileCtx } from '@/features/shared-profile/SharedProfileContext'
 import { buildTransactionsCSV, downloadFile } from './backup.utils'
 import { collectSnapshot, applySnapshot } from '@/db/snapshot.repository'
 import { parseSnapshot } from '@/db/snapshot.serializer'
@@ -36,8 +35,6 @@ export function SettingsPage() {
   const setLang = useSetLanguage()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const { status, profileId } = useSharedProfileCtx()
-  const hasProfile = status === 'connected' || (status === 'solo' && !!profileId)
   const [data, setData] = useState<PageData | null>(null)
   const [activeSheet, setActiveSheet] = useState<'income' | 'license' | 'categories' | null>(null)
   const [importPreview, setImportPreview] = useState<{
@@ -237,24 +234,6 @@ export function SettingsPage() {
             <div className={styles.rowSub}>{t('settings.row_patokan_currency_sub', lang)}</div>
           </div>
           <span className={styles.rowSub}>{settings.primaryCurrency}</span>
-        </button>
-      </div>
-
-      {/* Akun & Data */}
-      <div className={styles.sectionLabel}>{t('settings.section_sharing_label', lang)}</div>
-      <div className={styles.card}>
-        <button className={styles.actionRow} onClick={() => navigate('/kode-pemulihan')}>
-          <span className={styles.rowLabel}>
-            {hasProfile ? t('settings.row_recovery', lang) : t('settings.row_secure', lang)}
-          </span>
-          <span className={styles.rowSub}>
-            {hasProfile ? t('settings.row_recovery_sub', lang) : t('settings.row_secure_sub', lang)}
-          </span>
-        </button>
-        <div className={styles.divider} />
-        <button className={styles.actionRow} onClick={() => navigate('/pulihkan')}>
-          <span className={styles.rowLabel}>{t('settings.row_recover', lang)}</span>
-          <span className={styles.rowSub}>{t('settings.row_recover_sub', lang)}</span>
         </button>
       </div>
 

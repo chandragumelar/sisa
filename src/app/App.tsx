@@ -9,7 +9,6 @@ import { applyLanguage } from '@/shared/utils/language'
 import { refreshRatesIfStale } from '@/shared/utils/fx'
 import { UpdateBanner } from './UpdateBanner'
 import { LanguageProvider } from './providers/LanguageProvider'
-import { SharedProfileProvider } from '@/features/shared-profile/SharedProfileContext'
 
 export function App() {
   useEffect(() => {
@@ -36,10 +35,8 @@ export function App() {
 
   return (
     <LanguageProvider>
-      <SharedProfileProvider>
-        <RouterProvider router={router} />
-        <UpdateBanner />
-      </SharedProfileProvider>
+      <RouterProvider router={router} />
+      <UpdateBanner />
     </LanguageProvider>
   )
 }
