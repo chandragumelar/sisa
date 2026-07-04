@@ -2,6 +2,9 @@ import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSharedProfileCtx } from './SharedProfileContext'
 import { clearAllData, localHasData } from '@/db/backup.repository'
+import { downloadSnapshot } from '@/lib/supabase/api'
+import { applySnapshot } from '@/db/snapshot.repository'
+import { useClock } from '@/app/providers/useClock'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
 import type { RpcError } from '@/lib/supabase/types'
@@ -48,6 +51,7 @@ const ERROR_LABELS: Record<RpcError, { title: string; desc: string; cta: string 
 export function GabungKodePage() {
   const navigate = useNavigate()
   const lang = useLanguage()
+  const clock = useClock()
   const { previewCode, joinWithCode } = useSharedProfileCtx()
 
   const [chars, setChars] = useState(['', '', '', ''])
@@ -139,7 +143,12 @@ export function GabungKodePage() {
     try {
       const result = await joinWithCode(fullCode, 'Pengguna')
       if (result.ok) {
-        await clearAllData()
+        const snap = await downloadSnapshot(result.profile_id)
+        if (snap) {
+          await applySnapshot(snap, clock)
+        } else {
+          await clearAllData()
+        }
         setScreen('success')
       } else {
         setError(result.error)
