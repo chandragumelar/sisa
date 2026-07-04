@@ -25,7 +25,7 @@ export function BottomSheet({ isOpen, onClose, children, title }: Props) {
       <div className={styles.sheet} onClick={(e) => e.stopPropagation()}>
         <div className={styles.handle} />
         {title && <div className={styles.title}>{title}</div>}
-        {children}
+        <div className={styles.body}>{children}</div>
       </div>
     </div>
   )
