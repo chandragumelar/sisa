@@ -586,6 +586,7 @@ export type StringKey =
   | 'home.jatah_besok'
   | 'home.sisa_uang_dynamic'
   | 'home.jatah_harian_dynamic'
+  | 'home.jatah_harian_tooltip'
   | 'cek.card_title_dynamic'
   // insight
   | 'insight.back_aria'
@@ -1254,6 +1255,8 @@ const id: StringDictionary = {
   'home.jatah_besok': 'Besok jatahmu nyusut jadi {n}',
   'home.sisa_uang_dynamic': 'SISA {cur}MU',
   'home.jatah_harian_dynamic': 'Jatah Harian {cur}mu',
+  'home.jatah_harian_tooltip':
+    'Jatah harian itu batas aman uang yang bisa kamu pakai hari ini biar nggak kehabisan sebelum gajian.\n\nDengan pegang satu angka ini, kamu nggak perlu ngitung tiap pengeluaran — cukup pastiin nggak lewat dari jatah, sisa uangmu otomatis aman sampai akhir periode.\n\nHitungannya:\nSisa uangmu (yang aman dipakai)\n÷ Sisa hari sampai gajian\n= Jatah harian\n\nKalau hari ini kamu pakai kurang dari jatah, sisanya nambah ke jatah besok. Kalau lewat, jatah besok otomatis nyusut.',
   'cek.card_title_dynamic': 'Cek Dulu {cur}mu',
 
   // insight
@@ -1918,6 +1921,8 @@ const en: StringDictionary = {
   'home.jatah_besok': "Tomorrow's budget drops to {n}",
   'home.sisa_uang_dynamic': 'YOUR {cur} LEFT',
   'home.jatah_harian_dynamic': 'Your {cur} Daily Budget',
+  'home.jatah_harian_tooltip':
+    "Your daily budget is the safe amount you can spend today so you don't run out before payday.\n\nBy tracking just this one number, you don't have to log every expense — just stay under it and your money stays safe through the end of the period.\n\nHow it's calculated:\nYour money left (safe to spend)\n÷ Days remaining until payday\n= Daily budget\n\nSpend less than your budget today and the rest rolls into tomorrow. Go over, and tomorrow's budget shrinks automatically.",
   'cek.card_title_dynamic': 'Check Your {cur} First',
 
   // insight
