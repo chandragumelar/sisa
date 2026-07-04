@@ -557,8 +557,9 @@ export type StringKey =
   | 'alokasi.mengendap_auto'
   // home — new allocation model strings
   | 'home.sisa_uang'
-  | 'home.sisa_uang_intro'
-  | 'home.sisa_uang_jatah_note'
+  | 'home.sisa_uang_why_1'
+  | 'home.sisa_uang_why_2'
+  | 'home.sisa_uang_why_3'
   | 'home.insight_teaser_generic'
   | 'home.insight_net_sub'
   | 'home.insight_eq_income'
@@ -1228,9 +1229,11 @@ const id: StringDictionary = {
   'alokasi.mengendap_auto': 'OTOMATIS',
 
   'home.sisa_uang': 'SISA UANGMU',
-  'home.sisa_uang_intro': 'Ini uang yang aman kamu pakai sampai gajian berikutnya.',
-  'home.sisa_uang_jatah_note':
-    'Jatah harian dihitung dari angka ini dibagi sisa hari sampai gajian.',
+  'home.sisa_uang_why_1':
+    'Angka ini jawab satu pertanyaan: berapa yang aman gue pakai tanpa ganggu tagihan dan uang yang sengaja gue diamkan.',
+  'home.sisa_uang_why_2':
+    'Jadi lo nggak perlu ngitung manual tiap mau jajan. Selama masih di dalam angka ini, aman.',
+  'home.sisa_uang_why_3': 'Mau lihat angkanya dari mana? Tap "kok bisa segini?" di kartunya.',
   'home.insight_teaser_generic': 'Catatan pertamamu bakal muncul jadi pola di sini',
   'home.insight_net_sub': 'net bulan ini',
   'home.insight_eq_income': 'Pemasukan',
@@ -1897,9 +1900,12 @@ const en: StringDictionary = {
   'alokasi.mengendap_auto': 'AUTO',
 
   'home.sisa_uang': 'YOUR MONEY LEFT',
-  'home.sisa_uang_intro': "This is the money that's safe to spend until your next payday.",
-  'home.sisa_uang_jatah_note':
-    'Your daily budget is calculated from this divided by days remaining until payday.',
+  'home.sisa_uang_why_1':
+    "This number answers one question: how much can I safely spend without touching my bills or the money I've set aside.",
+  'home.sisa_uang_why_2':
+    "So you don't have to do the math every time you want to buy something. As long as you stay within this number, you're fine.",
+  'home.sisa_uang_why_3':
+    'Want to see where this number comes from? Tap "how is it this much?" on the card.',
   'home.insight_teaser_generic': 'Your first entries will show up as insights here',
   'home.insight_net_sub': 'net this month',
   'home.insight_eq_income': 'Income',
