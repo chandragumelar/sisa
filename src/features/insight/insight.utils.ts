@@ -59,6 +59,26 @@ export function sumExpense(txs: Transaction[]): number {
   return txs.filter(isOpEx).reduce((s, t) => s + Math.abs(t.amount), 0)
 }
 
+export interface WeekendSplit {
+  weekday: number
+  weekend: number
+  total: number
+}
+
+/** Sat(6) & Sun(0) = weekend. Uses same isOpEx filter as sumExpense. */
+export function splitWeekendExpense(txs: Transaction[]): WeekendSplit {
+  let weekday = 0
+  let weekend = 0
+  for (const t of txs) {
+    if (!isOpEx(t)) continue
+    const d = new Date(t.date).getDay()
+    const amt = Math.abs(t.amount)
+    if (d === 0 || d === 6) weekend += amt
+    else weekday += amt
+  }
+  return { weekday, weekend, total: weekday + weekend }
+}
+
 export function sumIncome(txs: Transaction[]): number {
   return txs.filter(isIncome).reduce((s, t) => s + t.amount, 0)
 }

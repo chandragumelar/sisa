@@ -31,7 +31,7 @@ import {
   calcPemasukanFromAvg,
 } from './home.utils'
 import { calcUnpaidTagihanTotal, getTagihanUrgency } from './tagihan.utils'
-import { sumExpense, sumIncome } from '@/features/insight/insight.utils'
+import { splitWeekendExpense, type WeekendSplit } from '@/features/insight/insight.utils'
 import { shouldShowBackupReminder, calcBackupUrgency } from './backup-reminder.utils'
 import { calcBudgetPeriode, type BudgetMode } from '@/shared/utils/budget.utils'
 import { BRAND_STUDIO_WITH_COLLAB } from '@/constants/brand'
@@ -291,8 +291,7 @@ export function HomePage() {
   const [walletSheetOpen, setWalletSheetOpen] = useState(false)
   const [alokasiSheetOpen, setAlokasiSheetOpen] = useState(false)
   const [pushAskOpen, setPushAskOpen] = useState(false)
-  const [teaserExpense, setTeaserExpense] = useState(0)
-  const [teaserIncome, setTeaserIncome] = useState(0)
+  const [teaserSplit, setTeaserSplit] = useState<WeekendSplit>({ weekday: 0, weekend: 0, total: 0 })
 
   useEffect(() => {
     void shouldAskPush().then((v) => {
@@ -308,10 +307,7 @@ export function HomePage() {
     const monthStart = new Date(today.getFullYear(), today.getMonth(), 1).getTime()
     const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 1).getTime()
     getTransactionsByDateRange(monthStart, monthEnd)
-      .then((txs) => {
-        setTeaserExpense(sumExpense(txs))
-        setTeaserIncome(sumIncome(txs))
-      })
+      .then((txs) => setTeaserSplit(splitWeekendExpense(txs)))
       .catch(() => {})
   }, [nowMs])
 
@@ -572,44 +568,78 @@ export function HomePage() {
                 )}
               </span>
             </div>
-            {teaserExpense === 0 && teaserIncome === 0 ? (
+            {teaserSplit.total === 0 ? (
               <span className={styles.insightCardText}>
                 {t('home.insight_teaser_generic', lang)}
               </span>
             ) : (
               <>
                 {(() => {
-                  const net = teaserIncome - teaserExpense
-                  const netPositive = net >= 0
+                  const { weekday, weekend, total } = teaserSplit
+                  const C = 2 * Math.PI * 32
+                  const wdLen = (weekday / total) * C
+                  const weekdayPct = Math.round((weekday / total) * 100)
+                  const weekendPct = 100 - weekdayPct
                   return (
-                    <div className={styles.insightEq}>
-                      <div className={styles.insightEqRow}>
-                        <span className={styles.insightEqLabel}>
-                          {t('home.insight_eq_income', lang)}
-                        </span>
-                        <span className={styles.insightEqValIn}>
-                          {formatCurrency(teaserIncome, currency)}
-                        </span>
-                      </div>
-                      <div className={styles.insightEqRow}>
-                        <span className={styles.insightEqLabel}>
-                          <span className={styles.insightEqMinus}>−</span>
-                          {t('home.insight_eq_expense', lang)}
-                        </span>
-                        <span className={styles.insightEqValOut}>
-                          {formatCurrency(teaserExpense, currency)}
-                        </span>
-                      </div>
-                      <div className={styles.insightEqDivider} />
-                      <div className={styles.insightEqRow}>
-                        <span className={styles.insightEqLabelNet}>
-                          {t('home.insight_net_sub', lang)}
-                        </span>
-                        <span
-                          className={netPositive ? styles.insightEqNetPos : styles.insightEqNetNeg}
-                        >
-                          {(netPositive ? '+' : '') + formatCurrency(net, currency)}
-                        </span>
+                    <div className={styles.insightDonutWrap}>
+                      <svg
+                        viewBox="0 0 80 80"
+                        width="80"
+                        height="80"
+                        className={styles.insightDonutSvg}
+                        aria-hidden
+                      >
+                        <circle
+                          cx="40"
+                          cy="40"
+                          r="32"
+                          fill="none"
+                          stroke="var(--surface-2)"
+                          strokeWidth="14"
+                        />
+                        <circle
+                          cx="40"
+                          cy="40"
+                          r="32"
+                          fill="none"
+                          stroke="var(--accent)"
+                          strokeWidth="14"
+                          strokeDasharray={`${wdLen} ${C - wdLen}`}
+                          transform="rotate(-90 40 40)"
+                        />
+                        <circle
+                          cx="40"
+                          cy="40"
+                          r="32"
+                          fill="none"
+                          stroke="var(--signal-caution)"
+                          strokeWidth="14"
+                          strokeDasharray={`${C - wdLen} ${wdLen}`}
+                          strokeDashoffset={-wdLen}
+                          transform="rotate(-90 40 40)"
+                        />
+                      </svg>
+                      <div className={styles.insightDonutLegend}>
+                        <div className={styles.insightLegendRow}>
+                          <span className={styles.insightLegendDotWd} />
+                          <span className={styles.insightLegendLabel}>
+                            {t('home.insight_wd_weekday', lang)}
+                          </span>
+                          <span className={styles.insightLegendVal}>
+                            {formatCurrency(weekday, currency)}
+                          </span>
+                          <span className={styles.insightLegendPct}>{weekdayPct}%</span>
+                        </div>
+                        <div className={styles.insightLegendRow}>
+                          <span className={styles.insightLegendDotWe} />
+                          <span className={styles.insightLegendLabel}>
+                            {t('home.insight_wd_weekend', lang)}
+                          </span>
+                          <span className={styles.insightLegendVal}>
+                            {formatCurrency(weekend, currency)}
+                          </span>
+                          <span className={styles.insightLegendPct}>{weekendPct}%</span>
+                        </div>
                       </div>
                     </div>
                   )

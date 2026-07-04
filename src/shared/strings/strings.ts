@@ -561,9 +561,8 @@ export type StringKey =
   | 'home.sisa_uang_why_2'
   | 'home.sisa_uang_why_3'
   | 'home.insight_teaser_generic'
-  | 'home.insight_net_sub'
-  | 'home.insight_eq_income'
-  | 'home.insight_eq_expense'
+  | 'home.insight_wd_weekday'
+  | 'home.insight_wd_weekend'
   | 'home.insight_card_label'
   | 'home.insight_card_label_dynamic'
   | 'home.insight_card_cta'
@@ -1235,9 +1234,8 @@ const id: StringDictionary = {
     'Jadi lo nggak perlu ngitung manual tiap mau jajan. Selama masih di dalam angka ini, aman.',
   'home.sisa_uang_why_3': 'Mau lihat angkanya dari mana? Tap "kok bisa segini?" di kartunya.',
   'home.insight_teaser_generic': 'Catatan pertamamu bakal muncul jadi pola di sini',
-  'home.insight_net_sub': 'net bulan ini',
-  'home.insight_eq_income': 'Pemasukan',
-  'home.insight_eq_expense': 'Pengeluaran',
+  'home.insight_wd_weekday': 'Hari kerja',
+  'home.insight_wd_weekend': 'Akhir pekan',
   'home.insight_card_label': 'INSIGHT',
   'home.insight_card_label_dynamic': 'POLA {cur}MU',
   'home.insight_card_cta': 'Lihat Pola →',
@@ -1907,9 +1905,8 @@ const en: StringDictionary = {
   'home.sisa_uang_why_3':
     'Want to see where this number comes from? Tap "how is it this much?" on the card.',
   'home.insight_teaser_generic': 'Your first entries will show up as insights here',
-  'home.insight_net_sub': 'net this month',
-  'home.insight_eq_income': 'Income',
-  'home.insight_eq_expense': 'Expense',
+  'home.insight_wd_weekday': 'Weekday',
+  'home.insight_wd_weekend': 'Weekend',
   'home.insight_card_label': 'INSIGHTS',
   'home.insight_card_label_dynamic': 'YOUR {cur} INSIGHTS',
   'home.insight_card_cta': 'View Insights →',

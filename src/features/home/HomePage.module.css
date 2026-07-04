@@ -201,85 +201,71 @@
   font-family: var(--font-sans);
 }
 
-.insightEq {
+.insightDonutWrap {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  align-items: center;
+  gap: 16px;
   margin: 6px 0 2px;
 }
 
-.insightEqRow {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
+.insightDonutSvg {
+  flex-shrink: 0;
 }
 
-.insightEqLabel {
+.insightDonutLegend {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.insightLegendRow {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.insightLegendDotWd,
+.insightLegendDotWe {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.insightLegendDotWd {
+  background: var(--accent);
+}
+
+.insightLegendDotWe {
+  background: var(--signal-caution);
+}
+
+.insightLegendLabel {
   font-size: 12px;
   color: var(--ink-secondary);
   font-family: var(--font-sans);
-  display: inline-flex;
-  align-items: baseline;
-  gap: 4px;
 }
 
-.insightEqMinus {
+.insightLegendVal {
+  margin-left: auto;
   font-family: var(--font-mono);
-  font-size: 13px;
-  color: var(--ink-tertiary);
-  font-weight: 600;
-}
-
-.insightEqValIn {
-  font-family: var(--font-mono);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
-  color: var(--signal-safe);
+  color: var(--ink-primary);
   font-variant-numeric: tabular-nums;
 }
 
-.insightEqValOut {
+.insightLegendPct {
   font-family: var(--font-mono);
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--signal-caution);
-  font-variant-numeric: tabular-nums;
-}
-
-.insightEqDivider {
-  height: 1px;
-  background: var(--ink-primary);
-  opacity: 0.85;
-  margin: 3px 0;
-}
-
-.insightEqLabelNet {
   font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.4px;
-  text-transform: uppercase;
+  font-weight: 500;
   color: var(--ink-tertiary);
-  font-family: var(--font-sans);
-}
-
-.insightEqNetPos {
-  font-family: var(--font-mono);
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--signal-safe);
-  letter-spacing: -0.4px;
-  line-height: 1.1;
   font-variant-numeric: tabular-nums;
-}
-
-.insightEqNetNeg {
-  font-family: var(--font-mono);
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--signal-caution);
-  letter-spacing: -0.4px;
-  line-height: 1.1;
-  font-variant-numeric: tabular-nums;
+  min-width: 30px;
+  text-align: right;
 }
 
 .insightCta {
