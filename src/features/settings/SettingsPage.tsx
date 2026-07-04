@@ -253,6 +253,12 @@ export function SettingsPage() {
               : t('settings.row_sharing_solo', lang)}
           </span>
         </button>
+        {sharingStatus !== 'connected' && (
+          <button className={styles.actionRow} onClick={() => navigate('/pulihkan')}>
+            <span className={styles.rowLabel}>{t('settings.row_recover', lang)}</span>
+            <span className={styles.rowSub}>{t('settings.row_recover_sub', lang)}</span>
+          </button>
+        )}
       </div>
 
       {/* Data & Backup */}
