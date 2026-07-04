@@ -164,38 +164,6 @@
   margin-left: 8px;
 }
 
-/* Foreign wallet right column */
-.wRight {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  flex-shrink: 0;
-  margin-left: 8px;
-  gap: 1px;
-}
-
-.wAmtNative {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--ink-primary);
-  font-feature-settings: 'tnum', 'lnum';
-}
-
-.wAmtEquiv {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 400;
-  color: var(--ink-tertiary);
-  font-feature-settings: 'tnum', 'lnum';
-}
-
-.wAmtUnavail {
-  font-size: 10px;
-  font-weight: 400;
-  color: var(--ink-tertiary);
-}
-
 /* +N more / Sembunyikan row */
 .moreRow {
   display: flex;
