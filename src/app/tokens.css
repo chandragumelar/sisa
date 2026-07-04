@@ -80,3 +80,63 @@
   --bahaya-fg: #7f1d1d;
   --bahaya-br: #ef4444;
 }
+
+[data-theme='dark'] {
+  /* Surfaces — naik dari canvas gelap ke surface lebih terang */
+  --canvas: #0d0f13;
+  --surface: #16191f;
+  --surface-2: #1c2027;
+  --surface-3: #242933;
+
+  /* Ink — dibalik */
+  --ink-primary: #f2f4f7;
+  --ink-secondary: #a8b0bd;
+  --ink-tertiary: #6b7280;
+
+  /* Borders — lebih terang dari surface, bukan lebih gelap */
+  --border-hair: #2a2f38;
+  --border-soft: #22262e;
+
+  /* Accent — sedikit dinaikkan biar pop di gelap */
+  --accent: #3b82f6;
+  --accent-hover: #60a5fa;
+  --accent-dim: #2563eb;
+  --accent-bg: #172033;
+  --accent-br: #1e3a5f;
+  --accent-text: #ffffff;
+
+  /* Signals — bg/br versi gelap-redup, fg tetap terang */
+  --signal-danger: #f87171;
+  --signal-danger-bg: #2a1618;
+  --signal-danger-br: #4c2326;
+  --signal-caution: #fbbf24;
+  --signal-caution-bg: #261d0f;
+  --signal-caution-br: #453212;
+  --signal-safe: #4ade80;
+  --signal-safe-bg: #12241a;
+  --signal-safe-br: #1f4030;
+
+  /* Shadow — di dark, elevation via shadow lebih dalam (hitam pekat) */
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 3px 10px rgba(0, 0, 0, 0.4);
+
+  /* Heat — naik dari gelap-redup ke accent terang (arah saturasi dibalik) */
+  --heat-0: var(--surface-3);
+  --heat-1: #1e3a5f;
+  --heat-2: #1e4d8f;
+  --heat-3: #2563eb;
+  --heat-4: #3b82f6;
+  --heat-5: #60a5fa;
+
+  /* Verdict — versi gelap */
+  --aman-bg: #12241a;
+  --aman-fg: #86efac;
+  --aman-br: #16a34a;
+  --mepet-bg: #261d0f;
+  --mepet-fg: #fcd34d;
+  --mepet-br: #d97706;
+  --bahaya-bg: #2a1618;
+  --bahaya-fg: #fca5a5;
+  --bahaya-br: #ef4444;
+
+  color-scheme: dark;
+}
