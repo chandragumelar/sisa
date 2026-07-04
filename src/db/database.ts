@@ -157,6 +157,23 @@ export interface BackupData {
   transactions: Transaction[]
 }
 
+// Default categories auto-reseed via seedDefaultCategoriesIfEmpty — not included.
+// Transactions store category as string name — stays valid across restores.
+// allocation, rates, meta excluded (ephemeral/device-specific).
+// licenseRawKey carries key for re-activation; full LicenseRecord excluded (anti-abuse).
+export interface SnapshotData {
+  schemaVersion: number
+  exportedAt: number
+  settings: Settings
+  wallets: Wallet[]
+  tagihan: Tagihan[]
+  goals: Goal[]
+  transactions: Transaction[]
+  customCategories: Category[] // only isDefault === false
+  savedScenarios: SavedScenario[]
+  licenseRawKey: string | null
+}
+
 export interface Category {
   id?: number
   name: string
