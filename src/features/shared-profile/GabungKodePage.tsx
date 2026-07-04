@@ -4,6 +4,7 @@ import { useSharedProfileCtx } from './SharedProfileContext'
 import { clearAllData, localHasData } from '@/db/backup.repository'
 import { downloadSnapshot } from '@/lib/supabase/api'
 import { applySnapshot } from '@/db/snapshot.repository'
+import { snapshotHash, snapshotHashKey } from './snapshotHash'
 import { useClock } from '@/app/providers/useClock'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
@@ -146,6 +147,8 @@ export function GabungKodePage() {
         const snap = await downloadSnapshot(result.profile_id)
         if (snap) {
           await applySnapshot(snap, clock)
+          const json = JSON.stringify(snap)
+          localStorage.setItem(snapshotHashKey(result.profile_id), snapshotHash(json))
         } else {
           await clearAllData()
         }
