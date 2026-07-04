@@ -220,7 +220,50 @@ export function SaldoModule({
         onClose={() => setTooltipOpen(false)}
         title={t('home.sisa_uang', lang)}
       >
-        <p className={styles.tooltipBody}>{t('home.sisa_uang_tooltip', lang)}</p>
+        <p className={styles.tooltipBody}>{t('home.sisa_uang_intro', lang)}</p>
+        <div className={styles.rincian}>
+          <RincianRow
+            label={t('saldo.total_saldo_label', lang)}
+            value={formatCurrency(totalSaldo, currency)}
+          />
+          {tagihanUnpaid > 0 && (
+            <RincianRow
+              label={t('saldo.rincian_tagihan', lang)}
+              value={formatCurrency(tagihanUnpaid, currency)}
+              minus
+            />
+          )}
+          <RincianRow
+            label={
+              <span className={styles.rincianLabelMuted}>
+                <svg
+                  width="10"
+                  height="10"
+                  viewBox="0 0 12 12"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  className={styles.lockIcon}
+                >
+                  <rect x="2.5" y="5.5" width="7" height="5" rx="1" />
+                  <path d="M4 5.5V4a2 2 0 0 1 4 0v1.5" strokeLinecap="round" />
+                </svg>
+                {t('saldo.uang_mengendap_label', lang)}
+              </span>
+            }
+            value={formatCurrency(mengendap, currency)}
+            muted
+            minus
+          />
+          <div className={styles.rincianDivider} />
+          <div className={styles.rincianSisaRow}>
+            <span className={styles.rincianSisaLabel}>{t('home.sisa_uang', lang)}</span>
+            <span className={styles.rincianSisaAmt}>{formatCurrency(sisaUang, currency)}</span>
+          </div>
+        </div>
+        <p className={styles.tooltipBody} style={{ marginTop: '12px' }}>
+          {t('home.sisa_uang_jatah_note', lang)}
+        </p>
       </BottomSheet>
     </>
   )
