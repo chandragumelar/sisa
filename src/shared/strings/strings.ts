@@ -15,6 +15,25 @@ export type StringKey =
   | 'common.saving'
   | 'common.day'
   | 'common.days'
+  // pair hub
+  | 'pair.title'
+  | 'pair.desc'
+  | 'pair.invite'
+  | 'pair.join'
+  | 'pair.gate_title'
+  | 'pair.gate_desc'
+  | 'pair.gate_cta'
+  | 'pair.cloud_safe'
+  | 'pair.connected_label'
+  | 'pair.device_active'
+  | 'pair.this_device'
+  | 'pair.partner_device'
+  | 'pair.full_warning'
+  | 'pair.disconnect'
+  | 'pair.disconnect_confirm_title'
+  | 'pair.disconnect_confirm_desc'
+  | 'pair.disconnect_yes'
+  | 'pair.disconnecting'
   // update banner
   | 'update_banner.msg'
   | 'update_banner.reload'
@@ -672,6 +691,28 @@ const id: StringDictionary = {
   'common.saving': 'Menyimpan...',
   'common.day': 'hari',
   'common.days': 'hari',
+
+  'pair.title': 'Hubungkan Pasangan',
+  'pair.desc': 'Kelola keuangan bareng pasangan di satu profil.',
+  'pair.invite': 'Ajak Pasangan',
+  'pair.join': 'Gabung dengan Kode',
+  'pair.gate_title': 'Amankan datamu dulu',
+  'pair.gate_desc': 'Simpan datamu ke cloud sebelum ajak pasangan, biar aman & bisa disinkron.',
+  'pair.gate_cta': 'Amankan Data',
+  'pair.cloud_safe': 'Data aman di cloud',
+  'pair.connected_label': 'PROFIL TERHUBUNG',
+  'pair.device_active': '{n} perangkat aktif',
+  'pair.this_device': 'Perangkat ini',
+  'pair.partner_device': 'Perangkat partner',
+  'pair.full_warning':
+    'Maksimal {n} perangkat. Untuk menambah perangkat lain, putuskan salah satu dulu.',
+  'pair.disconnect': 'Putuskan koneksi...',
+  'pair.disconnect_confirm_title': 'Putuskan koneksi?',
+  'pair.disconnect_confirm_desc':
+    'Perangkat ini akan keluar dari profil bersama. Data yang sudah ada tidak hilang, tapi tidak akan sync lagi.',
+  'pair.disconnect_yes': 'Ya, Putuskan',
+  'pair.disconnecting': 'Memutuskan...',
+
   'update_banner.msg': 'versi baru tersedia',
   'update_banner.reload': 'muat ulang ›',
 
@@ -1356,6 +1397,28 @@ const en: StringDictionary = {
   'common.saving': 'Saving...',
   'common.day': 'day',
   'common.days': 'days',
+
+  'pair.title': 'Link Partner',
+  'pair.desc': 'Manage finances together in one shared profile.',
+  'pair.invite': 'Invite Partner',
+  'pair.join': 'Join with Code',
+  'pair.gate_title': 'Secure your data first',
+  'pair.gate_desc':
+    'Back up to the cloud before inviting your partner, so it stays safe & in sync.',
+  'pair.gate_cta': 'Secure Data',
+  'pair.cloud_safe': 'Data safe in cloud',
+  'pair.connected_label': 'CONNECTED PROFILE',
+  'pair.device_active': '{n} active device(s)',
+  'pair.this_device': 'This device',
+  'pair.partner_device': "Partner's device",
+  'pair.full_warning': 'Max {n} devices. To add another, disconnect one first.',
+  'pair.disconnect': 'Disconnect...',
+  'pair.disconnect_confirm_title': 'Disconnect?',
+  'pair.disconnect_confirm_desc':
+    'This device will leave the shared profile. Existing data stays, but it will no longer sync.',
+  'pair.disconnect_yes': 'Yes, Disconnect',
+  'pair.disconnecting': 'Disconnecting...',
+
   'update_banner.msg': 'new version available',
   'update_banner.reload': 'reload ›',
 
