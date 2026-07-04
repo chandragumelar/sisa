@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSharedProfileCtx } from './SharedProfileContext'
+import { useLanguage } from '@/app/providers/useLanguage'
+import { t } from '@/shared/strings/strings'
 import type { RpcError } from '@/lib/supabase/types'
 import styles from './PulihkanPage.module.css'
 
@@ -19,6 +21,7 @@ type Screen = 'input' | 'success'
 
 export function PulihkanPage() {
   const navigate = useNavigate()
+  const lang = useLanguage()
   const { recover } = useSharedProfileCtx()
 
   const [code, setCode] = useState('')
@@ -157,13 +160,7 @@ export function PulihkanPage() {
             {loading ? 'Memulihkan...' : 'Pulihkan Profil'}
           </button>
 
-          <div className={styles.hint}>
-            Tidak punya kode pemulihan?{' '}
-            <button className={styles.linkBtn} onClick={() => navigate('/gabung-kode')}>
-              Minta kode undangan baru
-            </button>{' '}
-            dari pasanganmu.
-          </div>
+          <div className={styles.hint}>{t('recover.no_code_hint', lang)}</div>
         </div>
       )}
 

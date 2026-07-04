@@ -555,6 +555,7 @@ export type StringKey =
   | 'settings.row_sharing_solo'
   | 'settings.row_recover'
   | 'settings.row_recover_sub'
+  | 'recover.no_code_hint'
   | 'settings.row_pair'
   | 'settings.row_pair_sub_solo'
   | 'settings.row_pair_sub_connected'
@@ -1280,6 +1281,8 @@ const id: StringDictionary = {
   'settings.row_sharing_solo': 'Amankan data & ajak pasangan',
   'settings.row_recover': 'Pulihkan Profil Lama',
   'settings.row_recover_sub': 'Ganti HP? Masukkan kode pemulihan',
+  'recover.no_code_hint':
+    'Kode pemulihan hanya bisa dibuat ulang dari perangkat lama yang masih terhubung, lewat menu "Buat Ulang Kode Pemulihan".',
   'settings.row_pair': 'Hubungkan Pasangan',
   'settings.row_pair_sub_solo': 'Kelola keuangan bareng pasangan',
   'settings.row_pair_sub_connected': 'Terhubung • kelola perangkat',
@@ -2005,6 +2008,8 @@ const en: StringDictionary = {
   'settings.row_sharing_solo': 'Secure data & invite partner',
   'settings.row_recover': 'Recover Old Profile',
   'settings.row_recover_sub': 'New phone? Enter recovery code',
+  'recover.no_code_hint':
+    'A recovery code can only be regenerated from your old device while it\'s still connected, via "Regenerate Recovery Code".',
   'settings.row_pair': 'Link Partner',
   'settings.row_pair_sub_solo': 'Manage finances together with your partner',
   'settings.row_pair_sub_connected': 'Connected • manage devices',
