@@ -581,67 +581,72 @@ export function HomePage() {
                   const weekdayPct = Math.round((weekday / total) * 100)
                   const weekendPct = 100 - weekdayPct
                   return (
-                    <div className={styles.insightDonutWrap}>
-                      <svg
-                        viewBox="0 0 80 80"
-                        width="80"
-                        height="80"
-                        className={styles.insightDonutSvg}
-                        aria-hidden
-                      >
-                        <circle
-                          cx="40"
-                          cy="40"
-                          r="32"
-                          fill="none"
-                          stroke="var(--surface-2)"
-                          strokeWidth="14"
-                        />
-                        <circle
-                          cx="40"
-                          cy="40"
-                          r="32"
-                          fill="none"
-                          stroke="var(--accent)"
-                          strokeWidth="14"
-                          strokeDasharray={`${wdLen} ${C - wdLen}`}
-                          transform="rotate(-90 40 40)"
-                        />
-                        <circle
-                          cx="40"
-                          cy="40"
-                          r="32"
-                          fill="none"
-                          stroke="var(--signal-caution)"
-                          strokeWidth="14"
-                          strokeDasharray={`${C - wdLen} ${wdLen}`}
-                          strokeDashoffset={-wdLen}
-                          transform="rotate(-90 40 40)"
-                        />
-                      </svg>
-                      <div className={styles.insightDonutLegend}>
-                        <div className={styles.insightLegendRow}>
-                          <span className={styles.insightLegendDotWd} />
-                          <span className={styles.insightLegendLabel}>
-                            {t('home.insight_wd_weekday', lang)}
-                          </span>
-                          <span className={styles.insightLegendVal}>
-                            {formatCurrency(weekday, currency)}
-                          </span>
-                          <span className={styles.insightLegendPct}>{weekdayPct}%</span>
-                        </div>
-                        <div className={styles.insightLegendRow}>
-                          <span className={styles.insightLegendDotWe} />
-                          <span className={styles.insightLegendLabel}>
-                            {t('home.insight_wd_weekend', lang)}
-                          </span>
-                          <span className={styles.insightLegendVal}>
-                            {formatCurrency(weekend, currency)}
-                          </span>
-                          <span className={styles.insightLegendPct}>{weekendPct}%</span>
+                    <>
+                      <span className={styles.insightWdHeading}>
+                        {t('home.insight_wd_heading', lang)}
+                      </span>
+                      <div className={styles.insightDonutWrap}>
+                        <svg
+                          viewBox="0 0 80 80"
+                          width="80"
+                          height="80"
+                          className={styles.insightDonutSvg}
+                          aria-hidden
+                        >
+                          <circle
+                            cx="40"
+                            cy="40"
+                            r="32"
+                            fill="none"
+                            stroke="var(--surface-2)"
+                            strokeWidth="14"
+                          />
+                          <circle
+                            cx="40"
+                            cy="40"
+                            r="32"
+                            fill="none"
+                            stroke="var(--accent)"
+                            strokeWidth="14"
+                            strokeDasharray={`${wdLen} ${C - wdLen}`}
+                            transform="rotate(-90 40 40)"
+                          />
+                          <circle
+                            cx="40"
+                            cy="40"
+                            r="32"
+                            fill="none"
+                            stroke="var(--signal-caution)"
+                            strokeWidth="14"
+                            strokeDasharray={`${C - wdLen} ${wdLen}`}
+                            strokeDashoffset={-wdLen}
+                            transform="rotate(-90 40 40)"
+                          />
+                        </svg>
+                        <div className={styles.insightDonutLegend}>
+                          <div className={styles.insightLegendRow}>
+                            <span className={styles.insightLegendDotWd} />
+                            <span className={styles.insightLegendLabel}>
+                              {t('home.insight_wd_weekday', lang)}
+                            </span>
+                            <span className={styles.insightLegendVal}>
+                              {formatCurrency(weekday, currency)}
+                            </span>
+                            <span className={styles.insightLegendPct}>{weekdayPct}%</span>
+                          </div>
+                          <div className={styles.insightLegendRow}>
+                            <span className={styles.insightLegendDotWe} />
+                            <span className={styles.insightLegendLabel}>
+                              {t('home.insight_wd_weekend', lang)}
+                            </span>
+                            <span className={styles.insightLegendVal}>
+                              {formatCurrency(weekend, currency)}
+                            </span>
+                            <span className={styles.insightLegendPct}>{weekendPct}%</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    </>
                   )
                 })()}
               </>
