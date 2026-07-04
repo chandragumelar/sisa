@@ -561,6 +561,7 @@ export type StringKey =
   | 'home.sisa_uang_why_2'
   | 'home.sisa_uang_why_3'
   | 'home.insight_teaser_generic'
+  | 'home.insight_wd_heading'
   | 'home.insight_wd_weekday'
   | 'home.insight_wd_weekend'
   | 'home.insight_card_label'
@@ -1234,6 +1235,7 @@ const id: StringDictionary = {
     'Jadi lo nggak perlu ngitung manual tiap mau jajan. Selama masih di dalam angka ini, aman.',
   'home.sisa_uang_why_3': 'Mau lihat angkanya dari mana? Tap "kok bisa segini?" di kartunya.',
   'home.insight_teaser_generic': 'Catatan pertamamu bakal muncul jadi pola di sini',
+  'home.insight_wd_heading': 'Pengeluaran bulan ini',
   'home.insight_wd_weekday': 'Hari kerja',
   'home.insight_wd_weekend': 'Akhir pekan',
   'home.insight_card_label': 'INSIGHT',
@@ -1905,6 +1907,7 @@ const en: StringDictionary = {
   'home.sisa_uang_why_3':
     'Want to see where this number comes from? Tap "how is it this much?" on the card.',
   'home.insight_teaser_generic': 'Your first entries will show up as insights here',
+  'home.insight_wd_heading': 'Spending this month',
   'home.insight_wd_weekday': 'Weekday',
   'home.insight_wd_weekend': 'Weekend',
   'home.insight_card_label': 'INSIGHTS',
