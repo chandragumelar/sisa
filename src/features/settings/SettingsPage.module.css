@@ -39,7 +39,7 @@
 /* License card */
 .licenseCard {
   background: var(--accent-bg);
-  border: 1.5px solid #bfdbfe;
+  border: 1.5px solid var(--accent-br);
   border-radius: var(--radius-card);
   padding: 16px 18px;
   cursor: pointer;
@@ -202,7 +202,7 @@
 .segActive {
   background: var(--surface);
   color: var(--ink);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-card);
 }
 
 /* Select */

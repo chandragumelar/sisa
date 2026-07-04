@@ -361,7 +361,7 @@
 }
 
 .compareBtnActive {
-  background: rgba(228, 98, 60, 0.08);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
   border-color: var(--accent);
   color: var(--accent);
 }
