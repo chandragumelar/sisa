@@ -11,21 +11,21 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **SISA** — PWA decision-support keuangan ("aman ga gue beli ini sekarang?"), local-first, dijual via license key
 
-**Stack:** React 18 + Vite + TypeScript + Zustand + React Router + CSS Modules → deploy Vercel (static).
+**Stack:** React 18 + Vite + TypeScript + React Router + CSS Modules → deploy Vercel (static).
 
 ---
 
 ## 2. Urutan Baca (sebelum nulis kode apapun)
 
-| #   | Dokumen                                    | Untuk                                                            |
-| --- | ------------------------------------------ | ---------------------------------------------------------------- |
-| 1   | **`CLAUDE.md`** (ini)                      | Aturan kritis + peta. Selalu di context                          |
-| 2   | **`docs/engineering-guidelines-pwa.md`**   | _Bagaimana_ — arsitektur, license, storage, testing              |
-| 3   | **`design_handoff_sisa_revamp/README.md`** | Visual — token, komponen, voice/copy. **Source of truth visual** |
+| #   | Dokumen                                  | Untuk                                                            |
+| --- | ---------------------------------------- | ---------------------------------------------------------------- |
+| 1   | **`CLAUDE.md`** (ini)                    | Aturan kritis + peta. Selalu di context                          |
+| 2   | **`docs/engineering-guidelines-pwa.md`** | _Bagaimana_ — arsitektur, license, storage, testing              |
+| 3   | **`docs/design_system.md`**              | Visual — token, komponen, voice/copy. **Source of truth visual** |
 
 Tarik dokumen **saat relevan**, bukan semua sekaligus (irit token). Kerja di fitur tagihan → baca section tagihan di PRD + guidelines, bukan seluruh PRD.
 
-**Prioritas saat konflik:** design_handoff_sisa_revamp/README.md menang untuk visual · engineering-guidelines menang untuk keputusan teknis PWA · CLAUDE.md (ini) menang untuk aturan koding & batasan keras.
+**Prioritas saat konflik:** docs/design_system.md menang untuk visual · engineering-guidelines menang untuk keputusan teknis PWA · CLAUDE.md (ini) menang untuk aturan koding & batasan keras.
 
 ---
 
@@ -65,7 +65,7 @@ main.tsx
                  └─ <FeaturePage>
 ```
 
-**Tidak ada global state store saat ini.** `store/` directory ada tapi kosong — tiap page component loads datanya sendiri dengan `useEffect + Promise.all` ke repository functions, simpan ke local `useState`. Pattern ini intentional untuk simplicity; Zustand ditambah kalau state cross-page mulai bermasalah.
+**Tidak ada global state store.** `store/` directory kosong — tiap page component loads datanya sendiri dengan `useEffect + Promise.all` ke repository functions, simpan ke local `useState`. Pattern ini intentional untuk simplicity.
 
 **Data layer:**
 
@@ -89,7 +89,7 @@ Komponen tidak pernah import Dexie langsung. Semua akses DB lewat functions di `
 - **Recurring tagihan status resets on the 1st of the calendar month.**
 - **Deleting a goal releases its earmark back to sisa** — no goal-to-goal transfer.
 - **Earmark / pindah-dompet concepts are REMOVED.** Do not reintroduce.
-- **Home is the only place to manage wallet/tagihan/goal.** Basic tier = max 3 goals.
+- **Home is the only place to manage wallet/tagihan/goal.**
 
 ---
 
@@ -109,7 +109,7 @@ export function calcDaysUntilPayday(nowMs: number, settings: Settings): number {
 
 ## 7. Testing
 
-Hanya `*.utils.ts` yang wajib ditest (bukan komponen, bukan store setter sederhana). Test file ada di sebelah file yang dites, suffix `.test.ts`.
+Hanya `*.utils.ts` yang wajib ditest (bukan komponen). Test file ada di sebelah file yang dites, suffix `.test.ts`.
 
 **Repository functions di-mock** (bukan fake IndexedDB):
 
@@ -202,4 +202,4 @@ Kalau ragu antara nambah infra vs tetap client-only → **tetap client-only**.
 
 ---
 
-_File ini ringkas sengaja. Detail hidup di PRD / guidelines / design_handoff. Update di sini hanya kalau ada aturan kritis atau batasan baru._
+_File ini ringkas sengaja. Detail hidup di PRD / guidelines / design_system. Update di sini hanya kalau ada aturan kritis atau batasan baru._
