@@ -75,6 +75,9 @@ export function BerbagiKeamananPage() {
 
   if (status === 'loading') return null
 
+  const hasProfile = status === 'connected' || (status === 'solo' && !!profileId)
+  const hasPartner = members.length > 1
+
   return (
     <div className={styles.page}>
       <div className={styles.header}>
@@ -94,7 +97,7 @@ export function BerbagiKeamananPage() {
         <div className={styles.title}>Berbagi &amp; Keamanan</div>
       </div>
 
-      {status === 'connected' && (
+      {hasProfile && hasPartner && (
         <>
           {/* Connected profile card */}
           <div className={styles.card}>
@@ -217,7 +220,7 @@ export function BerbagiKeamananPage() {
         </>
       )}
 
-      {status === 'solo' && !profileId && (
+      {!hasProfile && (
         <div className={styles.soloState}>
           <div className={styles.soloIcon}>
             <svg
@@ -248,7 +251,7 @@ export function BerbagiKeamananPage() {
         </div>
       )}
 
-      {status === 'solo' && !!profileId && (
+      {hasProfile && !hasPartner && (
         <div className={styles.soloState}>
           <div className={styles.soloSafeStatus}>
             <span className={styles.soloSafeDot} />
