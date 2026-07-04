@@ -61,8 +61,8 @@ export function StepTagihan({ tagihan, currency, onChange, onNext }: Props) {
 
   return (
     <>
-      <h1 className="ob-heading">Tagihan rutin lo apa aja?</h1>
-      <p className="ob-subheading">Isi ini biar angka Sisa lo akurat. Minimal 1 tagihan ya.</p>
+      <h1 className="ob-heading">{t('ob.tagihan.heading', lang)}</h1>
+      <p className="ob-subheading">{t('ob.tagihan.subheading', lang)}</p>
 
       {tagihan.length === 0 ? (
         <div className="ob-card" style={{ padding: '28px 16px', textAlign: 'center' }}>
@@ -80,7 +80,7 @@ export function StepTagihan({ tagihan, currency, onChange, onNext }: Props) {
               <path d="M8 5v3M8 10.5v.5" />
             </svg>
           </div>
-          <div className={styles.emptyLabel}>Belum ada tagihan</div>
+          <div className={styles.emptyLabel}>{t('ob.tagihan.empty', lang)}</div>
           <div className={styles.emptyHint}>Contoh: kos, cicilan motor, langganan streaming.</div>
         </div>
       ) : (
@@ -170,12 +170,12 @@ export function StepTagihan({ tagihan, currency, onChange, onNext }: Props) {
         >
           <path d="M8 3V13M3 8H13" />
         </svg>
-        Tambah tagihan
+        {t('ob.tagihan.add', lang)}
       </button>
 
       <div className="ob-footer">
         <div className="ob-footer-total">
-          <span>Total tagihan bulanan</span>
+          <span>{t('ob.tagihan.monthly_total', lang)}</span>
           <div style={{ textAlign: 'right' }}>
             <span
               className="ob-footer-total-amt"
