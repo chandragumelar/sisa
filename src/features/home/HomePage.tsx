@@ -51,7 +51,6 @@ import { ProfilTagihanSheet } from '@/features/profil/ProfilTagihanSheet'
 import { ProfilWalletsSheet } from '@/features/profil/ProfilWalletsSheet'
 import { QuickLogSheet } from '@/features/quickLog/QuickLogSheet'
 import type { QuickLogMode } from '@/features/quickLog/quickLog.utils'
-import { BerbagiKeamananSection } from '@/features/shared-profile/components/BerbagiKeamananSection'
 import { AlokasiEditSheet } from '@/features/alokasi/AlokasiEditSheet'
 import { getAllocation, putAllocation } from '@/db/allocation.repository'
 import { relock, resolveBudgetView } from '@/shared/utils/budget.utils'
@@ -653,8 +652,6 @@ export function HomePage() {
             )}
             <span className={styles.insightCardCta}>{t('home.insight_card_cta', lang)}</span>
           </button>
-
-          <BerbagiKeamananSection />
         </div>
       </main>
 
