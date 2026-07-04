@@ -40,7 +40,7 @@
 }
 
 .editBtn {
-  background: rgba(242, 237, 227, 0.15);
+  background: color-mix(in srgb, var(--bg) 15%, transparent);
   border: none;
   color: var(--bg);
   font-size: 12px;
@@ -51,7 +51,7 @@
 }
 
 .undoBtn {
-  background: rgba(242, 237, 227, 0.25);
+  background: color-mix(in srgb, var(--bg) 25%, transparent);
   border: none;
   color: var(--bg);
   font-size: 12px;

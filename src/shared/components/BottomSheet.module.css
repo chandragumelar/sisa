@@ -29,7 +29,7 @@
 .handle {
   width: 36px;
   height: 4px;
-  background: rgba(133, 127, 115, 0.4);
+  background: color-mix(in srgb, var(--ink) 30%, transparent);
   border-radius: 100px;
   margin: 0 auto 16px;
   flex-shrink: 0;
