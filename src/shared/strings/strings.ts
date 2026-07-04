@@ -531,9 +531,6 @@ export type StringKey =
   | 'settings.row_patokan_currency_sub'
   | 'settings.currency_warning_title'
   | 'settings.currency_warning_body'
-  | 'settings.section_sharing_label'
-  | 'settings.section_sharing'
-  | 'settings.row_sharing_connected'
   | 'settings.section_data'
   | 'settings.export_json'
   | 'settings.export_json_sub'
@@ -1226,9 +1223,6 @@ const id: StringDictionary = {
   'settings.currency_warning_title': 'Ganti mata uang utama',
   'settings.currency_warning_body':
     'Mengubah mata uang utama tidak mengubah angka yang sudah tersimpan. Rp 50.000 akan menjadi $50.000, bukan dikonversi.',
-  'settings.section_sharing_label': 'akun & data',
-  'settings.section_sharing': 'Akun & Data',
-  'settings.row_sharing_connected': 'Terhubung • data aman',
   'settings.section_data': 'data & backup',
   'settings.export_json': 'export backup',
   'settings.export_json_sub': 'file lengkap buat pindah / restore',
@@ -1921,9 +1915,6 @@ const en: StringDictionary = {
   'settings.currency_warning_title': 'Change main currency',
   'settings.currency_warning_body':
     "Changing your main currency won't convert saved amounts. Rp 50,000 becomes $50,000, not converted.",
-  'settings.section_sharing_label': 'account & data',
-  'settings.section_sharing': 'Account & Data',
-  'settings.row_sharing_connected': 'Connected • data safe',
   'settings.section_data': 'data & backup',
   'settings.export_json': 'export backup',
   'settings.export_json_sub': 'full file for transfer / restore',
