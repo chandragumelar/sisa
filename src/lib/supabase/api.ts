@@ -224,7 +224,7 @@ export async function disconnectDevice(anonymousId: string): Promise<boolean> {
 // Tagihan reminder sync
 // ---------------------------------------------------------------
 
-import type { Tagihan } from '@/db/database'
+import type { Tagihan, SnapshotData } from '@/db/database'
 
 /** Upsert one tagihan to server for reminder scheduling. No-op if no session or id missing. */
 export async function syncTagihanReminder(tagihan: Tagihan): Promise<void> {
@@ -241,6 +241,35 @@ export async function syncTagihanReminder(tagihan: Tagihan): Promise<void> {
     is_active: tagihan.isActive,
     updated_at: new Date().toISOString(),
   })
+}
+
+// ---------------------------------------------------------------
+// Profile snapshot — upload / download
+// ---------------------------------------------------------------
+
+/** Upsert the full data snapshot for a profile. Returns false on error. */
+export async function uploadSnapshot(
+  profileId: string,
+  anonymousId: string,
+  data: SnapshotData,
+): Promise<boolean> {
+  const { error } = await supabase.from('profile_snapshot').upsert({
+    profile_id: profileId,
+    data,
+    updated_by: anonymousId,
+    updated_at: new Date().toISOString(),
+  })
+  return !error
+}
+
+/** Download the latest snapshot for a profile. Returns null if none exists. */
+export async function downloadSnapshot(profileId: string): Promise<SnapshotData | null> {
+  const { data } = await supabase
+    .from('profile_snapshot')
+    .select('data')
+    .eq('profile_id', profileId)
+    .maybeSingle()
+  return (data?.data as SnapshotData) ?? null
 }
 
 /** Delete reminder when tagihan is deleted locally. No-op if no session. */

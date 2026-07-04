@@ -13,7 +13,11 @@ import {
   disconnectDevice,
   generateRecoveryCode,
   regenerateRecoveryCode as apiRegenerateRecoveryCode,
+  uploadSnapshot,
+  downloadSnapshot,
 } from '@/lib/supabase/api'
+import { collectSnapshot, applySnapshot } from '@/db/snapshot.repository'
+import { useClock } from '@/app/providers/useClock'
 import type { JoinCode } from '@/lib/supabase/types'
 import type { SharedProfileState } from './shared-profile.types'
 import { INITIAL_STATE } from './shared-profile.types'
@@ -47,6 +51,7 @@ type UseSharedProfileReturn = SharedProfileState & {
 export function useSharedProfile(): UseSharedProfileReturn {
   const [state, setState] = useState<SharedProfileState>(INITIAL_STATE)
   const realtimeRef = useRef<ReturnType<typeof supabase.channel> | null>(null)
+  const clock = useClock()
 
   const updateState = useCallback((patch: Partial<SharedProfileState>) => {
     setState((prev) => ({ ...prev, ...patch }))
@@ -150,6 +155,13 @@ export function useSharedProfile(): UseSharedProfileReturn {
       const rawCode = generateRecoveryCode()
       const result = await apiCreateProfile(name, displayName, rawCode)
       if (result.ok && state.anonymousId) {
+        // TODO: auto-upload on every local write (PR-X) — for now upload only on create
+        try {
+          const snap = await collectSnapshot(Date.now())
+          await uploadSnapshot(result.profile_id, state.anonymousId, snap)
+        } catch {
+          /* upload failure does not fail profile creation — recovery code still valid */
+        }
         await refresh(state.anonymousId)
       }
       return { ...result, recoveryCode: result.ok ? rawCode : undefined }
@@ -197,10 +209,12 @@ export function useSharedProfile(): UseSharedProfileReturn {
       const result = await apiRecoverProfile(rawCode, displayName)
       if (result.ok && state.anonymousId) {
         await refresh(state.anonymousId)
+        const snap = await downloadSnapshot(result.profile_id)
+        if (snap) await applySnapshot(snap, clock)
       }
       return result
     },
-    [state.anonymousId, refresh],
+    [state.anonymousId, refresh, clock],
   )
 
   const disconnect = useCallback(async () => {
