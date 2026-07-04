@@ -5,7 +5,7 @@ import { useLanguage, useSetLanguage } from '@/app/providers/useLanguage'
 import { getSettings, patchSettings } from '@/db/settings.repository'
 import { getLicense } from '@/db/license.repository'
 import { getRecentTransactions } from '@/db/transactions.repository'
-import { exportAllData, importAllData, clearAllData } from '@/db/backup.repository'
+import { clearAllData } from '@/db/backup.repository'
 import { applyTheme } from '@/shared/utils/theme'
 import { applyLanguage } from '@/shared/utils/language'
 import type { Settings, LicenseRecord, Theme, Language } from '@/db/database'
@@ -17,13 +17,10 @@ import { ProfilLicenseSheet } from '@/features/profil/ProfilLicenseSheet'
 import { ManageCategoriesSheet } from '@/features/category/ManageCategoriesSheet'
 import { t, toLocale } from '@/shared/strings/strings'
 import { useSharedProfileCtx } from '@/features/shared-profile/SharedProfileContext'
-import {
-  buildBackupJSON,
-  buildTransactionsCSV,
-  parseBackupJSON,
-  downloadFile,
-} from './backup.utils'
-import type { ImportPreview } from './backup.utils'
+import { buildTransactionsCSV, downloadFile } from './backup.utils'
+import { collectSnapshot, applySnapshot } from '@/db/snapshot.repository'
+import { parseSnapshot } from '@/db/snapshot.serializer'
+import type { SnapshotPreview } from '@/db/snapshot.serializer'
 import { BRAND_STUDIO_WITH_COLLAB, BRAND_TWITTER, BRAND_EMAIL } from '@/constants/brand'
 import styles from './SettingsPage.module.css'
 
@@ -44,7 +41,7 @@ export function SettingsPage() {
   const [data, setData] = useState<PageData | null>(null)
   const [activeSheet, setActiveSheet] = useState<'income' | 'license' | 'categories' | null>(null)
   const [importPreview, setImportPreview] = useState<{
-    preview: ImportPreview
+    preview: SnapshotPreview
     json: string
   } | null>(null)
   const [importError, setImportError] = useState<string | null>(null)
@@ -94,8 +91,8 @@ export function SettingsPage() {
   }
 
   async function handleExportJSON() {
-    const exportData = await exportAllData(nowMs)
-    const json = buildBackupJSON(exportData)
+    const snap = await collectSnapshot(nowMs)
+    const json = JSON.stringify(snap, null, 2)
     const date = new Date(nowMs).toISOString().split('T')[0]
     downloadFile(`sisa-backup-${date}.json`, json, 'application/json')
     await patchSettings({ lastExportedAt: nowMs })
@@ -114,7 +111,7 @@ export function SettingsPage() {
     const reader = new FileReader()
     reader.onload = (ev) => {
       const json = ev.target?.result as string
-      const result = parseBackupJSON(json)
+      const result = parseSnapshot(json)
       if (!result.ok) {
         setImportError(result.error)
         return
@@ -127,9 +124,9 @@ export function SettingsPage() {
 
   async function handleImportConfirm() {
     if (!importPreview) return
-    const result = parseBackupJSON(importPreview.json)
+    const result = parseSnapshot(importPreview.json)
     if (!result.ok) return
-    await importAllData(result.data)
+    await applySnapshot(result.data, clock)
     setImportPreview(null)
     navigate('/')
   }
@@ -386,6 +383,28 @@ export function SettingsPage() {
                   {t('settings.import_preview_goals', lang)}
                 </span>
               </div>
+              <div className={styles.previewItem}>
+                <span className={styles.previewVal}>
+                  {importPreview.preview.customCategoryCount}
+                </span>
+                <span className={styles.previewKey}>
+                  {t('settings.import_preview_categories', lang)}
+                </span>
+              </div>
+              <div className={styles.previewItem}>
+                <span className={styles.previewVal}>{importPreview.preview.scenarioCount}</span>
+                <span className={styles.previewKey}>
+                  {t('settings.import_preview_scenarios', lang)}
+                </span>
+              </div>
+              {importPreview.preview.hasLicense && (
+                <div className={styles.previewItem}>
+                  <span className={styles.previewVal}>✓</span>
+                  <span className={styles.previewKey}>
+                    {t('settings.import_preview_license', lang)}
+                  </span>
+                </div>
+              )}
             </div>
             <div className={styles.sheetWarning}>{t('settings.import_warning', lang)}</div>
             <button className={styles.primaryBtn} onClick={handleImportConfirm}>

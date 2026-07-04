@@ -147,16 +147,6 @@ export interface SavedScenario {
   savedAt: number // epoch ms
 }
 
-export interface BackupData {
-  schemaVersion: number
-  exportedAt: number
-  settings: Settings
-  wallets: Wallet[]
-  tagihan: Tagihan[]
-  goals: Goal[]
-  transactions: Transaction[]
-}
-
 // Default categories auto-reseed via seedDefaultCategoriesIfEmpty — not included.
 // Transactions store category as string name — stays valid across restores.
 // allocation, rates, meta excluded (ephemeral/device-specific).

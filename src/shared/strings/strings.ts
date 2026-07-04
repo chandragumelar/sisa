@@ -601,6 +601,9 @@ export type StringKey =
   | 'settings.import_preview_txs'
   | 'settings.import_preview_bills'
   | 'settings.import_preview_goals'
+  | 'settings.import_preview_categories'
+  | 'settings.import_preview_scenarios'
+  | 'settings.import_preview_license'
   | 'settings.import_warning'
   | 'settings.import_confirm'
   | 'settings.import_error_title'
@@ -1349,6 +1352,9 @@ const id: StringDictionary = {
   'settings.import_preview_txs': 'transaksi',
   'settings.import_preview_bills': 'tagihan',
   'settings.import_preview_goals': 'goal',
+  'settings.import_preview_categories': 'kategori kustom',
+  'settings.import_preview_scenarios': 'skenario andai',
+  'settings.import_preview_license': 'Lisensi',
   'settings.import_warning': 'Data yang ada sekarang akan ditimpa. Tidak bisa di-undo.',
   'settings.import_confirm': 'Restore sekarang',
   'settings.import_error_title': 'Gagal import',
@@ -2097,6 +2103,9 @@ const en: StringDictionary = {
   'settings.import_preview_txs': 'transactions',
   'settings.import_preview_bills': 'bills',
   'settings.import_preview_goals': 'goals',
+  'settings.import_preview_categories': 'custom categories',
+  'settings.import_preview_scenarios': 'what-if scenarios',
+  'settings.import_preview_license': 'License',
   'settings.import_warning': 'Existing data will be overwritten. Cannot be undone.',
   'settings.import_confirm': 'Restore now',
   'settings.import_error_title': 'Import failed',
