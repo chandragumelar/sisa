@@ -214,53 +214,6 @@ export function BerbagiKeamananPage() {
               </div>
             </div>
           )}
-
-          {/* Regenerate recovery code overlay */}
-          {showRegenConfirm && (
-            <div className={styles.confirmOverlay} onClick={handleCloseRegen}>
-              <div className={styles.confirmSheet} onClick={(e) => e.stopPropagation()}>
-                <div className={styles.confirmHandle} />
-
-                {regenCode ? (
-                  <>
-                    <div className={styles.confirmTitle}>Kode pemulihan baru</div>
-                    <div className={styles.confirmDesc}>
-                      Simpan kode ini baik-baik. Kode lama sudah hangus dan tidak bisa dipakai lagi.
-                    </div>
-                    <div className={styles.regenCodeBox}>
-                      <div className={styles.regenCodeLabel}>KODE PEMULIHAN</div>
-                      <div className={styles.regenCodeValue}>{regenCode}</div>
-                    </div>
-                    <button className={styles.btnSecondary} onClick={handleCopyRegenCode}>
-                      {regenCopied ? 'Tersalin!' : 'Salin Kode'}
-                    </button>
-                    <button className={styles.btnGhost} onClick={handleCloseRegen}>
-                      Selesai
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <div className={styles.confirmTitle}>Buat ulang kode pemulihan?</div>
-                    <div className={styles.confirmDesc}>
-                      Kode pemulihan lama akan langsung hangus dan tidak bisa dipakai lagi. Simpan
-                      kode baru baik-baik.
-                    </div>
-                    {regenError && <div className={styles.regenErrorText}>{regenError}</div>}
-                    <button
-                      className={styles.btnPrimary}
-                      onClick={handleRegenConfirm}
-                      disabled={regenLoading}
-                    >
-                      {regenLoading ? 'Memproses...' : 'Ya, Buat Ulang'}
-                    </button>
-                    <button className={styles.btnGhost} onClick={handleCloseRegen}>
-                      Batal
-                    </button>
-                  </>
-                )}
-              </div>
-            </div>
-          )}
         </>
       )}
 
@@ -310,6 +263,57 @@ export function BerbagiKeamananPage() {
           <button className={styles.btnSecondary} onClick={() => navigate('/gabung-kode')}>
             Gabung dengan Kode
           </button>
+          <div className={styles.soloDivider} />
+          <button className={styles.regenTriggerBtn} onClick={() => setShowRegenConfirm(true)}>
+            Buat Ulang Kode Pemulihan
+          </button>
+        </div>
+      )}
+
+      {/* Regenerate recovery code overlay — shared between connected and solo sub-state 2 */}
+      {showRegenConfirm && (
+        <div className={styles.confirmOverlay} onClick={handleCloseRegen}>
+          <div className={styles.confirmSheet} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.confirmHandle} />
+
+            {regenCode ? (
+              <>
+                <div className={styles.confirmTitle}>Kode pemulihan baru</div>
+                <div className={styles.confirmDesc}>
+                  Simpan kode ini baik-baik. Kode lama sudah hangus dan tidak bisa dipakai lagi.
+                </div>
+                <div className={styles.regenCodeBox}>
+                  <div className={styles.regenCodeLabel}>KODE PEMULIHAN</div>
+                  <div className={styles.regenCodeValue}>{regenCode}</div>
+                </div>
+                <button className={styles.btnSecondary} onClick={handleCopyRegenCode}>
+                  {regenCopied ? 'Tersalin!' : 'Salin Kode'}
+                </button>
+                <button className={styles.btnGhost} onClick={handleCloseRegen}>
+                  Selesai
+                </button>
+              </>
+            ) : (
+              <>
+                <div className={styles.confirmTitle}>Buat ulang kode pemulihan?</div>
+                <div className={styles.confirmDesc}>
+                  Kode pemulihan lama akan langsung hangus dan tidak bisa dipakai lagi. Simpan kode
+                  baru baik-baik.
+                </div>
+                {regenError && <div className={styles.regenErrorText}>{regenError}</div>}
+                <button
+                  className={styles.btnPrimary}
+                  onClick={handleRegenConfirm}
+                  disabled={regenLoading}
+                >
+                  {regenLoading ? 'Memproses...' : 'Ya, Buat Ulang'}
+                </button>
+                <button className={styles.btnGhost} onClick={handleCloseRegen}>
+                  Batal
+                </button>
+              </>
+            )}
+          </div>
         </div>
       )}
     </div>
