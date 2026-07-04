@@ -12,15 +12,17 @@
 .sheet {
   background: var(--surface);
   border-radius: 22px 22px 0 0;
-  padding: 12px 22px calc(24px + env(safe-area-inset-bottom, 0px));
+  padding-top: 12px;
+  padding-inline: 22px;
+  padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
   max-width: 390px;
   width: 100%;
   margin: 0 auto;
+  max-height: 90vh;
   max-height: 90dvh;
-  overflow-y: auto;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
   touch-action: pan-y;
 }
 
@@ -30,6 +32,7 @@
   background: rgba(133, 127, 115, 0.4);
   border-radius: 100px;
   margin: 0 auto 16px;
+  flex-shrink: 0;
 }
 
 .title {
@@ -39,4 +42,13 @@
   letter-spacing: -0.03em;
   color: var(--ink);
   margin-bottom: 16px;
+  flex-shrink: 0;
+}
+
+.body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
 }
