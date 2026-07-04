@@ -516,6 +516,8 @@ export type StringKey =
   | 'settings.section_sharing'
   | 'settings.row_sharing_connected'
   | 'settings.row_sharing_solo'
+  | 'settings.row_recover'
+  | 'settings.row_recover_sub'
   | 'settings.section_data'
   | 'settings.export_json'
   | 'settings.export_json_sub'
@@ -1187,6 +1189,8 @@ const id: StringDictionary = {
   'settings.section_sharing': 'Berbagi & Keamanan',
   'settings.row_sharing_connected': 'Terhubung • data aman',
   'settings.row_sharing_solo': 'Amankan data & ajak pasangan',
+  'settings.row_recover': 'Pulihkan Profil Lama',
+  'settings.row_recover_sub': 'Ganti HP? Masukkan kode pemulihan',
   'settings.section_data': 'data & backup',
   'settings.export_json': 'export backup',
   'settings.export_json_sub': 'file lengkap buat pindah / restore',
@@ -1858,6 +1862,8 @@ const en: StringDictionary = {
   'settings.section_sharing': 'Sharing & Security',
   'settings.row_sharing_connected': 'Connected • data safe',
   'settings.row_sharing_solo': 'Secure data & invite partner',
+  'settings.row_recover': 'Recover Old Profile',
+  'settings.row_recover_sub': 'New phone? Enter recovery code',
   'settings.section_data': 'data & backup',
   'settings.export_json': 'export backup',
   'settings.export_json_sub': 'full file for transfer / restore',
