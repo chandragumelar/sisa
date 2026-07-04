@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import type { Language } from '@/db/database'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
 import { t } from '@/shared/strings/strings'
@@ -5,11 +6,11 @@ import type { CategoryRow, CategoryMonthBar } from './insight.utils'
 import { formatMonthShort } from './insight.utils'
 import styles from './InsightPage.module.css'
 
-const BAR_W = 20
-const GAP = 4
-const H = 54
-const PAD_T = 6
-const LABEL_H = 18
+const BAR_W = 32
+const GAP = 8
+const H = 96
+const PAD_T = 8
+const LABEL_H = 20
 const SVG_H = PAD_T + H + LABEL_H
 
 interface Props {
@@ -31,6 +32,12 @@ export function InsightCategoryCard({
   currency,
   lang,
 }: Props) {
+  const [selectedBar, setSelectedBar] = useState<number | null>(null)
+
+  useEffect(() => {
+    setSelectedBar(null)
+  }, [selected])
+
   if (rows.length === 0) {
     return (
       <div className={styles.card}>
@@ -100,11 +107,12 @@ export function InsightCategoryCard({
       </p>
 
       <div className={styles.barsWrap}>
-        <svg viewBox={`0 0 ${svgW} ${SVG_H}`} width="100%" height={SVG_H} aria-hidden>
+        <svg viewBox={`0 0 ${svgW} ${SVG_H}`} width="100%" height={SVG_H} role="img">
           {trend.map((bar, i) => {
             const isLast = i === n - 1
             const fill = isLast ? 'var(--accent)' : 'var(--border-hair)'
             const barH = Math.max((bar.amount / maxAmt) * H, 1)
+            const sel = selectedBar === i
             return (
               <rect
                 key={i}
@@ -113,10 +121,36 @@ export function InsightCategoryCard({
                 width={BAR_W}
                 height={barH}
                 fill={fill}
+                stroke={sel ? 'var(--accent)' : undefined}
+                strokeWidth={sel ? 1.5 : undefined}
                 rx="2"
+                style={{ cursor: 'pointer' }}
+                onClick={() => setSelectedBar(sel ? null : i)}
               />
             )
           })}
+          {selectedBar !== null &&
+            (() => {
+              const bar = trend[selectedBar]
+              const i = selectedBar
+              const barH = Math.max((bar.amount / maxAmt) * H, 1)
+              const barTopY = PAD_T + H - barH
+              const nomY = Math.max(barTopY - 4, 10)
+              const barX = i * (BAR_W + GAP) + BAR_W / 2
+              return (
+                <text
+                  x={barX}
+                  y={nomY}
+                  textAnchor="middle"
+                  fontSize="10"
+                  fontWeight={600}
+                  fill="var(--ink-primary)"
+                  fontFamily="var(--font-sans)"
+                >
+                  {formatCurrency(bar.amount, currency)}
+                </text>
+              )
+            })()}
           {trend.map((bar, i) => {
             const cx = i * (BAR_W + GAP) + BAR_W / 2
             return (
@@ -125,7 +159,7 @@ export function InsightCategoryCard({
                 x={cx}
                 y={labelY}
                 textAnchor="end"
-                fontSize="8"
+                fontSize="10"
                 fill="var(--ink-tertiary)"
                 fontFamily="var(--font-sans)"
                 transform={`rotate(-40, ${cx}, ${labelY})`}
