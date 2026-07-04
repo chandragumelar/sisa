@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase/client'
-import { getAnonymousId } from '@/lib/supabase/api'
+import { ensureAnonymousSession } from '@/lib/supabase/api'
 import { db } from '@/db/database'
 
 const VAPID_PUBLIC = import.meta.env.VITE_VAPID_PUBLIC_KEY as string
@@ -46,8 +46,7 @@ export async function enablePush(): Promise<boolean> {
       applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC),
     })
 
-    const anonId = await getAnonymousId()
-    if (!anonId) return false
+    const anonId = await ensureAnonymousSession()
     const json = sub.toJSON()
     await supabase.from('push_subscriptions').upsert({
       anonymous_id: anonId,
