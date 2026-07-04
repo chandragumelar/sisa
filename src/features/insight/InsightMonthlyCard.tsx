@@ -62,7 +62,7 @@ function BarChart({
         const fill = isLast ? 'var(--accent)' : 'var(--border-hair)'
         const sel = selectedBar === i
         if (metric === 'net') {
-          const barH = Math.max((Math.abs(val) / maxAbs) * (H / 2), 1)
+          const barH = Math.max((Math.abs(val) / maxAbs) * (H * 0.44), 1)
           const negative = val < 0
           return (
             <rect
@@ -105,7 +105,7 @@ function BarChart({
           const barX = i * (BAR_W + GAP) + BAR_W / 2
           let barTopY: number
           if (metric === 'net') {
-            const barH = Math.max((Math.abs(val) / maxAbs) * (H / 2), 1)
+            const barH = Math.max((Math.abs(val) / maxAbs) * (H * 0.44), 1)
             barTopY = val < 0 ? midY : midY - barH
           } else {
             const barH = Math.max((val / maxAbs) * H, 1)
