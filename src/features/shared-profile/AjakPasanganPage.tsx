@@ -5,8 +5,6 @@ import { BottomSheet } from '@/shared/components/BottomSheet'
 import type { JoinCode } from '@/lib/supabase/types'
 import styles from './AjakPasanganPage.module.css'
 
-const RECOVERY_SHOWN_KEY = 'sisa:recoveryShown'
-
 function buildWhatsAppText(code: string): string {
   return encodeURIComponent(
     `Hei! Aku undang kamu gabung ke profil SISA kita.\nMasuk SISA → ketuk "Gabung dengan Kode" → masukkan kode ini:\n${code}\nKode berlaku 30 menit ya!`,
@@ -19,42 +17,15 @@ function formatCode(raw: string): string {
   return parts.length === 2 ? parts[1].split('').join(' ') : raw
 }
 
-type Step = 'recovery' | 'code'
-
 export function AjakPasanganPage() {
   const navigate = useNavigate()
-  const { status, createProfile, generateCode, profileId } = useSharedProfileCtx()
+  const { status, generateCode, profileId } = useSharedProfileCtx()
 
-  const [step, setStep] = useState<Step>('code')
-  const [recoveryCode, setRecoveryCode] = useState<string | null>(null)
   const [joinCode, setJoinCode] = useState<JoinCode | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [shareSheetOpen, setShareSheetOpen] = useState(false)
   const [copied, setCopied] = useState(false)
-
-  async function handleStart() {
-    setLoading(true)
-    setError(null)
-    try {
-      if (status === 'solo') {
-        // Create profile + get recovery code
-        const result = await createProfile('Rumah Kita', 'Pengguna')
-        if (!result.ok) {
-          setError('Gagal membuat profil. Coba lagi.')
-          return
-        }
-        if (result.recoveryCode) {
-          setRecoveryCode(result.recoveryCode)
-          setStep('recovery')
-          return
-        }
-      }
-      await loadCode()
-    } finally {
-      setLoading(false)
-    }
-  }
 
   async function loadCode() {
     setLoading(true)
@@ -65,15 +36,9 @@ export function AjakPasanganPage() {
         return
       }
       setJoinCode(code)
-      setStep('code')
     } finally {
       setLoading(false)
     }
-  }
-
-  function handleRecoverySaved() {
-    localStorage.setItem(RECOVERY_SHOWN_KEY, '1')
-    loadCode()
   }
 
   function handleCopyCode() {
@@ -93,13 +58,13 @@ export function AjakPasanganPage() {
     })
   }
 
-  // On mount, if already connected load code
-  if (status === 'connected' && !joinCode && !loading && step === 'code') {
+  const hasProfile = status === 'connected' || (status === 'solo' && !!profileId)
+  const noProfileYet = status === 'solo' && !profileId
+
+  // Auto-load code once profile is confirmed
+  if (hasProfile && !joinCode && !loading) {
     loadCode()
   }
-
-  // Initial load for solo user who already has profile (recovery was already shown)
-  const needsInit = status === 'solo' && !profileId && step === 'code' && !joinCode && !loading
 
   return (
     <div className={styles.page}>
@@ -123,141 +88,102 @@ export function AjakPasanganPage() {
         </div>
       </div>
 
-      {step === 'recovery' && recoveryCode && (
-        <div className={styles.recoveryWrap}>
-          <div className={styles.recoveryIcon}>
-            <svg
-              width="28"
-              height="28"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="var(--signal-safe)"
-              strokeWidth="1.8"
-              strokeLinecap="round"
-            >
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-              <polyline points="9 12 11 14 15 10" />
-            </svg>
-          </div>
-          <div className={styles.recoveryTitle}>Simpan kode pemulihanmu</div>
-          <div className={styles.recoveryDesc}>
-            Kode ini dipakai untuk memulihkan data di perangkat baru. Simpan di tempat aman — tidak
-            bisa dilihat lagi.
-          </div>
-          <div className={styles.recoveryCodeBox}>
-            <div className={styles.recoveryCodeLabel}>KODE PEMULIHAN</div>
-            <div className={styles.recoveryCodeValue}>{recoveryCode}</div>
-          </div>
-          <div className={styles.recoveryActions}>
-            <button
-              className={styles.btnSecondary}
-              onClick={() => {
-                navigator.clipboard.writeText(recoveryCode)
-                setCopied(true)
-                setTimeout(() => setCopied(false), 2000)
-              }}
-            >
+      <div className={styles.codeWrap}>
+        <div className={styles.desc}>
+          Minta pasanganmu buka SISA dan pilih <strong>&ldquo;Gabung dengan Kode&rdquo;</strong>,
+          lalu masukkan kode ini.
+        </div>
+
+        {joinCode ? (
+          <>
+            <div className={styles.codeCard}>
+              <div className={styles.codeLabelSmall}>KODE RUMAH KAMU</div>
+              <div className={styles.codePrefix}>RUMAH</div>
+              <div className={styles.codeChars}>{formatCode(joinCode.code)}</div>
+              <div className={styles.codeTtl}>
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+                Berlaku 30 menit
+              </div>
+            </div>
+
+            <button className={styles.btnCopy} onClick={handleCopyCode}>
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
+                <rect x="9" y="9" width="13" height="13" rx="2" />
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+              </svg>
               {copied ? 'Tersalin!' : 'Salin Kode'}
             </button>
-            <button className={styles.btnPrimary} onClick={handleRecoverySaved}>
-              Sudah Disimpan →
+          </>
+        ) : (
+          <div className={styles.codeCardEmpty}>
+            {loading ? (
+              <div className={styles.loadingDots}>
+                <span />
+                <span />
+                <span />
+              </div>
+            ) : noProfileYet ? (
+              <>
+                <div className={styles.gateText}>
+                  Amankan datamu dulu sebelum ajak pasangan. Buka Amankan Data untuk simpan ke
+                  cloud.
+                </div>
+                <button className={styles.btnPrimary} onClick={() => navigate('/berbagi-keamanan')}>
+                  Amankan Data
+                </button>
+              </>
+            ) : error ? (
+              <>
+                <div className={styles.errorText}>{error}</div>
+                <button className={styles.btnSecondary} onClick={loadCode}>
+                  Coba Lagi
+                </button>
+              </>
+            ) : null}
+          </div>
+        )}
+
+        {joinCode && (
+          <div className={styles.bottomActions}>
+            <button className={styles.btnPrimary} onClick={() => setShareSheetOpen(true)}>
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+              </svg>
+              Bagikan via WhatsApp
+            </button>
+            <button className={styles.btnGhost} onClick={loadCode} disabled={loading}>
+              Buat Kode Baru
             </button>
           </div>
-        </div>
-      )}
-
-      {step === 'code' && (
-        <div className={styles.codeWrap}>
-          <div className={styles.desc}>
-            Minta pasanganmu buka SISA dan pilih <strong>&ldquo;Gabung dengan Kode&rdquo;</strong>,
-            lalu masukkan kode ini.
-          </div>
-
-          {joinCode ? (
-            <>
-              <div className={styles.codeCard}>
-                <div className={styles.codeLabelSmall}>KODE RUMAH KAMU</div>
-                <div className={styles.codePrefix}>RUMAH</div>
-                <div className={styles.codeChars}>{formatCode(joinCode.code)}</div>
-                <div className={styles.codeTtl}>
-                  <svg
-                    width="13"
-                    height="13"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                  >
-                    <circle cx="12" cy="12" r="10" />
-                    <polyline points="12 6 12 12 16 14" />
-                  </svg>
-                  Berlaku 30 menit
-                </div>
-              </div>
-
-              <button className={styles.btnCopy} onClick={handleCopyCode}>
-                <svg
-                  width="15"
-                  height="15"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                >
-                  <rect x="9" y="9" width="13" height="13" rx="2" />
-                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                </svg>
-                {copied ? 'Tersalin!' : 'Salin Kode'}
-              </button>
-            </>
-          ) : (
-            <div className={styles.codeCardEmpty}>
-              {loading ? (
-                <div className={styles.loadingDots}>
-                  <span />
-                  <span />
-                  <span />
-                </div>
-              ) : needsInit ? (
-                <button className={styles.btnPrimary} onClick={handleStart}>
-                  Mulai
-                </button>
-              ) : error ? (
-                <>
-                  <div className={styles.errorText}>{error}</div>
-                  <button className={styles.btnSecondary} onClick={loadCode}>
-                    Coba Lagi
-                  </button>
-                </>
-              ) : null}
-            </div>
-          )}
-
-          {joinCode && (
-            <div className={styles.bottomActions}>
-              <button className={styles.btnPrimary} onClick={() => setShareSheetOpen(true)}>
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                >
-                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                </svg>
-                Bagikan via WhatsApp
-              </button>
-              <button className={styles.btnGhost} onClick={loadCode} disabled={loading}>
-                Buat Kode Baru
-              </button>
-            </div>
-          )}
-        </div>
-      )}
+        )}
+      </div>
 
       {/* WhatsApp share bottom sheet */}
       <BottomSheet
