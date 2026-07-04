@@ -338,7 +338,6 @@ export type StringKey =
   | 'wallets.total_label'
   | 'wallets.total_label_fallback'
   | 'wallets.fallback_note'
-  | 'wallets.rate_unavailable'
   | 'wallets.collapse'
   // push notification permission prompt
   | 'push.ask_title'
@@ -992,7 +991,6 @@ const id: StringDictionary = {
   'wallets.total_label': 'total kekayaan',
   'wallets.total_label_fallback': 'total kekayaan ({currency})',
   'wallets.fallback_note': '{currencies} tidak termasuk · kurs belum tersedia',
-  'wallets.rate_unavailable': 'kurs belum tersedia',
   'wallets.collapse': 'Sembunyikan',
 
   'push.ask_title': 'Ingatkan saat jatuh tempo?',
@@ -1653,7 +1651,6 @@ const en: StringDictionary = {
   'wallets.total_label': 'total wealth',
   'wallets.total_label_fallback': 'total wealth ({currency})',
   'wallets.fallback_note': '{currencies} not included · rate unavailable',
-  'wallets.rate_unavailable': 'rate unavailable',
   'wallets.collapse': 'Hide',
 
   'push.ask_title': 'Get reminded before due dates?',

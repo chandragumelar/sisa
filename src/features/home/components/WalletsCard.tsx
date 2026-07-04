@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { Wallet } from '@/db/database'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
-import { convert, getRateAsOf, formatRateDate, refreshRatesIfStale } from '@/shared/utils/fx'
+import { convert, getRateAsOf, refreshRatesIfStale } from '@/shared/utils/fx'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
 import styles from './WalletsCard.module.css'
@@ -257,33 +257,16 @@ export function WalletsCard({ wallets, primaryCurrency, onWalletTap, onAddWallet
         )}
       </div>
       <div className={styles.divider} />
-      {visibleWallets.map((w, i) => {
-        const isForeign = w.currency !== primaryCurrency
-        const row = isForeign ? rows.find((r) => r.currency === w.currency) : null
-        return (
-          <button key={w.id} className={styles.wRow} onClick={() => onWalletTap(w)}>
-            <span
-              className={styles.dot}
-              style={{ background: WALLET_DOTS[i % WALLET_DOTS.length] }}
-            />
-            <span className={styles.wName}>{w.name}</span>
-            {isForeign ? (
-              <div className={styles.wRight}>
-                <span className={styles.wAmtNative}>{formatCurrency(w.balance, w.currency)}</span>
-                {row == null ? null : row.equivInPrimary !== null ? (
-                  <span className={styles.wAmtEquiv}>
-                    {`≈ ${formatCurrency(row.equivInPrimary, primaryCurrency)}${row.fetchedAt !== null ? ` · ${formatRateDate(row.fetchedAt)}` : ''}`}
-                  </span>
-                ) : (
-                  <span className={styles.wAmtUnavail}>{t('wallets.rate_unavailable', lang)}</span>
-                )}
-              </div>
-            ) : (
-              <span className={styles.wAmt}>{formatCurrency(w.balance, w.currency)}</span>
-            )}
-          </button>
-        )
-      })}
+      {visibleWallets.map((w, i) => (
+        <button key={w.id} className={styles.wRow} onClick={() => onWalletTap(w)}>
+          <span
+            className={styles.dot}
+            style={{ background: WALLET_DOTS[i % WALLET_DOTS.length] }}
+          />
+          <span className={styles.wName}>{w.name}</span>
+          <span className={styles.wAmt}>{formatCurrency(w.balance, w.currency)}</span>
+        </button>
+      ))}
       {hiddenCount > 0 && (
         <button className={styles.moreRow} onClick={() => setExpanded((v) => !v)}>
           <span className={styles.moreLbl}>
