@@ -1185,8 +1185,8 @@ const id: StringDictionary = {
   'settings.currency_warning_title': 'Ganti mata uang utama',
   'settings.currency_warning_body':
     'Mengubah mata uang utama tidak mengubah angka yang sudah tersimpan. Rp 50.000 akan menjadi $50.000, bukan dikonversi.',
-  'settings.section_sharing_label': 'berbagi & keamanan',
-  'settings.section_sharing': 'Berbagi & Keamanan',
+  'settings.section_sharing_label': 'akun & data',
+  'settings.section_sharing': 'Akun & Data',
   'settings.row_sharing_connected': 'Terhubung • data aman',
   'settings.row_sharing_solo': 'Amankan data & ajak pasangan',
   'settings.row_recover': 'Pulihkan Profil Lama',
@@ -1858,8 +1858,8 @@ const en: StringDictionary = {
   'settings.currency_warning_title': 'Change main currency',
   'settings.currency_warning_body':
     "Changing your main currency won't convert saved amounts. Rp 50,000 becomes $50,000, not converted.",
-  'settings.section_sharing_label': 'sharing & security',
-  'settings.section_sharing': 'Sharing & Security',
+  'settings.section_sharing_label': 'account & data',
+  'settings.section_sharing': 'Account & Data',
   'settings.row_sharing_connected': 'Connected • data safe',
   'settings.row_sharing_solo': 'Secure data & invite partner',
   'settings.row_recover': 'Recover Old Profile',

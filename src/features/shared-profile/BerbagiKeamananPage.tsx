@@ -94,7 +94,7 @@ export function BerbagiKeamananPage() {
             <polyline points="15 18 9 12 15 6" />
           </svg>
         </button>
-        <div className={styles.title}>Berbagi &amp; Keamanan</div>
+        <div className={styles.title}>Akun &amp; Data</div>
       </div>
 
       {hasProfile && hasPartner && (
