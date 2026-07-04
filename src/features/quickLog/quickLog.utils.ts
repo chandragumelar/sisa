@@ -9,6 +9,7 @@ export interface QuickLogInput {
   amount: number
   label: string
   dateMs: number
+  nowMs: number
   currency: string
   category: string
 }
@@ -23,7 +24,7 @@ export function buildKeluar(input: QuickLogInput): Omit<Transaction, 'id'> {
     date: input.dateMs,
     isFromSavings: false,
     isEarmark: false,
-    createdAt: Date.now(),
+    createdAt: input.nowMs,
     category: input.category || FALLBACK_CATEGORY,
   }
 }
@@ -38,7 +39,7 @@ export function buildMasuk(input: QuickLogInput): Omit<Transaction, 'id'> {
     date: input.dateMs,
     isFromSavings: false,
     isEarmark: false,
-    createdAt: Date.now(),
+    createdAt: input.nowMs,
     category: input.category || FALLBACK_CATEGORY,
   }
 }
