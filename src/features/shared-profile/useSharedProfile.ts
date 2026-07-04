@@ -18,6 +18,7 @@ import {
 } from '@/lib/supabase/api'
 import { collectSnapshot, applySnapshot } from '@/db/snapshot.repository'
 import { useClock } from '@/app/providers/useClock'
+import { snapshotHash, snapshotHashKey } from './snapshotHash'
 import type { JoinCode } from '@/lib/supabase/types'
 import type { SharedProfileState } from './shared-profile.types'
 import { INITIAL_STATE } from './shared-profile.types'
@@ -155,10 +156,13 @@ export function useSharedProfile(): UseSharedProfileReturn {
       const rawCode = generateRecoveryCode()
       const result = await apiCreateProfile(name, displayName, rawCode)
       if (result.ok && state.anonymousId) {
-        // TODO: auto-upload on every local write (PR-X) — for now upload only on create
+        // auto-upload via useSnapshotAutoUpload on visibility/interval; hash synced here
+        // so auto-upload skips duplicate immediately after create
         try {
           const snap = await collectSnapshot(Date.now())
           await uploadSnapshot(result.profile_id, state.anonymousId, snap)
+          const json = JSON.stringify(snap)
+          localStorage.setItem(snapshotHashKey(result.profile_id), snapshotHash(json))
         } catch {
           /* upload failure does not fail profile creation — recovery code still valid */
         }
@@ -210,7 +214,11 @@ export function useSharedProfile(): UseSharedProfileReturn {
       if (result.ok && state.anonymousId) {
         await refresh(state.anonymousId)
         const snap = await downloadSnapshot(result.profile_id)
-        if (snap) await applySnapshot(snap, clock)
+        if (snap) {
+          await applySnapshot(snap, clock)
+          const json = JSON.stringify(snap)
+          localStorage.setItem(snapshotHashKey(result.profile_id), snapshotHash(json))
+        }
       }
       return result
     },
