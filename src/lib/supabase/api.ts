@@ -345,6 +345,21 @@ export async function updateSharedSettings(
 }
 
 // ---------------------------------------------------------------
+// Regenerate recovery code
+// ---------------------------------------------------------------
+
+export async function regenerateRecoveryCode(
+  rawRecoveryCode: string,
+): Promise<{ ok?: true; error?: string }> {
+  const codeHash = await hashRecoveryCode(rawRecoveryCode)
+  const { data, error } = await supabase.rpc('regenerate_recovery_code', {
+    p_recovery_code_hash: codeHash,
+  })
+  if (error) return { error: 'REGENERATE_FAILED' }
+  return data as { ok?: true; error?: string }
+}
+
+// ---------------------------------------------------------------
 // Disconnect — remove this device from the shared profile
 // ---------------------------------------------------------------
 

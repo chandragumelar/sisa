@@ -317,3 +317,57 @@
   text-align: center;
   width: 100%;
 }
+
+.btnPrimary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Regenerate recovery code ──────────────────── */
+.regenTriggerBtn {
+  background: none;
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-secondary);
+  cursor: pointer;
+  padding: 4px 0;
+  text-align: left;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.regenCodeBox {
+  background: var(--surface-2);
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.regenCodeLabel {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--ink-tertiary);
+  text-transform: uppercase;
+}
+
+.regenCodeValue {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink-primary);
+  letter-spacing: 0.05em;
+  word-break: break-all;
+}
+
+.regenErrorText {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--signal-danger);
+  line-height: 1.4;
+}

@@ -12,6 +12,7 @@ import {
   recoverProfile as apiRecoverProfile,
   disconnectDevice,
   generateRecoveryCode,
+  regenerateRecoveryCode as apiRegenerateRecoveryCode,
 } from '@/lib/supabase/api'
 import type { JoinCode } from '@/lib/supabase/types'
 import type { SharedProfileState } from './shared-profile.types'
@@ -39,6 +40,8 @@ type UseSharedProfileReturn = SharedProfileState & {
     name: string,
     displayName: string,
   ) => Promise<CreateProfileResult & { recoveryCode?: string }>
+  /** Invalidate existing recovery codes and generate a fresh one. Returns raw code on success. */
+  regenerateRecovery: () => Promise<{ raw: string } | { error: string }>
 }
 
 export function useSharedProfile(): UseSharedProfileReturn {
@@ -250,6 +253,13 @@ export function useSharedProfile(): UseSharedProfileReturn {
     })
   }, [state.anonymousId, updateState])
 
+  const regenerateRecovery = useCallback(async (): Promise<{ raw: string } | { error: string }> => {
+    const raw = generateRecoveryCode()
+    const result = await apiRegenerateRecoveryCode(raw)
+    if (result.ok) return { raw }
+    return { error: result.error ?? 'REGENERATE_FAILED' }
+  }, [])
+
   return {
     ...state,
     createProfile,
@@ -258,5 +268,6 @@ export function useSharedProfile(): UseSharedProfileReturn {
     joinWithCode,
     recover,
     disconnect,
+    regenerateRecovery,
   }
 }
