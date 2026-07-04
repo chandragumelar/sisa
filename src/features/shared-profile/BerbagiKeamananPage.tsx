@@ -5,7 +5,7 @@ import styles from './BerbagiKeamananPage.module.css'
 
 export function BerbagiKeamananPage() {
   const navigate = useNavigate()
-  const { status, profile, members, anonymousId, disconnect, regenerateRecovery } =
+  const { status, profile, members, anonymousId, disconnect, regenerateRecovery, createProfile } =
     useSharedProfileCtx()
   const [disconnecting, setDisconnecting] = useState(false)
   const [confirmDisconnect, setConfirmDisconnect] = useState(false)
@@ -15,6 +15,9 @@ export function BerbagiKeamananPage() {
   const [regenCode, setRegenCode] = useState<string | null>(null)
   const [regenError, setRegenError] = useState<string | null>(null)
   const [regenCopied, setRegenCopied] = useState(false)
+
+  const [securing, setSecuring] = useState(false)
+  const [secureError, setSecureError] = useState<string | null>(null)
 
   async function handleDisconnect() {
     setDisconnecting(true)
@@ -47,6 +50,19 @@ export function BerbagiKeamananPage() {
       setRegenCopied(true)
       setTimeout(() => setRegenCopied(false), 2000)
     })
+  }
+
+  async function handleAmankanData() {
+    setSecuring(true)
+    setSecureError(null)
+    const result = await createProfile('Rumah Kita', 'Pengguna')
+    setSecuring(false)
+    if (result.ok && result.recoveryCode) {
+      setRegenCode(result.recoveryCode)
+      setShowRegenConfirm(true)
+    } else {
+      setSecureError('Gagal mengamankan data. Coba lagi.')
+    }
   }
 
   if (status === 'loading') return null
@@ -260,10 +276,14 @@ export function BerbagiKeamananPage() {
           </div>
           <div className={styles.soloTitle}>Belum terhubung</div>
           <div className={styles.soloDesc}>
-            Ajak pasangan untuk kelola keuangan bersama, atau pulihkan profil lama di perangkat
-            baru.
+            Amankan datamu ke cloud biar nggak hilang saat ganti HP. Nanti kamu juga bisa ajak
+            pasangan kalau mau.
           </div>
-          <button className={styles.btnPrimary} onClick={() => navigate('/ajak-pasangan')}>
+          <button className={styles.btnPrimary} onClick={handleAmankanData} disabled={securing}>
+            {securing ? 'Mengamankan…' : 'Amankan Data'}
+          </button>
+          {secureError && <div className={styles.regenErrorText}>{secureError}</div>}
+          <button className={styles.btnSecondary} onClick={() => navigate('/ajak-pasangan')}>
             Ajak Pasangan
           </button>
           <button className={styles.btnSecondary} onClick={() => navigate('/gabung-kode')}>
