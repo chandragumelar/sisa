@@ -561,6 +561,8 @@ export type StringKey =
   | 'home.sisa_uang_jatah_note'
   | 'home.insight_teaser_generic'
   | 'home.insight_net_sub'
+  | 'home.insight_eq_income'
+  | 'home.insight_eq_expense'
   | 'home.insight_card_label'
   | 'home.insight_card_label_dynamic'
   | 'home.insight_card_cta'
@@ -1231,6 +1233,8 @@ const id: StringDictionary = {
     'Jatah harian dihitung dari angka ini dibagi sisa hari sampai gajian.',
   'home.insight_teaser_generic': 'Catatan pertamamu bakal muncul jadi pola di sini',
   'home.insight_net_sub': 'net bulan ini',
+  'home.insight_eq_income': 'Pemasukan',
+  'home.insight_eq_expense': 'Pengeluaran',
   'home.insight_card_label': 'INSIGHT',
   'home.insight_card_label_dynamic': 'POLA {cur}MU',
   'home.insight_card_cta': 'Lihat Pola →',
@@ -1898,6 +1902,8 @@ const en: StringDictionary = {
     'Your daily budget is calculated from this divided by days remaining until payday.',
   'home.insight_teaser_generic': 'Your first entries will show up as insights here',
   'home.insight_net_sub': 'net this month',
+  'home.insight_eq_income': 'Income',
+  'home.insight_eq_expense': 'Expense',
   'home.insight_card_label': 'INSIGHTS',
   'home.insight_card_label_dynamic': 'YOUR {cur} INSIGHTS',
   'home.insight_card_cta': 'View Insights →',
