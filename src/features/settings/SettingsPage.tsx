@@ -255,7 +255,7 @@ export function SettingsPage() {
           </span>
         </button>
         <div className={styles.divider} />
-        <button className={styles.actionRow} onClick={() => navigate('/berbagi-keamanan')}>
+        <button className={styles.actionRow} onClick={() => navigate('/kode-pemulihan')}>
           <span className={styles.rowLabel}>
             {hasProfile ? t('settings.row_recovery', lang) : t('settings.row_secure', lang)}
           </span>
