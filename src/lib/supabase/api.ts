@@ -5,15 +5,7 @@
 // ============================================================
 
 import { supabase } from './client'
-import type {
-  CreateProfileResult,
-  ValidateJoinCodeResult,
-  RedeemJoinCodeResult,
-  RecoverProfileResult,
-  Profile,
-  ProfileMember,
-  JoinCode,
-} from './types'
+import type { CreateProfileResult, RecoverProfileResult, Profile } from './types'
 
 // ---------------------------------------------------------------
 // Auth — anonymous session
@@ -65,20 +57,6 @@ export async function hashRecoveryCode(rawCode: string): Promise<string> {
 }
 
 // ---------------------------------------------------------------
-// Join code helpers
-// ---------------------------------------------------------------
-
-const JOIN_CHARSET = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ'
-const JOIN_CODE_TTL_MS = 30 * 60 * 1000 // 30 minutes
-
-/** Generate a join code suffix, e.g. "7X4K". 4 chars from unambiguous charset. */
-export function generateJoinCodeSuffix(): string {
-  return Array.from(crypto.getRandomValues(new Uint8Array(4)))
-    .map((b) => JOIN_CHARSET[b % JOIN_CHARSET.length])
-    .join('')
-}
-
-// ---------------------------------------------------------------
 // Profile RPCs
 // ---------------------------------------------------------------
 
@@ -101,26 +79,6 @@ export async function createProfile(
   return data as CreateProfileResult
 }
 
-/** Validate a join code and return profile preview (name). Does NOT join. */
-export async function validateJoinCode(code: string): Promise<ValidateJoinCodeResult> {
-  const { data, error } = await supabase.rpc('validate_join_code', { p_code: code })
-  if (error) return { ok: undefined, error: 'CODE_NOT_FOUND' }
-  return data as ValidateJoinCodeResult
-}
-
-/** Redeem a join code — links this device to the target profile. */
-export async function redeemJoinCode(
-  code: string,
-  displayName: string,
-): Promise<RedeemJoinCodeResult> {
-  const { data, error } = await supabase.rpc('redeem_join_code', {
-    p_code: code,
-    p_display_name: displayName,
-  })
-  if (error) return { ok: undefined, error: 'CODE_NOT_FOUND' }
-  return data as RedeemJoinCodeResult
-}
-
 /**
  * Recover profile on a new device using raw recovery code.
  * Pass the raw code — this function hashes it before sending.
@@ -139,51 +97,12 @@ export async function recoverProfile(
 }
 
 // ---------------------------------------------------------------
-// Join code management
-// ---------------------------------------------------------------
-
-/**
- * Create a new join code for the given profile.
- * Returns the created JoinCode row.
- */
-export async function createJoinCode(
-  profileId: string,
-  anonymousId: string,
-  options: { ttlMs?: number; isSingleUse?: boolean } = {},
-): Promise<JoinCode | null> {
-  const { ttlMs = JOIN_CODE_TTL_MS, isSingleUse = true } = options
-  const suffix = generateJoinCodeSuffix()
-  const code = `RUMAH-${suffix}`
-  const expiresAt = new Date(Date.now() + ttlMs).toISOString()
-
-  const { data, error } = await supabase
-    .from('join_codes')
-    .insert({
-      profile_id: profileId,
-      code,
-      created_by: anonymousId,
-      expires_at: expiresAt,
-      is_single_use: isSingleUse,
-    })
-    .select()
-    .single()
-
-  if (error) return null // handle UNIQUE conflict by retrying with new suffix at call site
-  return data as JoinCode
-}
-
-// ---------------------------------------------------------------
 // Profile read
 // ---------------------------------------------------------------
 
 export async function getProfile(profileId: string): Promise<Profile | null> {
   const { data } = await supabase.from('profiles').select('*').eq('id', profileId).single()
   return (data as Profile) ?? null
-}
-
-export async function getProfileMembers(profileId: string): Promise<ProfileMember[]> {
-  const { data } = await supabase.from('profile_members').select('*').eq('profile_id', profileId)
-  return (data as ProfileMember[]) ?? []
 }
 
 /** Look up which profileId this device belongs to (null = solo). */
@@ -209,15 +128,6 @@ export async function regenerateRecoveryCode(
   })
   if (error) return { error: 'REGENERATE_FAILED' }
   return data as { ok?: true; error?: string }
-}
-
-// ---------------------------------------------------------------
-// Disconnect — remove this device from the shared profile
-// ---------------------------------------------------------------
-
-export async function disconnectDevice(anonymousId: string): Promise<boolean> {
-  const { error } = await supabase.from('profile_members').delete().eq('anonymous_id', anonymousId)
-  return !error
 }
 
 // ---------------------------------------------------------------
