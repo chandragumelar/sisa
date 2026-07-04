@@ -61,7 +61,7 @@ export function SaldoModule({
               <button
                 className={styles.tooltipBtn}
                 onClick={() => setTooltipOpen(true)}
-                aria-label="Info sisa uang"
+                aria-label={t('a11y.info_sisa', lang)}
               >
                 <svg
                   width="13"

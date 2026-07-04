@@ -270,6 +270,17 @@ export type StringKey =
   | 'backup.guide_btn'
   | 'backup.guide_title'
   | 'backup.guide_got_it'
+  | 'backup.guide_s1a'
+  | 'backup.guide_s1_strong'
+  | 'backup.guide_s1b'
+  | 'backup.guide_s2a'
+  | 'backup.guide_s2_strong'
+  | 'backup.guide_s2b'
+  | 'backup.guide_s3'
+  | 'a11y.info_sisa'
+  | 'a11y.info_jatah'
+  | 'a11y.add_wallet'
+  | 'a11y.settings'
   // footer catatan
   | 'footer.last_recorded'
   | 'footer.minutes_ago'
@@ -992,6 +1003,18 @@ const id: StringDictionary = {
   'backup.guide_btn': 'Cara backup ›',
   'backup.guide_title': 'Cara backup data SISA',
   'backup.guide_got_it': 'Oke, ngerti',
+  'backup.guide_s1a': 'Buka',
+  'backup.guide_s1_strong': 'Pengaturan → Backup & Ekspor',
+  'backup.guide_s1b': 'di menu bawah.',
+  'backup.guide_s2a': 'Ketuk',
+  'backup.guide_s2_strong': 'Ekspor data',
+  'backup.guide_s2b': '— file .json akan tersimpan ke perangkat lo.',
+  'backup.guide_s3':
+    'Simpan file itu di Google Drive, iCloud, atau mana saja yang lo percaya. Kalau ganti HP, impor lagi dari sana.',
+  'a11y.info_sisa': 'Info sisa uang',
+  'a11y.info_jatah': 'Info jatah harian',
+  'a11y.add_wallet': 'Tambah dompet',
+  'a11y.settings': 'Pengaturan',
 
   'footer.last_recorded': 'terakhir dicatat:',
   'footer.minutes_ago': '{n} menit lalu',
@@ -1725,6 +1748,18 @@ const en: StringDictionary = {
   'backup.guide_btn': 'How to back up ›',
   'backup.guide_title': 'How to back up SISA data',
   'backup.guide_got_it': 'Got it',
+  'backup.guide_s1a': 'Open',
+  'backup.guide_s1_strong': 'Settings → Data & Backup',
+  'backup.guide_s1b': 'from the bottom menu.',
+  'backup.guide_s2a': 'Tap',
+  'backup.guide_s2_strong': 'Export backup',
+  'backup.guide_s2b': '— a .json file will be saved to your device.',
+  'backup.guide_s3':
+    'Store it in Google Drive, iCloud, or anywhere you trust. If you switch phones, import it from there.',
+  'a11y.info_sisa': 'Balance info',
+  'a11y.info_jatah': 'Daily budget info',
+  'a11y.add_wallet': 'Add wallet',
+  'a11y.settings': 'Settings',
 
   'footer.last_recorded': 'last recorded:',
   'footer.minutes_ago': '{n} min ago',

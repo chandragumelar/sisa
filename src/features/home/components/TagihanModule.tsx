@@ -81,7 +81,7 @@ export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap, on
         <div className={styles.headerLeft}>
           <span className={styles.label}>{t('tagihan_module.title', lang)}</span>
         </div>
-        <button className={styles.addBtn} onClick={onAddTap} aria-label="Tambah tagihan">
+        <button className={styles.addBtn} onClick={onAddTap} aria-label={t('ob.tagihan.add', lang)}>
           <svg
             width="14"
             height="14"

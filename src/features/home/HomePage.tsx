@@ -432,7 +432,7 @@ export function HomePage() {
             <button
               className={styles.settingsBtn}
               onClick={() => navigate('/settings')}
-              aria-label="Pengaturan"
+              aria-label={t('a11y.settings', lang)}
             >
               <svg
                 width="14"

@@ -34,7 +34,7 @@ export function JatahHarianCard({ jatahHariIni, spentToday, sisaUang, sisaHari, 
             <button
               className={styles.tooltipBtn}
               onClick={() => setTooltipOpen(true)}
-              aria-label="Info jatah harian"
+              aria-label={t('a11y.info_jatah', lang)}
             >
               <svg
                 width="13"

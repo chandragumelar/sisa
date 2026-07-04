@@ -176,7 +176,11 @@ export function WalletsCard({ wallets, primaryCurrency, onWalletTap, onAddWallet
       <div className={styles.head}>
         <div className={styles.headRow}>
           <span className={styles.modLabel}>{t('home.dompet', lang)}</span>
-          <button className={styles.addBtn} onClick={onAddWallet} aria-label="Tambah dompet">
+          <button
+            className={styles.addBtn}
+            onClick={onAddWallet}
+            aria-label={t('a11y.add_wallet', lang)}
+          >
             <svg
               width="14"
               height="14"
