@@ -34,6 +34,9 @@ export type StringKey =
   | 'pair.disconnect_confirm_desc'
   | 'pair.disconnect_yes'
   | 'pair.disconnecting'
+  | 'pair.share_wa'
+  | 'cat.manage_title'
+  | 'cat.new_placeholder'
   | 'recovery.title_secure'
   | 'recovery.title_regen'
   | 'recovery.secure_title'
@@ -748,6 +751,9 @@ const id: StringDictionary = {
     'Perangkat ini akan keluar dari profil bersama. Data yang sudah ada tidak hilang, tapi tidak akan sync lagi.',
   'pair.disconnect_yes': 'Ya, Putuskan',
   'pair.disconnecting': 'Memutuskan...',
+  'pair.share_wa': 'Bagikan via WhatsApp',
+  'cat.manage_title': 'Kelola Kategori',
+  'cat.new_placeholder': 'Nama kategori baru',
 
   'recovery.title_secure': 'Amankan Data',
   'recovery.title_regen': 'Kode Pemulihan',
@@ -1497,6 +1503,9 @@ const en: StringDictionary = {
     'This device will leave the shared profile. Existing data stays, but it will no longer sync.',
   'pair.disconnect_yes': 'Yes, Disconnect',
   'pair.disconnecting': 'Disconnecting...',
+  'pair.share_wa': 'Share via WhatsApp',
+  'cat.manage_title': 'Manage Categories',
+  'cat.new_placeholder': 'New category name',
 
   'recovery.title_secure': 'Secure Data',
   'recovery.title_regen': 'Recovery Code',
