@@ -120,42 +120,6 @@ export function useSharedProfile(): UseSharedProfileReturn {
         {
           event: '*',
           schema: 'public',
-          table: 'profile_wallets',
-          filter: `profile_id=eq.${state.profileId}`,
-        },
-        () => {
-          /* sync handler wired in useSyncSharedData */
-        },
-      )
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'profile_tagihan',
-          filter: `profile_id=eq.${state.profileId}`,
-        },
-        () => {
-          /* sync handler wired in useSyncSharedData */
-        },
-      )
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'profile_goals',
-          filter: `profile_id=eq.${state.profileId}`,
-        },
-        () => {
-          /* sync handler wired in useSyncSharedData */
-        },
-      )
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
           table: 'profile_members',
           filter: `profile_id=eq.${state.profileId}`,
         },
