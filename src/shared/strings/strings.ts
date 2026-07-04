@@ -557,7 +557,8 @@ export type StringKey =
   | 'alokasi.mengendap_auto'
   // home — new allocation model strings
   | 'home.sisa_uang'
-  | 'home.sisa_uang_tooltip'
+  | 'home.sisa_uang_intro'
+  | 'home.sisa_uang_jatah_note'
   | 'home.insight_teaser_generic'
   | 'home.insight_net_sub'
   | 'home.insight_card_label'
@@ -1225,8 +1226,9 @@ const id: StringDictionary = {
   'alokasi.mengendap_auto': 'OTOMATIS',
 
   'home.sisa_uang': 'SISA UANGMU',
-  'home.sisa_uang_tooltip':
-    'Ini uang yang aman kamu pakai sampai gajian berikutnya.\n\nHitungannya:\nTotal saldo semua wallet\n− Tagihan yang belum dibayar\n− Uang Mengendap (yang sengaja kamu diamkan, bukan buat dipakai)\n= Sisa uangmu\n\nJatah harian dihitung dari angka ini dibagi sisa hari sampai gajian.',
+  'home.sisa_uang_intro': 'Ini uang yang aman kamu pakai sampai gajian berikutnya.',
+  'home.sisa_uang_jatah_note':
+    'Jatah harian dihitung dari angka ini dibagi sisa hari sampai gajian.',
   'home.insight_teaser_generic': 'Catatan pertamamu bakal muncul jadi pola di sini',
   'home.insight_net_sub': 'net bulan ini',
   'home.insight_card_label': 'INSIGHT',
@@ -1891,8 +1893,9 @@ const en: StringDictionary = {
   'alokasi.mengendap_auto': 'AUTO',
 
   'home.sisa_uang': 'YOUR MONEY LEFT',
-  'home.sisa_uang_tooltip':
-    "This is the money that's safe to spend until your next payday.\n\nHow it's calculated:\nTotal balance across all wallets\n− Unpaid bills\n− Parked Money (money you set aside, not for spending)\n= Your money left\n\nYour daily budget comes from this divided by days remaining until payday.",
+  'home.sisa_uang_intro': "This is the money that's safe to spend until your next payday.",
+  'home.sisa_uang_jatah_note':
+    'Your daily budget is calculated from this divided by days remaining until payday.',
   'home.insight_teaser_generic': 'Your first entries will show up as insights here',
   'home.insight_net_sub': 'net this month',
   'home.insight_card_label': 'INSIGHTS',
