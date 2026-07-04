@@ -15,26 +15,6 @@ export type StringKey =
   | 'common.saving'
   | 'common.day'
   | 'common.days'
-  // pair hub
-  | 'pair.title'
-  | 'pair.desc'
-  | 'pair.invite'
-  | 'pair.join'
-  | 'pair.gate_title'
-  | 'pair.gate_desc'
-  | 'pair.gate_cta'
-  | 'pair.cloud_safe'
-  | 'pair.connected_label'
-  | 'pair.device_active'
-  | 'pair.this_device'
-  | 'pair.partner_device'
-  | 'pair.full_warning'
-  | 'pair.disconnect'
-  | 'pair.disconnect_confirm_title'
-  | 'pair.disconnect_confirm_desc'
-  | 'pair.disconnect_yes'
-  | 'pair.disconnecting'
-  | 'pair.share_wa'
   | 'cat.manage_title'
   | 'cat.new_placeholder'
   | 'recovery.title_secure'
@@ -576,9 +556,6 @@ export type StringKey =
   | 'settings.row_recover'
   | 'settings.row_recover_sub'
   | 'recover.no_code_hint'
-  | 'settings.row_pair'
-  | 'settings.row_pair_sub_solo'
-  | 'settings.row_pair_sub_connected'
   | 'settings.row_recovery'
   | 'settings.row_recovery_sub'
   | 'settings.row_secure'
@@ -734,27 +711,6 @@ const id: StringDictionary = {
   'common.day': 'hari',
   'common.days': 'hari',
 
-  'pair.title': 'Hubungkan Pasangan',
-  'pair.desc': 'Kelola keuangan bareng pasangan di satu profil.',
-  'pair.invite': 'Ajak Pasangan',
-  'pair.join': 'Gabung dengan Kode',
-  'pair.gate_title': 'Amankan datamu dulu',
-  'pair.gate_desc': 'Simpan datamu ke cloud sebelum ajak pasangan, biar aman & bisa disinkron.',
-  'pair.gate_cta': 'Amankan Data',
-  'pair.cloud_safe': 'Data aman di cloud',
-  'pair.connected_label': 'PROFIL TERHUBUNG',
-  'pair.device_active': '{n} perangkat aktif',
-  'pair.this_device': 'Perangkat ini',
-  'pair.partner_device': 'Perangkat partner',
-  'pair.full_warning':
-    'Maksimal {n} perangkat. Untuk menambah perangkat lain, putuskan salah satu dulu.',
-  'pair.disconnect': 'Putuskan koneksi...',
-  'pair.disconnect_confirm_title': 'Putuskan koneksi?',
-  'pair.disconnect_confirm_desc':
-    'Perangkat ini akan keluar dari profil bersama. Data yang sudah ada tidak hilang, tapi tidak akan sync lagi.',
-  'pair.disconnect_yes': 'Ya, Putuskan',
-  'pair.disconnecting': 'Memutuskan...',
-  'pair.share_wa': 'Bagikan via WhatsApp',
   'cat.manage_title': 'Kelola Kategori',
   'cat.new_placeholder': 'Nama kategori baru',
 
@@ -1327,9 +1283,6 @@ const id: StringDictionary = {
   'settings.row_recover_sub': 'Ganti HP? Masukkan kode pemulihan',
   'recover.no_code_hint':
     'Kode pemulihan hanya bisa dibuat ulang dari perangkat lama yang masih terhubung, lewat menu "Buat Ulang Kode Pemulihan".',
-  'settings.row_pair': 'Hubungkan Pasangan',
-  'settings.row_pair_sub_solo': 'Kelola keuangan bareng pasangan',
-  'settings.row_pair_sub_connected': 'Terhubung • kelola perangkat',
   'settings.row_recovery': 'Buat Ulang Kode Pemulihan',
   'settings.row_recovery_sub': 'Ganti kode lama dengan yang baru',
   'settings.row_secure': 'Amankan Data',
@@ -1489,27 +1442,6 @@ const en: StringDictionary = {
   'common.day': 'day',
   'common.days': 'days',
 
-  'pair.title': 'Link Partner',
-  'pair.desc': 'Manage finances together in one shared profile.',
-  'pair.invite': 'Invite Partner',
-  'pair.join': 'Join with Code',
-  'pair.gate_title': 'Secure your data first',
-  'pair.gate_desc':
-    'Back up to the cloud before inviting your partner, so it stays safe & in sync.',
-  'pair.gate_cta': 'Secure Data',
-  'pair.cloud_safe': 'Data safe in cloud',
-  'pair.connected_label': 'CONNECTED PROFILE',
-  'pair.device_active': '{n} active device(s)',
-  'pair.this_device': 'This device',
-  'pair.partner_device': "Partner's device",
-  'pair.full_warning': 'Max {n} devices. To add another, disconnect one first.',
-  'pair.disconnect': 'Disconnect...',
-  'pair.disconnect_confirm_title': 'Disconnect?',
-  'pair.disconnect_confirm_desc':
-    'This device will leave the shared profile. Existing data stays, but it will no longer sync.',
-  'pair.disconnect_yes': 'Yes, Disconnect',
-  'pair.disconnecting': 'Disconnecting...',
-  'pair.share_wa': 'Share via WhatsApp',
   'cat.manage_title': 'Manage Categories',
   'cat.new_placeholder': 'New category name',
 
@@ -2078,9 +2010,6 @@ const en: StringDictionary = {
   'settings.row_recover_sub': 'New phone? Enter recovery code',
   'recover.no_code_hint':
     'A recovery code can only be regenerated from your old device while it\'s still connected, via "Regenerate Recovery Code".',
-  'settings.row_pair': 'Link Partner',
-  'settings.row_pair_sub_solo': 'Manage finances together with your partner',
-  'settings.row_pair_sub_connected': 'Connected • manage devices',
   'settings.row_recovery': 'Regenerate Recovery Code',
   'settings.row_recovery_sub': 'Replace your old code with a new one',
   'settings.row_secure': 'Secure Data',
