@@ -2,24 +2,14 @@ import { createContext, useContext } from 'react'
 import { useSharedProfile } from './useSharedProfile'
 import { useSnapshotAutoUpload } from './useSnapshotAutoUpload'
 import type { SharedProfileState } from './shared-profile.types'
-import type {
-  ValidateJoinCodeResult,
-  RedeemJoinCodeResult,
-  RecoverProfileResult,
-  CreateProfileResult,
-} from '@/lib/supabase/types'
-import type { JoinCode } from '@/lib/supabase/types'
+import type { RecoverProfileResult, CreateProfileResult } from '@/lib/supabase/types'
 
 type SharedProfileCtx = SharedProfileState & {
-  generateCode: () => Promise<JoinCode | null>
-  previewCode: (code: string) => Promise<ValidateJoinCodeResult>
-  joinWithCode: (code: string, displayName: string) => Promise<RedeemJoinCodeResult>
-  recover: (rawCode: string, displayName: string) => Promise<RecoverProfileResult>
-  disconnect: () => Promise<void>
   createProfile: (
     name: string,
     displayName: string,
   ) => Promise<CreateProfileResult & { recoveryCode?: string }>
+  recover: (rawCode: string, displayName: string) => Promise<RecoverProfileResult>
   /** Invalidate existing recovery codes and generate a fresh one. Returns raw code on success. */
   regenerateRecovery: () => Promise<{ raw: string } | { error: string }>
 }
