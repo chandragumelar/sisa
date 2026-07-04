@@ -1,11 +1,5 @@
-// ============================================================
-// Supabase API contract for SISA Shared Profile
-// All functions return typed results; never throw — callers
-// check result.ok or result.error.
-// ============================================================
-
 import { supabase } from './client'
-import type { CreateProfileResult, RecoverProfileResult, Profile } from './types'
+import type { Tagihan } from '@/db/database'
 
 // ---------------------------------------------------------------
 // Auth — anonymous session
@@ -32,109 +26,8 @@ export async function getAnonymousId(): Promise<string | null> {
 }
 
 // ---------------------------------------------------------------
-// Recovery code helpers (browser-only, uses crypto.subtle)
-// ---------------------------------------------------------------
-
-const RECOVERY_CHARSET = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ'
-
-/** Generate a human-readable recovery code, e.g. "SISA-7X4K-2M9R-NP3V". */
-export function generateRecoveryCode(): string {
-  const segments = Array.from({ length: 4 }, () =>
-    Array.from(crypto.getRandomValues(new Uint8Array(4)))
-      .map((b) => RECOVERY_CHARSET[b % RECOVERY_CHARSET.length])
-      .join(''),
-  )
-  return `SISA-${segments.join('-')}`
-}
-
-/** Compute hex(sha256(rawCode)). Client sends only the hash to the server. */
-export async function hashRecoveryCode(rawCode: string): Promise<string> {
-  const data = new TextEncoder().encode(rawCode)
-  const buf = await crypto.subtle.digest('SHA-256', data)
-  return Array.from(new Uint8Array(buf))
-    .map((b) => b.toString(16).padStart(2, '0'))
-    .join('')
-}
-
-// ---------------------------------------------------------------
-// Profile RPCs
-// ---------------------------------------------------------------
-
-/**
- * Create a new shared profile for this device (becomes primary member).
- * Pass the raw recovery code — this function hashes it before sending.
- */
-export async function createProfile(
-  name: string,
-  displayName: string,
-  rawRecoveryCode: string,
-): Promise<CreateProfileResult> {
-  const codeHash = await hashRecoveryCode(rawRecoveryCode)
-  const { data, error } = await supabase.rpc('create_profile', {
-    p_name: name,
-    p_display_name: displayName,
-    p_recovery_code_hash: codeHash,
-  })
-  if (error) return { ok: undefined, error: 'ALREADY_IN_PROFILE' }
-  return data as CreateProfileResult
-}
-
-/**
- * Recover profile on a new device using raw recovery code.
- * Pass the raw code — this function hashes it before sending.
- */
-export async function recoverProfile(
-  rawRecoveryCode: string,
-  displayName: string,
-): Promise<RecoverProfileResult> {
-  const codeHash = await hashRecoveryCode(rawRecoveryCode)
-  const { data, error } = await supabase.rpc('recover_profile', {
-    p_code_hash: codeHash,
-    p_display_name: displayName,
-  })
-  if (error) return { ok: undefined, error: 'RECOVERY_CODE_INVALID' }
-  return data as RecoverProfileResult
-}
-
-// ---------------------------------------------------------------
-// Profile read
-// ---------------------------------------------------------------
-
-export async function getProfile(profileId: string): Promise<Profile | null> {
-  const { data } = await supabase.from('profiles').select('*').eq('id', profileId).single()
-  return (data as Profile) ?? null
-}
-
-/** Look up which profileId this device belongs to (null = solo). */
-export async function getMyProfileId(anonymousId: string): Promise<string | null> {
-  const { data } = await supabase
-    .from('profile_members')
-    .select('profile_id')
-    .eq('anonymous_id', anonymousId)
-    .single()
-  return data?.profile_id ?? null
-}
-
-// ---------------------------------------------------------------
-// Regenerate recovery code
-// ---------------------------------------------------------------
-
-export async function regenerateRecoveryCode(
-  rawRecoveryCode: string,
-): Promise<{ ok?: true; error?: string }> {
-  const codeHash = await hashRecoveryCode(rawRecoveryCode)
-  const { data, error } = await supabase.rpc('regenerate_recovery_code', {
-    p_recovery_code_hash: codeHash,
-  })
-  if (error) return { error: 'REGENERATE_FAILED' }
-  return data as { ok?: true; error?: string }
-}
-
-// ---------------------------------------------------------------
 // Tagihan reminder sync
 // ---------------------------------------------------------------
-
-import type { Tagihan, SnapshotData } from '@/db/database'
 
 /** Upsert one tagihan to server for reminder scheduling. No-op if no session or id missing. */
 export async function syncTagihanReminder(tagihan: Tagihan): Promise<void> {
@@ -151,35 +44,6 @@ export async function syncTagihanReminder(tagihan: Tagihan): Promise<void> {
     is_active: tagihan.isActive,
     updated_at: new Date().toISOString(),
   })
-}
-
-// ---------------------------------------------------------------
-// Profile snapshot — upload / download
-// ---------------------------------------------------------------
-
-/** Upsert the full data snapshot for a profile. Returns false on error. */
-export async function uploadSnapshot(
-  profileId: string,
-  anonymousId: string,
-  data: SnapshotData,
-): Promise<boolean> {
-  const { error } = await supabase.from('profile_snapshot').upsert({
-    profile_id: profileId,
-    data,
-    updated_by: anonymousId,
-    updated_at: new Date().toISOString(),
-  })
-  return !error
-}
-
-/** Download the latest snapshot for a profile. Returns null if none exists. */
-export async function downloadSnapshot(profileId: string): Promise<SnapshotData | null> {
-  const { data } = await supabase
-    .from('profile_snapshot')
-    .select('data')
-    .eq('profile_id', profileId)
-    .maybeSingle()
-  return (data?.data as SnapshotData) ?? null
 }
 
 /** Delete reminder when tagihan is deleted locally. No-op if no session. */
