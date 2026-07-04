@@ -39,7 +39,8 @@ export function SettingsPage() {
   const setLang = useSetLanguage()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const { status: sharingStatus } = useSharedProfileCtx()
+  const { status, profileId } = useSharedProfileCtx()
+  const hasProfile = status === 'connected' || (status === 'solo' && !!profileId)
   const [data, setData] = useState<PageData | null>(null)
   const [activeSheet, setActiveSheet] = useState<'income' | 'license' | 'categories' | null>(null)
   const [importPreview, setImportPreview] = useState<{
@@ -242,23 +243,31 @@ export function SettingsPage() {
         </button>
       </div>
 
-      {/* Berbagi & Keamanan */}
+      {/* Akun & Data */}
       <div className={styles.sectionLabel}>{t('settings.section_sharing_label', lang)}</div>
       <div className={styles.card}>
         <button className={styles.actionRow} onClick={() => navigate('/berbagi-keamanan')}>
-          <span className={styles.rowLabel}>{t('settings.section_sharing', lang)}</span>
+          <span className={styles.rowLabel}>{t('settings.row_pair', lang)}</span>
           <span className={styles.rowSub}>
-            {sharingStatus === 'connected'
-              ? t('settings.row_sharing_connected', lang)
-              : t('settings.row_sharing_solo', lang)}
+            {status === 'connected'
+              ? t('settings.row_pair_sub_connected', lang)
+              : t('settings.row_pair_sub_solo', lang)}
           </span>
         </button>
-        {sharingStatus !== 'connected' && (
-          <button className={styles.actionRow} onClick={() => navigate('/pulihkan')}>
-            <span className={styles.rowLabel}>{t('settings.row_recover', lang)}</span>
-            <span className={styles.rowSub}>{t('settings.row_recover_sub', lang)}</span>
-          </button>
-        )}
+        <div className={styles.divider} />
+        <button className={styles.actionRow} onClick={() => navigate('/berbagi-keamanan')}>
+          <span className={styles.rowLabel}>
+            {hasProfile ? t('settings.row_recovery', lang) : t('settings.row_secure', lang)}
+          </span>
+          <span className={styles.rowSub}>
+            {hasProfile ? t('settings.row_recovery_sub', lang) : t('settings.row_secure_sub', lang)}
+          </span>
+        </button>
+        <div className={styles.divider} />
+        <button className={styles.actionRow} onClick={() => navigate('/pulihkan')}>
+          <span className={styles.rowLabel}>{t('settings.row_recover', lang)}</span>
+          <span className={styles.rowSub}>{t('settings.row_recover_sub', lang)}</span>
+        </button>
       </div>
 
       {/* Data & Backup */}

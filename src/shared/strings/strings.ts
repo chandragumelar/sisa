@@ -518,6 +518,13 @@ export type StringKey =
   | 'settings.row_sharing_solo'
   | 'settings.row_recover'
   | 'settings.row_recover_sub'
+  | 'settings.row_pair'
+  | 'settings.row_pair_sub_solo'
+  | 'settings.row_pair_sub_connected'
+  | 'settings.row_recovery'
+  | 'settings.row_recovery_sub'
+  | 'settings.row_secure'
+  | 'settings.row_secure_sub'
   | 'settings.section_data'
   | 'settings.export_json'
   | 'settings.export_json_sub'
@@ -1191,6 +1198,13 @@ const id: StringDictionary = {
   'settings.row_sharing_solo': 'Amankan data & ajak pasangan',
   'settings.row_recover': 'Pulihkan Profil Lama',
   'settings.row_recover_sub': 'Ganti HP? Masukkan kode pemulihan',
+  'settings.row_pair': 'Hubungkan Pasangan',
+  'settings.row_pair_sub_solo': 'Kelola keuangan bareng pasangan',
+  'settings.row_pair_sub_connected': 'Terhubung • kelola perangkat',
+  'settings.row_recovery': 'Buat Ulang Kode Pemulihan',
+  'settings.row_recovery_sub': 'Ganti kode lama dengan yang baru',
+  'settings.row_secure': 'Amankan Data',
+  'settings.row_secure_sub': 'Simpan ke cloud & dapat kode pemulihan',
   'settings.section_data': 'data & backup',
   'settings.export_json': 'export backup',
   'settings.export_json_sub': 'file lengkap buat pindah / restore',
@@ -1864,6 +1878,13 @@ const en: StringDictionary = {
   'settings.row_sharing_solo': 'Secure data & invite partner',
   'settings.row_recover': 'Recover Old Profile',
   'settings.row_recover_sub': 'New phone? Enter recovery code',
+  'settings.row_pair': 'Link Partner',
+  'settings.row_pair_sub_solo': 'Manage finances together with your partner',
+  'settings.row_pair_sub_connected': 'Connected • manage devices',
+  'settings.row_recovery': 'Regenerate Recovery Code',
+  'settings.row_recovery_sub': 'Replace your old code with a new one',
+  'settings.row_secure': 'Secure Data',
+  'settings.row_secure_sub': 'Back up to cloud & get a recovery code',
   'settings.section_data': 'data & backup',
   'settings.export_json': 'export backup',
   'settings.export_json_sub': 'full file for transfer / restore',
