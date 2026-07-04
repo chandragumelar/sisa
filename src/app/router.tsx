@@ -7,6 +7,7 @@ import { SettingsPage } from '@/features/settings/SettingsPage'
 import { AjakPasanganPage } from '@/features/shared-profile/AjakPasanganPage'
 import { GabungKodePage } from '@/features/shared-profile/GabungKodePage'
 import { BerbagiKeamananPage } from '@/features/shared-profile/BerbagiKeamananPage'
+import { HubungkanPasanganPage } from '@/features/shared-profile/HubungkanPasanganPage'
 import { PulihkanPage } from '@/features/shared-profile/PulihkanPage'
 import { InsightPage } from '@/features/insight/InsightPage'
 import { RequireOnboarding, RequireSetupPending } from './guards'
@@ -73,6 +74,14 @@ export const router = createBrowserRouter([
     element: (
       <RequireOnboarding>
         <BerbagiKeamananPage />
+      </RequireOnboarding>
+    ),
+  },
+  {
+    path: '/hubungkan-pasangan',
+    element: (
+      <RequireOnboarding>
+        <HubungkanPasanganPage />
       </RequireOnboarding>
     ),
   },
