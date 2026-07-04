@@ -158,6 +158,12 @@ export type StringKey =
   | 'ob.step4d.placeholder_first'
   | 'ob.step4d.placeholder_other'
   | 'ob.step4d.currency_label'
+  | 'ob.alokasi.heading'
+  | 'ob.tagihan.heading'
+  | 'ob.tagihan.subheading'
+  | 'ob.tagihan.empty'
+  | 'ob.tagihan.add'
+  | 'ob.tagihan.monthly_total'
   // currency picker
   | 'currency_picker.search'
   | 'currency_picker.popular'
@@ -868,6 +874,12 @@ const id: StringDictionary = {
   'ob.step4d.placeholder_first': 'Nama dompet (cth: BCA, GoPay)',
   'ob.step4d.placeholder_other': 'Nama dompet',
   'ob.step4d.currency_label': 'Mata uang',
+  'ob.alokasi.heading': 'Yuk atur duit lo',
+  'ob.tagihan.heading': 'Tagihan rutin lo apa aja?',
+  'ob.tagihan.subheading': 'Isi ini biar angka Sisa lo akurat. Minimal 1 tagihan ya.',
+  'ob.tagihan.empty': 'Belum ada tagihan',
+  'ob.tagihan.add': 'Tambah tagihan',
+  'ob.tagihan.monthly_total': 'Total tagihan bulanan',
 
   'currency_picker.search': 'pilih mata uang…',
   'currency_picker.popular': 'Populer',
@@ -1597,6 +1609,12 @@ const en: StringDictionary = {
   'ob.step4d.placeholder_first': 'Wallet name (e.g. Standard Chartered, Wise)',
   'ob.step4d.placeholder_other': 'Wallet name',
   'ob.step4d.currency_label': 'Currency',
+  'ob.alokasi.heading': "Let's sort your money",
+  'ob.tagihan.heading': 'What are your recurring bills?',
+  'ob.tagihan.subheading': 'Fill these in so your Sisa number is accurate. At least 1 bill.',
+  'ob.tagihan.empty': 'No bills yet',
+  'ob.tagihan.add': 'Add bill',
+  'ob.tagihan.monthly_total': 'Monthly bills total',
 
   'currency_picker.search': 'search currency…',
   'currency_picker.popular': 'Popular',

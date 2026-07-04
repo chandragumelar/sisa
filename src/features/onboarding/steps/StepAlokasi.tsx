@@ -2,6 +2,8 @@ import { useState } from 'react'
 import type { IncomeType } from '@/db/database'
 import { AlokasiEditor } from '@/features/alokasi/AlokasiEditor'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
+import { useLanguage } from '@/app/providers/useLanguage'
+import { t } from '@/shared/strings/strings'
 
 interface ItemAmount {
   name: string
@@ -71,6 +73,7 @@ export function StepAlokasi({
   otherWallets,
   otherTagihan,
 }: Props) {
+  const lang = useLanguage()
   const bisaDialokasi = Math.max(0, totalSaldo - tagihanTotal)
   const [operasional, setOperasional] = useState(bisaDialokasi)
 
@@ -91,7 +94,7 @@ export function StepAlokasi({
 
   return (
     <>
-      <h1 className="ob-heading">Yuk atur duit lo</h1>
+      <h1 className="ob-heading">{t('ob.alokasi.heading', lang)}</h1>
 
       {/* Breakdown */}
       <div className="ob-card" style={{ padding: '14px 16px' }}>
@@ -103,7 +106,9 @@ export function StepAlokasi({
             padding: '3px 0',
           }}
         >
-          <span style={{ fontSize: 13, color: 'var(--ink-secondary)' }}>Total saldo</span>
+          <span style={{ fontSize: 13, color: 'var(--ink-secondary)' }}>
+            {t('saldo.total', lang)}
+          </span>
           <span
             style={{
               fontSize: 14,
