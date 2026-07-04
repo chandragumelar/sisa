@@ -201,40 +201,85 @@
   font-family: var(--font-sans);
 }
 
-.insightNet {
+.insightEq {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 6px 0 2px;
+}
+
+.insightEqRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.insightEqLabel {
+  font-size: 12px;
+  color: var(--ink-secondary);
+  font-family: var(--font-sans);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.insightEqMinus {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--ink-tertiary);
+  font-weight: 600;
+}
+
+.insightEqValIn {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--signal-safe);
+  font-variant-numeric: tabular-nums;
+}
+
+.insightEqValOut {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--signal-caution);
+  font-variant-numeric: tabular-nums;
+}
+
+.insightEqDivider {
+  height: 1px;
+  background: var(--ink-primary);
+  opacity: 0.85;
+  margin: 3px 0;
+}
+
+.insightEqLabelNet {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+}
+
+.insightEqNetPos {
   font-family: var(--font-mono);
   font-size: 22px;
   font-weight: 700;
-  color: var(--ink-primary);
+  color: var(--signal-safe);
   letter-spacing: -0.4px;
   line-height: 1.1;
+  font-variant-numeric: tabular-nums;
 }
 
-.insightNetSub {
-  font-size: 11px;
-  color: var(--ink-tertiary);
-  font-family: var(--font-sans);
-  margin-top: 1px;
-}
-
-.insightSplitTrack {
-  display: flex;
-  height: 10px;
-  border-radius: 999px;
-  overflow: hidden;
-  margin: 8px 0 4px;
-}
-
-.insightSplitSpend {
-  height: 100%;
-  background: var(--signal-caution);
-  flex-shrink: 0;
-}
-
-.insightSplitSafe {
-  height: 100%;
-  background: var(--signal-safe);
-  flex: 1;
+.insightEqNetNeg {
+  font-family: var(--font-mono);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--signal-caution);
+  letter-spacing: -0.4px;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
 }
 
 .insightCta {

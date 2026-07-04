@@ -580,22 +580,38 @@ export function HomePage() {
               <>
                 {(() => {
                   const net = teaserIncome - teaserExpense
-                  const denom = Math.max(teaserIncome, teaserExpense, 1)
-                  const spendPct = Math.min((teaserExpense / denom) * 100, 100)
+                  const netPositive = net >= 0
                   return (
-                    <>
-                      <div className={styles.insightNet}>
-                        {(net >= 0 ? '+' : '') + formatCurrency(net, currency)}
+                    <div className={styles.insightEq}>
+                      <div className={styles.insightEqRow}>
+                        <span className={styles.insightEqLabel}>
+                          {t('home.insight_eq_income', lang)}
+                        </span>
+                        <span className={styles.insightEqValIn}>
+                          {formatCurrency(teaserIncome, currency)}
+                        </span>
                       </div>
-                      <div className={styles.insightNetSub}>{t('home.insight_net_sub', lang)}</div>
-                      <div className={styles.insightSplitTrack}>
-                        <div
-                          className={styles.insightSplitSpend}
-                          style={{ width: `${spendPct}%` }}
-                        />
-                        <div className={styles.insightSplitSafe} />
+                      <div className={styles.insightEqRow}>
+                        <span className={styles.insightEqLabel}>
+                          <span className={styles.insightEqMinus}>−</span>
+                          {t('home.insight_eq_expense', lang)}
+                        </span>
+                        <span className={styles.insightEqValOut}>
+                          {formatCurrency(teaserExpense, currency)}
+                        </span>
                       </div>
-                    </>
+                      <div className={styles.insightEqDivider} />
+                      <div className={styles.insightEqRow}>
+                        <span className={styles.insightEqLabelNet}>
+                          {t('home.insight_net_sub', lang)}
+                        </span>
+                        <span
+                          className={netPositive ? styles.insightEqNetPos : styles.insightEqNetNeg}
+                        >
+                          {(netPositive ? '+' : '') + formatCurrency(net, currency)}
+                        </span>
+                      </div>
+                    </div>
                   )
                 })()}
               </>
