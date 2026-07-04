@@ -243,15 +243,6 @@ export function SettingsPage() {
       {/* Akun & Data */}
       <div className={styles.sectionLabel}>{t('settings.section_sharing_label', lang)}</div>
       <div className={styles.card}>
-        <button className={styles.actionRow} onClick={() => navigate('/hubungkan-pasangan')}>
-          <span className={styles.rowLabel}>{t('settings.row_pair', lang)}</span>
-          <span className={styles.rowSub}>
-            {status === 'connected'
-              ? t('settings.row_pair_sub_connected', lang)
-              : t('settings.row_pair_sub_solo', lang)}
-          </span>
-        </button>
-        <div className={styles.divider} />
         <button className={styles.actionRow} onClick={() => navigate('/kode-pemulihan')}>
           <span className={styles.rowLabel}>
             {hasProfile ? t('settings.row_recovery', lang) : t('settings.row_secure', lang)}

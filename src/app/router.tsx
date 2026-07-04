@@ -4,10 +4,7 @@ import { OnboardingPage } from '@/features/onboarding/OnboardingPage'
 import { CekDuluPage } from '@/features/cekDulu/CekDuluPage'
 import { AndaiPage } from '@/features/andai/AndaiPage'
 import { SettingsPage } from '@/features/settings/SettingsPage'
-import { AjakPasanganPage } from '@/features/shared-profile/AjakPasanganPage'
-import { GabungKodePage } from '@/features/shared-profile/GabungKodePage'
 import { KodePemulihanPage } from '@/features/shared-profile/KodePemulihanPage'
-import { HubungkanPasanganPage } from '@/features/shared-profile/HubungkanPasanganPage'
 import { PulihkanPage } from '@/features/shared-profile/PulihkanPage'
 import { InsightPage } from '@/features/insight/InsightPage'
 import { RequireOnboarding, RequireSetupPending } from './guards'
@@ -54,34 +51,10 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: '/ajak-pasangan',
-    element: (
-      <RequireOnboarding>
-        <AjakPasanganPage />
-      </RequireOnboarding>
-    ),
-  },
-  {
-    path: '/gabung-kode',
-    element: (
-      <RequireOnboarding>
-        <GabungKodePage />
-      </RequireOnboarding>
-    ),
-  },
-  {
     path: '/kode-pemulihan',
     element: (
       <RequireOnboarding>
         <KodePemulihanPage />
-      </RequireOnboarding>
-    ),
-  },
-  {
-    path: '/hubungkan-pasangan',
-    element: (
-      <RequireOnboarding>
-        <HubungkanPasanganPage />
       </RequireOnboarding>
     ),
   },
