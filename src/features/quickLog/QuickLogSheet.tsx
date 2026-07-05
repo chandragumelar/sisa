@@ -31,6 +31,7 @@ interface Props {
   initialLabel?: string
   initialDateMs?: number
   initialCategory?: string
+  uangMengendap?: number
 }
 
 function msToDateStr(ms: number): string {
@@ -52,6 +53,7 @@ export function QuickLogSheet({
   initialLabel,
   initialDateMs,
   initialCategory,
+  uangMengendap,
 }: Props) {
   const lang = useLanguage()
   const uniqueCurrencies = [...new Set(wallets.map((w) => w.currency))]
@@ -73,6 +75,7 @@ export function QuickLogSheet({
   const [dateMs, setDateMs] = useState(initialDateMs ?? nowMs)
   const [submitting, setSubmitting] = useState(false)
   const [manageOpen, setManageOpen] = useState(false)
+  const [confirm, setConfirm] = useState<null | 'wallet' | 'mengendap'>(null)
 
   const amount = parseInt(parseNominalRaw(amountStr), 10) || 0
   const currencyWallets = wallets.filter((w) => w.currency === activeCurrency)
@@ -120,8 +123,7 @@ export function QuickLogSheet({
     setDateMs(new Date(y, m - 1, d, 12, 0, 0).getTime())
   }
 
-  async function handleSubmit() {
-    if (!amount || !walletId) return
+  async function doSubmit() {
     setSubmitting(true)
     try {
       const tx = buildTransaction({
@@ -148,6 +150,24 @@ export function QuickLogSheet({
     } finally {
       setSubmitting(false)
     }
+  }
+
+  async function handleSubmit() {
+    if (!amount || !walletId) return
+
+    if (mode === 'keluar' && editTxId === undefined) {
+      const selectedWallet = wallets.find((w) => w.id === walletId)
+      if (amount > (selectedWallet?.balance ?? 0)) {
+        setConfirm('wallet')
+        return
+      }
+      if (uangMengendap !== undefined && uangMengendap - amount < 0) {
+        setConfirm('mengendap')
+        return
+      }
+    }
+
+    await doSubmit()
   }
 
   function resetForm() {
@@ -293,6 +313,55 @@ export function QuickLogSheet({
       </BottomSheet>
 
       <ManageCategoriesSheet isOpen={manageOpen} onClose={() => setManageOpen(false)} />
+
+      <BottomSheet
+        isOpen={confirm !== null}
+        onClose={() => setConfirm(null)}
+        title={
+          confirm === 'wallet'
+            ? t('quick_log.confirm_wallet_title', lang)
+            : t('quick_log.confirm_mengendap_title', lang)
+        }
+      >
+        <p className={styles.confirmBody}>
+          {confirm === 'wallet'
+            ? t('quick_log.confirm_wallet_body', lang)
+            : t('quick_log.confirm_mengendap_body', lang)}
+        </p>
+        <div className={styles.confirmActions}>
+          {confirm === 'wallet' ? (
+            <>
+              <button className={styles.confirmPrimaryBtn} onClick={() => setConfirm(null)}>
+                {t('quick_log.confirm_wallet_fix', lang)}
+              </button>
+              <button
+                className={styles.confirmSecondaryBtn}
+                onClick={() => {
+                  setConfirm(null)
+                  onClose()
+                }}
+              >
+                {t('quick_log.confirm_cancel', lang)}
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                className={styles.confirmPrimaryBtn}
+                onClick={async () => {
+                  await doSubmit()
+                  setConfirm(null)
+                }}
+              >
+                {t('quick_log.confirm_proceed', lang)}
+              </button>
+              <button className={styles.confirmSecondaryBtn} onClick={() => setConfirm(null)}>
+                {t('quick_log.confirm_recheck', lang)}
+              </button>
+            </>
+          )}
+        </div>
+      </BottomSheet>
     </>
   )
 }

@@ -349,6 +349,7 @@ export function CekDuluPage() {
           setQuickLogOpen(false)
           navigate('/')
         }}
+        uangMengendap={data.mengendap}
       />
     </div>
   )

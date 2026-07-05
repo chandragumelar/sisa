@@ -254,3 +254,41 @@
   opacity: 0.4;
   cursor: not-allowed;
 }
+
+.confirmBody {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  margin: 0 0 16px;
+}
+
+.confirmActions {
+  display: flex;
+  gap: 8px;
+}
+
+.confirmPrimaryBtn {
+  flex: 1;
+  padding: 14px;
+  background: var(--ink);
+  color: var(--bg);
+  border: none;
+  border-radius: 16px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: var(--font-display);
+  cursor: pointer;
+}
+
+.confirmSecondaryBtn {
+  flex: 1;
+  padding: 14px;
+  background: var(--surface-deep);
+  color: var(--ink);
+  border: none;
+  border-radius: 16px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: var(--font-display);
+  cursor: pointer;
+}
