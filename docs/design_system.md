@@ -1,5 +1,3 @@
-> ⚠️ **DEPRECATED** — File ini sudah tidak aktif. Source of truth visual sekarang ada di [`design_handoff_sisa_revamp/README.md`](../design_handoff_sisa_revamp/README.md). Jangan gunakan file ini untuk referensi desain baru.
-
 # SISA — Design System
 
 > **Versi:** 1.1 (sync dengan PRD v0.9 — 2026-05-22)
@@ -27,7 +25,7 @@ Tiga prinsip yang nge-drive semua keputusan di bawah:
 
 | Token         | Hex       | Pakai untuk                                  |
 | ------------- | --------- | -------------------------------------------- |
-| `--canvas`    | `#EEF1F5` | Background utama screen (cool slate tinted)  |
+| `--canvas`    | `#F5F6F8` | Background utama screen (cool slate tinted)  |
 | `--surface`   | `#FFFFFF` | Card, modul, container yang harus "ngangkat" |
 | `--surface-2` | `#E4E8EE` | Track progress bar, empty state bar          |
 
@@ -52,7 +50,7 @@ Cobalt sengaja occupy hue yang ga disentuh signal apapun (merah/amber/hijau). In
 
 | Token            | Hex       | Pakai untuk                                     |
 | ---------------- | --------- | ----------------------------------------------- |
-| `--accent`       | `#1F4FE0` | CTA utama (Cek Dulu), progress bar budget, link |
+| `--accent`       | `#1D4ED8` | CTA utama (Cek Dulu), progress bar budget, link |
 | `--accent-hover` | `#1A44C2` | Hover/pressed state                             |
 | `--accent-bg`    | `#EDF1FE` | Background subtle untuk info chip / hint        |
 | `--accent-br`    | `#CFD9F9` | Border accent, underline decoration link        |
@@ -83,12 +81,12 @@ Signal harus **kelihatan**. Ga ada pastel. User butuh tau langsung "ini bahaya" 
 ### 2.1 Font Families
 
 ```css
---font-sans: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;
---font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+--font-sans: 'DM Sans', system-ui, sans-serif;
+--font-mono: 'DM Mono', ui-monospace, monospace;
 ```
 
-- **Inter Tight** — untuk semua label, heading, body, deskripsi. Sans-only kebijakan.
-- **JetBrains Mono** — **khusus angka tabular** (saldo wallet, amount tagihan, amount goal). Tujuannya: angka rapih kolom-kolom, gampang dibanding.
+- **DM Sans** — untuk semua label, heading, body, deskripsi. Sans-only kebijakan.
+- **DM Mono** — **khusus angka tabular** (saldo wallet, amount tagihan, amount goal). Tujuannya: angka rapih kolom-kolom, gampang dibanding.
 
 Selalu nyalain feature settings:
 
@@ -190,7 +188,7 @@ Divider `--border-hair` setebal 1px, margin atas-bawah `18px`. Ini yang ngedefin
 
 Pattern: `[module-label]` → `[hero-amount 38px atau big-amount 30px]` → `[hero-sub atau bar]`.
 
-- Hero amount selalu **Inter Tight semibold dengan tnum + lnum** (figure tabular & lining).
+- Hero amount selalu **DM Sans semibold dengan tnum + lnum** (figure tabular & lining).
 - Negative letter-spacing wajib di size ini (-1.4px atau -0.9px).
 - Sub-line di bawahnya pakai `--ink-tertiary` 11px (saldo) atau `--ink-secondary` 11px (budget bar).
 
@@ -206,7 +204,7 @@ Pattern: `[module-label]` → `[hero-amount 38px atau big-amount 30px]` → `[he
 └──────────────────────────────────────┘
 ```
 
-- Container: `--surface`, border `--border-hair`, radius `10px`, padding `2px 12px`
+- Container: `--surface`, border `--border-hair`, radius `13px` (var(--radius-card)), padding `2px 12px`
 - Row: padding `8px 0`, border-bottom `--border-hair` (kecuali last)
 - Nama: 12.5px, `--ink-secondary`, regular
 - Amount: **mono**, 12px, 500, `--ink-primary`, `tnum`
@@ -240,7 +238,7 @@ Pattern: `[module-label]` → `[hero-amount 38px atau big-amount 30px]` → `[he
 ```
 
 - Grid `1fr 1fr`, gap `8px`
-- Card: `--surface`, border `--border-hair`, radius `10px`, padding `11px 12px`
+- Card: `--surface`, border `--border-hair`, radius `13px` (var(--radius-card)), padding `11px 12px`
 - `card-num` 19px semibold, `card-sub` 10px `--ink-tertiary`
 - **Status tag inline** (mis. "ketat") pakai `--signal-caution` 500
 - **Card meta inline** (mis. "akurasi 81%") dipisah `border-top: 1px dashed --border-hair` — dashed dipakai khusus untuk **meta secondary** yang masih bisa di-tap
@@ -434,17 +432,7 @@ Design system ini ga lengkap tanpa nyebut voice — karena copy = bagian dari UI
 
 ---
 
-## 9. Tier Differentiation (Visual)
-
-Dari PRD: ada **Basic** dan **Pro**. Design system ini di-spec untuk Basic. Aturan visual kalau nantinya ada Pro:
-
-- **Jangan tambah warna baru.** Pro tetap di palette yang sama.
-- **Differentiation lewat density, bukan kemewahan.** Pro nampilin lebih banyak module / insight, tapi visual language identik.
-- **Badge "Pro"** kalau perlu: pakai `--ink-primary` (hitam) + text `--canvas`, radius `3px`, 8.5px uppercase — **mirip badge goal**, konsisten.
-
----
-
-## 10. Implementation Checklist
+## 9. Implementation Checklist
 
 Sebelum push komponen baru, check:
 
@@ -452,7 +440,7 @@ Sebelum push komponen baru, check:
 - [ ] Angka pakai `tnum` + `lnum` feature settings?
 - [ ] Hierarchy lewat ukuran/weight, bukan shadow?
 - [ ] Border `--border-hair` 1px untuk semua card?
-- [ ] Radius `10px` untuk card, `12px` untuk button besar, `3px` untuk badge?
+- [ ] Radius `13px` (var(--radius-card)) untuk card, `8px` (var(--radius-button)) untuk button, `18px` (var(--radius-sheet)) untuk sheet, `3px` untuk badge?
 - [ ] Module label uppercase + tracking 0.8px?
 - [ ] Cobalt cuma di hal interactive?
 - [ ] Signal cuma di hal yang memang signal (bukan dekoratif)?
@@ -463,38 +451,51 @@ Sebelum push komponen baru, check:
 
 ## Appendix: Token Sheet (Copy-Paste Ready)
 
+> Nilai di bawah harus selalu sinkron dengan `src/app/tokens.css` (source of truth teknis) — cek file itu kalau ragu.
+
 ```css
 :root {
   /* Surfaces */
-  --canvas: #eef1f5;
+  --canvas: #f5f6f8;
   --surface: #ffffff;
-  --surface-2: #e4e8ee;
+  --surface-2: #f8f9fb;
+  --surface-3: #f0f1f4;
 
   /* Ink */
-  --ink-primary: #11141a;
-  --ink-secondary: #565c66;
-  --ink-tertiary: #939aa5;
+  --ink-primary: #07080f;
+  --ink-secondary: #4a5260;
+  --ink-tertiary: #9ba3af;
 
   /* Borders */
-  --border-hair: #e1e5eb;
-  --border-soft: #eaedf2;
+  --border-hair: #e4e6ea;
+  --border-soft: #f0f1f4;
 
-  /* Accent — Cobalt */
-  --accent: #1f4fe0;
-  --accent-hover: #1a44c2;
-  --accent-bg: #edf1fe;
-  --accent-br: #cfd9f9;
+  /* Accent — Electric Blue */
+  --accent: #1d4ed8;
+  --accent-hover: #1e40af;
+  --accent-bg: #eff6ff;
+  --accent-br: #bfdbfe;
+  --accent-text: #ffffff;
 
   /* Signal */
-  --signal-danger: #d11f1f;
-  --signal-danger-bg: #fceeee;
-  --signal-danger-br: #f4d4d4;
-  --signal-caution: #b5680a;
-  --signal-safe: #1b7a38;
+  --signal-danger: #ef4444;
+  --signal-danger-bg: #fef2f2;
+  --signal-danger-br: #fecaca;
+  --signal-caution: #d97706;
+  --signal-caution-bg: #fffbeb;
+  --signal-caution-br: #fde68a;
+  --signal-safe: #16a34a;
+  --signal-safe-bg: #f0fdf4;
+  --signal-safe-br: #bbf7d0;
 
   /* Fonts */
-  --font-sans: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-sans: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'DM Mono', ui-monospace, monospace;
+
+  /* Radius */
+  --radius-card: 13px;
+  --radius-button: 8px;
+  --radius-sheet: 18px;
 }
 ```
 
