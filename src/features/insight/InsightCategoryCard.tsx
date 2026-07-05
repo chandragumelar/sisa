@@ -10,7 +10,7 @@ const BAR_W = 32
 const GAP = 8
 const H = 96
 const PAD_T = 8
-const LABEL_H = 20
+const LABEL_H = 34
 const SVG_H = PAD_T + H + LABEL_H
 
 interface Props {
@@ -76,7 +76,7 @@ export function InsightCategoryCard({
   const n = trend.length
   const svgW = n * (BAR_W + GAP) - GAP
   const maxAmt = Math.max(...trend.map((b) => b.amount), 1)
-  const labelY = PAD_T + H + 4
+  const labelY = PAD_T + H + 8
 
   return (
     <div className={styles.card}>
