@@ -539,8 +539,8 @@ export type StringKey =
   | 'settings.delete_sub'
   | 'settings.section_about'
   | 'settings.made_by'
-  | 'settings.contact'
-  | 'settings.email'
+  | 'settings.feedback_cta'
+  | 'settings.feedback_sub'
   | 'settings.import_preview_title'
   | 'settings.import_preview_wallets'
   | 'settings.import_preview_txs'
@@ -1228,8 +1228,8 @@ const id: StringDictionary = {
   'settings.delete_sub': 'tidak bisa di-undo',
   'settings.section_about': 'tentang',
   'settings.made_by': 'dibuat oleh',
-  'settings.contact': 'twitter',
-  'settings.email': 'email',
+  'settings.feedback_cta': 'Ada masukan / bug?',
+  'settings.feedback_sub': 'kirim email ke kami',
   'settings.import_preview_title': 'Import backup',
   'settings.import_preview_wallets': 'dompet',
   'settings.import_preview_txs': 'transaksi',
@@ -1917,8 +1917,8 @@ const en: StringDictionary = {
   'settings.delete_sub': 'cannot be undone',
   'settings.section_about': 'about',
   'settings.made_by': 'made by',
-  'settings.contact': 'twitter',
-  'settings.email': 'email',
+  'settings.feedback_cta': 'Feedback / bug?',
+  'settings.feedback_sub': 'send us an email',
   'settings.import_preview_title': 'Import backup',
   'settings.import_preview_wallets': 'wallets',
   'settings.import_preview_txs': 'transactions',
