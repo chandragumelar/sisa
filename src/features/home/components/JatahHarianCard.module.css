@@ -7,6 +7,11 @@
 }
 
 .cardOver {
+  border-color: var(--signal-caution);
+  background: color-mix(in srgb, var(--signal-caution) 4%, var(--surface));
+}
+
+.cardDanger {
   border-color: var(--signal-danger);
   background: color-mix(in srgb, var(--signal-danger) 4%, var(--surface));
 }
@@ -32,6 +37,19 @@
   font-weight: 700;
   letter-spacing: 0.8px;
   text-transform: uppercase;
+  color: var(--signal-caution);
+  font-family: var(--font-sans);
+  padding: 3px 8px;
+  border: 1px solid var(--signal-caution);
+  border-radius: 999px;
+  opacity: 0.85;
+}
+
+.dangerBadge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
   color: var(--signal-danger);
   font-family: var(--font-sans);
   padding: 3px 8px;
@@ -45,10 +63,10 @@
   font-weight: 700;
   letter-spacing: 0.8px;
   text-transform: uppercase;
-  color: var(--signal-caution);
+  color: var(--signal-safe);
   font-family: var(--font-sans);
   padding: 3px 8px;
-  border: 1px solid var(--signal-caution);
+  border: 1px solid var(--signal-safe);
   border-radius: 999px;
   opacity: 0.85;
 }
@@ -80,7 +98,15 @@
 }
 
 .barOver {
+  background: var(--signal-caution);
+}
+
+.barDanger {
   background: var(--signal-danger);
+}
+
+.barSafe {
+  background: var(--signal-safe);
 }
 
 .spentRow {
@@ -104,20 +130,24 @@
 }
 
 .spentAmtOver {
+  color: var(--signal-caution);
+}
+
+.spentAmtDanger {
   color: var(--signal-danger);
 }
 
 .alertBox {
   margin-top: 10px;
   padding: 10px 12px;
-  background: color-mix(in srgb, var(--signal-danger) 8%, var(--surface));
-  border: 1px solid color-mix(in srgb, var(--signal-danger) 25%, transparent);
+  background: color-mix(in srgb, var(--signal-caution) 8%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--signal-caution) 25%, transparent);
   border-radius: 8px;
 }
 
 .alertLine {
   font-size: 13px;
-  color: var(--signal-danger);
+  color: var(--signal-caution);
   font-family: var(--font-sans);
   line-height: 1.5;
   margin: 0;
@@ -127,11 +157,27 @@
   margin-top: 4px;
 }
 
+.dangerBox {
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: color-mix(in srgb, var(--signal-danger) 8%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--signal-danger) 25%, transparent);
+  border-radius: 8px;
+}
+
+.dangerLine {
+  font-size: 13px;
+  color: var(--signal-danger);
+  font-family: var(--font-sans);
+  line-height: 1.5;
+  margin: 0;
+}
+
 .pasBox {
   margin-top: 10px;
   padding: 10px 12px;
-  background: color-mix(in srgb, var(--signal-caution) 8%, var(--surface));
-  border: 1px solid color-mix(in srgb, var(--signal-caution) 25%, transparent);
+  background: color-mix(in srgb, var(--signal-safe) 8%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--signal-safe) 25%, transparent);
   border-radius: 8px;
 }
 

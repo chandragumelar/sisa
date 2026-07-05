@@ -615,6 +615,12 @@ export type StringKey =
   | 'home.jatah_besok'
   | 'home.jatah_pas_badge'
   | 'home.jatah_pas_msg'
+  | 'home.jatah_makan_mengendap_badge'
+  | 'home.jatah_makan_mengendap_msg'
+  | 'home.jatah_mengendap_habis_badge'
+  | 'home.jatah_mengendap_habis_msg'
+  | 'home.jatah_defisit_badge'
+  | 'home.jatah_defisit_msg'
   | 'home.sisa_uang_dynamic'
   | 'home.jatah_harian_dynamic'
   | 'home.jatah_harian_tooltip'
@@ -1320,7 +1326,15 @@ const id: StringDictionary = {
   'home.jatah_lewat_title': 'Pengeluaran hari ini {n} lebih besar dari jatah harian kamu',
   'home.jatah_besok': 'Buat nyeimbangin, jatah besok turun ke sekitar {n}',
   'home.jatah_pas_badge': 'Pas',
-  'home.jatah_pas_msg': 'Jatah hari ini pas habis. Besok mulai lagi dari awal.',
+  'home.jatah_pas_msg': 'Pas. Sisa buat besok masih aman.',
+  'home.jatah_makan_mengendap_badge': 'MULAI MAKAN BANTALAN',
+  'home.jatah_makan_mengendap_msg':
+    'Belanja periode ini lewat anggaran. Sekarang mulai pakai uang mengendap—bantalan yang tadinya buat jaga-jaga.',
+  'home.jatah_mengendap_habis_badge': 'BANTALAN TIPIS',
+  'home.jatah_mengendap_habis_msg':
+    'Bantalan lo tinggal kurang dari sehari jatah. Habis itu nggak ada lagi yang nahan.',
+  'home.jatah_defisit_badge': 'DEFISIT',
+  'home.jatah_defisit_msg': 'Nggak ada lagi bantalan. Tiap pengeluaran dari sini bikin lo minus.',
   'home.sisa_uang_dynamic': 'SISA {cur}MU',
   'home.jatah_harian_dynamic': 'Jatah Harian {cur}mu',
   'home.jatah_harian_tooltip':
@@ -2024,7 +2038,15 @@ const en: StringDictionary = {
   'home.jatah_lewat_title': "Today's spending is {n} over your daily allowance",
   'home.jatah_besok': "To balance out, tomorrow's allowance drops to about {n}",
   'home.jatah_pas_badge': 'On the dot',
-  'home.jatah_pas_msg': "Today's allowance is exactly used up. Fresh start tomorrow.",
+  'home.jatah_pas_msg': "On the dot. Tomorrow's allowance is still safe.",
+  'home.jatah_makan_mengendap_badge': 'DIPPING INTO RESERVE',
+  'home.jatah_makan_mengendap_msg':
+    "This period's spending is over budget. You're now drawing on your reserve — the cushion set aside for safety.",
+  'home.jatah_mengendap_habis_badge': 'RESERVE RUNNING LOW',
+  'home.jatah_mengendap_habis_msg':
+    "Your reserve has less than a day's allowance left. Once it's gone, there's nothing left to catch you.",
+  'home.jatah_defisit_badge': 'DEFICIT',
+  'home.jatah_defisit_msg': "There's no reserve left. Every expense from here pushes you negative.",
   'home.sisa_uang_dynamic': 'YOUR {cur} LEFT',
   'home.jatah_harian_dynamic': 'Your {cur} Daily Budget',
   'home.jatah_harian_tooltip':
