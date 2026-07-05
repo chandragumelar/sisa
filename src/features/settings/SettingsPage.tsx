@@ -20,7 +20,8 @@ import { buildTransactionsCSV, downloadFile } from './backup.utils'
 import { collectSnapshot, applySnapshot } from '@/db/snapshot.repository'
 import { parseSnapshot } from '@/db/snapshot.serializer'
 import type { SnapshotPreview } from '@/db/snapshot.serializer'
-import { BRAND_STUDIO_WITH_COLLAB, BRAND_TWITTER, BRAND_EMAIL } from '@/constants/brand'
+import { BRAND_STUDIO_WITH_COLLAB, BRAND_EMAIL } from '@/constants/brand'
+import { ChevronRight } from 'lucide-react'
 import styles from './SettingsPage.module.css'
 
 interface PageData {
@@ -274,29 +275,22 @@ export function SettingsPage() {
       {/* Tentang */}
       <div className={styles.sectionLabel}>{t('settings.section_about', lang)}</div>
       <div className={styles.card}>
-        <div className={styles.row}>
-          <span className={styles.rowLabel}>{t('settings.made_by', lang)}</span>
-          <span className={styles.rowSub}>{BRAND_STUDIO_WITH_COLLAB}</span>
+        <div className={styles.creditBlock}>
+          <div className={styles.creditAppName}>Sisa</div>
+          <div className={styles.creditMadeBy}>{t('settings.made_by', lang)}</div>
+          <div className={styles.creditStudio}>{BRAND_STUDIO_WITH_COLLAB}</div>
+          <div className={styles.creditVersion}>v0.1.0</div>
         </div>
         <div className={styles.divider} />
         <a
-          className={styles.linkRow}
-          href={`https://twitter.com/${BRAND_TWITTER.replace('@', '')}`}
-          target="_blank"
-          rel="noreferrer"
+          className={styles.feedbackRow}
+          href={`mailto:${BRAND_EMAIL}?subject=${encodeURIComponent('Sisa — Masukan & Bug')}`}
         >
-          <span className={styles.rowLabel}>{t('settings.contact', lang)}</span>
-          <span className={styles.rowSub}>{BRAND_TWITTER}</span>
-        </a>
-        <div className={styles.divider} />
-        <a
-          className={styles.linkRow}
-          href={`mailto:${BRAND_EMAIL}`}
-          target="_blank"
-          rel="noreferrer"
-        >
-          <span className={styles.rowLabel}>{t('settings.email', lang)}</span>
-          <span className={styles.rowSub}>{BRAND_EMAIL}</span>
+          <div className={styles.feedbackText}>
+            <span className={styles.rowLabel}>{t('settings.feedback_cta', lang)}</span>
+            <span className={styles.rowSub}>{t('settings.feedback_sub', lang)}</span>
+          </div>
+          <ChevronRight size={16} stroke="var(--muted)" />
         </a>
       </div>
 
