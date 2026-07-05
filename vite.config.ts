@@ -4,16 +4,13 @@ import { VitePWA } from 'vite-plugin-pwa'
 import { fileURLToPath, URL } from 'node:url'
 
 export default defineConfig({
-  define: {
-    __BUILD_TIME__: JSON.stringify(Date.now().toString()),
-  },
   plugins: [
     react(),
     VitePWA({
       strategies: 'injectManifest',
       srcDir: 'src',
       filename: 'sw.ts',
-      registerType: 'prompt',
+      registerType: 'autoUpdate',
       injectRegister: null,
       injectManifest: {},
       manifest: {
