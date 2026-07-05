@@ -130,6 +130,7 @@ export function QuickLogSheet({
         amount,
         label,
         dateMs,
+        nowMs,
         currency: walletCurrency,
         category,
       })

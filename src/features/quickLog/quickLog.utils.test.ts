@@ -8,6 +8,7 @@ const BASE: QuickLogInput = {
   amount: 50000,
   label: 'makan',
   dateMs: 1700000000000,
+  nowMs: 1700000001000,
   currency: 'IDR',
   category: 'Lainnya',
 }
@@ -39,6 +40,11 @@ describe('buildKeluar', () => {
     const tx = buildKeluar(BASE)
     expect(tx.note).toBeUndefined()
   })
+
+  it('createdAt = nowMs, not Date.now()', () => {
+    const tx = buildKeluar(BASE)
+    expect(tx.createdAt).toBe(BASE.nowMs)
+  })
 })
 
 describe('buildMasuk', () => {
@@ -56,6 +62,11 @@ describe('buildMasuk', () => {
   it('isEarmark is always false', () => {
     const tx = buildMasuk({ ...BASE, mode: 'masuk' })
     expect(tx.isEarmark).toBe(false)
+  })
+
+  it('createdAt = nowMs, not Date.now()', () => {
+    const tx = buildMasuk({ ...BASE, mode: 'masuk' })
+    expect(tx.createdAt).toBe(BASE.nowMs)
   })
 })
 
