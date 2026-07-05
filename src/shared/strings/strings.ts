@@ -17,9 +17,6 @@ export type StringKey =
   | 'common.days'
   | 'cat.manage_title'
   | 'cat.new_placeholder'
-  // update banner
-  | 'update_banner.msg'
-  | 'update_banner.reload'
   // onboarding install guide
   | 'ob.install.heading'
   | 'ob.install.ios_label'
@@ -684,9 +681,6 @@ const id: StringDictionary = {
 
   'cat.manage_title': 'Kelola Kategori',
   'cat.new_placeholder': 'Nama kategori baru',
-
-  'update_banner.msg': 'versi baru tersedia',
-  'update_banner.reload': 'muat ulang ›',
 
   'ob.install.heading': 'Pasang di layar utama biar kayak app beneran',
   'ob.install.ios_label': 'iPhone',
@@ -1380,9 +1374,6 @@ const en: StringDictionary = {
 
   'cat.manage_title': 'Manage Categories',
   'cat.new_placeholder': 'New category name',
-
-  'update_banner.msg': 'new version available',
-  'update_banner.reload': 'reload ›',
 
   'ob.install.heading': 'Add to home screen for the full app experience',
   'ob.install.ios_label': 'iPhone',
