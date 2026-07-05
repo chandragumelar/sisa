@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useClock } from '@/app/providers/useClock'
+import { useNow } from '@/app/providers/useNow'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
 import type { Language } from '@/db/database'
@@ -76,10 +76,9 @@ function styledStackLabel(str: string) {
 }
 
 export function AndaiPage() {
-  const clock = useClock()
   const navigate = useNavigate()
   const lang = useLanguage()
-  const nowMs = clock.now()
+  const { nowMs } = useNow()
 
   const [baseline, setBaseline] = useState<AndaiBaseline | null>(null)
   const [currency, setCurrency] = useState('IDR')

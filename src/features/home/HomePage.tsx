@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useClock } from '@/app/providers/useClock'
+import { useNow } from '@/app/providers/useNow'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { getSettings, patchSettings } from '@/db/settings.repository'
 import { getAllWallets } from '@/db/wallets.repository'
@@ -111,7 +111,7 @@ function getConditionInfo(
   return { label: t('saldo.verdict_below_limit', lang), color: 'var(--signal-danger)' }
 }
 
-function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: () => void } {
+function useHomeData(nowMs: number): HomeData & { isLoading: boolean } {
   const [data, setData] = useState<HomeData>({
     settings: null,
     wallets: [],
@@ -135,9 +135,6 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
     spentThisPeriode: 0,
   })
   const [isLoading, setIsLoading] = useState(true)
-  const [tick, setTick] = useState(0)
-
-  const reload = useCallback(() => setTick((n) => n + 1), [])
 
   useEffect(() => {
     let cancelled = false
@@ -250,16 +247,15 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean; reload: ()
     return () => {
       cancelled = true
     }
-  }, [nowMs, tick])
+  }, [nowMs])
 
-  return { ...data, isLoading, reload }
+  return { ...data, isLoading }
 }
 
 export function HomePage() {
-  const clock = useClock()
   const navigate = useNavigate()
   const lang = useLanguage()
-  const nowMs = clock.now()
+  const { nowMs, refresh } = useNow()
   const {
     settings,
     wallets,
@@ -275,7 +271,6 @@ export function HomePage() {
     mode,
     shortfall,
     isLoading,
-    reload,
   } = useHomeData(nowMs)
 
   const [toast, setToast] = useState<ToastState | null>(null)
@@ -336,7 +331,7 @@ export function HomePage() {
       lastPaydayConfirmed,
       ...(fixedIncome !== null ? { fixedIncome } : {}),
     })
-    reload()
+    refresh()
   }
 
   function dismissToast() {
@@ -348,13 +343,13 @@ export function HomePage() {
     try {
       const result = await commitTagihanPayment(tg.id!, walletId, amount, tg.currency, dateMs)
       void syncTagihanReminder({ ...tg, lastPaidAt: dateMs }).catch(() => {})
-      reload()
+      refresh()
       setToast({
         message: t('home.toast_paid', lang).replace('{name}', tg.name),
         onUndo: async () => {
           await revertTagihanPayment(result)
           void syncTagihanReminder({ ...tg, lastPaidAt: null }).catch(() => {})
-          reload()
+          refresh()
           dismissToast()
         },
         onEdit: () => setMarkPaidTagihan(tg),
@@ -365,12 +360,12 @@ export function HomePage() {
   }
 
   async function handleQuickLogCommit(txId: number, mode: QuickLogMode) {
-    reload()
+    refresh()
     setToast({
       message: mode === 'masuk' ? t('home.toast_masuk', lang) : t('home.toast_keluar', lang),
       onUndo: async () => {
         await deleteTransactionAndRevertBalance(txId)
-        reload()
+        refresh()
         dismissToast()
       },
     })
@@ -379,7 +374,7 @@ export function HomePage() {
   async function handleDeleteTagihan(tg: Tagihan) {
     await deleteTagihan(tg.id!)
     void deleteTagihanReminder(tg.id!).catch(() => {})
-    reload()
+    refresh()
   }
 
   async function handleSaveAlokasi(operasional: number) {
@@ -405,7 +400,7 @@ export function HomePage() {
     ) {
       await patchSettings({ lastPaydayConfirmed: nowMs })
     }
-    reload()
+    refresh()
   }
 
   const lewatTempoCount = tagihan.filter(
@@ -457,7 +452,7 @@ export function HomePage() {
             urgency={backupUrgency}
             onDismiss={() => {
               localStorage.setItem(BACKUP_DISMISS_KEY, String(nowMs))
-              reload()
+              refresh()
             }}
           />
         )}
@@ -714,7 +709,7 @@ export function HomePage() {
         wallets={wallets}
         currency={currency}
         nowMs={nowMs}
-        onUpdate={reload}
+        onUpdate={refresh}
       />
 
       {editWallet && (
@@ -726,7 +721,7 @@ export function HomePage() {
           isOpen={!!editWallet}
           onClose={() => setEditWallet(null)}
           onUpdate={async () => {
-            reload()
+            refresh()
           }}
         />
       )}
@@ -739,7 +734,7 @@ export function HomePage() {
         nowMs={nowMs}
         initialStep="add"
         onUpdate={async () => {
-          reload()
+          refresh()
         }}
       />
 
@@ -753,7 +748,7 @@ export function HomePage() {
         currency={currency}
         nowMs={nowMs}
         onUpdate={async () => {
-          reload()
+          refresh()
         }}
         initialEditTagihan={editTagihan}
       />

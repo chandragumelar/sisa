@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { useClock } from '@/app/providers/useClock'
+import { useNow } from '@/app/providers/useNow'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
 import { getSettings } from '@/db/settings.repository'
@@ -37,11 +37,10 @@ interface PageData {
 }
 
 export function CekDuluPage() {
-  const clock = useClock()
   const navigate = useNavigate()
   const location = useLocation()
   const lang = useLanguage()
-  const nowMs = clock.now()
+  const { nowMs } = useNow()
 
   const [data, setData] = useState<PageData | null>(null)
   const [amountStr, setAmountStr] = useState(() => {
