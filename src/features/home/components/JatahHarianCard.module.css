@@ -40,6 +40,19 @@
   opacity: 0.85;
 }
 
+.pasBadge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--signal-caution);
+  font-family: var(--font-sans);
+  padding: 3px 8px;
+  border: 1px solid var(--signal-caution);
+  border-radius: 999px;
+  opacity: 0.85;
+}
+
 .heroNum {
   font-size: 28px;
   font-weight: 700;
@@ -112,6 +125,22 @@
 
 .alertLine + .alertLine {
   margin-top: 4px;
+}
+
+.pasBox {
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: color-mix(in srgb, var(--signal-caution) 8%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--signal-caution) 25%, transparent);
+  border-radius: 8px;
+}
+
+.pasLine {
+  font-size: 13px;
+  color: var(--ink-secondary);
+  font-family: var(--font-sans);
+  line-height: 1.5;
+  margin: 0;
 }
 
 .labelRow {
