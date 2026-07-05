@@ -26,6 +26,11 @@ describe('formatCurrency', () => {
     expect(result).toContain('100')
   })
 
+  it('uses id-ID dot thousand-separator in fallback path regardless of runtime locale', () => {
+    const result = formatCurrency(10_000_000, 'XYZ')
+    expect(result).toContain('10.000.000')
+  })
+
   it('handles large amounts', () => {
     const result = formatCurrency(10_000_000, 'IDR')
     expect(result).toContain('10')
