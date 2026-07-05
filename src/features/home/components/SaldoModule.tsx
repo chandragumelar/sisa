@@ -46,6 +46,8 @@ export function SaldoModule({
   const nextPaydayDate = new Date(nextPaydayMs)
   const paydayLabel = `${nextPaydayDate.getDate()} ${nextPaydayDate.toLocaleString(lang === 'en' ? 'en-US' : 'id-ID', { month: 'short' })} ${nextPaydayDate.getFullYear()}`
 
+  const cadanganState = sisaUang > 0 ? 'aman' : mengendap > 0 ? 'makan-cadangan' : 'cadangan-habis'
+
   return (
     <>
       <div className={styles.wrapper}>
@@ -151,6 +153,17 @@ export function SaldoModule({
                 >
                   {conditionLabel}
                 </span>
+              )}
+              {cadanganState === 'makan-cadangan' && (
+                <p className={styles.cadanganNote}>
+                  {t('saldo.cadangan_makan', lang).replace(
+                    '{n}',
+                    formatCurrency(mengendap, currency),
+                  )}
+                </p>
+              )}
+              {cadanganState === 'cadangan-habis' && (
+                <p className={styles.cadanganHabis}>{t('saldo.cadangan_habis', lang)}</p>
               )}
               <button className={styles.expandBtn} onClick={() => setExpanded((v) => !v)}>
                 <span className={styles.expandChevron}>{expanded ? '∧' : '∨'}</span>
