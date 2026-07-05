@@ -1,4 +1,4 @@
-import type { Tagihan, TagihanFrequency } from '@/db/database'
+import type { Tagihan, TagihanFrequency, Language } from '@/db/database'
 
 export type TagihanUrgency = 'lewat-tempo' | 'hari-ini' | 'dalam-7-hari' | 'normal'
 
@@ -260,10 +260,37 @@ export function hasUrgentTagihan(tagihan: Tagihan[], nowMs: number): boolean {
   })
 }
 
-const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des']
+const MONTHS_ID = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'Mei',
+  'Jun',
+  'Jul',
+  'Agu',
+  'Sep',
+  'Okt',
+  'Nov',
+  'Des',
+]
+const MONTHS_EN = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+]
 
-export function formatDueDate(tg: Tagihan, nowMs: number): string {
+export function formatDueDate(tg: Tagihan, nowMs: number, lang: Language): string {
   const occ = calcNextOccurrence(tg, nowMs)
-  if (!occ) return `tgl ${tg.dueDay}`
-  return `${occ.getDate()} ${MONTHS[occ.getMonth()]}`
+  if (!occ) return lang === 'en' ? `day ${tg.dueDay}` : `tgl ${tg.dueDay}`
+  return `${occ.getDate()} ${(lang === 'en' ? MONTHS_EN : MONTHS_ID)[occ.getMonth()]}`
 }

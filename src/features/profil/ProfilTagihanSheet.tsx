@@ -172,7 +172,9 @@ export function ProfilTagihanSheet({
                 <button className={styles.itemBody} onClick={() => openEdit(tg)}>
                   <div className={styles.itemMeta}>
                     <span className={styles.listLabel}>{tg.name}</span>
-                    <span className={styles.listDate}>jatuh tempo {formatDueDate(tg, nowMs)}</span>
+                    <span className={styles.listDate}>
+                      {t('tagihan_module.due_prefix', lang)} {formatDueDate(tg, nowMs, lang)}
+                    </span>
                   </div>
                   <span className={styles.listVal}>
                     {formatCurrency(tg.nominalEstimate, tg.currency || currency)}
