@@ -405,6 +405,47 @@ export type StringKey =
   | 'cek_dulu.insight_days'
   | 'cek_dulu.insight_portion'
   | 'cek_dulu.insight_recovery'
+  | 'cek_dulu.warn_gate_confirm'
+  | 'cek_dulu.warn_t2_1'
+  | 'cek_dulu.warn_t2_2'
+  | 'cek_dulu.warn_t2_3'
+  | 'cek_dulu.warn_t2_4'
+  | 'cek_dulu.warn_t2_5'
+  | 'cek_dulu.warn_t2_6'
+  | 'cek_dulu.warn_t2_7'
+  | 'cek_dulu.warn_t2_8'
+  | 'cek_dulu.warn_t2_9'
+  | 'cek_dulu.warn_t2_10'
+  | 'cek_dulu.warn_t3a_1'
+  | 'cek_dulu.warn_t3a_2'
+  | 'cek_dulu.warn_t3a_3'
+  | 'cek_dulu.warn_t3a_4'
+  | 'cek_dulu.warn_t3a_5'
+  | 'cek_dulu.warn_t3a_6'
+  | 'cek_dulu.warn_t3a_7'
+  | 'cek_dulu.warn_t3a_8'
+  | 'cek_dulu.warn_t3a_9'
+  | 'cek_dulu.warn_t3a_10'
+  | 'cek_dulu.warn_t3b_1'
+  | 'cek_dulu.warn_t3b_2'
+  | 'cek_dulu.warn_t3b_3'
+  | 'cek_dulu.warn_t3b_4'
+  | 'cek_dulu.warn_t3b_5'
+  | 'cek_dulu.warn_t3b_6'
+  | 'cek_dulu.warn_t3b_7'
+  | 'cek_dulu.warn_t3b_8'
+  | 'cek_dulu.warn_t3b_9'
+  | 'cek_dulu.warn_t3b_10'
+  | 'cek_dulu.warn_t3c_1'
+  | 'cek_dulu.warn_t3c_2'
+  | 'cek_dulu.warn_t3c_3'
+  | 'cek_dulu.warn_t3c_4'
+  | 'cek_dulu.warn_t3c_5'
+  | 'cek_dulu.warn_t3c_6'
+  | 'cek_dulu.warn_t3c_7'
+  | 'cek_dulu.warn_t3c_8'
+  | 'cek_dulu.warn_t3c_9'
+  | 'cek_dulu.warn_t3c_10'
   // andai page
   | 'andai.title'
   | 'andai.sub'
@@ -1108,6 +1149,74 @@ const id: StringDictionary = {
     'Pembelian ini memakan {pct}% dari sisa uang lo sekarang. Semakin besar persennya, semakin sempit ruang gerak untuk kebutuhan lain bulan ini.',
   'cek_dulu.insight_recovery':
     'Pembelian ini nyentuh tabungan lo. Butuh sekitar {n} hari nabung konsisten buat balik ke posisi sekarang — pastiin ini worth it dulu.',
+  'cek_dulu.warn_gate_confirm': 'Ya, gue sadar & tetep mau',
+  'cek_dulu.warn_t2_1':
+    'Dompet lo nggak nangis sih. Tapi jatah harian lo turun {dropPct}% gara-gara ini.',
+  'cek_dulu.warn_t2_2':
+    'Beli aja. Future lo lagi facepalm dari kejauhan. Jatah harian turun {dropPct}%.',
+  'cek_dulu.warn_t2_3': 'Barangnya lucu. Kondisi finansial lo jadi kurang lucu {dropPct}%.',
+  'cek_dulu.warn_t2_4': 'Nggak bangkrut kok. Cuma hidup lo jadi sedikit lebih sempit {dropPct}%.',
+  'cek_dulu.warn_t2_5': 'Lo boleh checkout. Tapi budget lo baru kehilangan {dropPct}% HP-nya.',
+  'cek_dulu.warn_t2_6': 'Selamat. Lo berhasil bikin uang lo kerja lembur {dropPct}% lebih keras.',
+  'cek_dulu.warn_t2_7':
+    'Ini bukan keputusan buruk. Cuma keputusan yang bikin jatah harian turun {dropPct}%.',
+  'cek_dulu.warn_t2_8': 'Keranjang senang. Dompet agak kecewa. Dampaknya: -{dropPct}%.',
+  'cek_dulu.warn_t2_9': 'Santai, belum bahaya. Tapi budget lo barusan kesandung {dropPct}%.',
+  'cek_dulu.warn_t2_10':
+    'Nggak fatal. Cuma cukup buat bikin lo mikir, "kok cepat habis ya?" -{dropPct}% eh, maksudnya {dropPct}%.',
+  'cek_dulu.warn_t3a_1':
+    'Woy. Itu dana darurat, bukan dana lapar mata. Baliknya butuh {recoveryDays} hari.',
+  'cek_dulu.warn_t3a_2': 'Lo baru nyolek tabungan darurat. Nambalnya makan {recoveryDays} hari.',
+  'cek_dulu.warn_t3a_3': 'Alarm pertama bunyi. Lo perlu {recoveryDays} hari buat balikin ini.',
+  'cek_dulu.warn_t3a_4':
+    'Ini payung pas hujan. Kenapa malah dipotong? Recovery: {recoveryDays} hari.',
+  'cek_dulu.warn_t3a_5': 'Dana darurat itu bodyguard. Lo baru PHK dia selama {recoveryDays} hari.',
+  'cek_dulu.warn_t3a_6':
+    'Kalau besok apes, jangan lihat gue. Balikin dulu dalam {recoveryDays} hari.',
+  'cek_dulu.warn_t3a_7': 'Lo lagi makan cadangan hidup sendiri. Perbaikannya {recoveryDays} hari.',
+  'cek_dulu.warn_t3a_8': 'Itu duit "amit-amit". Sekarang perlu {recoveryDays} hari buat utuh lagi.',
+  'cek_dulu.warn_t3a_9': 'Satu klik checkout. {recoveryDays} hari nyesel versi finansial.',
+  'cek_dulu.warn_t3a_10':
+    'Beli boleh. Tapi lo baru minjem dari diri sendiri selama {recoveryDays} hari.',
+  'cek_dulu.warn_t3b_1':
+    'Lampu indikator udah merah semua. Masih ada {daysUntilPayday} hari menuju gajian.',
+  'cek_dulu.warn_t3b_2': 'Ini pengaman terakhir, woy. Gajian masih {daysUntilPayday} hari lagi.',
+  'cek_dulu.warn_t3b_3':
+    'Lo lagi jalan tanpa helm. Padahal masih {daysUntilPayday} hari sampai payday.',
+  'cek_dulu.warn_t3b_4':
+    'Dana darurat lo tinggal napas terakhir. Gajian masih {daysUntilPayday} hari.',
+  'cek_dulu.warn_t3b_5':
+    'Satu masalah kecil aja bisa bikin plot twist. Masih {daysUntilPayday} hari menuju gajian.',
+  'cek_dulu.warn_t3b_6':
+    'Lo tahu adegan film saat semua mulai salah? Nah. Masih {daysUntilPayday} hari lagi.',
+  'cek_dulu.warn_t3b_7':
+    'Ini bukan zona nyaman. Ini zona "semoga nggak ada apa-apa". {daysUntilPayday} hari tersisa.',
+  'cek_dulu.warn_t3b_8':
+    'Pengaman tinggal recehan. Lo masih harus bertahan {daysUntilPayday} hari.',
+  'cek_dulu.warn_t3b_9':
+    'Kalau hidup nge-prank lo minggu ini, budget lo kalah duluan. {daysUntilPayday} hari lagi.',
+  'cek_dulu.warn_t3b_10':
+    'Lo tinggal selangkah dari "harus kreatif cari uang". Gajian {daysUntilPayday} hari lagi.',
+  'cek_dulu.warn_t3c_1':
+    'JANGAN. Lo bakal makan Indomie polos sampai gajian. Masih {daysUntilPayday} hari lagi.',
+  'cek_dulu.warn_t3c_2':
+    'Ini bukan belanja. Ini speedrun menuju saldo minus. {daysUntilPayday} hari menuju payday.',
+  'cek_dulu.warn_t3c_3':
+    'Dompet lo barusan lihat jurang. Gajian masih {daysUntilPayday} hari lagi.',
+  'cek_dulu.warn_t3c_4':
+    'Selamat. Lo berhasil membeli stres versi premium. Bertahan {daysUntilPayday} hari lagi.',
+  'cek_dulu.warn_t3c_5':
+    'Bahkan saldo lo bilang, "gue cabut ya." Gajian masih {daysUntilPayday} hari.',
+  'cek_dulu.warn_t3c_6':
+    'Ini keputusan yang biasanya diawali dengan, "ah cuma sekali." Masih {daysUntilPayday} hari sampai gajian.',
+  'cek_dulu.warn_t3c_7':
+    'Lo mau beli barang ini. Finansial lo mau mengajukan surat pengunduran diri. {daysUntilPayday} hari lagi.',
+  'cek_dulu.warn_t3c_8':
+    'Setelah checkout ini, doa jadi bagian dari budgeting. Gajian {daysUntilPayday} hari lagi.',
+  'cek_dulu.warn_t3c_9':
+    'Ini bukan cashflow. Ini film horor. Masih {daysUntilPayday} hari sampai payday.',
+  'cek_dulu.warn_t3c_10':
+    'Lo lagi nyoba hidup pakai uang masa depan. Future lo lagi teriak dari {daysUntilPayday} hari ke depan.',
 
   'andai.title': 'Andai',
   'andai.sub': 'skenario hipotetis',
@@ -1819,6 +1928,68 @@ const en: StringDictionary = {
     'This purchase takes {pct}% of your remaining money right now. The bigger the percentage, the less wiggle room you have for everything else this month.',
   'cek_dulu.insight_recovery':
     "This dips into your savings. It'll take around {n} days of consistent saving to get back to where you are now — make sure it's worth it.",
+  'cek_dulu.warn_gate_confirm': 'Yes, I know & still want to',
+  'cek_dulu.warn_t2_1': "Your wallet isn't crying yet. But your daily budget drops {dropPct}%.",
+  'cek_dulu.warn_t2_2': 'Go ahead. Future You just sighed loudly. Daily budget: -{dropPct}%.',
+  'cek_dulu.warn_t2_3': 'Cute purchase. Less cute finances. Down {dropPct}%.',
+  'cek_dulu.warn_t2_4': 'Not broke. Just {dropPct}% closer to asking "where did my money go?"',
+  'cek_dulu.warn_t2_5':
+    "You can buy it. Your budget wishes you'd think twice. -{dropPct}%... I mean {dropPct}%.",
+  'cek_dulu.warn_t2_6': 'Congrats. Your money now has to work {dropPct}% harder.',
+  'cek_dulu.warn_t2_7': 'Not a bad decision. Just a {dropPct}% more expensive life.',
+  'cek_dulu.warn_t2_8': 'Cart is happy. Wallet is concerned. Impact: {dropPct}%.',
+  'cek_dulu.warn_t2_9': 'Not dangerous. Just enough damage to notice. -{dropPct}%.',
+  'cek_dulu.warn_t2_10': "You'll survive. Your budget just got {dropPct}% tighter.",
+  'cek_dulu.warn_t3a_1':
+    "Hey genius. That's emergency money, not snack money. Recovery: {recoveryDays} days.",
+  'cek_dulu.warn_t3a_2':
+    "You just poked the emergency fund. It'll take {recoveryDays} days to heal.",
+  'cek_dulu.warn_t3a_3': 'First warning siren. Recovery takes {recoveryDays} days.',
+  'cek_dulu.warn_t3a_4':
+    "That's the umbrella for rainy days. Why cut it up? {recoveryDays} days to recover.",
+  'cek_dulu.warn_t3a_5':
+    'Your emergency fund is your bodyguard. You just fired it for {recoveryDays} days.',
+  'cek_dulu.warn_t3a_6': "If tomorrow goes badly, don't look at me. Recovery: {recoveryDays} days.",
+  'cek_dulu.warn_t3a_7': "You're spending your own safety net. Rebuild time: {recoveryDays} days.",
+  'cek_dulu.warn_t3a_8':
+    'That\'s "just in case" money. It\'ll take {recoveryDays} days to restore.',
+  'cek_dulu.warn_t3a_9': 'One checkout. {recoveryDays} days of financial regret.',
+  'cek_dulu.warn_t3a_10': "Sure, buy it. You're borrowing from Future You for {recoveryDays} days.",
+  'cek_dulu.warn_t3b_1': 'Every warning light is red. Payday is still {daysUntilPayday} days away.',
+  'cek_dulu.warn_t3b_2': 'This is your last airbag. Payday in {daysUntilPayday} days.',
+  'cek_dulu.warn_t3b_3':
+    "You're riding without a helmet. Still {daysUntilPayday} days till payday.",
+  'cek_dulu.warn_t3b_4': 'Your safety cushion is on life support. {daysUntilPayday} days left.',
+  'cek_dulu.warn_t3b_5': 'One tiny surprise could ruin the plot. Payday in {daysUntilPayday} days.',
+  'cek_dulu.warn_t3b_6':
+    'You know that movie scene where everything goes wrong? Yeah. {daysUntilPayday} days left.',
+  'cek_dulu.warn_t3b_7':
+    'This isn\'t a comfort zone. It\'s a "please nothing happens" zone. {daysUntilPayday} days.',
+  'cek_dulu.warn_t3b_8':
+    'Your backup plan has trust issues now. Survive {daysUntilPayday} more days.',
+  'cek_dulu.warn_t3b_9':
+    "If life pranks you this week, you're losing. {daysUntilPayday} days to payday.",
+  'cek_dulu.warn_t3b_10':
+    "You're one bad day away from getting creative for money. {daysUntilPayday} days left.",
+  'cek_dulu.warn_t3c_1':
+    "DON'T. You'll be eating plain noodles until payday. {daysUntilPayday} days to go.",
+  'cek_dulu.warn_t3c_2':
+    "This isn't shopping. It's a speedrun to negative balance. {daysUntilPayday} days left.",
+  'cek_dulu.warn_t3c_3':
+    'Your wallet just saw the edge of a cliff. Payday in {daysUntilPayday} days.',
+  'cek_dulu.warn_t3c_4':
+    'Congratulations. You purchased premium stress. Enjoy it for {daysUntilPayday} days.',
+  'cek_dulu.warn_t3c_5': 'Even your balance wants to quit. Payday is {daysUntilPayday} days away.',
+  'cek_dulu.warn_t3c_6':
+    'Every financial disaster starts with "it\'s just this once." {daysUntilPayday} days left.',
+  'cek_dulu.warn_t3c_7':
+    'You want this item. Your finances want a resignation letter. {daysUntilPayday} days to payday.',
+  'cek_dulu.warn_t3c_8':
+    'After this purchase, prayer becomes part of your budget strategy. {daysUntilPayday} days left.',
+  'cek_dulu.warn_t3c_9':
+    "This isn't cash flow anymore. It's a horror movie. {daysUntilPayday} days to payday.",
+  'cek_dulu.warn_t3c_10':
+    "You're trying to spend tomorrow's money today. Future You is screaming from {daysUntilPayday} days away.",
 
   'andai.title': 'What If',
   'andai.sub': 'hypothetical scenarios',
