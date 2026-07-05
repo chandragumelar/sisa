@@ -27,22 +27,23 @@ Tiga prinsip yang nge-drive semua keputusan di bawah:
 | ------------- | --------- | -------------------------------------------- |
 | `--canvas`    | `#F5F6F8` | Background utama screen (cool slate tinted)  |
 | `--surface`   | `#FFFFFF` | Card, modul, container yang harus "ngangkat" |
-| `--surface-2` | `#E4E8EE` | Track progress bar, empty state bar          |
+| `--surface-2` | `#F8F9FB` | Track progress bar, empty state bar          |
+| `--surface-3` | `#F0F1F4` | Surface ketiga (lebih dalam dari surface-2) — heatmap empty cell |
 
 ### 1.2 Ink (text)
 
 | Token             | Hex       | Pakai untuk                                |
 | ----------------- | --------- | ------------------------------------------ |
-| `--ink-primary`   | `#11141A` | Heading, amount utama, nama item penting   |
-| `--ink-secondary` | `#565C66` | Body text, label deskriptif, nama wallet   |
-| `--ink-tertiary`  | `#939AA5` | Meta-info, helper text, footer, swipe hint |
+| `--ink-primary`   | `#07080F` | Heading, amount utama, nama item penting   |
+| `--ink-secondary` | `#4A5260` | Body text, label deskriptif, nama wallet   |
+| `--ink-tertiary`  | `#9BA3AF` | Meta-info, helper text, footer, swipe hint |
 
 ### 1.3 Borders
 
 | Token           | Hex       | Pakai untuk                                   |
 | --------------- | --------- | --------------------------------------------- |
-| `--border-hair` | `#E1E5EB` | Border default card, divider antar row        |
-| `--border-soft` | `#EAEDF2` | Border subtle (jarang dipakai, untuk variasi) |
+| `--border-hair` | `#E4E6EA` | Border default card, divider antar row        |
+| `--border-soft` | `#F0F1F4` | Border subtle (jarang dipakai, untuk variasi) |
 
 ### 1.4 Accent — Cobalt
 
@@ -51,9 +52,10 @@ Cobalt sengaja occupy hue yang ga disentuh signal apapun (merah/amber/hijau). In
 | Token            | Hex       | Pakai untuk                                     |
 | ---------------- | --------- | ----------------------------------------------- |
 | `--accent`       | `#1D4ED8` | CTA utama (Cek Dulu), progress bar budget, link |
-| `--accent-hover` | `#1A44C2` | Hover/pressed state                             |
-| `--accent-bg`    | `#EDF1FE` | Background subtle untuk info chip / hint        |
-| `--accent-br`    | `#CFD9F9` | Border accent, underline decoration link        |
+| `--accent-hover` | `#1E40AF` | Hover/pressed state                             |
+| `--accent-bg`    | `#EFF6FF` | Background subtle untuk info chip / hint        |
+| `--accent-br`    | `#BFDBFE` | Border accent, underline decoration link        |
+| `--accent-text`  | `#FFFFFF` | Teks/icon di atas background accent             |
 
 ### 1.5 Signal — Saturated, Anti-Pastel
 
@@ -61,11 +63,15 @@ Signal harus **kelihatan**. Ga ada pastel. User butuh tau langsung "ini bahaya" 
 
 | Token                | Hex       | Pakai untuk                                          |
 | -------------------- | --------- | ---------------------------------------------------- |
-| `--signal-danger`    | `#D11F1F` | Lewat tempo, jatuh tempo hari ini, pengeluaran (−Rp) |
-| `--signal-danger-bg` | `#FCEEEE` | Background notif urgent                              |
-| `--signal-danger-br` | `#F4D4D4` | Border notif urgent                                  |
-| `--signal-caution`   | `#B5680A` | Status "ketat", prediksi mepet                       |
-| `--signal-safe`      | `#1B7A38` | Income, status aman, surplus                         |
+| `--signal-danger`     | `#EF4444` | Lewat tempo, jatuh tempo hari ini, pengeluaran (−Rp) |
+| `--signal-danger-bg`  | `#FEF2F2` | Background notif urgent                              |
+| `--signal-danger-br`  | `#FECACA` | Border notif urgent                                  |
+| `--signal-caution`    | `#D97706` | Status "ketat", prediksi mepet                       |
+| `--signal-caution-bg` | `#FFFBEB` | Background chip/notif "ketat"                        |
+| `--signal-caution-br` | `#FDE68A` | Border chip/notif "ketat"                             |
+| `--signal-safe`       | `#16A34A` | Income, status aman, surplus                         |
+| `--signal-safe-bg`    | `#F0FDF4` | Background chip/notif "aman"                          |
+| `--signal-safe-br`    | `#BBF7D0` | Border chip/notif "aman"                              |
 
 ### 1.6 Aturan Warna (Hard Rules)
 
