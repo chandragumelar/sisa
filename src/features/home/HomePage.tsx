@@ -760,6 +760,7 @@ export function HomePage() {
         currency={currency}
         nowMs={nowMs}
         onCommit={handleQuickLogCommit}
+        uangMengendap={mengendap}
       />
 
       {alokasiSheetOpen &&

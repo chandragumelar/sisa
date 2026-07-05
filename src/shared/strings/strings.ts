@@ -369,6 +369,14 @@ export type StringKey =
   | 'quick_log.submit_edit'
   | 'quick_log.submit_new'
   | 'quick_log.label_placeholder'
+  | 'quick_log.confirm_wallet_title'
+  | 'quick_log.confirm_wallet_body'
+  | 'quick_log.confirm_wallet_fix'
+  | 'quick_log.confirm_cancel'
+  | 'quick_log.confirm_mengendap_title'
+  | 'quick_log.confirm_mengendap_body'
+  | 'quick_log.confirm_proceed'
+  | 'quick_log.confirm_recheck'
   | 'category.manage_btn'
   // category management
   | 'settings.row_categories'
@@ -1050,6 +1058,16 @@ const id: StringDictionary = {
   'quick_log.submit_edit': 'Simpan',
   'quick_log.submit_new': 'Catat',
   'quick_log.label_placeholder': 'kopi, grab, beli baju...',
+  'quick_log.confirm_wallet_title': 'Saldo dompet nggak cukup',
+  'quick_log.confirm_wallet_body':
+    'Menurut catatan, saldo dompet ini nggak cukup buat pengeluaran segini. Mungkin ada uang yang belum kamu catat? Cek lagi nominal saldo atau pengeluarannya.',
+  'quick_log.confirm_wallet_fix': 'Perbaiki',
+  'quick_log.confirm_cancel': 'Batal',
+  'quick_log.confirm_mengendap_title': 'Uang kamu bakal minus',
+  'quick_log.confirm_mengendap_body':
+    'Pengeluaran ini bikin total uang kamu minus menurut catatan. Kemungkinan ada uang yang belum tercatat. Tetap lanjut?',
+  'quick_log.confirm_proceed': 'Lanjut aja',
+  'quick_log.confirm_recheck': 'Cek dulu',
   'category.manage_btn': 'Atur',
   'settings.row_categories': 'Kategori',
   'settings.row_categories_sub': 'Atur kategori pengeluaran & pemasukan',
@@ -1739,6 +1757,16 @@ const en: StringDictionary = {
   'quick_log.submit_edit': 'Save',
   'quick_log.submit_new': 'Log',
   'quick_log.label_placeholder': 'coffee, grab, groceries...',
+  'quick_log.confirm_wallet_title': 'Wallet balance too low',
+  'quick_log.confirm_wallet_body':
+    "This wallet's balance isn't enough for this expense. Maybe there's money you haven't logged yet? Double-check the balance or amount.",
+  'quick_log.confirm_wallet_fix': 'Fix it',
+  'quick_log.confirm_cancel': 'Cancel',
+  'quick_log.confirm_mengendap_title': 'This puts you below zero',
+  'quick_log.confirm_mengendap_body':
+    "This expense puts your recorded total below zero. There may be money you haven't logged. Continue anyway?",
+  'quick_log.confirm_proceed': 'Continue',
+  'quick_log.confirm_recheck': 'Let me check',
   'category.manage_btn': 'Manage',
   'settings.row_categories': 'Categories',
   'settings.row_categories_sub': 'Manage expense & income categories',
