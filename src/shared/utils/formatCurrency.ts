@@ -7,7 +7,7 @@ export function formatCurrency(amount: number, currency: string): string {
       maximumFractionDigits: 0,
     }).format(amount)
   } catch {
-    return `${currency} ${Math.round(amount).toLocaleString()}`
+    return `${currency} ${Math.round(amount).toLocaleString('id-ID')}`
   }
 }
 
