@@ -611,6 +611,8 @@ export type StringKey =
   | 'home.jatah_lewat_badge'
   | 'home.jatah_lewat_title'
   | 'home.jatah_besok'
+  | 'home.jatah_pas_badge'
+  | 'home.jatah_pas_msg'
   | 'home.sisa_uang_dynamic'
   | 'home.jatah_harian_dynamic'
   | 'home.jatah_harian_tooltip'
@@ -1311,8 +1313,10 @@ const id: StringDictionary = {
   'home.jatah_harian_label': 'Jatah Harian',
   'home.jatah_keluar': 'Keluar hari ini',
   'home.jatah_lewat_badge': '⚠ Lewat',
-  'home.jatah_lewat_title': 'Hari ini lewat {n}',
-  'home.jatah_besok': 'Besok jatahmu nyusut jadi {n}',
+  'home.jatah_lewat_title': 'Pengeluaran hari ini {n} lebih besar dari jatah harian kamu',
+  'home.jatah_besok': 'Buat nyeimbangin, jatah besok turun ke sekitar {n}',
+  'home.jatah_pas_badge': 'Pas',
+  'home.jatah_pas_msg': 'Jatah hari ini pas habis. Besok mulai lagi dari awal.',
   'home.sisa_uang_dynamic': 'SISA {cur}MU',
   'home.jatah_harian_dynamic': 'Jatah Harian {cur}mu',
   'home.jatah_harian_tooltip':
@@ -2011,8 +2015,10 @@ const en: StringDictionary = {
   'home.jatah_harian_label': 'Daily Budget',
   'home.jatah_keluar': 'Spent today',
   'home.jatah_lewat_badge': '⚠ Over',
-  'home.jatah_lewat_title': 'Today over by {n}',
-  'home.jatah_besok': "Tomorrow's budget drops to {n}",
+  'home.jatah_lewat_title': "Today's spending is {n} over your daily allowance",
+  'home.jatah_besok': "To balance out, tomorrow's allowance drops to about {n}",
+  'home.jatah_pas_badge': 'On the dot',
+  'home.jatah_pas_msg': "Today's allowance is exactly used up. Fresh start tomorrow.",
   'home.sisa_uang_dynamic': 'YOUR {cur} LEFT',
   'home.jatah_harian_dynamic': 'Your {cur} Daily Budget',
   'home.jatah_harian_tooltip':

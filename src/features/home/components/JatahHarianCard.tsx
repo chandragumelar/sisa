@@ -19,9 +19,11 @@ export function JatahHarianCard({ jatahHariIni, spentToday, sisaUang, sisaHari, 
   const curLabel = getCurrencyLabel(currency, lang)
   const [tooltipOpen, setTooltipOpen] = useState(false)
   const isOver = spentToday > jatahHariIni
+  const isPas = spentToday === jatahHariIni && jatahHariIni > 0
   const pct = jatahHariIni > 0 ? Math.min(100, Math.round((spentToday / jatahHariIni) * 100)) : 0
   const lebih = spentToday - jatahHariIni
-  const besok = Math.max(0, Math.round(sisaUang / Math.max(1, sisaHari - 1)))
+  const besokRaw = sisaUang / Math.max(1, sisaHari - 1)
+  const besok = Math.max(0, Math.round(besokRaw / 1000) * 1000)
 
   return (
     <>
@@ -51,6 +53,7 @@ export function JatahHarianCard({ jatahHariIni, spentToday, sisaUang, sisaHari, 
             </button>
           </div>
           {isOver && <span className={styles.overBadge}>{t('home.jatah_lewat_badge', lang)}</span>}
+          {isPas && <span className={styles.pasBadge}>{t('home.jatah_pas_badge', lang)}</span>}
         </div>
 
         <div className={styles.heroNum}>{formatCurrency(jatahHariIni, currency)}</div>
@@ -77,6 +80,12 @@ export function JatahHarianCard({ jatahHariIni, spentToday, sisaUang, sisaHari, 
             <p className={styles.alertLine}>
               {t('home.jatah_besok', lang).replace('{n}', formatCurrency(besok, currency))}
             </p>
+          </div>
+        )}
+
+        {isPas && (
+          <div className={styles.pasBox}>
+            <p className={styles.pasLine}>{t('home.jatah_pas_msg', lang)}</p>
           </div>
         )}
       </div>
