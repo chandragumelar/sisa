@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useNow } from '@/app/providers/useNow'
 import { useLanguage } from '@/app/providers/useLanguage'
@@ -24,6 +24,62 @@ import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNomi
 import { calcCekDulu } from './cekDulu.utils'
 import { QuickLogSheet } from '@/features/quickLog/QuickLogSheet'
 import styles from './CekDuluPage.module.css'
+
+type WarnTier = 'diam' | 'netral' | 'tier2' | 'tier3a' | 'tier3b' | 'tier3c'
+
+const WARN_VARIANTS = 10
+
+const T2_KEYS = [
+  'cek_dulu.warn_t2_1',
+  'cek_dulu.warn_t2_2',
+  'cek_dulu.warn_t2_3',
+  'cek_dulu.warn_t2_4',
+  'cek_dulu.warn_t2_5',
+  'cek_dulu.warn_t2_6',
+  'cek_dulu.warn_t2_7',
+  'cek_dulu.warn_t2_8',
+  'cek_dulu.warn_t2_9',
+  'cek_dulu.warn_t2_10',
+] as const
+
+const T3A_KEYS = [
+  'cek_dulu.warn_t3a_1',
+  'cek_dulu.warn_t3a_2',
+  'cek_dulu.warn_t3a_3',
+  'cek_dulu.warn_t3a_4',
+  'cek_dulu.warn_t3a_5',
+  'cek_dulu.warn_t3a_6',
+  'cek_dulu.warn_t3a_7',
+  'cek_dulu.warn_t3a_8',
+  'cek_dulu.warn_t3a_9',
+  'cek_dulu.warn_t3a_10',
+] as const
+
+const T3B_KEYS = [
+  'cek_dulu.warn_t3b_1',
+  'cek_dulu.warn_t3b_2',
+  'cek_dulu.warn_t3b_3',
+  'cek_dulu.warn_t3b_4',
+  'cek_dulu.warn_t3b_5',
+  'cek_dulu.warn_t3b_6',
+  'cek_dulu.warn_t3b_7',
+  'cek_dulu.warn_t3b_8',
+  'cek_dulu.warn_t3b_9',
+  'cek_dulu.warn_t3b_10',
+] as const
+
+const T3C_KEYS = [
+  'cek_dulu.warn_t3c_1',
+  'cek_dulu.warn_t3c_2',
+  'cek_dulu.warn_t3c_3',
+  'cek_dulu.warn_t3c_4',
+  'cek_dulu.warn_t3c_5',
+  'cek_dulu.warn_t3c_6',
+  'cek_dulu.warn_t3c_7',
+  'cek_dulu.warn_t3c_8',
+  'cek_dulu.warn_t3c_9',
+  'cek_dulu.warn_t3c_10',
+] as const
 
 interface PageData {
   settings: Settings
@@ -134,30 +190,84 @@ export function CekDuluPage() {
     }
   }, [nowMs])
 
-  if (!data) return null
-
-  const {
-    settings,
-    wallets,
-    totalSaldo,
-    sisaPeriode,
-    dailyBudget,
-    daysUntilPayday,
-    mengendap,
-    jatahHarian,
-  } = data
-  const currency = settings.primaryCurrency
-
   const nominal = parseInt(parseNominalRaw(amountStr), 10) || 0
+
+  const result = data
+    ? calcCekDulu({
+        nominal,
+        sisaUang: data.sisaPeriode,
+        dailyBudget: data.dailyBudget,
+        daysUntilPayday: data.daysUntilPayday,
+        mengendap: data.mengendap,
+        jatahHarian: data.jatahHarian,
+      })
+    : null
+
+  const dropPct =
+    result && result.dailyBefore > 0
+      ? Math.round((-result.dailyDelta / result.dailyBefore) * 100)
+      : 0
+
+  let tier: WarnTier = 'diam'
+  if (result) {
+    const { mengendapDrawn, mengendapAfter, dailyBefore } = result
+    if (dropPct < 5 && mengendapDrawn === 0) {
+      tier = 'diam'
+    } else if (dropPct >= 5 && dropPct < 15 && mengendapDrawn === 0) {
+      tier = 'netral'
+    } else if (dropPct >= 15 && dropPct <= 30 && mengendapDrawn === 0) {
+      tier = 'tier2'
+    } else if (mengendapDrawn > 0 && mengendapAfter >= dailyBefore) {
+      tier = 'tier3a'
+    } else if (mengendapDrawn > 0 && mengendapAfter >= 0 && mengendapAfter < dailyBefore) {
+      tier = 'tier3b'
+    } else if (mengendapAfter < 0) {
+      tier = 'tier3c'
+    } else if (dropPct > 30 && mengendapDrawn === 0) {
+      tier = 'tier3a'
+    } else {
+      tier = 'diam'
+    }
+  }
+
+  const isGated = tier === 'tier3a' || tier === 'tier3b' || tier === 'tier3c'
+
+  const [gateConfirmed, setGateConfirmed] = useState(false)
+
+  useEffect(() => {
+    setGateConfirmed(false)
+  }, [nominal])
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- tier is a re-roll trigger, not read in the callback
+  const variantIndex = useMemo(() => Math.floor(Math.random() * WARN_VARIANTS), [tier])
+
+  if (!data || !result) return null
+
+  const { settings, wallets, totalSaldo, daysUntilPayday } = data
+  const currency = settings.primaryCurrency
   const inputFontSize = amountStr.length > 11 ? 26 : amountStr.length > 8 ? 36 : 48
-  const result = calcCekDulu({
-    nominal,
-    sisaUang: sisaPeriode,
-    dailyBudget,
-    daysUntilPayday,
-    mengendap,
-    jatahHarian,
-  })
+
+  const warnKey =
+    tier === 'tier2'
+      ? T2_KEYS[variantIndex]
+      : tier === 'tier3a'
+        ? T3A_KEYS[variantIndex]
+        : tier === 'tier3b'
+          ? T3B_KEYS[variantIndex]
+          : tier === 'tier3c'
+            ? T3C_KEYS[variantIndex]
+            : null
+
+  const warnText = warnKey
+    ? t(warnKey, lang)
+        .replace('{dropPct}', String(dropPct))
+        .replace('{recoveryDays}', String(result.recoveryDays))
+        .replace('{daysUntilPayday}', String(daysUntilPayday))
+    : null
+
+  const warnBoxClass = tier === 'tier2' ? styles.warnCaution : isGated ? styles.warnDanger : ''
+  const warnLineClass =
+    tier === 'tier2' ? styles.warnLineCaution : isGated ? styles.warnLineDanger : ''
 
   return (
     <div className={styles.page}>
@@ -313,6 +423,18 @@ export function CekDuluPage() {
         </div>
       )}
 
+      {/* Tiered warning */}
+      {warnText && (
+        <div className={`${styles.warnBox} ${warnBoxClass}`}>
+          <p className={`${styles.warnLine} ${warnLineClass}`}>{warnText}</p>
+          {isGated && !gateConfirmed && (
+            <button className={styles.warnGateBtn} onClick={() => setGateConfirmed(true)}>
+              {t('cek_dulu.warn_gate_confirm', lang)}
+            </button>
+          )}
+        </div>
+      )}
+
       <div className={styles.srcLine}>
         <span>{t('cek_dulu.src_label', lang)}</span>
         <span className={styles.srcVal}>
@@ -330,7 +452,7 @@ export function CekDuluPage() {
         <button
           className={styles.buyAction}
           onClick={() => setQuickLogOpen(true)}
-          disabled={nominal === 0}
+          disabled={nominal === 0 || (isGated && !gateConfirmed)}
         >
           <span className={styles.buyLabel}>{t('cek_dulu.buy_label', lang)}</span>
           <span className={styles.buySub}>{t('cek_dulu.buy_sub', lang)}</span>
