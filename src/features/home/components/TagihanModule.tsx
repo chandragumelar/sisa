@@ -127,13 +127,13 @@ export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap, on
               </svg>
               <div className={styles.overdueInfo}>
                 <div className={styles.overdueName}>{tg.name}</div>
-                <div className={styles.overdueSub}>Lewat tempo — segera bayar</div>
+                <div className={styles.overdueSub}>{t('tagihan_module.overdue_sub', lang)}</div>
               </div>
               <span className={styles.overdueAmt}>
                 {formatCurrency(tg.nominalEstimate, tg.currency || currency)}
               </span>
               <button className={styles.bayarBtn} onClick={() => onPayTap(tg)}>
-                Bayar
+                {t('tagihan_detail.pay_btn', lang)}
               </button>
             </div>
           ))}
@@ -158,7 +158,7 @@ export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap, on
                   <span className={styles.rowDate}>
                     {paid
                       ? t('tagihan_module.chip_paid', lang)
-                      : `jatuh tempo ${formatDueDate(tg, nowMs)}`}
+                      : `${t('tagihan_module.due_prefix', lang)} ${formatDueDate(tg, nowMs, lang)}`}
                   </span>
                 </div>
                 <div className={styles.rowRight}>
@@ -178,7 +178,7 @@ export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap, on
 
           {hiddenCount > 0 && (
             <button className={styles.expandRow} onClick={onAddTap}>
-              <span>+ {hiddenCount} tagihan lagi</span>
+              <span>{t('tagihan_module.more', lang).replace('{n}', String(hiddenCount))}</span>
               <svg
                 width="13"
                 height="13"

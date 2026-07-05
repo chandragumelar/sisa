@@ -222,6 +222,8 @@ export type StringKey =
   | 'tagihan_module.all_paid_sub'
   | 'tagihan_module.ctx_total'
   | 'tagihan_module.ctx_paid'
+  | 'tagihan_module.overdue_sub'
+  | 'tagihan_module.due_prefix'
   // notif card
   | 'notif.both'
   | 'notif.overdue'
@@ -959,6 +961,8 @@ const id: StringDictionary = {
   'tagihan_module.all_paid_sub': '{n} tagihan · bulan ini',
   'tagihan_module.ctx_total': 'Total {total}',
   'tagihan_module.ctx_paid': 'Sudah {paid}',
+  'tagihan_module.overdue_sub': 'Lewat tempo — segera bayar',
+  'tagihan_module.due_prefix': 'jatuh tempo',
 
   'notif.both': '{n} komitmen lewat tempo & jatuh tempo hari ini',
   'notif.overdue': '{n} komitmen lewat tempo',
@@ -1738,6 +1742,8 @@ const en: StringDictionary = {
   'tagihan_module.all_paid_sub': '{n} bills · this month',
   'tagihan_module.ctx_total': 'Total {total}',
   'tagihan_module.ctx_paid': 'Paid {paid}',
+  'tagihan_module.overdue_sub': 'Overdue — pay soon',
+  'tagihan_module.due_prefix': 'due',
 
   'notif.both': '{n} commitments overdue & due today',
   'notif.overdue': '{n} commitments overdue',
