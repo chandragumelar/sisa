@@ -526,6 +526,9 @@ export function HomePage() {
               sisaUang={sisaUang}
               sisaHari={daysUntilPayday}
               currency={currency}
+              uangMengendap={mengendap}
+              sisaPeriode={sisaPeriode}
+              saldoBertahan={mode === 'bertahan'}
             />
           )}
 
