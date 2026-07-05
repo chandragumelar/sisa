@@ -102,9 +102,9 @@
   align-items: center;
   gap: 10px;
   padding: 10px 12px;
-  background: color-mix(in srgb, var(--signal-danger, #ef4444) 8%, var(--surface));
+  background: color-mix(in srgb, var(--signal-danger) 8%, var(--surface));
   border-radius: 10px;
-  border: 1px solid color-mix(in srgb, var(--signal-danger, #ef4444) 30%, transparent);
+  border: 1px solid color-mix(in srgb, var(--signal-danger) 30%, transparent);
   margin: 4px 0;
 }
 
@@ -161,8 +161,8 @@
 }
 
 .iconBtnDanger {
-  color: var(--signal-danger, #ef4444);
-  border-color: color-mix(in srgb, var(--signal-danger, #ef4444) 40%, transparent);
+  color: var(--signal-danger);
+  border-color: color-mix(in srgb, var(--signal-danger) 40%, transparent);
 }
 
 .addBtn {
