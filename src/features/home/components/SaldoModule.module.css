@@ -461,6 +461,25 @@
   font-style: italic;
 }
 
+/* ── Mode: Normal — cadangan awareness ──────────────────── */
+.cadanganNote {
+  font-size: 12px;
+  color: var(--signal-caution);
+  font-family: var(--font-sans);
+  line-height: 1.5;
+  margin: 6px 0 0;
+  font-style: italic;
+}
+
+.cadanganHabis {
+  font-size: 12px;
+  color: var(--signal-danger);
+  font-family: var(--font-sans);
+  line-height: 1.5;
+  margin: 6px 0 0;
+  font-style: italic;
+}
+
 /* ── Mengendap row with edit button ─────────────────────── */
 .mengendapRow {
   display: flex;

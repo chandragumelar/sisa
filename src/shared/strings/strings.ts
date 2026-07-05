@@ -181,6 +181,8 @@ export type StringKey =
   | 'saldo.total_saldo_label'
   | 'saldo.uang_mengendap_label'
   | 'saldo.uang_mengendap_sub'
+  | 'saldo.cadangan_makan'
+  | 'saldo.cadangan_habis'
   | 'saldo.rincian_udah_kepakai'
   | 'saldo.sisa_periode_label'
   | 'saldo.uang_mengendap_tooltip'
@@ -867,6 +869,8 @@ const id: StringDictionary = {
   'saldo.total_saldo_label': 'total semua wallet',
   'saldo.uang_mengendap_label': 'Uang Mengendap',
   'saldo.uang_mengendap_sub': 'di luar periode ini',
+  'saldo.cadangan_makan': 'Uang operasional habis. {n} kepakai dari cadangan (Uang Mengendap).',
+  'saldo.cadangan_habis': 'Cadangan habis. Nggak ada uang lagi di luar tagihan sampai gajian.',
   'saldo.rincian_udah_kepakai': '− Udah kepakai',
   'saldo.sisa_periode_label': 'Sisa periode ini',
   'saldo.uang_mengendap_tooltip':
@@ -1570,6 +1574,8 @@ const en: StringDictionary = {
   'saldo.total_saldo_label': 'total wallets',
   'saldo.uang_mengendap_label': 'Parked Money',
   'saldo.uang_mengendap_sub': 'outside this period',
+  'saldo.cadangan_makan': "Operational budget's used up. {n} left in your reserve (parked money).",
+  'saldo.cadangan_habis': 'Reserve depleted. No money left outside bills until payday.',
   'saldo.rincian_udah_kepakai': '− Already spent',
   'saldo.sisa_periode_label': 'Period balance',
   'saldo.uang_mengendap_tooltip': 'Idle balance — safe to leave alone, not for daily spending.',
