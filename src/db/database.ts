@@ -122,8 +122,7 @@ export interface LicenseRecord {
   rawKey: string // full key string; never log this
   version: number // payload.v from key format
   issuedAt: number // epoch ms
-  expiresAt: number // epoch ms
-  buyerIdHash: string // bid from key payload; 8-char hash, not raw PII
+  expiresAt: number // epoch ms; computed at activation from payload.dur
   lastSeenAt: number // epoch ms; used for anti-rollback check
   activatedAt: number // epoch ms
 }

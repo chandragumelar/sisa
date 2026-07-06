@@ -315,4 +315,25 @@ export function applyMigrations(db: Dexie): void {
     .upgrade((tx) => {
       return tx.table('settings').toCollection().modify(applyV12WeekendBehaviorFix)
     })
+
+  // v13: license payload switches from fixed-expiry (iat/exp/bid) to
+  // duration-since-activation (dur). Old records carry the stale shape and
+  // no buyer has been sold a key yet, so drop them instead of migrating.
+  db.version(13)
+    .stores({
+      transactions: '++id, walletId, date, type, currency',
+      wallets: '++id, currency, order',
+      tagihan: '++id, currency, isActive',
+      goals: '++id, currency, order',
+      settings: 'id',
+      license: 'id',
+      meta: 'key',
+      savedScenarios: '++id, savedAt',
+      categories: '++id, type',
+      allocation: 'id',
+      rates: '[base+target], base',
+    })
+    .upgrade((tx) => {
+      return tx.table('license').clear()
+    })
 }

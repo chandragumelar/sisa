@@ -19,9 +19,7 @@ export function ProfilLicenseSheet({ isOpen, onClose, license, nowMs, onUpdate }
   const lang = useLanguage()
   const clock = useClock()
   const [keyInput, setKeyInput] = useState('')
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'invalid' | 'expired'>(
-    'idle',
-  )
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'invalid'>('idle')
 
   async function handleActivate() {
     if (!keyInput.trim()) return
@@ -78,9 +76,6 @@ export function ProfilLicenseSheet({ isOpen, onClose, license, nowMs, onUpdate }
         />
         {status === 'invalid' && (
           <div className={styles.errorMsg}>{t('profil.license_err_invalid', lang)}</div>
-        )}
-        {status === 'expired' && (
-          <div className={styles.errorMsg}>{t('profil.license_err_expired', lang)}</div>
         )}
         {status === 'success' && (
           <div className={styles.successMsg}>{t('profil.license_success', lang)}</div>

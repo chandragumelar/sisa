@@ -9,15 +9,10 @@ import { getLicense, saveLicense, updateLastSeenAt } from '@/db/license.reposito
 
 export interface LicensePayload {
   v: number
-  iat: number // epoch seconds
-  exp: number // epoch seconds
-  bid: string // 8-char SHA-256 prefix of buyer email
+  dur: number // license duration in days, applied from activation time
 }
 
-export type VerifyResult =
-  | { status: 'valid'; payload: LicensePayload }
-  | { status: 'invalid' } // bad format, bad signature, or unknown version
-  | { status: 'expired' } // signature ok but exp has passed
+export type VerifyResult = { status: 'valid'; payload: LicensePayload } | { status: 'invalid' } // bad format, bad signature, or unknown version
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -36,9 +31,9 @@ function parsePayload(segment: string): LicensePayload | null {
     const obj = JSON.parse(json) as Record<string, unknown>
     if (
       typeof obj['v'] !== 'number' ||
-      typeof obj['iat'] !== 'number' ||
-      typeof obj['exp'] !== 'number' ||
-      typeof obj['bid'] !== 'string'
+      typeof obj['dur'] !== 'number' ||
+      !Number.isInteger(obj['dur']) ||
+      obj['dur'] <= 0
     )
       return null
     return obj as unknown as LicensePayload
@@ -62,7 +57,7 @@ async function getPublicKey(): Promise<CryptoKey> {
 // Public API
 // ---------------------------------------------------------------------------
 
-export async function verifyLicenseKey(rawKey: string, clock: Clock): Promise<VerifyResult> {
+export async function verifyLicenseKey(rawKey: string): Promise<VerifyResult> {
   const parts = rawKey.split('.')
   if (parts.length !== 2) return { status: 'invalid' }
 
@@ -84,8 +79,6 @@ export async function verifyLicenseKey(rawKey: string, clock: Clock): Promise<Ve
     return { status: 'invalid' }
   }
 
-  if (payload.exp * 1000 < clock.now()) return { status: 'expired' }
-
   return { status: 'valid', payload }
 }
 
@@ -93,10 +86,10 @@ export async function verifyLicenseKey(rawKey: string, clock: Clock): Promise<Ve
 // Activation & persistence
 // ---------------------------------------------------------------------------
 
-export type ActivateResult = { ok: true } | { ok: false; reason: 'invalid' | 'expired' }
+export type ActivateResult = { ok: true } | { ok: false; reason: 'invalid' }
 
 export async function activateLicense(rawKey: string, clock: Clock): Promise<ActivateResult> {
-  const result = await verifyLicenseKey(rawKey, clock)
+  const result = await verifyLicenseKey(rawKey)
   if (result.status !== 'valid') return { ok: false, reason: result.status }
 
   const { payload } = result
@@ -105,9 +98,8 @@ export async function activateLicense(rawKey: string, clock: Clock): Promise<Act
     id: 1,
     rawKey,
     version: payload.v,
-    issuedAt: payload.iat * 1000,
-    expiresAt: payload.exp * 1000,
-    buyerIdHash: payload.bid,
+    issuedAt: nowMs,
+    expiresAt: nowMs + payload.dur * 86_400_000,
     lastSeenAt: nowMs,
     activatedAt: nowMs,
   }
@@ -122,7 +114,7 @@ export async function loadAndVerifyLicense(clock: Clock): Promise<VerifyResult |
   const record = await getLicense()
   if (!record) return null
 
-  const result = await verifyLicenseKey(record.rawKey, clock)
+  const result = await verifyLicenseKey(record.rawKey)
   if (result.status !== 'invalid') {
     await updateLastSeenAt(clock.now())
   }
@@ -144,9 +136,9 @@ export async function determineLicenseStatus(clock: Clock): Promise<LicenseStatu
   // the system clock was wound back after the last app open.
   if (record.lastSeenAt > clock.now() + LICENSE_ROLLBACK_TOLERANCE_MS) return 'tampered'
 
-  const result = await verifyLicenseKey(record.rawKey, clock)
-  if (result.status !== 'invalid') await updateLastSeenAt(clock.now())
+  const result = await verifyLicenseKey(record.rawKey)
+  if (result.status === 'invalid') return 'invalid'
 
-  if (result.status === 'valid') return 'active'
-  return result.status // 'expired' | 'invalid'
+  await updateLastSeenAt(clock.now())
+  return clock.now() >= record.expiresAt ? 'expired' : 'active'
 }
