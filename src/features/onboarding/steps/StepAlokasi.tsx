@@ -202,7 +202,7 @@ export function StepAlokasi({
               marginBottom: 8,
             }}
           >
-            Punya juga dalam mata uang lain
+            {t('ob.alokasi.other_currency_label', lang)}
           </p>
           {otherWallets.map((w) => (
             <div
@@ -320,7 +320,7 @@ export function StepAlokasi({
           className="ob-btn-primary ob-btn-full"
           onClick={() => onNext(operasional, isFreelance ? effectivePeriodEnd : null)}
         >
-          Mulai pakai Sisa →
+          {t('ob.alokasi.start', lang)}
         </button>
       </div>
     </>

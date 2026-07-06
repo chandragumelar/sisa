@@ -125,6 +125,13 @@ export type StringKey =
   | 'ob.tagihan.empty'
   | 'ob.tagihan.add'
   | 'ob.tagihan.monthly_total'
+  | 'ob.tagihan.example'
+  | 'ob.tagihan.continue'
+  | 'ob.tagihan.min_hint'
+  | 'ob.common.other_currency'
+  | 'ob.alokasi.other_currency_label'
+  | 'ob.alokasi.start'
+  | 'ob.langCurrency.next'
   // currency picker
   | 'currency_picker.search'
   | 'currency_picker.popular'
@@ -856,6 +863,13 @@ const id: StringDictionary = {
   'ob.tagihan.empty': 'Belum ada tagihan',
   'ob.tagihan.add': 'Tambah tagihan',
   'ob.tagihan.monthly_total': 'Total tagihan bulanan',
+  'ob.tagihan.example': 'Contoh: kos, cicilan motor, langganan streaming.',
+  'ob.tagihan.continue': 'Lanjut →',
+  'ob.tagihan.min_hint': 'Tambah minimal 1 tagihan dulu',
+  'ob.common.other_currency': 'mata uang lain',
+  'ob.alokasi.other_currency_label': 'Punya juga dalam mata uang lain',
+  'ob.alokasi.start': 'Mulai pakai Sisa →',
+  'ob.langCurrency.next': 'Lanjut',
 
   'currency_picker.search': 'pilih mata uang…',
   'currency_picker.popular': 'Populer',
@@ -1637,6 +1651,13 @@ const en: StringDictionary = {
   'ob.tagihan.empty': 'No bills yet',
   'ob.tagihan.add': 'Add bill',
   'ob.tagihan.monthly_total': 'Monthly bills total',
+  'ob.tagihan.example': 'e.g. rent, car loan, streaming subscription.',
+  'ob.tagihan.continue': 'Continue →',
+  'ob.tagihan.min_hint': 'Add at least 1 bill first',
+  'ob.common.other_currency': 'other currency',
+  'ob.alokasi.other_currency_label': 'Also held in other currencies',
+  'ob.alokasi.start': 'Start using Sisa →',
+  'ob.langCurrency.next': 'Next',
 
   'currency_picker.search': 'search currency…',
   'currency_picker.popular': 'Popular',
