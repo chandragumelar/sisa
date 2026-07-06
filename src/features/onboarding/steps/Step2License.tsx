@@ -23,11 +23,7 @@ export function Step2License({ onNext }: Props) {
     try {
       const result = await activateLicense(trimmed, clock)
       if (!result.ok) {
-        setError(
-          result.reason === 'expired'
-            ? t('ob.step2.err_expired', lang)
-            : t('ob.step2.err_invalid', lang),
-        )
+        setError(t('ob.step2.err_invalid', lang))
         return
       }
       onNext()

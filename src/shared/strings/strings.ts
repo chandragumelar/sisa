@@ -37,7 +37,6 @@ export type StringKey =
   | 'ob.step2.verify'
   | 'ob.step2.activate'
   | 'ob.step2.buy_cta'
-  | 'ob.step2.err_expired'
   | 'ob.step2.err_invalid'
   | 'ob.step2.err_other'
   // onboarding step 3
@@ -533,7 +532,6 @@ export type StringKey =
   | 'profil.license_activate'
   | 'profil.license_buy_label'
   | 'profil.license_err_invalid'
-  | 'profil.license_err_expired'
   | 'profil.license_success'
   // profil – tagihan
   | 'profil.tagihan_currency_label'
@@ -763,7 +761,6 @@ const id: StringDictionary = {
   'ob.step2.verify': 'Memverifikasi…',
   'ob.step2.activate': 'Aktivasi',
   'ob.step2.buy_cta': 'Belum punya kode? Beli di sini ›',
-  'ob.step2.err_expired': 'kode sudah expired — perpanjang atau beli baru ›',
   'ob.step2.err_invalid': 'kode ga valid, cek email lo lagi',
   'ob.step2.err_other': 'terjadi kesalahan, coba lagi',
 
@@ -1311,7 +1308,6 @@ const id: StringDictionary = {
   'profil.license_activate': 'Aktifkan',
   'profil.license_buy_label': 'perpanjang / beli baru',
   'profil.license_err_invalid': 'Kode tidak valid atau tanda tangan tidak cocok.',
-  'profil.license_err_expired': 'Kode sudah kadaluarsa.',
   'profil.license_success': 'Lisensi berhasil diaktifkan!',
 
   'profil.tagihan_currency_label': 'Mata uang',
@@ -1547,7 +1543,6 @@ const en: StringDictionary = {
   'ob.step2.verify': 'Verifying…',
   'ob.step2.activate': 'Activate',
   'ob.step2.buy_cta': "Don't have a key? Buy here ›",
-  'ob.step2.err_expired': 'key expired — renew or buy a new one ›',
   'ob.step2.err_invalid': 'invalid key — double-check your email',
   'ob.step2.err_other': 'something went wrong, try again',
 
@@ -2086,7 +2081,6 @@ const en: StringDictionary = {
   'profil.license_activate': 'Activate',
   'profil.license_buy_label': 'renew / buy new',
   'profil.license_err_invalid': 'Invalid key or signature mismatch.',
-  'profil.license_err_expired': 'Key has expired.',
   'profil.license_success': 'License activated!',
 
   'profil.tagihan_currency_label': 'Currency',
