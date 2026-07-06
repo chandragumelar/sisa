@@ -81,7 +81,7 @@ export function StepTagihan({ tagihan, currency, onChange, onNext }: Props) {
             </svg>
           </div>
           <div className={styles.emptyLabel}>{t('ob.tagihan.empty', lang)}</div>
-          <div className={styles.emptyHint}>Contoh: kos, cicilan motor, langganan streaming.</div>
+          <div className={styles.emptyHint}>{t('ob.tagihan.example', lang)}</div>
         </div>
       ) : (
         <div className="ob-card">
@@ -186,7 +186,7 @@ export function StepTagihan({ tagihan, currency, onChange, onNext }: Props) {
             {otherCurrencies.size > 0 &&
               Array.from(otherCurrencies.entries()).map(([cur, amt]) => (
                 <div key={cur} style={{ fontSize: 11, color: 'var(--ink-tertiary)', marginTop: 2 }}>
-                  + {formatCurrency(amt, cur)} mata uang lain
+                  + {formatCurrency(amt, cur)} {t('ob.common.other_currency', lang)}
                 </div>
               ))}
           </div>
@@ -197,11 +197,11 @@ export function StepTagihan({ tagihan, currency, onChange, onNext }: Props) {
           disabled={!canProceed}
           onClick={onNext}
         >
-          Lanjut →
+          {t('ob.tagihan.continue', lang)}
         </button>
         {!canProceed && (
           <div style={{ textAlign: 'center', fontSize: 12, color: 'var(--ink-tertiary)' }}>
-            Tambah minimal 1 tagihan dulu
+            {t('ob.tagihan.min_hint', lang)}
           </div>
         )}
       </div>

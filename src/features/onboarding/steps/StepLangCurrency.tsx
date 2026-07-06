@@ -72,7 +72,7 @@ export function StepLangCurrency({ onNext }: Props) {
       <div className="ob-grow" />
 
       <button className="ob-primary-btn" disabled={!selectedCurrency} onClick={handleNext}>
-        {selectedLang === 'id' ? 'Lanjut' : 'Next'}
+        {t('ob.langCurrency.next', selectedLang)}
       </button>
 
       {sheetOpen && (
