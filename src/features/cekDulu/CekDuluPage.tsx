@@ -25,7 +25,7 @@ import { calcCekDulu } from './cekDulu.utils'
 import { QuickLogSheet } from '@/features/quickLog/QuickLogSheet'
 import styles from './CekDuluPage.module.css'
 
-type WarnTier = 'diam' | 'netral' | 'tier2' | 'tier3a' | 'tier3b' | 'tier3c'
+type WarnTier = 'diam' | 'netral' | 'tier2' | 'tier2b' | 'tier3a' | 'tier3b' | 'tier3c'
 
 const WARN_VARIANTS = 10
 
@@ -40,6 +40,19 @@ const T2_KEYS = [
   'cek_dulu.warn_t2_8',
   'cek_dulu.warn_t2_9',
   'cek_dulu.warn_t2_10',
+] as const
+
+const T2B_KEYS = [
+  'cek_dulu.warn_t2b_1',
+  'cek_dulu.warn_t2b_2',
+  'cek_dulu.warn_t2b_3',
+  'cek_dulu.warn_t2b_4',
+  'cek_dulu.warn_t2b_5',
+  'cek_dulu.warn_t2b_6',
+  'cek_dulu.warn_t2b_7',
+  'cek_dulu.warn_t2b_8',
+  'cek_dulu.warn_t2b_9',
+  'cek_dulu.warn_t2b_10',
 ] as const
 
 const T3A_KEYS = [
@@ -224,13 +237,13 @@ export function CekDuluPage() {
     } else if (mengendapAfter < 0) {
       tier = 'tier3c'
     } else if (dropPct > 30 && mengendapDrawn === 0) {
-      tier = 'tier3a'
+      tier = 'tier2b'
     } else {
       tier = 'diam'
     }
   }
 
-  const isGated = tier === 'tier3a' || tier === 'tier3b' || tier === 'tier3c'
+  const isGated = tier === 'tier2b' || tier === 'tier3a' || tier === 'tier3b' || tier === 'tier3c'
 
   const [gateConfirmed, setGateConfirmed] = useState(false)
 
@@ -250,13 +263,15 @@ export function CekDuluPage() {
   const warnKey =
     tier === 'tier2'
       ? T2_KEYS[variantIndex]
-      : tier === 'tier3a'
-        ? T3A_KEYS[variantIndex]
-        : tier === 'tier3b'
-          ? T3B_KEYS[variantIndex]
-          : tier === 'tier3c'
-            ? T3C_KEYS[variantIndex]
-            : null
+      : tier === 'tier2b'
+        ? T2B_KEYS[variantIndex]
+        : tier === 'tier3a'
+          ? T3A_KEYS[variantIndex]
+          : tier === 'tier3b'
+            ? T3B_KEYS[variantIndex]
+            : tier === 'tier3c'
+              ? T3C_KEYS[variantIndex]
+              : null
 
   const warnText = warnKey
     ? t(warnKey, lang)
