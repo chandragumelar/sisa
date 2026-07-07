@@ -73,12 +73,7 @@ export function Step2License({ onNext }: Props) {
 
       <button
         className="ob-link"
-        onClick={() =>
-          window.open(
-            'https://clicky.id/warung-dgt/sisa-app-budget-tracker-finance-tracker-planner-expense',
-            '_blank',
-          )
-        }
+        onClick={() => window.open('https://chandragumelar.gumroad.com/l/sisa-app', '_blank')}
       >
         {t('ob.step2.buy_cta', lang)}
       </button>
