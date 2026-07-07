@@ -424,6 +424,16 @@ export type StringKey =
   | 'cek_dulu.warn_t2_8'
   | 'cek_dulu.warn_t2_9'
   | 'cek_dulu.warn_t2_10'
+  | 'cek_dulu.warn_t2b_1'
+  | 'cek_dulu.warn_t2b_2'
+  | 'cek_dulu.warn_t2b_3'
+  | 'cek_dulu.warn_t2b_4'
+  | 'cek_dulu.warn_t2b_5'
+  | 'cek_dulu.warn_t2b_6'
+  | 'cek_dulu.warn_t2b_7'
+  | 'cek_dulu.warn_t2b_8'
+  | 'cek_dulu.warn_t2b_9'
+  | 'cek_dulu.warn_t2b_10'
   | 'cek_dulu.warn_t3a_1'
   | 'cek_dulu.warn_t3a_2'
   | 'cek_dulu.warn_t3a_3'
@@ -1169,16 +1179,35 @@ const id: StringDictionary = {
     'Dompet lo nggak nangis sih. Tapi jatah harian lo turun {dropPct}% gara-gara ini.',
   'cek_dulu.warn_t2_2':
     'Beli aja. Future lo lagi facepalm dari kejauhan. Jatah harian turun {dropPct}%.',
-  'cek_dulu.warn_t2_3': 'Barangnya lucu. Kondisi finansial lo jadi kurang lucu {dropPct}%.',
-  'cek_dulu.warn_t2_4': 'Nggak bangkrut kok. Cuma hidup lo jadi sedikit lebih sempit {dropPct}%.',
+  'cek_dulu.warn_t2_3': 'Barangnya lucu. Kondisi finansial lo jadi kurang lucu, turun {dropPct}%.',
+  'cek_dulu.warn_t2_4':
+    'Nggak bangkrut kok. Cuma hidup lo jadi sedikit lebih sempit, turun {dropPct}%.',
   'cek_dulu.warn_t2_5': 'Lo boleh checkout. Tapi budget lo baru kehilangan {dropPct}% HP-nya.',
   'cek_dulu.warn_t2_6': 'Selamat. Lo berhasil bikin uang lo kerja lembur {dropPct}% lebih keras.',
   'cek_dulu.warn_t2_7':
     'Ini bukan keputusan buruk. Cuma keputusan yang bikin jatah harian turun {dropPct}%.',
   'cek_dulu.warn_t2_8': 'Keranjang senang. Dompet agak kecewa. Dampaknya: -{dropPct}%.',
-  'cek_dulu.warn_t2_9': 'Santai, belum bahaya. Tapi budget lo barusan kesandung {dropPct}%.',
+  'cek_dulu.warn_t2_9': 'Santai, belum bahaya. Tapi budget lo barusan kesandung, turun {dropPct}%.',
   'cek_dulu.warn_t2_10':
     'Nggak fatal. Cuma cukup buat bikin lo mikir, "kok cepat habis ya?" -{dropPct}% eh, maksudnya {dropPct}%.',
+  'cek_dulu.warn_t2b_1': 'Jatah harian lo tebas {dropPct}% sekali klik. Ini bukan nyenggol lagi.',
+  'cek_dulu.warn_t2b_2':
+    'Sekali beli, {dropPct}% jatah harian lo lenyap. Bantalan darurat masih utuh sih—buat sekarang.',
+  'cek_dulu.warn_t2b_3':
+    '{dropPct}% jatah harian lo hangus. Belum sampe makan tabungan, tapi udah di ambang.',
+  'cek_dulu.warn_t2b_4': 'Lo baru mangkas {dropPct}% jatah harian dalam sekejap. Yakin ini worth?',
+  'cek_dulu.warn_t2b_5':
+    'Potongan {dropPct}% itu gede. Dompet lo masih napas, tapi udah ngos-ngosan.',
+  'cek_dulu.warn_t2b_6':
+    '{dropPct}% jatah harian tumbang gara-gara ini. Satu langkah lagi masuk zona darurat.',
+  'cek_dulu.warn_t2b_7':
+    'Ini keputusan gede. {dropPct}% jatah harian lo raib dalam sekali checkout.',
+  'cek_dulu.warn_t2b_8':
+    'Belum kritis, tapi hampir. Lo baru babat {dropPct}% jatah harian sekaligus.',
+  'cek_dulu.warn_t2b_9':
+    '{dropPct}% jatah harian lenyap. Ini bukan "ah cuma jajan", ini keputusan beneran.',
+  'cek_dulu.warn_t2b_10':
+    'Lo motong {dropPct}% jatah harian dalam satu gerakan. Rem dulu, mikir dulu.',
   'cek_dulu.warn_t3a_1':
     'Woy. Itu dana darurat, bukan dana lapar mata. Baliknya butuh {recoveryDays} hari.',
   'cek_dulu.warn_t3a_2': 'Lo baru nyolek tabungan darurat. Nambalnya makan {recoveryDays} hari.',
@@ -1190,7 +1219,7 @@ const id: StringDictionary = {
     'Kalau besok apes, jangan lihat gue. Balikin dulu dalam {recoveryDays} hari.',
   'cek_dulu.warn_t3a_7': 'Lo lagi makan cadangan hidup sendiri. Perbaikannya {recoveryDays} hari.',
   'cek_dulu.warn_t3a_8': 'Itu duit "amit-amit". Sekarang perlu {recoveryDays} hari buat utuh lagi.',
-  'cek_dulu.warn_t3a_9': 'Satu klik checkout. {recoveryDays} hari nyesel versi finansial.',
+  'cek_dulu.warn_t3a_9': 'Satu klik checkout. {recoveryDays} hari penyesalan finansial.',
   'cek_dulu.warn_t3a_10':
     'Beli boleh. Tapi lo baru minjem dari diri sendiri selama {recoveryDays} hari.',
   'cek_dulu.warn_t3b_1':
@@ -1225,7 +1254,7 @@ const id: StringDictionary = {
   'cek_dulu.warn_t3c_6':
     'Ini keputusan yang biasanya diawali dengan, "ah cuma sekali." Masih {daysUntilPayday} hari sampai gajian.',
   'cek_dulu.warn_t3c_7':
-    'Lo mau beli barang ini. Finansial lo mau mengajukan surat pengunduran diri. {daysUntilPayday} hari lagi.',
+    'Lo mau beli barang ini. Finansial lo mau ngajuin surat resign. Sisa {daysUntilPayday} hari sampai gajian.',
   'cek_dulu.warn_t3c_8':
     'Setelah checkout ini, doa jadi bagian dari budgeting. Gajian {daysUntilPayday} hari lagi.',
   'cek_dulu.warn_t3c_9':
@@ -1953,15 +1982,34 @@ const en: StringDictionary = {
   'cek_dulu.warn_gate_confirm': 'Yes, I know & still want to',
   'cek_dulu.warn_t2_1': "Your wallet isn't crying yet. But your daily budget drops {dropPct}%.",
   'cek_dulu.warn_t2_2': 'Go ahead. Future You just sighed loudly. Daily budget: -{dropPct}%.',
-  'cek_dulu.warn_t2_3': 'Cute purchase. Less cute finances. Down {dropPct}%.',
-  'cek_dulu.warn_t2_4': 'Not broke. Just {dropPct}% closer to asking "where did my money go?"',
+  'cek_dulu.warn_t2_3': 'Cute purchase. Less cute finances, down {dropPct}%.',
+  'cek_dulu.warn_t2_4': 'Not broke. Just a little more cramped, down {dropPct}%.',
   'cek_dulu.warn_t2_5':
     "You can buy it. Your budget wishes you'd think twice. -{dropPct}%... I mean {dropPct}%.",
   'cek_dulu.warn_t2_6': 'Congrats. Your money now has to work {dropPct}% harder.',
   'cek_dulu.warn_t2_7': 'Not a bad decision. Just a {dropPct}% more expensive life.',
   'cek_dulu.warn_t2_8': 'Cart is happy. Wallet is concerned. Impact: {dropPct}%.',
-  'cek_dulu.warn_t2_9': 'Not dangerous. Just enough damage to notice. -{dropPct}%.',
+  'cek_dulu.warn_t2_9': 'Relax, not dangerous yet. But your budget just tripped, down {dropPct}%.',
   'cek_dulu.warn_t2_10': "You'll survive. Your budget just got {dropPct}% tighter.",
+  'cek_dulu.warn_t2b_1':
+    "You just slashed {dropPct}% of your daily budget in one tap. This isn't a nudge anymore.",
+  'cek_dulu.warn_t2b_2':
+    "One purchase, {dropPct}% of your daily budget gone. Emergency fund's still safe—for now.",
+  'cek_dulu.warn_t2b_3':
+    "{dropPct}% of your daily budget wiped. Not touching savings yet, but you're at the edge.",
+  'cek_dulu.warn_t2b_4':
+    "You just cut {dropPct}% of your daily budget in seconds. Sure it's worth it?",
+  'cek_dulu.warn_t2b_5': "A {dropPct}% cut is steep. Your wallet's still breathing, but barely.",
+  'cek_dulu.warn_t2b_6':
+    '{dropPct}% of your daily budget down from this. One step from the danger zone.',
+  'cek_dulu.warn_t2b_7':
+    'This is a big call. {dropPct}% of your daily budget vanished in one checkout.',
+  'cek_dulu.warn_t2b_8':
+    'Not critical yet, but close. You just carved off {dropPct}% of your daily budget at once.',
+  'cek_dulu.warn_t2b_9':
+    '{dropPct}% of your daily budget gone. This isn\'t "just a snack," it\'s a real decision.',
+  'cek_dulu.warn_t2b_10':
+    'You cut {dropPct}% of your daily budget in one move. Brake first, think first.',
   'cek_dulu.warn_t3a_1':
     "Hey genius. That's emergency money, not snack money. Recovery: {recoveryDays} days.",
   'cek_dulu.warn_t3a_2':
@@ -2005,7 +2053,7 @@ const en: StringDictionary = {
   'cek_dulu.warn_t3c_6':
     'Every financial disaster starts with "it\'s just this once." {daysUntilPayday} days left.',
   'cek_dulu.warn_t3c_7':
-    'You want this item. Your finances want a resignation letter. {daysUntilPayday} days to payday.',
+    'You want this item. Your finances want to resign. {daysUntilPayday} days left till payday.',
   'cek_dulu.warn_t3c_8':
     'After this purchase, prayer becomes part of your budget strategy. {daysUntilPayday} days left.',
   'cek_dulu.warn_t3c_9':
