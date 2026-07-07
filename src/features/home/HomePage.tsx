@@ -19,7 +19,7 @@ import {
 import { t } from '@/shared/strings/strings'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
 import { getCurrencyLabel } from '@/constants/currencies'
-import type { Language, Settings, Wallet, Tagihan, Allocation } from '@/db/database'
+import type { Settings, Wallet, Tagihan, Allocation } from '@/db/database'
 import {
   calcDaysUntilPayday,
   getPaydayDate,
@@ -93,23 +93,6 @@ interface ToastState {
 }
 
 const BACKUP_DISMISS_KEY = 'sisa:backupDismissedAt'
-const NEAR_LIMIT_MARGIN = 0.2 // 20% above min balance = "approaching"
-
-function getConditionInfo(
-  settings: Settings,
-  sisa: number,
-  lang: Language,
-): { label: string; color: string } | null {
-  const { incomeType, freelanceMinBalance } = settings
-  if (incomeType === 'tetap' || freelanceMinBalance == null || freelanceMinBalance <= 0) return null
-
-  const nearThreshold = freelanceMinBalance * (1 + NEAR_LIMIT_MARGIN)
-  if (sisa > nearThreshold) return null
-  if (sisa > freelanceMinBalance) {
-    return { label: t('saldo.verdict_near_limit', lang), color: 'var(--signal-caution)' }
-  }
-  return { label: t('saldo.verdict_below_limit', lang), color: 'var(--signal-danger)' }
-}
 
 function useHomeData(nowMs: number): HomeData & { isLoading: boolean } {
   const [data, setData] = useState<HomeData>({
@@ -315,7 +298,7 @@ export function HomePage() {
     nextPaydayMs,
   )
   const daysUntilPayday = calcDaysUntilPayday(nowMs, settings, allocation)
-  const condition = getConditionInfo(settings, sisaUang, lang)
+  const condition = null as { label: string; color: string } | null
 
   const backupDismissedAt = (() => {
     const raw = localStorage.getItem(BACKUP_DISMISS_KEY)
