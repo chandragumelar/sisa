@@ -94,7 +94,7 @@ export function ProfilLicenseSheet({ isOpen, onClose, license, nowMs, onUpdate }
         <div className={styles.fieldLabel}>{t('profil.license_buy_label', lang)}</div>
         <a
           className={styles.buyLink}
-          href="https://clicky.me/sisa"
+          href="https://pikaxustudio.gumroad.com/l/sisa-app"
           target="_blank"
           rel="noreferrer"
         >
@@ -102,7 +102,7 @@ export function ProfilLicenseSheet({ isOpen, onClose, license, nowMs, onUpdate }
         </a>
         <a
           className={styles.buyLink}
-          href="https://sisa.gumroad.com"
+          href="https://pikaxustudio.gumroad.com/l/sisa-app"
           target="_blank"
           rel="noreferrer"
         >
