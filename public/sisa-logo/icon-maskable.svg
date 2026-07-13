@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <rect width="1024" height="1024" fill="#1A1815"/>
+  <g>
+    <!-- main cream circle -->
+    <circle cx="512" cy="512" r="280.1664" fill="#F2EDE3"/>
+    <!-- coral wedge (the "remainder" portion) -->
+    <path d="M 512 512 L 512 231.8336 A 280.1664 280.1664 0 0 1 775.2702986721531 607.8225522830367 Z" fill="#E4623C"/>
+    <!-- inner divider stroke between cream and coral, subtle ink line -->
+    <line x1="512" y1="512" x2="512" y2="231.8336" stroke="#1A1815" stroke-width="12.288" stroke-linecap="round"/>
+    <line x1="512" y1="512" x2="775.2702986721531" y2="607.8225522830367" stroke="#1A1815" stroke-width="12.288" stroke-linecap="round"/>
+    <!-- center dot — represents "what's left" / decision point -->
+    <circle cx="512" cy="512" r="35.84" fill="#1A1815"/>
+  </g>
+</svg>
