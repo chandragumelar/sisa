@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, lazy, Suspense } from 'react'
 import { RouterProvider } from 'react-router-dom'
 import { router } from './router'
 import { getSettings } from '@/db/settings.repository'
@@ -10,6 +10,17 @@ import { refreshRatesIfStale } from '@/shared/utils/fx'
 import { UpdateBanner } from './UpdateBanner'
 import { LanguageProvider } from './providers/LanguageProvider'
 import { IS_DEMO } from '@/features/demo/demo.constants'
+
+// Literal check (not the IS_DEMO import) so esbuild folds this to `false` and drops the
+// dynamic import() entirely in production builds — DemoBanner never enters the prod bundle.
+const DemoBanner =
+  import.meta.env.VITE_DEMO === '1'
+    ? lazy(() => import('@/features/demo/DemoBanner').then((m) => ({ default: m.DemoBanner })))
+    : null
+
+// Must match DemoBanner.module.css .bar height — reserves space so the fixed banner
+// never covers page headers instead of pushing content down.
+const DEMO_BANNER_HEIGHT = '34px'
 
 export function App() {
   useEffect(() => {
@@ -36,7 +47,24 @@ export function App() {
 
   return (
     <LanguageProvider>
-      <RouterProvider router={router} />
+      {DemoBanner ? (
+        <>
+          <Suspense fallback={null}>
+            <DemoBanner />
+          </Suspense>
+          <div
+            style={{
+              marginTop: DEMO_BANNER_HEIGHT,
+              height: `calc(100dvh - ${DEMO_BANNER_HEIGHT})`,
+              overflow: 'auto',
+            }}
+          >
+            <RouterProvider router={router} />
+          </div>
+        </>
+      ) : (
+        <RouterProvider router={router} />
+      )}
       {!IS_DEMO && <UpdateBanner />}
     </LanguageProvider>
   )
