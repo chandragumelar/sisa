@@ -9,6 +9,7 @@ import { applyLanguage } from '@/shared/utils/language'
 import { refreshRatesIfStale } from '@/shared/utils/fx'
 import { UpdateBanner } from './UpdateBanner'
 import { LanguageProvider } from './providers/LanguageProvider'
+import { IS_DEMO } from '@/features/demo/demo.constants'
 
 export function App() {
   useEffect(() => {
@@ -36,7 +37,7 @@ export function App() {
   return (
     <LanguageProvider>
       <RouterProvider router={router} />
-      <UpdateBanner />
+      {!IS_DEMO && <UpdateBanner />}
     </LanguageProvider>
   )
 }
