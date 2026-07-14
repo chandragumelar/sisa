@@ -737,6 +737,11 @@ export type StringKey =
   | 'insight.top_tx_empty'
   | 'insight.top_tx_empty_sub'
   | 'insight.nav_aria'
+  // demo banner
+  | 'demo.banner.label'
+  | 'demo.banner.reset'
+  | 'demo.banner.buy'
+  | 'demo.banner.resetting'
 
 export type StringDictionary = Record<StringKey, string>
 
@@ -1547,6 +1552,11 @@ const id: StringDictionary = {
   'insight.top_tx_empty': 'Belum ada transaksi\nbulan ini.',
   'insight.top_tx_empty_sub': 'transaksi pertama kamu bakal muncul di sini',
   'insight.nav_aria': 'Lihat pola',
+
+  'demo.banner.label': 'Mode demo — semua data cuma contoh',
+  'demo.banner.reset': 'Reset',
+  'demo.banner.buy': 'Beli Sisa',
+  'demo.banner.resetting': 'Mereset…',
 }
 
 const en: StringDictionary = {
@@ -2347,6 +2357,11 @@ const en: StringDictionary = {
   'insight.top_tx_empty': 'No transactions\nthis month yet.',
   'insight.top_tx_empty_sub': 'your first transaction will appear here',
   'insight.nav_aria': 'View insights',
+
+  'demo.banner.label': 'Demo mode — all data is sample',
+  'demo.banner.reset': 'Reset',
+  'demo.banner.buy': 'Get Sisa',
+  'demo.banner.resetting': 'Resetting…',
 }
 
 const strings: Record<Language, StringDictionary> = { id, en }
