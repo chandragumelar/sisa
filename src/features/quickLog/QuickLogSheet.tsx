@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import type { Wallet } from '@/db/database'
 import { formatCurrency, getCurrencySymbol } from '@/shared/utils/formatCurrency'
 import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
@@ -76,6 +76,7 @@ export function QuickLogSheet({
   const [submitting, setSubmitting] = useState(false)
   const [manageOpen, setManageOpen] = useState(false)
   const [confirm, setConfirm] = useState<null | 'wallet' | 'mengendap'>(null)
+  const dateInputRef = useRef<HTMLInputElement>(null)
 
   const amount = parseInt(parseNominalRaw(amountStr), 10) || 0
   const currencyWallets = wallets.filter((w) => w.currency === activeCurrency)
@@ -121,6 +122,22 @@ export function QuickLogSheet({
     if (!val) return
     const [y, m, d] = val.split('-').map(Number)
     setDateMs(new Date(y, m - 1, d, 12, 0, 0).getTime())
+  }
+
+  function openDatePicker() {
+    const input = dateInputRef.current
+    if (!input) return
+    try {
+      if (typeof input.showPicker === 'function') {
+        input.showPicker()
+      } else {
+        input.focus()
+        input.click()
+      }
+    } catch {
+      input.focus()
+      input.click()
+    }
   }
 
   async function doSubmit() {
@@ -283,11 +300,14 @@ export function QuickLogSheet({
           >
             {t('common.yesterday', lang)}
           </button>
-          <label
+          <button
+            type="button"
             className={`${styles.datePill} ${styles.datePillCalendar} ${isCustomDate ? styles.datePillActive : ''}`}
+            onClick={openDatePicker}
           >
             {isCustomDate ? dateStr : t('quick_log.date_label', lang)}
             <input
+              ref={dateInputRef}
               type="date"
               className={styles.dateInputHidden}
               max={todayStr}
@@ -295,7 +315,7 @@ export function QuickLogSheet({
               onChange={(e) => handleDateInput(e.target.value)}
               aria-label={t('quick_log.date_custom_aria', lang)}
             />
-          </label>
+          </button>
         </div>
 
         {/* Submit */}
