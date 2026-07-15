@@ -83,9 +83,9 @@
 }
 
 .barWrap {
-  height: 4px;
+  height: 10px;
   background: var(--border-hair);
-  border-radius: 2px;
+  border-radius: 999px;
   overflow: hidden;
   margin-bottom: 8px;
 }
@@ -93,7 +93,7 @@
 .bar {
   height: 100%;
   background: var(--accent);
-  border-radius: 2px;
+  border-radius: 999px;
   transition: width 0.3s ease;
 }
 
