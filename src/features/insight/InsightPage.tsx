@@ -24,6 +24,7 @@ import {
   type InsightData,
   type ChartMetric,
 } from './insight.utils'
+import { InsightWeekendCard } from './InsightWeekendCard'
 import { InsightMonthlyCard } from './InsightMonthlyCard'
 import { InsightCategoryCard } from './InsightCategoryCard'
 import { InsightDailyCard } from './InsightDailyCard'
@@ -130,6 +131,9 @@ export function InsightPage() {
           <div className={styles.loadingBlock} />
         ) : (
           <>
+            {/* ⓪ Weekday vs weekend split */}
+            <InsightWeekendCard currTxs={data?.currTxs ?? []} currency={currency} lang={lang} />
+
             {/* ① Monthly chart */}
             <InsightMonthlyCard
               currExpense={currExpense}
