@@ -240,8 +240,7 @@ export function buildCategoryTrend(
       .reduce((s, t) => s + Math.abs(t.amount), 0)
     return { year: y, month: m, amount }
   })
-  const firstActive = all.findIndex((b) => b.amount > 0)
-  return all.slice(firstActive === -1 ? all.length - 1 : firstActive)
+  return all
 }
 
 export interface DayCell {

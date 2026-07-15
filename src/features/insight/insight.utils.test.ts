@@ -310,28 +310,29 @@ describe('buildChartData', () => {
 })
 
 describe('buildCategoryTrend', () => {
-  it('single-month data → length 1 (leading empties stripped)', () => {
+  it('single-month data → always 12 full months', () => {
     const tx = makeTx(1, 'keluar', -100_000, 'Makan', 'Nasi', '2025-06-10')
     const bars = buildCategoryTrend([tx], 'Makan', 2025, 5)
-    expect(bars).toHaveLength(1)
-    expect(bars[0].year).toBe(2025)
-    expect(bars[0].month).toBe(5)
-    expect(bars[0].amount).toBe(100_000)
+    expect(bars).toHaveLength(12)
+    expect(bars[11].year).toBe(2025)
+    expect(bars[11].month).toBe(5)
+    expect(bars[11].amount).toBe(100_000)
+    expect(bars[0].amount).toBe(0) // Jul-24, no data
   })
 
   it('only matches the requested category', () => {
     const makan = makeTx(1, 'keluar', -100_000, 'Makan', 'Nasi', '2025-06-10')
     const kopi = makeTx(2, 'keluar', -50_000, 'Kopi', 'Kopi', '2025-06-10')
     const bars = buildCategoryTrend([makan, kopi], 'Makan', 2025, 5)
-    expect(bars).toHaveLength(1)
-    expect(bars[0].amount).toBe(100_000) // kopi excluded
+    expect(bars).toHaveLength(12)
+    expect(bars[11].amount).toBe(100_000) // kopi excluded
   })
 
   it('income excluded (isOpEx filter)', () => {
     const income = makeTx(1, 'masuk', 5_000_000, 'Makan', 'Gaji', '2025-06-10')
     const bars = buildCategoryTrend([income], 'Makan', 2025, 5)
-    expect(bars).toHaveLength(1)
-    expect(bars[0].amount).toBe(0)
+    expect(bars).toHaveLength(12)
+    expect(bars[11].amount).toBe(0)
   })
 
   it('gap in middle preserved', () => {
@@ -339,16 +340,19 @@ describe('buildCategoryTrend', () => {
     const apr = makeTx(1, 'keluar', -100_000, 'Makan', '', '2025-04-10')
     const jun = makeTx(2, 'keluar', -200_000, 'Makan', '', '2025-06-10')
     const bars = buildCategoryTrend([apr, jun], 'Makan', 2025, 5)
-    expect(bars).toHaveLength(3)
-    expect(bars[0].month).toBe(3) // Apr
-    expect(bars[1].amount).toBe(0) // May gap preserved
-    expect(bars[2].month).toBe(5) // Jun
+    expect(bars).toHaveLength(12)
+    expect(bars[9].month).toBe(3) // Apr
+    expect(bars[9].amount).toBe(100_000)
+    expect(bars[10].amount).toBe(0) // May gap preserved
+    expect(bars[11].month).toBe(5) // Jun
   })
 
-  it('no data → returns 1 bar (current month, amount 0)', () => {
+  it('no data → returns 12 bars, all amount 0', () => {
     const bars = buildCategoryTrend([], 'Makan', 2025, 5)
-    expect(bars).toHaveLength(1)
-    expect(bars[0].amount).toBe(0)
+    expect(bars).toHaveLength(12)
+    expect(bars.every((b) => b.amount === 0)).toBe(true)
+    expect(bars[11].year).toBe(2025)
+    expect(bars[11].month).toBe(5)
   })
 })
 

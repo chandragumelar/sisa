@@ -203,6 +203,9 @@
 
 /* ── Category select (card ③) ────────────────────────── */
 .catSelect {
+  display: flex;
+  align-items: center;
+  gap: 4px;
   font-size: 11px;
   font-weight: 600;
   font-family: var(--font-sans);
@@ -214,6 +217,40 @@
   cursor: pointer;
   outline: none;
   max-width: 140px;
+}
+
+.catSelect span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.catSheetList {
+  display: flex;
+  flex-direction: column;
+}
+
+.catSheetItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 12px 2px;
+  border-bottom: 1px solid var(--border-hair);
+  background: none;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink-primary);
+  font-family: var(--font-sans);
+  text-align: left;
+  cursor: pointer;
+}
+
+.catSheetItem:last-child {
+  border-bottom: none;
 }
 
 .catDetailWrap {
