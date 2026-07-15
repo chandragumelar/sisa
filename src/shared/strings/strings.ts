@@ -724,6 +724,7 @@ export type StringKey =
   | 'insight.cat_delta_down'
   | 'insight.cat_no_prev'
   | 'insight.cat_pct_of_total'
+  | 'insight.cat_select_title'
   | 'insight.card_spend_pct'
   | 'insight.spend_pct_from'
   | 'insight.spend_pct_used'
@@ -1548,6 +1549,7 @@ const id: StringDictionary = {
   'insight.cat_delta_down': '↓ turun {pct}% dari {month}',
   'insight.cat_no_prev': 'baru bulan ini',
   'insight.cat_pct_of_total': '{pct}% dari pengeluaran bulan ini',
+  'insight.cat_select_title': 'Pilih Kategori',
   'insight.card_spend_pct': 'Persen Pengeluaran Bulanan',
   'insight.spend_pct_from': 'dari pemasukan bulan ini',
   'insight.spend_pct_used': 'dipakai · {amount}',
@@ -2362,6 +2364,7 @@ const en: StringDictionary = {
   'insight.cat_delta_down': '↓ down {pct}% from {month}',
   'insight.cat_no_prev': 'new this month',
   'insight.cat_pct_of_total': "{pct}% of this month's spending",
+  'insight.cat_select_title': 'Select Category',
   'insight.card_spend_pct': 'Monthly Spend Rate',
   'insight.spend_pct_from': 'of income this month',
   'insight.spend_pct_used': 'spent · {amount}',
