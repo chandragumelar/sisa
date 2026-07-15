@@ -1,7 +1,8 @@
 import type { Language, Transaction } from '@/db/database'
+import { useClock } from '@/app/providers/useClock'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
 import { t } from '@/shared/strings/strings'
-import { splitWeekendExpense } from './insight.utils'
+import { splitWeekendExpense, countElapsedDays } from './insight.utils'
 import pageStyles from './InsightPage.module.css'
 import styles from './InsightWeekendCard.module.css'
 
@@ -11,10 +12,10 @@ interface Props {
   lang: Language
 }
 
-const RADIUS = 46
-const CIRCUMFERENCE = 2 * Math.PI * RADIUS
+const EM_DASH = '—'
 
 export function InsightWeekendCard({ currTxs, currency, lang }: Props) {
+  const clock = useClock()
   const { weekday, weekend, total } = splitWeekendExpense(currTxs)
 
   if (total === 0) {
@@ -31,58 +32,27 @@ export function InsightWeekendCard({ currTxs, currency, lang }: Props) {
     )
   }
 
-  const weekdayLen = (weekday / total) * CIRCUMFERENCE
-  const weekdayPct = Math.round((weekday / total) * 100)
-  const weekendPct = 100 - weekdayPct
+  const { weekdayDays, weekendDays } = countElapsedDays(new Date(clock.now()))
+  const weekdayAvg =
+    weekdayDays > 0 ? formatCurrency(Math.round(weekday / weekdayDays), currency) : EM_DASH
+  const weekendAvg =
+    weekendDays > 0 ? formatCurrency(Math.round(weekend / weekendDays), currency) : EM_DASH
 
   return (
     <div className={pageStyles.card}>
       <span className={pageStyles.cardLabel}>{t('insight.card_weekend', lang)}</span>
-      <div className={styles.donutWrap}>
-        <svg viewBox="0 0 112 112" width="112" height="112" className={styles.donutSvg} aria-hidden>
-          <circle
-            cx="56"
-            cy="56"
-            r={RADIUS}
-            fill="none"
-            stroke="var(--surface-2)"
-            strokeWidth="18"
-          />
-          <circle
-            cx="56"
-            cy="56"
-            r={RADIUS}
-            fill="none"
-            stroke="var(--accent)"
-            strokeWidth="18"
-            strokeDasharray={`${weekdayLen} ${CIRCUMFERENCE - weekdayLen}`}
-            transform="rotate(-90 56 56)"
-          />
-          <circle
-            cx="56"
-            cy="56"
-            r={RADIUS}
-            fill="none"
-            stroke="var(--signal-caution)"
-            strokeWidth="18"
-            strokeDasharray={`${CIRCUMFERENCE - weekdayLen} ${weekdayLen}`}
-            strokeDashoffset={-weekdayLen}
-            transform="rotate(-90 56 56)"
-          />
-        </svg>
-        <div className={styles.legend}>
-          <div className={styles.legendRow}>
-            <span className={styles.legendDotWd} />
-            <span className={styles.legendLabel}>{t('home.insight_wd_weekday', lang)}</span>
-            <span className={styles.legendVal}>{formatCurrency(weekday, currency)}</span>
-            <span className={styles.legendPct}>{weekdayPct}%</span>
-          </div>
-          <div className={styles.legendRow}>
-            <span className={styles.legendDotWe} />
-            <span className={styles.legendLabel}>{t('home.insight_wd_weekend', lang)}</span>
-            <span className={styles.legendVal}>{formatCurrency(weekend, currency)}</span>
-            <span className={styles.legendPct}>{weekendPct}%</span>
-          </div>
+      <div className={styles.versusWrap}>
+        <div className={styles.versusCol}>
+          <span className={styles.versusLabel}>{t('home.insight_wd_weekday', lang)}</span>
+          <span className={`${styles.versusNum} ${styles.versusNumWd}`}>{weekdayAvg}</span>
+          <span className={styles.versusCaption}>{t('insight.weekend_avg_per_day', lang)}</span>
+          <span className={styles.versusSub}>{formatCurrency(weekday, currency)}</span>
+        </div>
+        <div className={styles.versusCol}>
+          <span className={styles.versusLabel}>{t('home.insight_wd_weekend', lang)}</span>
+          <span className={`${styles.versusNum} ${styles.versusNumWe}`}>{weekendAvg}</span>
+          <span className={styles.versusCaption}>{t('insight.weekend_avg_per_day', lang)}</span>
+          <span className={styles.versusSub}>{formatCurrency(weekend, currency)}</span>
         </div>
       </div>
     </div>
