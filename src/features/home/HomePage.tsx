@@ -14,11 +14,8 @@ import {
   getMonthlyFlowsByCurrency,
   getPeriodFlows,
   deleteTransactionAndRevertBalance,
-  getTransactionsByDateRange,
 } from '@/db/transactions.repository'
 import { t } from '@/shared/strings/strings'
-import { formatCurrency } from '@/shared/utils/formatCurrency'
-import { getCurrencyLabel } from '@/constants/currencies'
 import type { Settings, Wallet, Tagihan, Allocation } from '@/db/database'
 import {
   calcDaysUntilPayday,
@@ -31,7 +28,6 @@ import {
   calcPemasukanFromAvg,
 } from './home.utils'
 import { calcUnpaidTagihanTotal, getTagihanUrgency } from './tagihan.utils'
-import { splitWeekendExpense, type WeekendSplit } from '@/features/insight/insight.utils'
 import { shouldShowBackupReminder, calcBackupUrgency } from './backup-reminder.utils'
 import { calcBudgetPeriode, type BudgetMode } from '@/shared/utils/budget.utils'
 import { BRAND_STUDIO_WITH_COLLAB } from '@/constants/brand'
@@ -56,6 +52,7 @@ import { getAllocation, putAllocation } from '@/db/allocation.repository'
 import { relock, resolveBudgetView } from '@/shared/utils/budget.utils'
 import { JatahHarianCard } from './components/JatahHarianCard'
 import { WalletsCard } from './components/WalletsCard'
+import { InsightSankeyCard } from './components/InsightSankeyCard'
 import { syncTagihanReminder, deleteTagihanReminder } from '@/lib/supabase/api'
 import { shouldAskPush, markPushAsked } from '@/lib/push'
 import { PushAskSheet } from '@/shared/components/PushAskSheet'
@@ -268,7 +265,6 @@ export function HomePage() {
   const [walletSheetOpen, setWalletSheetOpen] = useState(false)
   const [alokasiSheetOpen, setAlokasiSheetOpen] = useState(false)
   const [pushAskOpen, setPushAskOpen] = useState(false)
-  const [teaserSplit, setTeaserSplit] = useState<WeekendSplit>({ weekday: 0, weekend: 0, total: 0 })
 
   useEffect(() => {
     void shouldAskPush().then((v) => {
@@ -278,15 +274,6 @@ export function HomePage() {
       }
     })
   }, [])
-
-  useEffect(() => {
-    const today = new Date(nowMs)
-    const monthStart = new Date(today.getFullYear(), today.getMonth(), 1).getTime()
-    const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 1).getTime()
-    getTransactionsByDateRange(monthStart, monthEnd)
-      .then((txs) => setTeaserSplit(splitWeekendExpense(txs)))
-      .catch(() => {})
-  }, [nowMs])
 
   if (isLoading || !settings) return null
 
@@ -539,100 +526,7 @@ export function HomePage() {
             onAddTap={() => setTagihanSheetOpen(true)}
           />
 
-          <button className={styles.insightCard} onClick={() => navigate('/insight')}>
-            <div className={styles.insightCardTop}>
-              <span className={styles.insightCardLabel}>
-                {t('home.insight_card_label_dynamic', lang).replace(
-                  '{cur}',
-                  getCurrencyLabel(currency, lang),
-                )}
-              </span>
-            </div>
-            {teaserSplit.total === 0 ? (
-              <span className={styles.insightCardText}>
-                {t('home.insight_teaser_generic', lang)}
-              </span>
-            ) : (
-              <>
-                {(() => {
-                  const { weekday, weekend, total } = teaserSplit
-                  const C = 2 * Math.PI * 46
-                  const wdLen = (weekday / total) * C
-                  const weekdayPct = Math.round((weekday / total) * 100)
-                  const weekendPct = 100 - weekdayPct
-                  return (
-                    <>
-                      <span className={styles.insightWdHeading}>
-                        {t('home.insight_wd_heading', lang)}
-                      </span>
-                      <div className={styles.insightDonutWrap}>
-                        <svg
-                          viewBox="0 0 112 112"
-                          width="112"
-                          height="112"
-                          className={styles.insightDonutSvg}
-                          aria-hidden
-                        >
-                          <circle
-                            cx="56"
-                            cy="56"
-                            r="46"
-                            fill="none"
-                            stroke="var(--surface-2)"
-                            strokeWidth="18"
-                          />
-                          <circle
-                            cx="56"
-                            cy="56"
-                            r="46"
-                            fill="none"
-                            stroke="var(--accent)"
-                            strokeWidth="18"
-                            strokeDasharray={`${wdLen} ${C - wdLen}`}
-                            transform="rotate(-90 56 56)"
-                          />
-                          <circle
-                            cx="56"
-                            cy="56"
-                            r="46"
-                            fill="none"
-                            stroke="var(--signal-caution)"
-                            strokeWidth="18"
-                            strokeDasharray={`${C - wdLen} ${wdLen}`}
-                            strokeDashoffset={-wdLen}
-                            transform="rotate(-90 56 56)"
-                          />
-                        </svg>
-                        <div className={styles.insightDonutLegend}>
-                          <div className={styles.insightLegendRow}>
-                            <span className={styles.insightLegendDotWd} />
-                            <span className={styles.insightLegendLabel}>
-                              {t('home.insight_wd_weekday', lang)}
-                            </span>
-                            <span className={styles.insightLegendVal}>
-                              {formatCurrency(weekday, currency)}
-                            </span>
-                            <span className={styles.insightLegendPct}>{weekdayPct}%</span>
-                          </div>
-                          <div className={styles.insightLegendRow}>
-                            <span className={styles.insightLegendDotWe} />
-                            <span className={styles.insightLegendLabel}>
-                              {t('home.insight_wd_weekend', lang)}
-                            </span>
-                            <span className={styles.insightLegendVal}>
-                              {formatCurrency(weekend, currency)}
-                            </span>
-                            <span className={styles.insightLegendPct}>{weekendPct}%</span>
-                          </div>
-                        </div>
-                      </div>
-                    </>
-                  )
-                })()}
-              </>
-            )}
-            <span className={styles.insightCardCta}>{t('home.insight_card_cta', lang)}</span>
-          </button>
+          <InsightSankeyCard currency={currency} nowMs={nowMs} sisaUang={sisaUang} />
         </div>
       </main>
 

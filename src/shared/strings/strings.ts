@@ -644,12 +644,17 @@ export type StringKey =
   | 'home.sisa_uang_why_2'
   | 'home.sisa_uang_why_3'
   | 'home.insight_teaser_generic'
-  | 'home.insight_wd_heading'
   | 'home.insight_wd_weekday'
   | 'home.insight_wd_weekend'
   | 'home.insight_card_label'
-  | 'home.insight_card_label_dynamic'
   | 'home.insight_card_cta'
+  | 'home.sankey_title'
+  | 'home.sankey_breakdown'
+  | 'home.sankey_breakdown_overspend'
+  | 'home.sankey_toggle_nominal'
+  | 'home.sankey_toggle_persen'
+  | 'home.sankey_node_sisa'
+  | 'home.sankey_overspend_badge'
   | 'home.expand_show'
   | 'home.expand_hide'
   | 'home.duit_di_mana'
@@ -694,6 +699,9 @@ export type StringKey =
   | 'insight.hero_neutral_calm'
   | 'insight.hero_neutral_fresh'
   | 'insight.hero_neutral_sub'
+  | 'insight.card_weekend'
+  | 'insight.weekend_empty'
+  | 'insight.weekend_empty_sub'
   | 'insight.card_monthly'
   | 'insight.metric_net'
   | 'insight.metric_keluar'
@@ -1455,12 +1463,17 @@ const id: StringDictionary = {
     'Jadi lo nggak perlu ngitung manual tiap mau jajan. Selama masih di dalam angka ini, aman.',
   'home.sisa_uang_why_3': 'Mau lihat angkanya dari mana? Tap "kok bisa segini?" di kartunya.',
   'home.insight_teaser_generic': 'Catatan pertamamu bakal muncul jadi pola di sini',
-  'home.insight_wd_heading': 'Pengeluaran bulan ini',
   'home.insight_wd_weekday': 'Hari kerja',
   'home.insight_wd_weekend': 'Akhir pekan',
   'home.insight_card_label': 'INSIGHT',
-  'home.insight_card_label_dynamic': 'POLA {cur}MU',
-  'home.insight_card_cta': 'Lihat Pola →',
+  'home.insight_card_cta': 'Lihat pola lainnya',
+  'home.sankey_title': 'Aliran pengeluaran {cur}mu',
+  'home.sankey_breakdown': 'pengeluaran {out} + sisa uang {left} = {total}',
+  'home.sankey_breakdown_overspend': 'keluar {out}',
+  'home.sankey_toggle_nominal': 'Nominal',
+  'home.sankey_toggle_persen': '%',
+  'home.sankey_node_sisa': 'Sisa',
+  'home.sankey_overspend_badge': 'Over jatah {amount}',
   'home.expand_show': 'kok bisa segini?',
   'home.expand_hide': 'sembunyikan',
   'home.duit_di_mana': 'Duit lo ada di mana',
@@ -1509,6 +1522,9 @@ const id: StringDictionary = {
   'insight.hero_neutral_calm': 'Bulan yang kalem.',
   'insight.hero_neutral_fresh': 'Awal yang bersih.',
   'insight.hero_neutral_sub': 'Mulai catat buat lihat pola',
+  'insight.card_weekend': 'Hari Kerja vs Akhir Pekan',
+  'insight.weekend_empty': 'Belum ada pengeluaran bulan ini.',
+  'insight.weekend_empty_sub': 'pola weekday vs weekend kamu bakal muncul di sini',
   'insight.card_monthly': 'Uang Bulanan',
   'insight.metric_net': 'Net',
   'insight.metric_keluar': 'Keluar',
@@ -2260,12 +2276,17 @@ const en: StringDictionary = {
   'home.sisa_uang_why_3':
     'Want to see where this number comes from? Tap "how is it this much?" on the card.',
   'home.insight_teaser_generic': 'Your first entries will show up as insights here',
-  'home.insight_wd_heading': 'Spending this month',
   'home.insight_wd_weekday': 'Weekday',
   'home.insight_wd_weekend': 'Weekend',
   'home.insight_card_label': 'INSIGHTS',
-  'home.insight_card_label_dynamic': 'YOUR {cur} INSIGHTS',
-  'home.insight_card_cta': 'View Insights →',
+  'home.insight_card_cta': 'See more insights',
+  'home.sankey_title': 'Your {cur} spending flow',
+  'home.sankey_breakdown': 'spent {out} + money left {left} = {total}',
+  'home.sankey_breakdown_overspend': 'spent {out}',
+  'home.sankey_toggle_nominal': 'Amount',
+  'home.sankey_toggle_persen': '%',
+  'home.sankey_node_sisa': 'Left',
+  'home.sankey_overspend_badge': 'Over budget {amount}',
   'home.expand_show': 'how is this possible?',
   'home.expand_hide': 'hide',
   'home.duit_di_mana': 'Where your money is',
@@ -2314,6 +2335,9 @@ const en: StringDictionary = {
   'insight.hero_neutral_calm': 'A calm month.',
   'insight.hero_neutral_fresh': 'A clean start.',
   'insight.hero_neutral_sub': 'Start logging to see insights',
+  'insight.card_weekend': 'Weekday vs Weekend',
+  'insight.weekend_empty': 'No spending yet this month.',
+  'insight.weekend_empty_sub': 'your weekday vs weekend split will show up here',
   'insight.card_monthly': 'Monthly Overview',
   'insight.metric_net': 'Net',
   'insight.metric_keluar': 'Out',
