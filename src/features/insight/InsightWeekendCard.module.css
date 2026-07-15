@@ -50,31 +50,3 @@
   font-variant-numeric: tabular-nums;
   margin-top: 1px;
 }
-
-.propTrack {
-  display: flex;
-  height: 6px;
-  border-radius: 999px;
-  overflow: hidden;
-  background: var(--surface-2);
-}
-
-.propFillWd {
-  height: 100%;
-  background: var(--accent);
-}
-
-.propFillWe {
-  height: 100%;
-  background: var(--signal-caution);
-}
-
-.propPctRow {
-  display: flex;
-  justify-content: space-between;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--ink-tertiary);
-  font-variant-numeric: tabular-nums;
-  margin-top: 4px;
-}

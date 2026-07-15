@@ -37,8 +37,6 @@ export function InsightWeekendCard({ currTxs, currency, lang }: Props) {
     weekdayDays > 0 ? formatCurrency(Math.round(weekday / weekdayDays), currency) : EM_DASH
   const weekendAvg =
     weekendDays > 0 ? formatCurrency(Math.round(weekend / weekendDays), currency) : EM_DASH
-  const weekdayPct = Math.round((weekday / total) * 100)
-  const weekendPct = 100 - weekdayPct
 
   return (
     <div className={pageStyles.card}>
@@ -56,15 +54,6 @@ export function InsightWeekendCard({ currTxs, currency, lang }: Props) {
           <span className={styles.versusCaption}>{t('insight.weekend_avg_per_day', lang)}</span>
           <span className={styles.versusSub}>{formatCurrency(weekend, currency)}</span>
         </div>
-      </div>
-
-      <div className={styles.propTrack}>
-        <div className={styles.propFillWd} style={{ width: `${weekdayPct}%` }} />
-        <div className={styles.propFillWe} style={{ width: `${weekendPct}%` }} />
-      </div>
-      <div className={styles.propPctRow}>
-        <span>{weekdayPct}%</span>
-        <span>{weekendPct}%</span>
       </div>
     </div>
   )
