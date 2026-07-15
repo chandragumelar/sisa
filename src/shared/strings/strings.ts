@@ -702,6 +702,7 @@ export type StringKey =
   | 'insight.card_weekend'
   | 'insight.weekend_empty'
   | 'insight.weekend_empty_sub'
+  | 'insight.weekend_avg_per_day'
   | 'insight.card_monthly'
   | 'insight.metric_net'
   | 'insight.metric_keluar'
@@ -1525,6 +1526,7 @@ const id: StringDictionary = {
   'insight.card_weekend': 'Hari Kerja vs Akhir Pekan',
   'insight.weekend_empty': 'Belum ada pengeluaran bulan ini.',
   'insight.weekend_empty_sub': 'pola weekday vs weekend kamu bakal muncul di sini',
+  'insight.weekend_avg_per_day': 'rata-rata/hari',
   'insight.card_monthly': 'Uang Bulanan',
   'insight.metric_net': 'Net',
   'insight.metric_keluar': 'Keluar',
@@ -2338,6 +2340,7 @@ const en: StringDictionary = {
   'insight.card_weekend': 'Weekday vs Weekend',
   'insight.weekend_empty': 'No spending yet this month.',
   'insight.weekend_empty_sub': 'your weekday vs weekend split will show up here',
+  'insight.weekend_avg_per_day': 'avg/day',
   'insight.card_monthly': 'Monthly Overview',
   'insight.metric_net': 'Net',
   'insight.metric_keluar': 'Out',

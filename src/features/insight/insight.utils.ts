@@ -79,6 +79,26 @@ export function splitWeekendExpense(txs: Transaction[]): WeekendSplit {
   return { weekday, weekend, total: weekday + weekend }
 }
 
+export interface ElapsedDays {
+  weekdayDays: number
+  weekendDays: number
+}
+
+/** Counts weekday (Sen-Jum) vs weekend (Sab-Ming) days from the 1st of `now`'s month through today, inclusive. */
+export function countElapsedDays(now: Date): ElapsedDays {
+  const year = now.getFullYear()
+  const month = now.getMonth()
+  const today = now.getDate()
+  let weekdayDays = 0
+  let weekendDays = 0
+  for (let day = 1; day <= today; day++) {
+    const dow = new Date(year, month, day).getDay()
+    if (dow === 0 || dow === 6) weekendDays++
+    else weekdayDays++
+  }
+  return { weekdayDays, weekendDays }
+}
+
 export function sumIncome(txs: Transaction[]): number {
   return txs.filter(isIncome).reduce((s, t) => s + t.amount, 0)
 }

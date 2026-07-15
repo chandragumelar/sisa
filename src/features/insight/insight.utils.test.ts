@@ -14,6 +14,7 @@ import {
   formatMonthShort,
   buildDailyHeatmap,
   heatBucket,
+  countElapsedDays,
 } from './insight.utils'
 
 type TxType = Transaction['type']
@@ -463,5 +464,20 @@ describe('formatMonthShort', () => {
     expect(dec).toBe('dec-25')
     expect(jan).toBe('jan-26')
     expect(dec).not.toBe(jan)
+  })
+})
+
+describe('countElapsedDays', () => {
+  it('mid-month (Jan 7 2024, Sunday) → 5 weekday + 2 weekend', () => {
+    // Jan 2024: 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri, 6=Sat, 7=Sun
+    expect(countElapsedDays(new Date(2024, 0, 7))).toEqual({ weekdayDays: 5, weekendDays: 2 })
+  })
+
+  it('first day of month (Jan 1 2024, Monday) → weekendDays 0', () => {
+    expect(countElapsedDays(new Date(2024, 0, 1))).toEqual({ weekdayDays: 1, weekendDays: 0 })
+  })
+
+  it('boundary ending exactly on Saturday (Jan 6 2024) → 5 weekday + 1 weekend', () => {
+    expect(countElapsedDays(new Date(2024, 0, 6))).toEqual({ weekdayDays: 5, weekendDays: 1 })
   })
 })
