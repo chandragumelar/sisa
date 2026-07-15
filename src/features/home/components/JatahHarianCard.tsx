@@ -38,7 +38,13 @@ export function JatahHarianCard({
   const lang = useLanguage()
   const curLabel = getCurrencyLabel(currency, lang)
   const [tooltipOpen, setTooltipOpen] = useState(false)
-  const pct = jatahHariIni > 0 ? Math.min(100, Math.round((spentToday / jatahHariIni) * 100)) : 0
+  const isOverBar = spentToday > jatahHariIni && jatahHariIni > 0
+  const fillPct = isOverBar
+    ? 100
+    : jatahHariIni > 0
+      ? Math.min(100, Math.max(0, (spentToday / jatahHariIni) * 100))
+      : 0
+  const markerPct = isOverBar ? Math.max(8, Math.min(100, (jatahHariIni / spentToday) * 100)) : null
   const lebih = spentToday - jatahHariIni
   const besokRaw = sisaUang / Math.max(1, sisaHari - 1)
   const besok = Math.max(0, Math.round(besokRaw / 1000) * 1000)
@@ -139,8 +145,11 @@ export function JatahHarianCard({
 
         <div className={styles.heroNum}>{formatCurrency(jatahHariIni, currency)}</div>
 
-        <div className={styles.barWrap}>
-          <div className={`${styles.bar} ${barClass}`} style={{ width: `${pct}%` }} />
+        <div className={styles.barWrap} aria-hidden="true">
+          <div className={`${styles.bar} ${barClass}`} style={{ width: `${fillPct}%` }} />
+          {markerPct !== null && (
+            <div className={styles.marker} style={{ left: `${markerPct}%` }} />
+          )}
         </div>
 
         <div className={styles.spentRow}>

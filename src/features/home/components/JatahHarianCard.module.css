@@ -86,27 +86,38 @@
   height: 10px;
   background: var(--border-hair);
   border-radius: 999px;
-  overflow: hidden;
+  position: relative;
   margin-bottom: 8px;
 }
 
 .bar {
   height: 100%;
-  background: var(--accent);
+  background: linear-gradient(90deg, var(--accent-br), var(--accent));
+  box-shadow: 0 1px 4px rgba(29, 78, 216, 0.35);
   border-radius: 999px;
   transition: width 0.3s ease;
 }
 
+.marker {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--ink-primary);
+  transform: translateX(-50%);
+}
+
 .barOver {
-  background: var(--signal-caution);
+  background: linear-gradient(90deg, #fcd34d, var(--signal-caution));
 }
 
 .barDanger {
-  background: var(--signal-danger);
+  background: linear-gradient(90deg, #fca5a5, var(--signal-danger));
 }
 
 .barSafe {
-  background: var(--signal-safe);
+  background: linear-gradient(90deg, #86efac, var(--signal-safe));
 }
 
 .spentRow {
