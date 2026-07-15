@@ -19,21 +19,6 @@ function sortedCurrencies(byCurrency: Record<string, number>, primaryCurrency: s
   return hasPrimary ? [primaryCurrency, ...others] : others
 }
 
-/** Union of currencies with nonzero income or expense, primary first. Empty when nothing to show. */
-function unionCurrencies(
-  incomeByCurrency: Record<string, number>,
-  expenseByCurrency: Record<string, number>,
-  primaryCurrency: string,
-): string[] {
-  const set = new Set<string>()
-  for (const c of Object.keys(incomeByCurrency)) if (incomeByCurrency[c] > 0) set.add(c)
-  for (const c of Object.keys(expenseByCurrency)) if (expenseByCurrency[c] > 0) set.add(c)
-  if (set.size === 0) return []
-  const hasPrimary = set.has(primaryCurrency)
-  const others = [...set].filter((c) => c !== primaryCurrency).sort()
-  return hasPrimary ? [primaryCurrency, ...others] : others
-}
-
 export function MonthlyModule({
   incomeByCurrency,
   expenseByCurrency,
@@ -96,8 +81,6 @@ export function MonthlyModule({
     },
   ]
 
-  const compareCurrencies = unionCurrencies(incomeByCurrency, expenseByCurrency, primaryCurrency)
-
   return (
     <div className={styles.card}>
       <div className={styles.header}>
@@ -135,31 +118,6 @@ export function MonthlyModule({
           )
         })}
       </div>
-      {compareCurrencies.length > 0 && (
-        <div className={styles.compareBlock}>
-          {compareCurrencies.map((cur) => {
-            const income = incomeByCurrency[cur] ?? 0
-            const expense = expenseByCurrency[cur] ?? 0
-            const maxVal = Math.max(income, expense)
-            const incomePct = maxVal > 0 ? (income / maxVal) * 100 : 0
-            const expensePct = maxVal > 0 ? (expense / maxVal) * 100 : 0
-            return (
-              <div key={cur} className={styles.compareRow}>
-                <span className={`${styles.currencyLabel} ${styles.compareLabel}`}>{cur}</span>
-                <div className={styles.compareTrack}>
-                  <div className={`${styles.compareHalf} ${styles.compareHalfExpense}`}>
-                    <div className={styles.expenseBar} style={{ width: `${expensePct}%` }} />
-                  </div>
-                  <div className={styles.baseline} />
-                  <div className={`${styles.compareHalf} ${styles.compareHalfIncome}`}>
-                    <div className={styles.incomeBar} style={{ width: `${incomePct}%` }} />
-                  </div>
-                </div>
-              </div>
-            )
-          })}
-        </div>
-      )}
       {onHistoryTap && (
         <button className={styles.historyLink} onClick={onHistoryTap}>
           {t('home.lihat_riwayat', lang)}

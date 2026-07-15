@@ -91,69 +91,6 @@
   white-space: nowrap;
 }
 
-.compareBlock {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin-top: 12px;
-}
-
-.compareRow {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.compareLabel {
-  width: 32px;
-  flex-shrink: 0;
-}
-
-.compareTrack {
-  display: flex;
-  align-items: center;
-  flex: 1;
-  height: 10px;
-}
-
-.compareHalf {
-  display: flex;
-  align-items: center;
-  flex: 1;
-  height: 6px;
-}
-
-.compareHalfExpense {
-  justify-content: flex-end;
-}
-
-.compareHalfIncome {
-  justify-content: flex-start;
-}
-
-.incomeBar,
-.expenseBar {
-  height: 6px;
-  border-radius: 3px;
-  opacity: 0.85;
-  transition: width 0.4s ease;
-}
-
-.incomeBar {
-  background: var(--signal-safe);
-}
-
-.expenseBar {
-  background: var(--signal-danger);
-}
-
-.baseline {
-  width: 1px;
-  height: 10px;
-  flex-shrink: 0;
-  background: var(--border-hair);
-}
-
 .historyLink {
   display: block;
   width: 100%;
