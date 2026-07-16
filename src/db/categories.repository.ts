@@ -14,12 +14,47 @@ export async function getAllCategories(): Promise<Category[]> {
   return db.categories.orderBy('order').toArray()
 }
 
+let seedPromise: Promise<void> | null = null
+
 /** Ensures defaults exist — called on app init if categories table is empty. */
 export async function seedDefaultCategoriesIfEmpty(): Promise<void> {
-  const count = await db.categories.count()
-  if (count > 0) return
-  const seed = [...DEFAULT_EXPENSE_CATEGORIES, ...DEFAULT_INCOME_CATEGORIES]
-  await db.categories.bulkAdd(seed)
+  if (seedPromise) return seedPromise
+  seedPromise = runSeed()
+  return seedPromise
+}
+
+async function runSeed(): Promise<void> {
+  await db.transaction('rw', db.categories, async () => {
+    const count = await db.categories.count()
+    if (count > 0) return
+    const seed = [...DEFAULT_EXPENSE_CATEGORIES, ...DEFAULT_INCOME_CATEGORIES]
+    await db.categories.bulkAdd(seed)
+  })
+  await dedupeCategories()
+}
+
+/** Self-heal: collapse duplicate (type, name) categories left over from past races, keep lowest id. */
+export async function dedupeCategories(): Promise<void> {
+  const all = await db.categories.toArray()
+  const groups = new Map<string, Category[]>()
+  for (const cat of all) {
+    const key = `${cat.type}::${cat.name}`
+    const group = groups.get(key) ?? []
+    group.push(cat)
+    groups.set(key, group)
+  }
+
+  const idsToDelete: number[] = []
+  for (const group of groups.values()) {
+    if (group.length <= 1) continue
+    const sorted = [...group].sort((a, b) => (a.id ?? 0) - (b.id ?? 0))
+    for (const dup of sorted.slice(1)) {
+      if (dup.id !== undefined) idsToDelete.push(dup.id)
+    }
+  }
+  if (idsToDelete.length > 0) {
+    await db.categories.bulkDelete(idsToDelete)
+  }
 }
 
 export async function addCategory(
