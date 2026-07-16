@@ -1,3 +1,4 @@
+import { TrendingUp, TrendingDown } from 'lucide-react'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
@@ -37,47 +38,13 @@ export function MonthlyModule({
       label: t('home.income_label', lang),
       byCurrency: incomeByCurrency,
       colorVar: 'var(--signal-safe)',
-      icon: (
-        <svg width="12" height="12" viewBox="0 0 13 13" fill="none">
-          <polyline
-            points="1,10 4.5,5.5 7,8 12,2"
-            stroke="currentColor"
-            strokeWidth="1.4"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <polyline
-            points="9,2 12,2 12,5"
-            stroke="currentColor"
-            strokeWidth="1.4"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      ),
+      icon: <TrendingUp size={12} strokeWidth={1.75} />,
     },
     {
       label: t('home.expense_label', lang),
       byCurrency: expenseByCurrency,
       colorVar: 'var(--signal-danger)',
-      icon: (
-        <svg width="12" height="12" viewBox="0 0 13 13" fill="none">
-          <polyline
-            points="1,3 4.5,7.5 7,5 12,11"
-            stroke="currentColor"
-            strokeWidth="1.4"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <polyline
-            points="9,11 12,11 12,8"
-            stroke="currentColor"
-            strokeWidth="1.4"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      ),
+      icon: <TrendingDown size={12} strokeWidth={1.75} />,
     },
   ]
 

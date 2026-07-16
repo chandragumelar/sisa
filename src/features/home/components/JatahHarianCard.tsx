@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Info } from 'lucide-react'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
@@ -122,18 +123,7 @@ export function JatahHarianCard({
               onClick={() => setTooltipOpen(true)}
               aria-label={t('a11y.info_jatah', lang)}
             >
-              <svg
-                width="13"
-                height="13"
-                viewBox="0 0 12 12"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.3"
-              >
-                <circle cx="6" cy="6" r="5" />
-                <line x1="6" y1="5.5" x2="6" y2="8.5" strokeLinecap="round" />
-                <circle cx="6" cy="3.4" r="0.75" fill="currentColor" stroke="none" />
-              </svg>
+              <Info size={13} strokeWidth={1.75} />
             </button>
           </div>
           {isDanger && <span className={styles.dangerBadge}>{dangerBadgeText}</span>}

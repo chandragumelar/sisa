@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { ReactNode } from 'react'
+import { Info, Clock, Lock } from 'lucide-react'
 import type { BudgetMode } from '@/shared/utils/budget.utils'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
 import { useLanguage } from '@/app/providers/useLanguage'
@@ -65,18 +66,7 @@ export function SaldoModule({
                 onClick={() => setTooltipOpen(true)}
                 aria-label={t('a11y.info_sisa', lang)}
               >
-                <svg
-                  width="13"
-                  height="13"
-                  viewBox="0 0 12 12"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.3"
-                >
-                  <circle cx="6" cy="6" r="5" />
-                  <line x1="6" y1="5.5" x2="6" y2="8.5" strokeLinecap="round" />
-                  <circle cx="6" cy="3.4" r="0.75" fill="currentColor" stroke="none" />
-                </svg>
+                <Info size={13} strokeWidth={1.75} />
               </button>
             </div>
             {mode === 'bertahan' ? (
@@ -87,19 +77,7 @@ export function SaldoModule({
               </span>
             ) : (
               <div className={styles.paydayPill}>
-                <svg
-                  width="11"
-                  height="11"
-                  viewBox="0 0 12 12"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.3"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <circle cx="6" cy="6" r="4.5" />
-                  <path d="M6 3.5V6L7.8 7.8" />
-                </svg>
+                <Clock size={11} strokeWidth={1.75} />
                 <span>
                   {(daysUntilPayday === 1
                     ? t('home.day_to_payday', lang)
@@ -188,18 +166,7 @@ export function SaldoModule({
                   <RincianRow
                     label={
                       <span className={styles.rincianLabelMuted}>
-                        <svg
-                          width="10"
-                          height="10"
-                          viewBox="0 0 12 12"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          className={styles.lockIcon}
-                        >
-                          <rect x="2.5" y="5.5" width="7" height="5" rx="1" />
-                          <path d="M4 5.5V4a2 2 0 0 1 4 0v1.5" strokeLinecap="round" />
-                        </svg>
+                        <Lock size={10} strokeWidth={1.75} className={styles.lockIcon} />
                         {t('saldo.uang_mengendap_label', lang)}
                       </span>
                     }
