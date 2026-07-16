@@ -1,16 +1,10 @@
-.header {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
 .headerDivider {
   height: 1px;
   background: var(--border-hair);
-  margin: 0 calc(var(--pad-card) * -1);
+  margin: 6px calc(var(--pad-card) * -1) 6px;
 }
 
-.headerTop {
+.subRow {
   display: flex;
   align-items: center;
   justify-content: space-between;

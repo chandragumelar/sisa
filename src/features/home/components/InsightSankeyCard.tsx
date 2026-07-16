@@ -231,32 +231,31 @@ export function InsightSankeyCard({ currency, nowMs, sisaUang }: Props) {
 
   return (
     <button className={homeStyles.insightCard} onClick={() => navigate('/insight')}>
-      <div className={styles.header}>
-        <div className={styles.headerTop}>
-          <span className={styles.title}>
-            {t('home.sankey_title', lang).replace('{cur}', getCurrencyLabel(currency, lang))}
-          </span>
-          {hasData && (
-            <div className={styles.toggle} onClick={(e) => e.stopPropagation()}>
-              <button
-                className={`${styles.toggleBtn} ${mode === 'nominal' ? styles.toggleBtnActive : ''}`}
-                onClick={() => setMode('nominal')}
-              >
-                {t('home.sankey_toggle_nominal', lang)}
-              </button>
-              <button
-                className={`${styles.toggleBtn} ${mode === 'persen' ? styles.toggleBtnActive : ''}`}
-                onClick={() => setMode('persen')}
-              >
-                {t('home.sankey_toggle_persen', lang)}
-              </button>
-            </div>
-          )}
-        </div>
-        {hasData && <p className={styles.subtext}>{breakdownText}</p>}
-      </div>
+      <span className={styles.title}>
+        {t('home.sankey_title', lang).replace('{cur}', getCurrencyLabel(currency, lang))}
+      </span>
 
       <div className={styles.headerDivider} />
+
+      {hasData && (
+        <div className={styles.subRow}>
+          <p className={styles.subtext}>{breakdownText}</p>
+          <div className={styles.toggle} onClick={(e) => e.stopPropagation()}>
+            <button
+              className={`${styles.toggleBtn} ${mode === 'nominal' ? styles.toggleBtnActive : ''}`}
+              onClick={() => setMode('nominal')}
+            >
+              {t('home.sankey_toggle_nominal', lang)}
+            </button>
+            <button
+              className={`${styles.toggleBtn} ${mode === 'persen' ? styles.toggleBtnActive : ''}`}
+              onClick={() => setMode('persen')}
+            >
+              {t('home.sankey_toggle_persen', lang)}
+            </button>
+          </div>
+        </div>
+      )}
 
       {!hasData ? (
         <span className={homeStyles.insightCardText}>{t('home.insight_teaser_generic', lang)}</span>
