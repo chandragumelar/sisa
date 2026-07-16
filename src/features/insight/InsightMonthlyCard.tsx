@@ -27,7 +27,8 @@ const H = 96
 const PAD_T = 8
 const LABEL_H = 18
 const SVG_H = PAD_T + H + LABEL_H
-const MIN_BAR_H = 2
+const MIN_BAR_H = 3
+const ZERO_BAR_H = 1
 const MIDDLE_LABEL_THRESHOLD = 6
 
 interface BarGeometry {
@@ -63,14 +64,15 @@ function BarChart({
 
   function barGeometry(val: number): BarGeometry {
     if (metric === 'net') {
-      const raw = (Math.abs(val) / maxAbs) * (H * 0.9)
-      const height = Math.max(raw, MIN_BAR_H)
+      const raw = Math.sqrt(Math.abs(val) / maxAbs) * (H / 2)
+      const height = Math.min(Math.max(raw, MIN_BAR_H), H / 2)
       const negative = val < 0
       return { y: negative ? midY : midY - height, height, isTick: raw < MIN_BAR_H }
     }
-    const raw = (val / maxAbs) * H
-    const height = Math.max(raw, MIN_BAR_H)
-    return { y: PAD_T + H - height, height, isTick: raw < MIN_BAR_H }
+    const minH = val > 0 ? MIN_BAR_H : ZERO_BAR_H
+    const raw = Math.sqrt(val / maxAbs) * H
+    const height = Math.max(raw, minH)
+    return { y: PAD_T + H - height, height, isTick: raw < minH }
   }
 
   function barFill(i: number, val: number, isTick: boolean): string {
