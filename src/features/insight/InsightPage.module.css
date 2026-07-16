@@ -530,6 +530,31 @@
   color: var(--ink-primary);
 }
 
+.lolliTrack {
+  margin-top: 6px;
+  height: 12px;
+  position: relative;
+}
+
+.lolliStem {
+  position: relative;
+  height: 4px;
+  top: 2px;
+  background: var(--accent-br);
+  border-radius: 2px;
+}
+
+.lolliStem::after {
+  content: '';
+  position: absolute;
+  right: -6px;
+  top: -4px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
 .txSectionLabel {
   font-size: 10px;
   font-weight: 700;

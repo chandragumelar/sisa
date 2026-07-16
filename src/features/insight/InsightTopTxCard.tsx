@@ -32,22 +32,31 @@ export function InsightTopTxCard({ currTop, currency, lang }: Props) {
         {t('insight.card_top_tx', lang)}
       </div>
 
-      {currTop.map((tx, i) => (
-        <div
-          key={i}
-          className={styles.txRow}
-          style={{
-            borderBottom: i < currTop.length - 1 ? '1px solid var(--border-soft)' : 'none',
-          }}
-        >
-          <span className={styles.txRank}>{i + 1}</span>
-          <div className={styles.txInfo}>
-            <div className={styles.txName}>{tx.label}</div>
-            <div className={styles.txDate}>{formatTxDate(tx.date, lang)}</div>
-          </div>
-          <span className={styles.txAmt}>{formatCurrency(tx.amount, currency)}</span>
-        </div>
-      ))}
+      {(() => {
+        const maxAmt = Math.max(...currTop.map((tx) => tx.amount))
+        return currTop.map((tx, i) => {
+          const pct = Math.max(Math.sqrt(tx.amount / maxAmt) * 100, 6)
+          return (
+            <div
+              key={i}
+              className={styles.txRow}
+              style={{
+                borderBottom: i < currTop.length - 1 ? '1px solid var(--border-soft)' : 'none',
+              }}
+            >
+              <span className={styles.txRank}>{i + 1}</span>
+              <div className={styles.txInfo}>
+                <div className={styles.txName}>{tx.label}</div>
+                <div className={styles.txDate}>{formatTxDate(tx.date, lang)}</div>
+                <div className={styles.lolliTrack}>
+                  <div className={styles.lolliStem} style={{ width: `${pct}%` }} />
+                </div>
+              </div>
+              <span className={styles.txAmt}>{formatCurrency(tx.amount, currency)}</span>
+            </div>
+          )
+        })
+      })()}
     </div>
   )
 }
