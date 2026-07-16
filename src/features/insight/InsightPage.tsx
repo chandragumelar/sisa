@@ -202,7 +202,7 @@ export function InsightPage() {
                     <span>
                       {t('insight.spend_pct_left', lang).replace(
                         '{amount}',
-                        formatCurrency(Math.max(currIncome - currExpense, 0), currency),
+                        formatCurrency(currIncome, currency),
                       )}
                     </span>
                   </div>
