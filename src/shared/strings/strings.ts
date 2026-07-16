@@ -737,6 +737,7 @@ export type StringKey =
   | 'insight.daily_tx_fallback'
   | 'insight.daily_legend_low'
   | 'insight.daily_legend_high'
+  | 'insight.daily_hint'
   | 'insight.daily_sheet_empty'
   | 'insight.daily_sheet_total'
   | 'insight.card_ranking'
@@ -1563,6 +1564,7 @@ const id: StringDictionary = {
   'insight.daily_tx_fallback': 'Transaksi',
   'insight.daily_legend_low': 'sedikit',
   'insight.daily_legend_high': 'banyak',
+  'insight.daily_hint': 'ketuk bar buat lihat detail',
   'insight.daily_sheet_empty': 'Tidak ada transaksi hari ini.',
   'insight.daily_sheet_total': 'Total',
   'insight.card_ranking': 'Klasemen Kategori Bulan Ini',
@@ -2379,6 +2381,7 @@ const en: StringDictionary = {
   'insight.daily_tx_fallback': 'Transaction',
   'insight.daily_legend_low': 'few',
   'insight.daily_legend_high': 'many',
+  'insight.daily_hint': 'tap a bar to see details',
   'insight.daily_sheet_empty': 'No transactions this day.',
   'insight.daily_sheet_total': 'Total',
   'insight.card_ranking': "This Month's Category Ranking",
