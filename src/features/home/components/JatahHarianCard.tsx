@@ -136,9 +136,17 @@ export function JatahHarianCard({
         <div className={styles.heroNum}>{formatCurrency(jatahHariIni, currency)}</div>
 
         <div className={styles.barWrap} aria-hidden="true">
-          <div className={`${styles.bar} ${barClass}`} style={{ width: `${fillPct}%` }} />
-          {markerPct !== null && (
-            <div className={styles.marker} style={{ left: `${markerPct}%` }} />
+          {markerPct !== null ? (
+            <>
+              <div className={styles.barSegBase} style={{ width: `${markerPct}%` }} />
+              <div
+                className={`${styles.barSegOver} ${isDanger ? styles.barSegOverDanger : styles.barSegOverCaution}`}
+                style={{ left: `${markerPct}%`, width: `${100 - markerPct}%` }}
+              />
+              <div className={styles.marker} style={{ left: `${markerPct}%` }} />
+            </>
+          ) : (
+            <div className={`${styles.bar} ${barClass}`} style={{ width: `${fillPct}%` }} />
           )}
         </div>
 
