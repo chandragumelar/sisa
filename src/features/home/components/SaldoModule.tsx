@@ -88,6 +88,8 @@ export function SaldoModule({
             )}
           </div>
 
+          <div className={styles.headerDivider} />
+
           {/* Mode: Bertahan */}
           {mode === 'bertahan' && (
             <div className={styles.bertahanBody}>
