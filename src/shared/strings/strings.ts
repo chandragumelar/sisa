@@ -490,6 +490,7 @@ export type StringKey =
   | 'andai.placeholder_beli'
   | 'andai.placeholder_income'
   | 'andai.placeholder_tagihan'
+  | 'andai.default_scenario_name'
   | 'andai.scenarios_label'
   | 'andai.scenarios_delete_aria'
   | 'andai.scenarios_delete_label'
@@ -1305,6 +1306,7 @@ const id: StringDictionary = {
   'andai.placeholder_beli': 'e.g. service mobil',
   'andai.placeholder_income': 'e.g. gaji, freelance',
   'andai.placeholder_tagihan': 'e.g. langganan baru',
+  'andai.default_scenario_name': 'skenario baru',
   'andai.scenarios_label': 'skenario tersimpan',
   'andai.scenarios_delete_aria': 'Hapus skenario',
   'andai.scenarios_delete_label': 'hapus',
@@ -2122,6 +2124,7 @@ const en: StringDictionary = {
   'andai.placeholder_beli': 'e.g. car service',
   'andai.placeholder_income': 'e.g. salary, freelance',
   'andai.placeholder_tagihan': 'e.g. new subscription',
+  'andai.default_scenario_name': 'new scenario',
   'andai.scenarios_label': 'saved scenarios',
   'andai.scenarios_delete_aria': 'Delete scenario',
   'andai.scenarios_delete_label': 'delete',

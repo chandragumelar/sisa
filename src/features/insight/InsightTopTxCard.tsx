@@ -16,6 +16,7 @@ export function InsightTopTxCard({ currTop, currency, lang }: Props) {
     return (
       <div className={styles.card}>
         <span className={styles.cardLabel}>{t('insight.card_top_tx', lang)}</span>
+        <div className={styles.cardHeaderDivider} />
         <div className={styles.emptyBlock}>
           <p className={styles.emptyMsg} style={{ whiteSpace: 'pre-line' }}>
             {t('insight.top_tx_empty', lang)}
@@ -31,6 +32,8 @@ export function InsightTopTxCard({ currTop, currency, lang }: Props) {
       <div className={`${styles.cardLabel} ${styles.cardFlushPad}`}>
         {t('insight.card_top_tx', lang)}
       </div>
+
+      <div className={styles.cardHeaderDividerFlush} />
 
       {(() => {
         const maxAmt = Math.max(...currTop.map((tx) => tx.amount))

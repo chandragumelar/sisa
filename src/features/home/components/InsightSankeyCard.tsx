@@ -256,6 +256,8 @@ export function InsightSankeyCard({ currency, nowMs, sisaUang }: Props) {
         {hasData && <p className={styles.subtext}>{breakdownText}</p>}
       </div>
 
+      <div className={styles.headerDivider} />
+
       {!hasData ? (
         <span className={homeStyles.insightCardText}>{t('home.insight_teaser_generic', lang)}</span>
       ) : (

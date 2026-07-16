@@ -54,6 +54,7 @@ export function MonthlyModule({
         <span className={styles.label}>{t('home.monthly_title', lang)}</span>
         <span className={styles.month}>{monthLabel}</span>
       </div>
+      <div className={styles.headerDivider} />
       <div className={styles.list}>
         {sections.map((section, i) => {
           const currencies = sortedCurrencies(section.byCurrency, primaryCurrency)
