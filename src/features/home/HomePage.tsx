@@ -432,16 +432,14 @@ export function HomePage() {
           needsPaydayConfirmation(nowMs, settings, allocation) && (
             <div className={styles.paydayAlokasiCard}>
               <div className={styles.paydayAlokasiBody}>
-                <p className={styles.paydayAlokasiTag}>Gajian masuk?</p>
-                <p className={styles.paydayAlokasiTitle}>Atur ulang alokasi lo</p>
-                <p className={styles.paydayAlokasiMsg}>
-                  Saldo lo kayaknya naik nih. Mau langsung tentuin jatah operasional baru?
-                </p>
+                <p className={styles.paydayAlokasiTag}>{t('home.payday_alokasi_tag', lang)}</p>
+                <p className={styles.paydayAlokasiTitle}>{t('home.payday_alokasi_title', lang)}</p>
+                <p className={styles.paydayAlokasiMsg}>{t('home.payday_alokasi_msg', lang)}</p>
                 <button
                   className={styles.paydayAlokasiCta}
                   onClick={() => setAlokasiSheetOpen(true)}
                 >
-                  Atur alokasi →
+                  {t('home.payday_alokasi_cta', lang)}
                 </button>
               </div>
             </div>
