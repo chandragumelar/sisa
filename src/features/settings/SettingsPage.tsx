@@ -278,7 +278,14 @@ export function SettingsPage() {
         <div className={styles.creditBlock}>
           <div className={styles.creditAppName}>Sisa</div>
           <div className={styles.creditMadeBy}>{t('settings.made_by', lang)}</div>
-          <div className={styles.creditStudio}>{BRAND_STUDIO_WITH_COLLAB}</div>
+          <a
+            className={styles.creditStudio}
+            href="https://pika-xu.com/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            {BRAND_STUDIO_WITH_COLLAB}
+          </a>
           <div className={styles.creditVersion}>v0.1.0</div>
         </div>
         <div className={styles.divider} />
