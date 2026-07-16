@@ -233,6 +233,7 @@ export type StringKey =
   // notif card
   | 'notif.both'
   | 'notif.overdue'
+  | 'home.badge_lewat_tempo'
   | 'notif.due_today'
   | 'notif.extra'
   // backup card
@@ -1004,6 +1005,7 @@ const id: StringDictionary = {
 
   'notif.both': '{n} komitmen lewat tempo & jatuh tempo hari ini',
   'notif.overdue': '{n} komitmen lewat tempo',
+  'home.badge_lewat_tempo': '{n} lewat tempo',
   'notif.due_today': '{n} komitmen jatuh tempo hari ini',
   'notif.extra': '+{n} lainnya',
 
@@ -1826,6 +1828,7 @@ const en: StringDictionary = {
 
   'notif.both': '{n} commitments overdue & due today',
   'notif.overdue': '{n} commitments overdue',
+  'home.badge_lewat_tempo': '{n} overdue',
   'notif.due_today': '{n} commitments due today',
   'notif.extra': '+{n} more',
 
