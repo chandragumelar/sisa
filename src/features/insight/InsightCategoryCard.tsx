@@ -70,6 +70,7 @@ export function InsightCategoryCard({
     return (
       <div className={styles.card}>
         <span className={styles.cardLabel}>{t('insight.card_category', lang)}</span>
+        <div className={styles.cardHeaderDivider} />
         <div className={styles.emptyBlock}>
           <p className={styles.emptyMsg} style={{ whiteSpace: 'pre-line' }}>
             {t('insight.cat_empty', lang)}
@@ -127,6 +128,8 @@ export function InsightCategoryCard({
           <ChevronDown size={14} strokeWidth={2} />
         </button>
       </div>
+
+      <div className={styles.cardHeaderDivider} />
 
       <div className={styles.bigNum} style={{ marginTop: 8 }}>
         {formatCurrency(row.amount, currency)}

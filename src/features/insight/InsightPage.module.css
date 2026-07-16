@@ -84,6 +84,19 @@
   margin-bottom: 10px;
 }
 
+.cardHeaderDivider {
+  height: 1px;
+  background: var(--border-hair);
+  margin: 4px -16px 12px;
+}
+
+/* For .cardFlush cards (zero horizontal card padding) — no negative offset needed */
+.cardHeaderDividerFlush {
+  height: 1px;
+  background: var(--border-hair);
+  margin: 4px 0 12px;
+}
+
 .cardHeaderRow .cardLabel {
   margin-bottom: 0;
 }

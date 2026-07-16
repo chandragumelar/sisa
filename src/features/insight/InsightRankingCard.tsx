@@ -16,6 +16,7 @@ export function InsightRankingCard({ rows, prevMonthLong, currency, lang }: Prop
     return (
       <div className={styles.card}>
         <span className={styles.cardLabel}>{t('insight.card_ranking', lang)}</span>
+        <div className={styles.cardHeaderDivider} />
         <div className={styles.emptyBlock}>
           <p className={styles.emptyMsg} style={{ whiteSpace: 'pre-line' }}>
             {t('insight.ranking_empty', lang)}
@@ -37,6 +38,8 @@ export function InsightRankingCard({ rows, prevMonthLong, currency, lang }: Prop
           {t('insight.ranking_vs', lang).replace('{month}', prevMonthLong)}
         </span>
       </div>
+
+      <div className={styles.cardHeaderDividerFlush} />
 
       {showLegend && (
         <div className={`${styles.rankLegend} ${styles.cardFlushPad}`}>

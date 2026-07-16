@@ -22,6 +22,7 @@ export function InsightWeekendCard({ currTxs, currency, lang }: Props) {
     return (
       <div className={pageStyles.card}>
         <span className={pageStyles.cardLabel}>{t('insight.card_weekend', lang)}</span>
+        <div className={pageStyles.cardHeaderDivider} />
         <div className={pageStyles.emptyBlock}>
           <p className={pageStyles.emptyMsg} style={{ whiteSpace: 'pre-line' }}>
             {t('insight.weekend_empty', lang)}
@@ -41,6 +42,7 @@ export function InsightWeekendCard({ currTxs, currency, lang }: Props) {
   return (
     <div className={pageStyles.card}>
       <span className={pageStyles.cardLabel}>{t('insight.card_weekend', lang)}</span>
+      <div className={pageStyles.cardHeaderDivider} />
       <div className={styles.versusWrap}>
         <div className={styles.versusCol}>
           <span className={styles.versusLabel}>{t('home.insight_wd_weekday', lang)}</span>

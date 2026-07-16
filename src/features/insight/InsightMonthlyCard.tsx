@@ -236,6 +236,8 @@ export function InsightMonthlyCard({
         </div>
       </div>
 
+      <div className={styles.cardHeaderDivider} />
+
       {isEmpty ? (
         <div className={styles.emptyBlock}>
           <p className={styles.emptyMsg} style={{ whiteSpace: 'pre-line' }}>

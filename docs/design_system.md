@@ -122,13 +122,13 @@ font-feature-settings: 'cv11'; /* body global, alternatif huruf 'l' */
 | **Bar footer**     | 11px   | 400        | normal          | "Rp 57rb terpakai"                |
 | **Meta info**      | 10.5px | 400        | normal          | "9 hari sampai gajian"            |
 | **Card sub**       | 10px   | 400        | normal          | "sampai minggu · 4 hari"          |
-| **Module label**   | 10px   | 500        | 0.8px UPPERCASE | "budget hari ini", "saldo total"  |
+| **Module label**   | 10px   | 700        | 1.1px UPPERCASE | "budget hari ini", "saldo total"  |
 | **Goal badge**     | 8.5px  | 600        | 0.6px UPPERCASE | "DANA DARURAT", "IMPIAN #1"       |
 | **Swipe hint**     | 9.5px  | 400 italic | normal          | "geser kiri untuk tandai dibayar" |
 
 ### 2.3 Aturan Tipografi
 
-- **Module label selalu UPPERCASE + tracking 0.8px.** Konsistensi ini yang bikin section break kebaca tanpa garis.
+- **Module label selalu UPPERCASE + tracking 1.1px.** Konsistensi ini yang bikin section break kebaca tanpa garis.
 - **Negative letter-spacing cuma di angka besar (≥19px).** Bikin angka rapat, terasa "padat informasi". Di body text, jangan.
 - **Italic cuma untuk hint instruksional** ("geser kiri untuk..."). Ga buat penekanan.
 - **Bold di body = 600.** Bold di angka utama = 600. Konsistensi weight.
@@ -452,7 +452,7 @@ Sebelum push komponen baru, check:
 - [ ] Hierarchy lewat ukuran/weight, bukan shadow?
 - [ ] Border `--border-hair` 1px untuk semua card?
 - [ ] Radius `var(--radius-card)` untuk card, `var(--radius-button)`/`var(--radius-input)` untuk button/input, `var(--radius-pill)` untuk badge/chip/progress, `var(--radius-squircle)` untuk icon box, `var(--radius-sheet)` untuk sheet?
-- [ ] Module label uppercase + tracking 0.8px?
+- [ ] Module label uppercase + tracking 1.1px?
 - [ ] Violet cuma di hal interactive?
 - [ ] Signal cuma di hal yang memang signal (bukan dekoratif)?
 - [ ] Copy lowercase informal, "lo/gue", hard numbers?

@@ -72,6 +72,8 @@ export function InsightDailyCard({ currTxs, viewYear, viewMonth, currency, lang 
     <div className={insightStyles.card}>
       <div className={insightStyles.cardLabel}>{t('insight.card_daily', lang)}</div>
 
+      <div className={insightStyles.cardHeaderDivider} />
+
       {isEmpty ? (
         <div className={insightStyles.emptyBlock}>
           <p className={insightStyles.emptyMsg} style={{ whiteSpace: 'pre-line' }}>

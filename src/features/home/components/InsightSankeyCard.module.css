@@ -4,6 +4,12 @@
   gap: 6px;
 }
 
+.headerDivider {
+  height: 1px;
+  background: var(--border-hair);
+  margin: 0 calc(var(--pad-card) * -1);
+}
+
 .headerTop {
   display: flex;
   align-items: center;
