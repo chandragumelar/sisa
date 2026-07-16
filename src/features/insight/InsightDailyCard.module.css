@@ -1,148 +1,75 @@
-/* ── Day-of-week header ───────────────────────────────── */
-.hmHeader {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 3px;
-  margin-bottom: 4px;
+/* ── Daily waveform ────────────────────────────────────── */
+.wave {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 120px;
+  width: 100%;
 }
 
-.hmDlbl {
-  text-align: center;
-  font-size: 9px;
-  font-weight: 600;
-  color: var(--ink-tertiary);
-  letter-spacing: 0.15px;
-  line-height: 1;
-  padding-bottom: 2px;
-  font-family: var(--font-sans);
-}
-
-/* ── Cell grid ───────────────────────────────────────── */
-.hmGrid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 3px;
-}
-
-.hmCell {
-  aspect-ratio: 1;
-  border-radius: 5px;
-  background: var(--heat-0);
+.waveBar {
+  flex: 1;
+  border-radius: 2px 2px 0 0;
+  background: var(--accent);
   position: relative;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  transition: transform 0.07s ease;
   outline: none;
 }
 
-.hmCell:active {
-  transform: scale(0.84);
+.waveBar[data-weekend] {
+  opacity: 0.45;
 }
 
-/* ghost = padding cell before/after month */
-.ghost {
-  background: transparent;
-  cursor: default;
-  pointer-events: none;
-}
-
-/* idle = day exists but no transactions */
-.idle {
+.waveBar[data-idle] {
+  background: var(--border-soft);
   cursor: default;
 }
 
-.idle:active {
-  transform: none;
+.waveSep {
+  width: 1px;
+  flex: none;
+  align-self: stretch;
+  background: var(--border-hair);
 }
 
-/* heat intensity via data attribute */
-.hmCell[data-h='0'] {
-  background: var(--heat-0);
-}
-.hmCell[data-h='1'] {
-  background: var(--heat-1);
-}
-.hmCell[data-h='2'] {
-  background: var(--heat-2);
-}
-.hmCell[data-h='3'] {
-  background: var(--heat-3);
-}
-.hmCell[data-h='4'] {
-  background: var(--heat-4);
-}
-.hmCell[data-h='5'] {
-  background: var(--heat-5);
-}
-
-/* date number inside cell */
-.hmDn {
+.waveToday {
   position: absolute;
-  top: 3px;
-  left: 4px;
-  font-family: var(--font-mono);
-  font-size: 8px;
-  font-weight: 600;
-  color: var(--ink-tertiary);
-  opacity: 0.6;
-  line-height: 1;
-  pointer-events: none;
-  user-select: none;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
 }
 
-/* lighten date number on dark cells */
-.hmCell[data-h='3'] .hmDn,
-.hmCell[data-h='4'] .hmDn,
-.hmCell[data-h='5'] .hmDn {
-  color: rgba(255, 255, 255, 0.75);
-  opacity: 1;
-}
-
-/* ── Legend ──────────────────────────────────────────── */
-.hmLegend {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 12px;
-}
-
-.hmLl {
-  font-size: 10px;
-  color: var(--ink-tertiary);
-  flex-shrink: 0;
-  font-family: var(--font-sans);
-}
-
-.hmSwatches {
+.waveLabels {
   display: flex;
   gap: 2px;
+  margin-top: 4px;
 }
 
-.hmSw {
-  width: 12px;
-  height: 12px;
-  border-radius: 3px;
-  flex-shrink: 0;
+.waveLabel {
+  flex: 1;
+  text-align: center;
+  font-size: 9px;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+  line-height: 1;
 }
 
-.hmSw[data-h='0'] {
-  background: var(--heat-0);
-  border: 1px solid var(--border-hair);
+.waveSepSpace {
+  width: 1px;
+  flex: none;
 }
-.hmSw[data-h='1'] {
-  background: var(--heat-1);
-}
-.hmSw[data-h='2'] {
-  background: var(--heat-2);
-}
-.hmSw[data-h='3'] {
-  background: var(--heat-3);
-}
-.hmSw[data-h='4'] {
-  background: var(--heat-4);
-}
-.hmSw[data-h='5'] {
-  background: var(--heat-5);
+
+.waveHint {
+  margin-top: 10px;
+  font-size: 10px;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+  text-align: center;
 }
 
 /* ── Bottom sheet content ────────────────────────────── */
