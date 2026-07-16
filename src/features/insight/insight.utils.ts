@@ -79,6 +79,26 @@ export function splitWeekendExpense(txs: Transaction[]): WeekendSplit {
   return { weekday, weekend, total: weekday + weekend }
 }
 
+export interface ElapsedDays {
+  weekdayDays: number
+  weekendDays: number
+}
+
+/** Counts weekday (Sen-Jum) vs weekend (Sab-Ming) days from the 1st of `now`'s month through today, inclusive. */
+export function countElapsedDays(now: Date): ElapsedDays {
+  const year = now.getFullYear()
+  const month = now.getMonth()
+  const today = now.getDate()
+  let weekdayDays = 0
+  let weekendDays = 0
+  for (let day = 1; day <= today; day++) {
+    const dow = new Date(year, month, day).getDay()
+    if (dow === 0 || dow === 6) weekendDays++
+    else weekdayDays++
+  }
+  return { weekdayDays, weekendDays }
+}
+
 export function sumIncome(txs: Transaction[]): number {
   return txs.filter(isIncome).reduce((s, t) => s + t.amount, 0)
 }
@@ -191,10 +211,7 @@ export function buildChartData(
     const masuk = sumIncome(monthTxs)
     return { year: y, month: m, net: masuk - keluar, keluar, masuk }
   })
-  // Strip leading empty months (no activity). Gaps in the middle are kept.
-  // Current month (last) is always retained even if empty.
-  const firstActive = all.findIndex((b) => b.keluar > 0 || b.masuk > 0)
-  return all.slice(firstActive === -1 ? all.length - 1 : firstActive)
+  return all
 }
 
 export function formatTxDate(dateMs: number, lang: Language): string {
@@ -240,8 +257,7 @@ export function buildCategoryTrend(
       .reduce((s, t) => s + Math.abs(t.amount), 0)
     return { year: y, month: m, amount }
   })
-  const firstActive = all.findIndex((b) => b.amount > 0)
-  return all.slice(firstActive === -1 ? all.length - 1 : firstActive)
+  return all
 }
 
 export interface DayCell {

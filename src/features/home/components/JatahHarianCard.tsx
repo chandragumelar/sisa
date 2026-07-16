@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Info } from 'lucide-react'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
@@ -38,7 +39,13 @@ export function JatahHarianCard({
   const lang = useLanguage()
   const curLabel = getCurrencyLabel(currency, lang)
   const [tooltipOpen, setTooltipOpen] = useState(false)
-  const pct = jatahHariIni > 0 ? Math.min(100, Math.round((spentToday / jatahHariIni) * 100)) : 0
+  const isOverBar = spentToday > jatahHariIni && jatahHariIni > 0
+  const fillPct = isOverBar
+    ? 100
+    : jatahHariIni > 0
+      ? Math.min(100, Math.max(0, (spentToday / jatahHariIni) * 100))
+      : 0
+  const markerPct = isOverBar ? Math.max(8, Math.min(100, (jatahHariIni / spentToday) * 100)) : null
   const lebih = spentToday - jatahHariIni
   const besokRaw = sisaUang / Math.max(1, sisaHari - 1)
   const besok = Math.max(0, Math.round(besokRaw / 1000) * 1000)
@@ -116,18 +123,7 @@ export function JatahHarianCard({
               onClick={() => setTooltipOpen(true)}
               aria-label={t('a11y.info_jatah', lang)}
             >
-              <svg
-                width="13"
-                height="13"
-                viewBox="0 0 12 12"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.3"
-              >
-                <circle cx="6" cy="6" r="5" />
-                <line x1="6" y1="5.5" x2="6" y2="8.5" strokeLinecap="round" />
-                <circle cx="6" cy="3.4" r="0.75" fill="currentColor" stroke="none" />
-              </svg>
+              <Info size={13} strokeWidth={1.75} />
             </button>
           </div>
           {isDanger && <span className={styles.dangerBadge}>{dangerBadgeText}</span>}
@@ -137,10 +133,23 @@ export function JatahHarianCard({
           {isHabis && <span className={styles.pasBadge}>{t('home.jatah_pas_badge', lang)}</span>}
         </div>
 
+        <div className={styles.headerDivider} />
+
         <div className={styles.heroNum}>{formatCurrency(jatahHariIni, currency)}</div>
 
-        <div className={styles.barWrap}>
-          <div className={`${styles.bar} ${barClass}`} style={{ width: `${pct}%` }} />
+        <div className={styles.barWrap} aria-hidden="true">
+          {markerPct !== null ? (
+            <>
+              <div className={styles.barSegBase} style={{ width: `${markerPct}%` }} />
+              <div
+                className={`${styles.barSegOver} ${isDanger ? styles.barSegOverDanger : styles.barSegOverCaution}`}
+                style={{ left: `${markerPct}%`, width: `${100 - markerPct}%` }}
+              />
+              <div className={styles.marker} style={{ left: `${markerPct}%` }} />
+            </>
+          ) : (
+            <div className={`${styles.bar} ${barClass}`} style={{ width: `${fillPct}%` }} />
+          )}
         </div>
 
         <div className={styles.spentRow}>

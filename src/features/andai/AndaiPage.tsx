@@ -179,7 +179,7 @@ export function AndaiPage() {
     items
       .slice(0, 2)
       .map((i) => i.desc || kindLabel(i.kind, lang))
-      .join(' + ') || (lang === 'en' ? 'new scenario' : 'skenario baru')
+      .join(' + ') || t('andai.default_scenario_name', lang)
 
   function handleAddItem() {
     const amount = parseInt(addAmount, 10)

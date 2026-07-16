@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { Check } from 'lucide-react'
 import type { Tagihan } from '@/db/database'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
 import { getTagihanUrgency } from '../tagihan.utils'
@@ -82,18 +83,7 @@ export function TagihanSwipeRow({ tagihan, nowMs, metaText, onPayTap, onRowTap }
         onClick={onPayTap}
         aria-label={t('tagihan_swipe.mark_paid_aria', lang)}
       >
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <polyline points="20 6 9 17 4 12" />
-        </svg>
+        <Check size={20} strokeWidth={1.75} />
         <span>{t('tagihan_swipe.mark_paid_label', lang)}</span>
       </div>
 

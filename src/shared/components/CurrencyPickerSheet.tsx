@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Search } from 'lucide-react'
 import { ALL_CURRENCIES, getPopularCurrencies, type Currency } from '@/constants/currencies'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
@@ -43,18 +44,7 @@ export function CurrencyPickerSheet({
         <div className={styles.dragHandle} aria-hidden="true" />
 
         <div className={styles.searchWrap}>
-          <svg
-            className={styles.searchIcon}
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.8"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <circle cx="11" cy="11" r="7" />
-            <path d="M21 21l-4-4" />
-          </svg>
+          <Search className={styles.searchIcon} size={16} strokeWidth={1.75} />
           <input
             className={styles.searchInput}
             type="search"

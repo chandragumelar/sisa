@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Wallet as WalletIcon, Plus, Info, ChevronUp, ChevronRight } from 'lucide-react'
 import type { Wallet } from '@/db/database'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
 import { convert, getRateAsOf, refreshRatesIfStale } from '@/shared/utils/fx'
@@ -126,20 +127,7 @@ export function WalletsCard({ wallets, primaryCurrency, onWalletTap, onAddWallet
         <div className={styles.divider} />
         <div className={styles.emptyBody}>
           <div className={styles.emptyIcon}>
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 20 20"
-              fill="none"
-              stroke="var(--ink-tertiary)"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <rect x="2" y="5" width="16" height="12" rx="2" />
-              <path d="M2 9h16" />
-              <circle cx="14.5" cy="13" r="1" fill="var(--ink-tertiary)" stroke="none" />
-            </svg>
+            <WalletIcon size={18} strokeWidth={1.75} color="var(--ink-tertiary)" />
           </div>
           <span className={styles.emptyTitle}>{t('home.wallets_empty_title', lang)}</span>
           <span className={styles.emptySub}>{t('home.wallets_empty_sub', lang)}</span>
@@ -181,17 +169,7 @@ export function WalletsCard({ wallets, primaryCurrency, onWalletTap, onAddWallet
             onClick={onAddWallet}
             aria-label={t('a11y.add_wallet', lang)}
           >
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 14 14"
-              fill="none"
-              stroke="var(--ink-secondary)"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-            >
-              <path d="M7 2.5v9M2.5 7h9" />
-            </svg>
+            <Plus size={14} strokeWidth={1.75} color="var(--ink-secondary)" />
           </button>
         </div>
         {isMulti && rows.length > 0 && (
@@ -210,20 +188,7 @@ export function WalletsCard({ wallets, primaryCurrency, onWalletTap, onAddWallet
         <div className={styles.totalAmt}>{displayTotal}</div>
         {isMulti && hasRateMissing && (
           <div className={styles.totalFallbackNote}>
-            <svg
-              width="11"
-              height="11"
-              viewBox="0 0 11 11"
-              fill="none"
-              stroke="var(--ink-tertiary)"
-              strokeWidth="1.3"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <circle cx="5.5" cy="5.5" r="4.5" />
-              <path d="M5.5 3.2v2.6" />
-              <circle cx="5.5" cy="7.6" r="0.45" fill="var(--ink-tertiary)" stroke="none" />
-            </svg>
+            <Info size={11} strokeWidth={1.75} color="var(--ink-tertiary)" />
             <span>
               {t('wallets.fallback_note', lang).replace(
                 '{currencies}',
@@ -279,18 +244,11 @@ export function WalletsCard({ wallets, primaryCurrency, onWalletTap, onAddWallet
               : t('home.wallets_more', lang).replace('{n}', String(hiddenCount))}
           </span>
           <span className={styles.moreChev}>
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 14 14"
-              fill="none"
-              stroke="var(--accent)"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              {expanded ? <path d="M3 9.5L7 5.5L11 9.5" /> : <path d="M5.5 3.5L9 7l-3.5 3.5" />}
-            </svg>
+            {expanded ? (
+              <ChevronUp size={14} strokeWidth={1.75} color="var(--accent)" />
+            ) : (
+              <ChevronRight size={14} strokeWidth={1.75} color="var(--accent)" />
+            )}
           </span>
         </button>
       )}

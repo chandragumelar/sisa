@@ -1,55 +1,58 @@
 /* ============================================================
-   SISA — Design Tokens (E1 Precision)
+   SISA — Design Tokens (Violet Ledger v2)
    Source of truth: docs/design_system.md
    Semantic naming only — never hardcode hex in components.
    ============================================================ */
 
 :root {
   /* ── Surfaces ─────────────────────────────────────────── */
-  --canvas: #f5f6f8;
-  --surface: #ffffff;
-  --surface-2: #f8f9fb;
-  --surface-3: #f0f1f4;
+  --canvas: #ffffff;
+  --surface: #f7f6fa;
+  --surface-2: #efeef5;
+  --surface-3: #e6e4ee;
 
   /* ── Ink ──────────────────────────────────────────────── */
-  --ink-primary: #07080f;
-  --ink-secondary: #4a5260;
-  --ink-tertiary: #9ba3af;
+  --ink-primary: #141216;
+  --ink-secondary: #5c5867;
+  --ink-tertiary: #948fa0;
 
   /* ── Borders ──────────────────────────────────────────── */
-  --border-hair: #e4e6ea;
-  --border-soft: #f0f1f4;
+  --border-hair: #e4e2ec;
+  --border-soft: #d8d5e3;
 
-  /* ── Accent — Electric Blue ───────────────────────────── */
-  --accent: #1d4ed8;
-  --accent-hover: #1e40af;
-  --accent-dim: #1e40af;
-  --accent-bg: #eff6ff;
-  --accent-br: #bfdbfe;
+  /* ── Accent — Electric Violet ─────────────────────────── */
+  --accent: #7c5cff;
+  --accent-hover: #6a47f5;
+  --accent-dim: #6a47f5;
+  --accent-bg: #f1eeff;
+  --accent-br: #d9d0ff;
   --accent-text: #ffffff;
 
   /* ── Signals ──────────────────────────────────────────── */
-  --signal-danger: #ef4444;
-  --signal-danger-bg: #fef2f2;
-  --signal-danger-br: #fecaca;
-  --signal-caution: #d97706;
-  --signal-caution-bg: #fffbeb;
-  --signal-caution-br: #fde68a;
-  --signal-safe: #16a34a;
-  --signal-safe-bg: #f0fdf4;
-  --signal-safe-br: #bbf7d0;
+  --signal-danger: #c8362f;
+  --signal-danger-bg: #fdecec;
+  --signal-danger-br: #f5c9c6;
+  --signal-caution: #a5720a;
+  --signal-caution-bg: #fbf1dd;
+  --signal-caution-br: #f0dca8;
+  --signal-safe: #1a8a55;
+  --signal-safe-bg: #e9f7ef;
+  --signal-safe-br: #c9ebd8;
 
   /* ── Typography ───────────────────────────────────────── */
-  --font-sans: 'DM Sans', system-ui, sans-serif;
-  --font-mono: 'DM Mono', ui-monospace, monospace;
+  --font-sans: 'Manrope', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
   /* ── Shadow + Radius + Spacing ────────────────────────── */
-  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.04), 0 3px 10px rgba(0, 0, 0, 0.05);
-  --radius-card: 13px;
-  --radius-button: 8px;
-  --radius-sheet: 18px;
+  --shadow-card: none;
+  --radius-card: 18px;
+  --radius-button: 12px;
+  --radius-input: 12px;
+  --radius-pill: 999px;
+  --radius-squircle: 12px;
+  --radius-sheet: 24px;
   --pad-page: 14px;
-  --pad-card: 16px;
+  --pad-card: 18px;
   --gap-cards: 10px;
 
   /* ── Backward-compat aliases ──────────────────────────── */
@@ -63,80 +66,80 @@
 
   /* ── Data-viz: heat palette (heatmap calendar) ───────── */
   --heat-0: var(--surface-3);
-  --heat-1: #dbeafe;
-  --heat-2: #93c5fd;
-  --heat-3: #60a5fa;
-  --heat-4: #2563eb;
+  --heat-1: #ede9fe;
+  --heat-2: #c4b5fd;
+  --heat-3: #a78bfa;
+  --heat-4: #8b5cf6;
   --heat-5: var(--accent);
 
   /* Verdict aliases (used by CekDulu + existing CSS) */
-  --aman-bg: #f0fdf4;
-  --aman-fg: #14532d;
-  --aman-br: #16a34a;
-  --mepet-bg: #fffbeb;
-  --mepet-fg: #78350f;
-  --mepet-br: #d97706;
-  --bahaya-bg: #fef2f2;
-  --bahaya-fg: #7f1d1d;
-  --bahaya-br: #ef4444;
+  --aman-bg: #e9f7ef;
+  --aman-fg: #135f3c;
+  --aman-br: #1a8a55;
+  --mepet-bg: #fbf1dd;
+  --mepet-fg: #6e4c07;
+  --mepet-br: #a5720a;
+  --bahaya-bg: #fdecec;
+  --bahaya-fg: #8f231e;
+  --bahaya-br: #c8362f;
 }
 
 [data-theme='dark'] {
-  /* Surfaces — naik dari canvas gelap ke surface lebih terang */
-  --canvas: #0d0f13;
-  --surface: #16191f;
-  --surface-2: #1c2027;
-  --surface-3: #242933;
+  /* Surfaces — naik dari canvas near-black ke surface lebih terang */
+  --canvas: #0a0a0b;
+  --surface: #131316;
+  --surface-2: #1a1a1f;
+  --surface-3: #242429;
 
   /* Ink — dibalik */
-  --ink-primary: #f2f4f7;
-  --ink-secondary: #a8b0bd;
-  --ink-tertiary: #6b7280;
+  --ink-primary: #f3f2f6;
+  --ink-secondary: #a8a5b3;
+  --ink-tertiary: #6e6b7a;
 
-  /* Borders — lebih terang dari surface, bukan lebih gelap */
-  --border-hair: #2a2f38;
-  --border-soft: #22262e;
+  /* Borders — lebih terang dari surface */
+  --border-hair: #232228;
+  --border-soft: #302f38;
 
-  /* Accent — sedikit dinaikkan biar pop di gelap */
-  --accent: #3b82f6;
-  --accent-hover: #60a5fa;
-  --accent-dim: #2563eb;
-  --accent-bg: #172033;
-  --accent-br: #1e3a5f;
+  /* Accent — dinaikkan biar pop di gelap */
+  --accent: #8b5cf6;
+  --accent-hover: #9e75ff;
+  --accent-dim: #7c4dde;
+  --accent-bg: #1e1830;
+  --accent-br: #3a2e5c;
   --accent-text: #ffffff;
 
-  /* Signals — bg/br versi gelap-redup, fg tetap terang */
-  --signal-danger: #f87171;
-  --signal-danger-bg: #2a1618;
-  --signal-danger-br: #4c2326;
-  --signal-caution: #fbbf24;
-  --signal-caution-bg: #261d0f;
-  --signal-caution-br: #453212;
-  --signal-safe: #4ade80;
-  --signal-safe-bg: #12241a;
-  --signal-safe-br: #1f4030;
+  /* Signals — bg/br gelap-redup, fg terang */
+  --signal-danger: #f0685f;
+  --signal-danger-bg: #301414;
+  --signal-danger-br: #4e211f;
+  --signal-caution: #e8b23d;
+  --signal-caution-bg: #2e2510;
+  --signal-caution-br: #4a3c18;
+  --signal-safe: #3ecb82;
+  --signal-safe-bg: #122b1e;
+  --signal-safe-br: #1f4430;
 
-  /* Shadow — di dark, elevation via shadow lebih dalam (hitam pekat) */
-  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 3px 10px rgba(0, 0, 0, 0.4);
+  /* Shadow — flat, elevation via border */
+  --shadow-card: none;
 
-  /* Heat — naik dari gelap-redup ke accent terang (arah saturasi dibalik) */
+  /* Heat — dari violet redup ke terang */
   --heat-0: var(--surface-3);
-  --heat-1: #1e3a5f;
-  --heat-2: #1e4d8f;
-  --heat-3: #2563eb;
-  --heat-4: #3b82f6;
-  --heat-5: #60a5fa;
+  --heat-1: #2e2450;
+  --heat-2: #443677;
+  --heat-3: #6247c9;
+  --heat-4: #8b5cf6;
+  --heat-5: #a78bfa;
 
   /* Verdict — versi gelap */
-  --aman-bg: #12241a;
-  --aman-fg: #86efac;
-  --aman-br: #16a34a;
-  --mepet-bg: #261d0f;
-  --mepet-fg: #fcd34d;
-  --mepet-br: #d97706;
-  --bahaya-bg: #2a1618;
-  --bahaya-fg: #fca5a5;
-  --bahaya-br: #ef4444;
+  --aman-bg: #122b1e;
+  --aman-fg: #8de7b4;
+  --aman-br: #3ecb82;
+  --mepet-bg: #2e2510;
+  --mepet-fg: #f3ca6a;
+  --mepet-br: #e8b23d;
+  --bahaya-bg: #301414;
+  --bahaya-fg: #f79a93;
+  --bahaya-br: #f0685f;
 
   color-scheme: dark;
 }

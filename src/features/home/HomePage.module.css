@@ -43,14 +43,6 @@
   text-transform: uppercase;
 }
 
-.wordmarkBy {
-  font-size: 8px;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-  color: var(--ink-tertiary);
-  font-family: var(--font-sans);
-}
-
 .headerRight {
   display: flex;
   align-items: center;
@@ -180,100 +172,11 @@
   opacity: 0.7;
 }
 
-.insightCardTop {
-  display: flex;
-  align-items: center;
-}
-
-.insightCardLabel {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 1.1px;
-  text-transform: uppercase;
-  color: var(--ink-tertiary);
-  font-family: var(--font-sans);
-}
-
 .insightCardText {
   font-size: 13px;
   color: var(--ink-secondary);
   line-height: 1.45;
   font-family: var(--font-sans);
-}
-
-.insightWdHeading {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--ink-secondary);
-  font-family: var(--font-sans);
-  margin: 6px 0 0;
-}
-
-.insightDonutWrap {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin: 6px 0 2px;
-}
-
-.insightDonutSvg {
-  flex-shrink: 0;
-}
-
-.insightDonutLegend {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  flex: 1;
-  min-width: 0;
-}
-
-.insightLegendRow {
-  display: flex;
-  align-items: baseline;
-  gap: 6px;
-}
-
-.insightLegendDotWd,
-.insightLegendDotWe {
-  width: 8px;
-  height: 8px;
-  border-radius: 2px;
-  flex-shrink: 0;
-  align-self: center;
-}
-
-.insightLegendDotWd {
-  background: var(--accent);
-}
-
-.insightLegendDotWe {
-  background: var(--signal-caution);
-}
-
-.insightLegendLabel {
-  font-size: 12px;
-  color: var(--ink-secondary);
-  font-family: var(--font-sans);
-}
-
-.insightLegendVal {
-  margin-left: auto;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--ink-primary);
-  font-variant-numeric: tabular-nums;
-}
-
-.insightLegendPct {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--ink-tertiary);
-  font-variant-numeric: tabular-nums;
-  min-width: 30px;
-  text-align: right;
 }
 
 .insightCta {

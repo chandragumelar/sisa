@@ -233,6 +233,7 @@ export type StringKey =
   // notif card
   | 'notif.both'
   | 'notif.overdue'
+  | 'home.badge_lewat_tempo'
   | 'notif.due_today'
   | 'notif.extra'
   // backup card
@@ -358,6 +359,10 @@ export type StringKey =
   | 'home.payday_confirm_sub'
   | 'home.payday_confirm_yes'
   | 'home.payday_confirm_no'
+  | 'home.payday_alokasi_tag'
+  | 'home.payday_alokasi_title'
+  | 'home.payday_alokasi_msg'
+  | 'home.payday_alokasi_cta'
   // equiv line (shared)
   | 'equiv.approx'
   // wallets card — multi-currency
@@ -489,6 +494,7 @@ export type StringKey =
   | 'andai.placeholder_beli'
   | 'andai.placeholder_income'
   | 'andai.placeholder_tagihan'
+  | 'andai.default_scenario_name'
   | 'andai.scenarios_label'
   | 'andai.scenarios_delete_aria'
   | 'andai.scenarios_delete_label'
@@ -644,12 +650,17 @@ export type StringKey =
   | 'home.sisa_uang_why_2'
   | 'home.sisa_uang_why_3'
   | 'home.insight_teaser_generic'
-  | 'home.insight_wd_heading'
   | 'home.insight_wd_weekday'
   | 'home.insight_wd_weekend'
   | 'home.insight_card_label'
-  | 'home.insight_card_label_dynamic'
   | 'home.insight_card_cta'
+  | 'home.sankey_title'
+  | 'home.sankey_breakdown'
+  | 'home.sankey_breakdown_overspend'
+  | 'home.sankey_toggle_nominal'
+  | 'home.sankey_toggle_persen'
+  | 'home.sankey_node_sisa'
+  | 'home.sankey_overspend_badge'
   | 'home.expand_show'
   | 'home.expand_hide'
   | 'home.duit_di_mana'
@@ -694,6 +705,10 @@ export type StringKey =
   | 'insight.hero_neutral_calm'
   | 'insight.hero_neutral_fresh'
   | 'insight.hero_neutral_sub'
+  | 'insight.card_weekend'
+  | 'insight.weekend_empty'
+  | 'insight.weekend_empty_sub'
+  | 'insight.weekend_avg_per_day'
   | 'insight.card_monthly'
   | 'insight.metric_net'
   | 'insight.metric_keluar'
@@ -715,6 +730,7 @@ export type StringKey =
   | 'insight.cat_delta_down'
   | 'insight.cat_no_prev'
   | 'insight.cat_pct_of_total'
+  | 'insight.cat_select_title'
   | 'insight.card_spend_pct'
   | 'insight.spend_pct_from'
   | 'insight.spend_pct_used'
@@ -727,10 +743,12 @@ export type StringKey =
   | 'insight.daily_tx_fallback'
   | 'insight.daily_legend_low'
   | 'insight.daily_legend_high'
+  | 'insight.daily_hint'
   | 'insight.daily_sheet_empty'
   | 'insight.daily_sheet_total'
   | 'insight.card_ranking'
   | 'insight.ranking_vs'
+  | 'insight.ranking_legend_now'
   | 'insight.ranking_empty'
   | 'insight.ranking_empty_sub'
   | 'insight.card_top_tx'
@@ -992,6 +1010,7 @@ const id: StringDictionary = {
 
   'notif.both': '{n} komitmen lewat tempo & jatuh tempo hari ini',
   'notif.overdue': '{n} komitmen lewat tempo',
+  'home.badge_lewat_tempo': '{n} lewat tempo',
   'notif.due_today': '{n} komitmen jatuh tempo hari ini',
   'notif.extra': '+{n} lainnya',
 
@@ -1111,7 +1130,7 @@ const id: StringDictionary = {
   'home.days_to_payday': '{n} hari ke gajian',
   'home.day_to_payday': '{n} hari ke gajian',
   'home.saldo_bebas': 'Sisa',
-  'home.monthly_title': 'Bulan Ini',
+  'home.monthly_title': 'Arus Kas Bulan Ini',
   'home.income_label': 'Pemasukan',
   'home.expense_label': 'Pengeluaran',
   'home.savings_label': 'Tabungan',
@@ -1119,6 +1138,11 @@ const id: StringDictionary = {
   'home.payday_confirm_sub': 'Kalau udah, SISA reset jatah harian dari sekarang.',
   'home.payday_confirm_yes': 'Udah masuk',
   'home.payday_confirm_no': 'Belum',
+  'home.payday_alokasi_tag': 'Gajian masuk?',
+  'home.payday_alokasi_title': 'Atur ulang alokasi lo',
+  'home.payday_alokasi_msg':
+    'Saldo lo kayaknya naik nih. Mau langsung tentuin jatah operasional baru?',
+  'home.payday_alokasi_cta': 'Atur alokasi →',
 
   'equiv.approx': '≈ {equiv} · kurs {date}',
 
@@ -1152,8 +1176,8 @@ const id: StringDictionary = {
   'quick_log.confirm_proceed': 'Lanjut aja',
   'quick_log.confirm_recheck': 'Cek dulu',
   'category.manage_btn': 'Atur',
-  'settings.row_categories': 'Kategori',
-  'settings.row_categories_sub': 'Atur kategori pengeluaran & pemasukan',
+  'settings.row_categories': 'kategori',
+  'settings.row_categories_sub': 'atur kategori pengeluaran & pemasukan',
 
   'cek_dulu.title': 'Cek Dulu',
   'cek_dulu.sub': 'aman ga gue beli ini?',
@@ -1291,6 +1315,7 @@ const id: StringDictionary = {
   'andai.placeholder_beli': 'e.g. service mobil',
   'andai.placeholder_income': 'e.g. gaji, freelance',
   'andai.placeholder_tagihan': 'e.g. langganan baru',
+  'andai.default_scenario_name': 'skenario baru',
   'andai.scenarios_label': 'skenario tersimpan',
   'andai.scenarios_delete_aria': 'Hapus skenario',
   'andai.scenarios_delete_label': 'hapus',
@@ -1399,8 +1424,8 @@ const id: StringDictionary = {
   'settings.theme_system': 'sistem',
   'settings.dark_note': 'gelap = v2 · belum tersedia',
   'settings.row_language': 'bahasa',
-  'settings.row_patokan_currency': 'Mata Uang Utama',
-  'settings.row_patokan_currency_sub': 'Dipakai untuk hampir semua biaya hidupmu',
+  'settings.row_patokan_currency': 'mata uang utama',
+  'settings.row_patokan_currency_sub': 'dipakai untuk hampir semua biaya hidupmu',
   'settings.currency_warning_title': 'Ganti mata uang utama',
   'settings.currency_warning_body':
     'Mengubah mata uang utama tidak mengubah angka yang sudah tersimpan. Rp 50.000 akan menjadi $50.000, bukan dikonversi.',
@@ -1455,12 +1480,17 @@ const id: StringDictionary = {
     'Jadi lo nggak perlu ngitung manual tiap mau jajan. Selama masih di dalam angka ini, aman.',
   'home.sisa_uang_why_3': 'Mau lihat angkanya dari mana? Tap "kok bisa segini?" di kartunya.',
   'home.insight_teaser_generic': 'Catatan pertamamu bakal muncul jadi pola di sini',
-  'home.insight_wd_heading': 'Pengeluaran bulan ini',
   'home.insight_wd_weekday': 'Hari kerja',
   'home.insight_wd_weekend': 'Akhir pekan',
   'home.insight_card_label': 'INSIGHT',
-  'home.insight_card_label_dynamic': 'POLA {cur}MU',
-  'home.insight_card_cta': 'Lihat Pola →',
+  'home.insight_card_cta': 'Lihat pola lainnya',
+  'home.sankey_title': 'Aliran pengeluaran {cur}mu',
+  'home.sankey_breakdown': 'pengeluaran {out} + sisa uang {left} = {total}',
+  'home.sankey_breakdown_overspend': 'keluar {out}',
+  'home.sankey_toggle_nominal': 'Nominal',
+  'home.sankey_toggle_persen': '%',
+  'home.sankey_node_sisa': 'Sisa',
+  'home.sankey_overspend_badge': 'Over jatah {amount}',
   'home.expand_show': 'kok bisa segini?',
   'home.expand_hide': 'sembunyikan',
   'home.duit_di_mana': 'Duit lo ada di mana',
@@ -1509,6 +1539,10 @@ const id: StringDictionary = {
   'insight.hero_neutral_calm': 'Bulan yang kalem.',
   'insight.hero_neutral_fresh': 'Awal yang bersih.',
   'insight.hero_neutral_sub': 'Mulai catat buat lihat pola',
+  'insight.card_weekend': 'Pengeluaran Hari Kerja vs Akhir Pekan',
+  'insight.weekend_empty': 'Belum ada pengeluaran bulan ini.',
+  'insight.weekend_empty_sub': 'pola weekday vs weekend kamu bakal muncul di sini',
+  'insight.weekend_avg_per_day': 'rata-rata/hari',
   'insight.card_monthly': 'Uang Bulanan',
   'insight.metric_net': 'Net',
   'insight.metric_keluar': 'Keluar',
@@ -1530,10 +1564,11 @@ const id: StringDictionary = {
   'insight.cat_delta_down': '↓ turun {pct}% dari {month}',
   'insight.cat_no_prev': 'baru bulan ini',
   'insight.cat_pct_of_total': '{pct}% dari pengeluaran bulan ini',
-  'insight.card_spend_pct': 'Persen Pengeluaran Bulanan',
+  'insight.cat_select_title': 'Pilih Kategori',
+  'insight.card_spend_pct': 'Pengeluaran vs Pemasukan',
   'insight.spend_pct_from': 'dari pemasukan bulan ini',
-  'insight.spend_pct_used': 'dipakai · {amount}',
-  'insight.spend_pct_left': 'sisa · {amount}',
+  'insight.spend_pct_used': 'pengeluaran · {amount}',
+  'insight.spend_pct_left': 'pemasukan · {amount}',
   'insight.spend_pct_empty': 'Tambahkan pemasukan dulu\nbiar rasionya bisa dihitung.',
   'insight.spend_pct_empty_sub': 'atur pemasukan di pengaturan profil',
   'insight.card_daily': 'Ritme Pengeluaran Harian',
@@ -1542,10 +1577,12 @@ const id: StringDictionary = {
   'insight.daily_tx_fallback': 'Transaksi',
   'insight.daily_legend_low': 'sedikit',
   'insight.daily_legend_high': 'banyak',
+  'insight.daily_hint': 'ketuk bar buat lihat detail',
   'insight.daily_sheet_empty': 'Tidak ada transaksi hari ini.',
   'insight.daily_sheet_total': 'Total',
-  'insight.card_ranking': 'Klasemen Kategori',
+  'insight.card_ranking': 'Klasemen Kategori Bulan Ini',
   'insight.ranking_vs': 'dibanding {month}',
+  'insight.ranking_legend_now': 'Bulan ini',
   'insight.ranking_empty': 'Belum ada kategori\nyang dicatat bulan ini.',
   'insight.ranking_empty_sub': 'kasih kategori ke tiap transaksi ya',
   'insight.card_top_tx': '5 Transaksi Besar Bulan Ini',
@@ -1802,6 +1839,7 @@ const en: StringDictionary = {
 
   'notif.both': '{n} commitments overdue & due today',
   'notif.overdue': '{n} commitments overdue',
+  'home.badge_lewat_tempo': '{n} overdue',
   'notif.due_today': '{n} commitments due today',
   'notif.extra': '+{n} more',
 
@@ -1921,7 +1959,7 @@ const en: StringDictionary = {
   'home.days_to_payday': '{n} days to payday',
   'home.day_to_payday': '{n} day to payday',
   'home.saldo_bebas': 'Left',
-  'home.monthly_title': 'This Month',
+  'home.monthly_title': 'Monthly Cash Flow',
   'home.income_label': 'Income',
   'home.expense_label': 'Expense',
   'home.savings_label': 'Savings',
@@ -1929,6 +1967,11 @@ const en: StringDictionary = {
   'home.payday_confirm_sub': 'If yes, SISA resets your daily budget from now.',
   'home.payday_confirm_yes': "Yes, it's in",
   'home.payday_confirm_no': 'Not yet',
+  'home.payday_alokasi_tag': 'Payday?',
+  'home.payday_alokasi_title': 'Reset your allocation',
+  'home.payday_alokasi_msg':
+    'Looks like your balance just went up. Want to set your new operational budget now?',
+  'home.payday_alokasi_cta': 'Set allocation →',
 
   'equiv.approx': '≈ {equiv} · rate {date}',
 
@@ -1962,8 +2005,8 @@ const en: StringDictionary = {
   'quick_log.confirm_proceed': 'Continue',
   'quick_log.confirm_recheck': 'Let me check',
   'category.manage_btn': 'Manage',
-  'settings.row_categories': 'Categories',
-  'settings.row_categories_sub': 'Manage expense & income categories',
+  'settings.row_categories': 'categories',
+  'settings.row_categories_sub': 'manage expense & income categories',
 
   'cek_dulu.title': 'Check First',
   'cek_dulu.sub': 'can I buy this right now?',
@@ -2095,6 +2138,7 @@ const en: StringDictionary = {
   'andai.placeholder_beli': 'e.g. car service',
   'andai.placeholder_income': 'e.g. salary, freelance',
   'andai.placeholder_tagihan': 'e.g. new subscription',
+  'andai.default_scenario_name': 'new scenario',
   'andai.scenarios_label': 'saved scenarios',
   'andai.scenarios_delete_aria': 'Delete scenario',
   'andai.scenarios_delete_label': 'delete',
@@ -2203,8 +2247,8 @@ const en: StringDictionary = {
   'settings.theme_system': 'system',
   'settings.dark_note': 'dark = v2 · not yet available',
   'settings.row_language': 'language',
-  'settings.row_patokan_currency': 'Main Currency',
-  'settings.row_patokan_currency_sub': 'Used for most of your living costs',
+  'settings.row_patokan_currency': 'main currency',
+  'settings.row_patokan_currency_sub': 'used for most of your living costs',
   'settings.currency_warning_title': 'Change main currency',
   'settings.currency_warning_body':
     "Changing your main currency won't convert saved amounts. Rp 50,000 becomes $50,000, not converted.",
@@ -2260,12 +2304,17 @@ const en: StringDictionary = {
   'home.sisa_uang_why_3':
     'Want to see where this number comes from? Tap "how is it this much?" on the card.',
   'home.insight_teaser_generic': 'Your first entries will show up as insights here',
-  'home.insight_wd_heading': 'Spending this month',
   'home.insight_wd_weekday': 'Weekday',
   'home.insight_wd_weekend': 'Weekend',
   'home.insight_card_label': 'INSIGHTS',
-  'home.insight_card_label_dynamic': 'YOUR {cur} INSIGHTS',
-  'home.insight_card_cta': 'View Insights →',
+  'home.insight_card_cta': 'See more insights',
+  'home.sankey_title': 'Your {cur} spending flow',
+  'home.sankey_breakdown': 'spent {out} + money left {left} = {total}',
+  'home.sankey_breakdown_overspend': 'spent {out}',
+  'home.sankey_toggle_nominal': 'Amount',
+  'home.sankey_toggle_persen': '%',
+  'home.sankey_node_sisa': 'Left',
+  'home.sankey_overspend_badge': 'Over budget {amount}',
   'home.expand_show': 'how is this possible?',
   'home.expand_hide': 'hide',
   'home.duit_di_mana': 'Where your money is',
@@ -2314,6 +2363,10 @@ const en: StringDictionary = {
   'insight.hero_neutral_calm': 'A calm month.',
   'insight.hero_neutral_fresh': 'A clean start.',
   'insight.hero_neutral_sub': 'Start logging to see insights',
+  'insight.card_weekend': 'Spending: Weekday vs Weekend',
+  'insight.weekend_empty': 'No spending yet this month.',
+  'insight.weekend_empty_sub': 'your weekday vs weekend split will show up here',
+  'insight.weekend_avg_per_day': 'avg/day',
   'insight.card_monthly': 'Monthly Overview',
   'insight.metric_net': 'Net',
   'insight.metric_keluar': 'Out',
@@ -2335,10 +2388,11 @@ const en: StringDictionary = {
   'insight.cat_delta_down': '↓ down {pct}% from {month}',
   'insight.cat_no_prev': 'new this month',
   'insight.cat_pct_of_total': "{pct}% of this month's spending",
-  'insight.card_spend_pct': 'Monthly Spend Rate',
+  'insight.cat_select_title': 'Select Category',
+  'insight.card_spend_pct': 'Spending vs Income',
   'insight.spend_pct_from': 'of income this month',
-  'insight.spend_pct_used': 'spent · {amount}',
-  'insight.spend_pct_left': 'left · {amount}',
+  'insight.spend_pct_used': 'spending · {amount}',
+  'insight.spend_pct_left': 'income · {amount}',
   'insight.spend_pct_empty': 'Add your income first\nso the ratio can be calculated.',
   'insight.spend_pct_empty_sub': 'set income in profile settings',
   'insight.card_daily': 'Daily Spending Rhythm',
@@ -2347,10 +2401,12 @@ const en: StringDictionary = {
   'insight.daily_tx_fallback': 'Transaction',
   'insight.daily_legend_low': 'few',
   'insight.daily_legend_high': 'many',
+  'insight.daily_hint': 'tap a bar to see details',
   'insight.daily_sheet_empty': 'No transactions this day.',
   'insight.daily_sheet_total': 'Total',
-  'insight.card_ranking': 'Category Ranking',
+  'insight.card_ranking': "This Month's Category Ranking",
   'insight.ranking_vs': 'vs {month}',
+  'insight.ranking_legend_now': 'This month',
   'insight.ranking_empty': 'No categories\nlogged this month.',
   'insight.ranking_empty_sub': 'add a category to each transaction',
   'insight.card_top_tx': '5 Biggest Transactions This Month',

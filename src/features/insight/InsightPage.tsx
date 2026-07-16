@@ -24,6 +24,7 @@ import {
   type InsightData,
   type ChartMetric,
 } from './insight.utils'
+import { InsightWeekendCard } from './InsightWeekendCard'
 import { InsightMonthlyCard } from './InsightMonthlyCard'
 import { InsightCategoryCard } from './InsightCategoryCard'
 import { InsightDailyCard } from './InsightDailyCard'
@@ -130,6 +131,9 @@ export function InsightPage() {
           <div className={styles.loadingBlock} />
         ) : (
           <>
+            {/* ⓪ Weekday vs weekend split */}
+            <InsightWeekendCard currTxs={data?.currTxs ?? []} currency={currency} lang={lang} />
+
             {/* ① Monthly chart */}
             <InsightMonthlyCard
               currExpense={currExpense}
@@ -171,9 +175,23 @@ export function InsightPage() {
                     <span className={styles.bigNum}>{pct}%</span>
                     <span className={styles.pctFrom}>{t('insight.spend_pct_from', lang)}</span>
                   </div>
-                  <div className={styles.btrack}>
-                    <div className={styles.bfill} style={{ width: `${Math.min(pct, 100)}%` }} />
-                  </div>
+                  {(() => {
+                    const scale = Math.max(pct, 100)
+                    const barW = (pct / scale) * 100
+                    const tickPos = (100 / scale) * 100
+                    const over = pct > 100
+                    return (
+                      <div className={styles.spendBulletTrack}>
+                        <div className={styles.spendBulletBand} />
+                        <div
+                          className={styles.spendBulletBar}
+                          data-over={over}
+                          style={{ width: `${barW}%` }}
+                        />
+                        <div className={styles.spendBulletTick} style={{ left: `${tickPos}%` }} />
+                      </div>
+                    )
+                  })()}
                   <div className={styles.blegend}>
                     <span>
                       {t('insight.spend_pct_used', lang).replace(
@@ -184,7 +202,7 @@ export function InsightPage() {
                     <span>
                       {t('insight.spend_pct_left', lang).replace(
                         '{amount}',
-                        formatCurrency(Math.max(currIncome - currExpense, 0), currency),
+                        formatCurrency(currIncome, currency),
                       )}
                     </span>
                   </div>

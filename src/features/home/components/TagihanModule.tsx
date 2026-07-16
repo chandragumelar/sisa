@@ -1,4 +1,4 @@
-import { ChevronRight } from 'lucide-react'
+import { ChevronRight, Plus, AlertTriangle, ChevronDown, CheckCircle2, Check } from 'lucide-react'
 import type { Tagihan } from '@/db/database'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
 import {
@@ -82,17 +82,7 @@ export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap, on
           <span className={styles.label}>{t('tagihan_module.title', lang)}</span>
         </div>
         <button className={styles.addBtn} onClick={onAddTap} aria-label={t('ob.tagihan.add', lang)}>
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 14 14"
-            fill="none"
-            stroke="var(--ink-secondary)"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-          >
-            <path d="M7 2.5v9M2.5 7h9" />
-          </svg>
+          <Plus size={14} strokeWidth={1.75} color="var(--ink-secondary)" />
         </button>
       </div>
 
@@ -110,21 +100,12 @@ export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap, on
           {/* Overdue blocks */}
           {overdue.map((tg) => (
             <div key={tg.id} className={styles.overdueBlock}>
-              <svg
-                width="13"
-                height="13"
-                viewBox="0 0 14 14"
-                fill="none"
-                stroke="var(--signal-danger)"
-                strokeWidth="1.3"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+              <AlertTriangle
+                size={13}
+                strokeWidth={1.75}
+                color="var(--signal-danger)"
                 className={styles.warnIcon}
-              >
-                <path d="M7 1.5L1.2 12H12.8L7 1.5Z" />
-                <line x1="7" y1="6" x2="7" y2="8.5" />
-                <circle cx="7" cy="10.5" r="0.65" fill="var(--signal-danger)" stroke="none" />
-              </svg>
+              />
               <div className={styles.overdueInfo}>
                 <div className={styles.overdueName}>{tg.name}</div>
                 <div className={styles.overdueSub}>{t('tagihan_module.overdue_sub', lang)}</div>
@@ -179,18 +160,7 @@ export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap, on
           {hiddenCount > 0 && (
             <button className={styles.expandRow} onClick={onAddTap}>
               <span>{t('tagihan_module.more', lang).replace('{n}', String(hiddenCount))}</span>
-              <svg
-                width="13"
-                height="13"
-                viewBox="0 0 14 14"
-                fill="none"
-                stroke="var(--accent)"
-                strokeWidth="1.4"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M3 5.5L7 9.5L11 5.5" />
-              </svg>
+              <ChevronDown size={13} strokeWidth={1.75} color="var(--accent)" />
             </button>
           )}
 
@@ -201,23 +171,12 @@ export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap, on
             {totalZoneState === 'all_paid' ? (
               <>
                 <div className={styles.tzRewardRow}>
-                  <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
-                    <circle
-                      cx="11"
-                      cy="11"
-                      r="10"
-                      fill="var(--signal-safe-bg)"
-                      stroke="var(--signal-safe-br)"
-                      strokeWidth="1.2"
-                    />
-                    <path
-                      d="M6.5 11l3 3 6-6.5"
-                      stroke="var(--signal-safe)"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+                  <CheckCircle2
+                    size={22}
+                    strokeWidth={1.75}
+                    color="var(--signal-safe)"
+                    aria-hidden="true"
+                  />
                   <div>
                     <div className={styles.tzAllPaidHero}>{t('tagihan_module.all_paid', lang)}</div>
                     <div className={styles.tzAllPaidSub}>
@@ -249,15 +208,12 @@ export function TagihanModule({ tagihan, currency, nowMs, onPayTap, onRowTap, on
                     <div className={styles.tzIdrPaidRow}>
                       <span className={styles.tzHeroNumPaid}>{formatCurrency(0, currency)}</span>
                       <span className={styles.tzPillPaid}>
-                        <svg width="9" height="9" viewBox="0 0 9 9" fill="none" aria-hidden="true">
-                          <path
-                            d="M1.5 4.5l2 2 4-4"
-                            stroke="var(--signal-safe)"
-                            strokeWidth="1.3"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
+                        <Check
+                          size={9}
+                          strokeWidth={1.75}
+                          color="var(--signal-safe)"
+                          aria-hidden="true"
+                        />
                         {t('tagihan_module.idr_lunas', lang)}
                       </span>
                     </div>

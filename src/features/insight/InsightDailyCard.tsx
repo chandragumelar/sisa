@@ -3,7 +3,9 @@ import type { Language } from '@/db/database'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
 import { t } from '@/shared/strings/strings'
 import { BottomSheet } from '@/shared/components/BottomSheet'
-import { buildDailyHeatmap, heatBucket } from './insight.utils'
+import { useClock } from '@/app/providers/useClock'
+import { buildDailyHeatmap } from './insight.utils'
+import type { DayCell } from './insight.utils'
 import type { Transaction } from '@/db/database'
 import styles from './InsightDailyCard.module.css'
 import insightStyles from './InsightPage.module.css'
@@ -16,17 +18,17 @@ interface Props {
   lang: Language
 }
 
-const DAY_HEADERS_ID = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min']
-const DAY_HEADERS_EN = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-
 interface SheetDay {
   day: number
   total: number
   txs: { label: string; category: string; amount: number }[]
 }
 
+type Column = { kind: 'sep' } | { kind: 'day'; cell: DayCell; isWeekend: boolean }
+
 export function InsightDailyCard({ currTxs, viewYear, viewMonth, currency, lang }: Props) {
   const [sheetDay, setSheetDay] = useState<SheetDay | null>(null)
+  const clock = useClock()
 
   const cells = buildDailyHeatmap(currTxs, viewYear, viewMonth)
   const maxDay = Math.max(...cells.map((c) => c.total), 0)
@@ -34,11 +36,19 @@ export function InsightDailyCard({ currTxs, viewYear, viewMonth, currency, lang 
 
   const isEmpty = activeDays === 0
 
-  // Offset: which column day 1 falls on (Mon=0 … Sun=6)
-  const firstDow = new Date(viewYear, viewMonth, 1).getDay()
-  const ghostsBefore = (firstDow + 6) % 7 // convert Sun=0 to Mon=0
+  const today = new Date(clock.now())
+  const isCurrentMonth = today.getFullYear() === viewYear && today.getMonth() === viewMonth
+  const todayDate = today.getDate()
 
-  const cellCount = Math.ceil((ghostsBefore + cells.length) / 7) * 7
+  const columns: Column[] = []
+  cells.forEach((cell, i) => {
+    const dow = new Date(viewYear, viewMonth, cell.day).getDay()
+    if (dow === 1 && i > 0) columns.push({ kind: 'sep' })
+    columns.push({ kind: 'day', cell, isWeekend: dow === 0 || dow === 6 })
+  })
+
+  const lastDay = cells[cells.length - 1]?.day ?? 1
+  const labelDays = new Set([1, 8, 15, 22, lastDay])
 
   const openSheet = useCallback(
     (idx: number) => {
@@ -58,11 +68,11 @@ export function InsightDailyCard({ currTxs, viewYear, viewMonth, currency, lang 
       )
     : ''
 
-  const dayHeaders = lang === 'id' ? DAY_HEADERS_ID : DAY_HEADERS_EN
-
   return (
     <div className={insightStyles.card}>
       <div className={insightStyles.cardLabel}>{t('insight.card_daily', lang)}</div>
+
+      <div className={insightStyles.cardHeaderDivider} />
 
       {isEmpty ? (
         <div className={insightStyles.emptyBlock}>
@@ -73,55 +83,52 @@ export function InsightDailyCard({ currTxs, viewYear, viewMonth, currency, lang 
         </div>
       ) : (
         <>
-          <div className={styles.hmHeader}>
-            {dayHeaders.map((d) => (
-              <div key={d} className={styles.hmDlbl}>
-                {d}
-              </div>
-            ))}
-          </div>
-
-          <div className={styles.hmGrid}>
-            {Array.from({ length: cellCount }, (_, i) => {
-              const dayIdx = i - ghostsBefore
-              if (i < ghostsBefore || dayIdx >= cells.length) {
-                return <div key={i} className={`${styles.hmCell} ${styles.ghost}`} />
-              }
-              const cell = cells[dayIdx]
-              const heat = heatBucket(cell.total, maxDay)
+          <div className={styles.wave}>
+            {columns.map((col, i) => {
+              if (col.kind === 'sep') return <div key={`sep-${i}`} className={styles.waveSep} />
+              const { cell, isWeekend } = col
+              const idx = cell.day - 1
               const idle = cell.total === 0
-
+              const barHeight = idle ? '2px' : `max(${Math.sqrt(cell.total / maxDay) * 100}%, 4px)`
               return (
                 <div
-                  key={i}
-                  className={[styles.hmCell, idle ? styles.idle : ''].filter(Boolean).join(' ')}
-                  data-h={heat}
-                  onClick={idle ? undefined : () => openSheet(dayIdx)}
+                  key={cell.day}
+                  className={styles.waveBar}
+                  data-idle={idle || undefined}
+                  data-weekend={!idle && isWeekend ? true : undefined}
+                  style={{ height: barHeight }}
+                  onClick={idle ? undefined : () => openSheet(idx)}
                   role={idle ? undefined : 'button'}
                   tabIndex={idle ? undefined : 0}
                   onKeyDown={
                     idle
                       ? undefined
                       : (e) => {
-                          if (e.key === 'Enter' || e.key === ' ') openSheet(dayIdx)
+                          if (e.key === 'Enter' || e.key === ' ') openSheet(idx)
                         }
                   }
                 >
-                  <span className={styles.hmDn}>{cell.day}</span>
+                  {isCurrentMonth && cell.day === todayDate && (
+                    <span className={styles.waveToday} />
+                  )}
                 </div>
               )
             })}
           </div>
 
-          <div className={styles.hmLegend}>
-            <span className={styles.hmLl}>{t('insight.daily_legend_low', lang)}</span>
-            <div className={styles.hmSwatches}>
-              {[0, 1, 2, 3, 4, 5].map((h) => (
-                <div key={h} className={styles.hmSw} data-h={h} />
-              ))}
-            </div>
-            <span className={styles.hmLl}>{t('insight.daily_legend_high', lang)}</span>
+          <div className={styles.waveLabels}>
+            {columns.map((col, i) =>
+              col.kind === 'sep' ? (
+                <div key={`sep-${i}`} className={styles.waveSepSpace} />
+              ) : (
+                <div key={col.cell.day} className={styles.waveLabel}>
+                  {labelDays.has(col.cell.day) ? col.cell.day : ''}
+                </div>
+              ),
+            )}
           </div>
+
+          <p className={styles.waveHint}>{t('insight.daily_hint', lang)}</p>
         </>
       )}
 

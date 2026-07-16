@@ -20,7 +20,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
+}
+
+.headerDivider {
+  height: 1px;
+  background: var(--border-hair);
+  margin: 0 calc(var(--pad-card) * -1) 12px;
 }
 
 .label {
@@ -83,30 +89,65 @@
 }
 
 .barWrap {
-  height: 4px;
+  height: 10px;
   background: var(--border-hair);
-  border-radius: 2px;
-  overflow: hidden;
+  border-radius: 999px;
+  position: relative;
   margin-bottom: 8px;
 }
 
 .bar {
   height: 100%;
-  background: var(--accent);
-  border-radius: 2px;
+  background: linear-gradient(90deg, var(--accent-br), var(--accent));
+  box-shadow: 0 1px 4px rgba(29, 78, 216, 0.35);
+  border-radius: 999px;
   transition: width 0.3s ease;
 }
 
+.marker {
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--ink-primary);
+  transform: translateX(-50%);
+}
+
+.barSegBase {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-br), var(--accent));
+  border-radius: 999px 0 0 999px;
+}
+
+.barSegOver {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  border-radius: 0 999px 999px 0;
+}
+
+.barSegOverCaution {
+  background: linear-gradient(90deg, #fcd34d, var(--signal-caution));
+}
+
+.barSegOverDanger {
+  background: linear-gradient(90deg, #fca5a5, var(--signal-danger));
+}
+
 .barOver {
-  background: var(--signal-caution);
+  background: linear-gradient(90deg, #fcd34d, var(--signal-caution));
 }
 
 .barDanger {
-  background: var(--signal-danger);
+  background: linear-gradient(90deg, #fca5a5, var(--signal-danger));
 }
 
 .barSafe {
-  background: var(--signal-safe);
+  background: linear-gradient(90deg, #86efac, var(--signal-safe));
 }
 
 .spentRow {

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Lock } from 'lucide-react'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
 import { getCurrencySymbol } from '@/shared/utils/formatCurrency'
@@ -86,17 +87,7 @@ export function AlokasiEditor({
 
         <div className={styles.section}>
           <div className={styles.sectionLabelRow}>
-            <svg
-              width="11"
-              height="11"
-              viewBox="0 0 13 13"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.2"
-            >
-              <rect x="2.5" y="5.5" width="8" height="6.5" rx="1.5" />
-              <path d="M4.5 5.5V4a2 2 0 1 1 4 0v1.5" strokeLinecap="round" />
-            </svg>
+            <Lock size={11} strokeWidth={1.75} />
             <span className={styles.sectionLabelMuted}>{t('alokasi.uang_mengendap', lang)}</span>
             <span className={styles.autoBadge}>{t('alokasi.mengendap_auto', lang)}</span>
           </div>

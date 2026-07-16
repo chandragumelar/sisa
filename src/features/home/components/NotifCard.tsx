@@ -1,3 +1,4 @@
+import { AlertCircle } from 'lucide-react'
 import type { Tagihan } from '@/db/database'
 import { getTagihanUrgency } from '../tagihan.utils'
 import { useLanguage } from '@/app/providers/useLanguage'
@@ -40,20 +41,7 @@ export function NotifCard({ tagihan, nowMs, onClick }: Props) {
   return (
     <button className={styles.card} onClick={onClick}>
       <span className={styles.icon}>
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <circle cx="12" cy="12" r="10" />
-          <line x1="12" y1="8" x2="12" y2="12" />
-          <line x1="12" y1="16" x2="12.01" y2="16" />
-        </svg>
+        <AlertCircle size={16} strokeWidth={1.75} />
       </span>
       <span className={styles.body}>
         <strong>{message}</strong> — {preview}

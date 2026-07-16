@@ -84,6 +84,19 @@
   margin-bottom: 10px;
 }
 
+.cardHeaderDivider {
+  height: 1px;
+  background: var(--border-hair);
+  margin: 4px -16px 12px;
+}
+
+/* For .cardFlush cards (zero horizontal card padding) — no negative offset needed */
+.cardHeaderDividerFlush {
+  height: 1px;
+  background: var(--border-hair);
+  margin: 4px 0 12px;
+}
+
 .cardHeaderRow .cardLabel {
   margin-bottom: 0;
 }
@@ -187,6 +200,8 @@
 /* ── Bar chart ───────────────────────────────────────── */
 .barsWrap {
   margin: 14px 0 0;
+  display: flex;
+  overflow: hidden;
 }
 
 /* ── Monthly footer ──────────────────────────────────── */
@@ -203,6 +218,9 @@
 
 /* ── Category select (card ③) ────────────────────────── */
 .catSelect {
+  display: flex;
+  align-items: center;
+  gap: 4px;
   font-size: 11px;
   font-weight: 600;
   font-family: var(--font-sans);
@@ -214,6 +232,40 @@
   cursor: pointer;
   outline: none;
   max-width: 140px;
+}
+
+.catSelect span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.catSheetList {
+  display: flex;
+  flex-direction: column;
+}
+
+.catSheetItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 12px 2px;
+  border-bottom: 1px solid var(--border-hair);
+  background: none;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink-primary);
+  font-family: var(--font-sans);
+  text-align: left;
+  cursor: pointer;
+}
+
+.catSheetItem:last-child {
+  border-bottom: none;
 }
 
 .catDetailWrap {
@@ -289,19 +341,50 @@
   font-family: var(--font-sans);
 }
 
-.btrack {
-  height: 8px;
-  background: var(--border-hair);
+.spendBulletTrack {
+  position: relative;
+  height: 14px;
   border-radius: 4px;
   overflow: hidden;
-  margin: 12px 0 5px;
+  margin: 12px 0 6px;
+  background: var(--border-hair);
 }
 
-.bfill {
-  height: 100%;
+.spendBulletBand {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    color-mix(in srgb, var(--ink-tertiary) 14%, transparent) 0%,
+    color-mix(in srgb, var(--ink-tertiary) 14%, transparent) 70%,
+    color-mix(in srgb, var(--ink-tertiary) 8%, transparent) 70%,
+    color-mix(in srgb, var(--ink-tertiary) 8%, transparent) 100%,
+    transparent 100%
+  );
+}
+
+.spendBulletBar {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 6px;
+  border-radius: 3px;
   background: var(--accent);
-  border-radius: 4px;
   transition: width 0.3s ease;
+}
+
+.spendBulletBar[data-over='true'] {
+  background: var(--signal-danger);
+}
+
+.spendBulletTick {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--ink-primary);
+  z-index: 1;
 }
 
 .blegend {
@@ -318,11 +401,6 @@
   align-items: center;
   gap: 8px;
   padding: 9px 16px;
-}
-
-.rankRowHighlight {
-  background: var(--signal-caution-bg);
-  margin: 0;
 }
 
 .rankNum {
@@ -346,18 +424,61 @@
   font-family: var(--font-sans);
 }
 
-.rankBar {
+.bulletTrack {
+  position: relative;
   flex: 2;
-  height: 5px;
-  background: var(--border-hair);
-  border-radius: 3px;
-  overflow: hidden;
   min-width: 40px;
+  height: 14px;
+  margin-right: 10px;
 }
 
-.rankBarFill {
-  height: 100%;
-  border-radius: 3px;
+.bulletGhost {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 14px;
+  background: var(--border-soft);
+  border-radius: 7px;
+}
+
+.bulletBar {
+  position: absolute;
+  top: 3px;
+  left: 0;
+  height: 8px;
+  border-radius: 4px;
+}
+
+.rankLegend {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 8px;
+  font-size: 10px;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+}
+
+.rankLegendItem {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.bulletLegendSwatchGhost {
+  width: 10px;
+  height: 6px;
+  border-radius: 2px;
+  background: var(--border-soft);
+  flex-shrink: 0;
+}
+
+.bulletLegendSwatchNow {
+  width: 10px;
+  height: 6px;
+  border-radius: 2px;
+  background: var(--accent);
+  flex-shrink: 0;
 }
 
 .rankAmt {
@@ -454,25 +575,25 @@
 
 .lolliTrack {
   margin-top: 6px;
-  height: 8px;
+  height: 12px;
   position: relative;
 }
 
 .lolliStem {
   position: relative;
-  height: 2px;
-  top: 3px;
+  height: 4px;
+  top: 2px;
   background: var(--accent-br);
-  border-radius: 1px;
+  border-radius: 2px;
 }
 
 .lolliStem::after {
   content: '';
   position: absolute;
-  right: -4px;
-  top: -3px;
-  width: 8px;
-  height: 8px;
+  right: -6px;
+  top: -4px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   background: var(--accent);
 }

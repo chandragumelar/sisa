@@ -20,12 +20,22 @@ interface Props {
 }
 
 const METRICS: ChartMetric[] = ['net', 'keluar', 'masuk']
-const BAR_W = 32
-const GAP = 8
+const BAR_W = 14
+const GAP = 10
+const BAR_RX = 2
 const H = 96
 const PAD_T = 8
-const LABEL_H = 34
+const LABEL_H = 18
 const SVG_H = PAD_T + H + LABEL_H
+const MIN_BAR_H = 3
+const ZERO_BAR_H = 1
+const MIDDLE_LABEL_THRESHOLD = 6
+
+interface BarGeometry {
+  y: number
+  height: number
+  isTick: boolean
+}
 
 function BarChart({
   data,
@@ -49,51 +59,62 @@ function BarChart({
   const values = data.map((d) => d[metric])
   const maxAbs = Math.max(...values.map((v) => Math.abs(v)), 1)
   const midY = PAD_T + H / 2
+  const baselineY = metric === 'net' ? midY : PAD_T + H
   const labelY = PAD_T + H + 8
+
+  function barGeometry(val: number): BarGeometry {
+    if (metric === 'net') {
+      const raw = Math.sqrt(Math.abs(val) / maxAbs) * (H / 2)
+      const height = Math.min(Math.max(raw, MIN_BAR_H), H / 2)
+      const negative = val < 0
+      return { y: negative ? midY : midY - height, height, isTick: raw < MIN_BAR_H }
+    }
+    const minH = val > 0 ? MIN_BAR_H : ZERO_BAR_H
+    const raw = Math.sqrt(val / maxAbs) * H
+    const height = Math.max(raw, minH)
+    return { y: PAD_T + H - height, height, isTick: raw < minH }
+  }
+
+  function barFill(i: number, val: number, isTick: boolean): string {
+    if (isTick) return 'var(--border-hair)'
+    if (i !== n - 1) return 'var(--border-hair)'
+    if (metric !== 'net') return 'var(--accent)'
+    return val >= 0 ? 'var(--signal-safe)' : 'var(--signal-caution)'
+  }
+
+  const labelIndices = new Set<number>([0, n - 1])
+  if (n > MIDDLE_LABEL_THRESHOLD) labelIndices.add(Math.floor((n - 1) / 2))
+  if (selectedBar !== null) labelIndices.add(selectedBar)
 
   return (
     <svg viewBox={`0 0 ${svgW} ${SVG_H}`} width="100%" height={SVG_H} role="img">
-      {metric === 'net' && (
-        <line x1="0" y1={midY} x2={svgW} y2={midY} stroke="var(--border-soft)" strokeWidth="1" />
-      )}
+      <line
+        x1="0"
+        y1={baselineY}
+        x2={svgW}
+        y2={baselineY}
+        stroke="var(--ink-tertiary)"
+        strokeWidth="1"
+        opacity="0.5"
+      />
       {data.map((bar, i) => {
         const val = bar[metric]
-        const isLast = i === n - 1
-        const fill = isLast ? 'var(--accent)' : 'var(--border-hair)'
+        const { y, height, isTick } = barGeometry(val)
         const sel = selectedBar === i
-        if (metric === 'net') {
-          const barH = Math.max((Math.abs(val) / maxAbs) * (H * 0.9), 1)
-          const negative = val < 0
-          return (
-            <rect
-              key={i}
-              x={i * (BAR_W + GAP)}
-              y={negative ? midY : midY - barH}
-              width={BAR_W}
-              height={barH}
-              fill={negative && isLast ? 'var(--signal-caution)' : fill}
-              stroke={sel ? 'var(--accent)' : undefined}
-              strokeWidth={sel ? 1.5 : undefined}
-              rx="2"
-              style={{ cursor: 'pointer' }}
-              onClick={() => setSelectedBar(sel ? null : i)}
-            />
-          )
-        }
-        const barH = Math.max((val / maxAbs) * H, 1)
+        const isInactive = bar.keluar === 0 && bar.masuk === 0
         return (
           <rect
             key={i}
             x={i * (BAR_W + GAP)}
-            y={PAD_T + H - barH}
+            y={y}
             width={BAR_W}
-            height={barH}
-            fill={fill}
+            height={height}
+            fill={isInactive ? 'var(--border-hair)' : barFill(i, val, isTick)}
             stroke={sel ? 'var(--accent)' : undefined}
             strokeWidth={sel ? 1.5 : undefined}
-            rx="2"
-            style={{ cursor: 'pointer' }}
-            onClick={() => setSelectedBar(sel ? null : i)}
+            rx={BAR_RX}
+            style={isInactive ? undefined : { cursor: 'pointer' }}
+            onClick={isInactive ? undefined : () => setSelectedBar(sel ? null : i)}
           />
         )
       })}
@@ -102,16 +123,9 @@ function BarChart({
           const bar = data[selectedBar]
           const i = selectedBar
           const val = bar[metric]
+          const { y } = barGeometry(val)
           const barX = i * (BAR_W + GAP) + BAR_W / 2
-          let barTopY: number
-          if (metric === 'net') {
-            const barH = Math.max((Math.abs(val) / maxAbs) * (H * 0.9), 1)
-            barTopY = val < 0 ? midY : midY - barH
-          } else {
-            const barH = Math.max((val / maxAbs) * H, 1)
-            barTopY = PAD_T + H - barH
-          }
-          const nomY = Math.max(barTopY - 4, 10)
+          const nomY = Math.max(y - 4, 10)
           return (
             <text
               x={barX}
@@ -127,17 +141,17 @@ function BarChart({
           )
         })()}
       {data.map((bar, i) => {
+        if (!labelIndices.has(i)) return null
         const cx = i * (BAR_W + GAP) + BAR_W / 2
         return (
           <text
             key={`lbl-${i}`}
             x={cx}
             y={labelY}
-            textAnchor="end"
+            textAnchor="middle"
             fontSize="10"
             fill="var(--ink-tertiary)"
             fontFamily="var(--font-sans)"
-            transform={`rotate(-40, ${cx}, ${labelY})`}
           >
             {formatMonthShort(bar.year, bar.month, lang)}
           </text>
@@ -221,6 +235,8 @@ export function InsightMonthlyCard({
           ))}
         </div>
       </div>
+
+      <div className={styles.cardHeaderDivider} />
 
       {isEmpty ? (
         <div className={styles.emptyBlock}>
