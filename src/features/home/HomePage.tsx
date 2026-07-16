@@ -390,7 +390,9 @@ export function HomePage() {
             {lewatTempoCount > 0 && (
               <button className={styles.urgencyBadge} onClick={() => setUrgentSheetOpen(true)}>
                 <span className={styles.urgencyDot} />
-                <span>{lewatTempoCount} lewat tempo</span>
+                <span>
+                  {t('home.badge_lewat_tempo', lang).replace('{n}', String(lewatTempoCount))}
+                </span>
               </button>
             )}
             <button
