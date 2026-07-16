@@ -1176,8 +1176,8 @@ const id: StringDictionary = {
   'quick_log.confirm_proceed': 'Lanjut aja',
   'quick_log.confirm_recheck': 'Cek dulu',
   'category.manage_btn': 'Atur',
-  'settings.row_categories': 'Kategori',
-  'settings.row_categories_sub': 'Atur kategori pengeluaran & pemasukan',
+  'settings.row_categories': 'kategori',
+  'settings.row_categories_sub': 'atur kategori pengeluaran & pemasukan',
 
   'cek_dulu.title': 'Cek Dulu',
   'cek_dulu.sub': 'aman ga gue beli ini?',
@@ -1424,8 +1424,8 @@ const id: StringDictionary = {
   'settings.theme_system': 'sistem',
   'settings.dark_note': 'gelap = v2 · belum tersedia',
   'settings.row_language': 'bahasa',
-  'settings.row_patokan_currency': 'Mata Uang Utama',
-  'settings.row_patokan_currency_sub': 'Dipakai untuk hampir semua biaya hidupmu',
+  'settings.row_patokan_currency': 'mata uang utama',
+  'settings.row_patokan_currency_sub': 'dipakai untuk hampir semua biaya hidupmu',
   'settings.currency_warning_title': 'Ganti mata uang utama',
   'settings.currency_warning_body':
     'Mengubah mata uang utama tidak mengubah angka yang sudah tersimpan. Rp 50.000 akan menjadi $50.000, bukan dikonversi.',
@@ -2005,8 +2005,8 @@ const en: StringDictionary = {
   'quick_log.confirm_proceed': 'Continue',
   'quick_log.confirm_recheck': 'Let me check',
   'category.manage_btn': 'Manage',
-  'settings.row_categories': 'Categories',
-  'settings.row_categories_sub': 'Manage expense & income categories',
+  'settings.row_categories': 'categories',
+  'settings.row_categories_sub': 'manage expense & income categories',
 
   'cek_dulu.title': 'Check First',
   'cek_dulu.sub': 'can I buy this right now?',
@@ -2247,8 +2247,8 @@ const en: StringDictionary = {
   'settings.theme_system': 'system',
   'settings.dark_note': 'dark = v2 · not yet available',
   'settings.row_language': 'language',
-  'settings.row_patokan_currency': 'Main Currency',
-  'settings.row_patokan_currency_sub': 'Used for most of your living costs',
+  'settings.row_patokan_currency': 'main currency',
+  'settings.row_patokan_currency_sub': 'used for most of your living costs',
   'settings.currency_warning_title': 'Change main currency',
   'settings.currency_warning_body':
     "Changing your main currency won't convert saved amounts. Rp 50,000 becomes $50,000, not converted.",
