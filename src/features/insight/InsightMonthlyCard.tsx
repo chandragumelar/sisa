@@ -20,14 +20,15 @@ interface Props {
 }
 
 const METRICS: ChartMetric[] = ['net', 'keluar', 'masuk']
-const BAR_W = 10
-const GAP = 6
+const BAR_W = 14
+const GAP = 10
 const BAR_RX = 2
 const H = 96
 const PAD_T = 8
 const LABEL_H = 18
 const SVG_H = PAD_T + H + LABEL_H
-const MIN_BAR_H = 2
+const MIN_BAR_H = 3
+const ZERO_BAR_H = 1
 const MIDDLE_LABEL_THRESHOLD = 6
 
 interface BarGeometry {
@@ -63,14 +64,15 @@ function BarChart({
 
   function barGeometry(val: number): BarGeometry {
     if (metric === 'net') {
-      const raw = (Math.abs(val) / maxAbs) * (H * 0.9)
-      const height = Math.max(raw, MIN_BAR_H)
+      const raw = Math.sqrt(Math.abs(val) / maxAbs) * (H / 2)
+      const height = Math.min(Math.max(raw, MIN_BAR_H), H / 2)
       const negative = val < 0
       return { y: negative ? midY : midY - height, height, isTick: raw < MIN_BAR_H }
     }
-    const raw = (val / maxAbs) * H
-    const height = Math.max(raw, MIN_BAR_H)
-    return { y: PAD_T + H - height, height, isTick: raw < MIN_BAR_H }
+    const minH = val > 0 ? MIN_BAR_H : ZERO_BAR_H
+    const raw = Math.sqrt(val / maxAbs) * H
+    const height = Math.max(raw, minH)
+    return { y: PAD_T + H - height, height, isTick: raw < minH }
   }
 
   function barFill(i: number, val: number, isTick: boolean): string {
@@ -85,7 +87,7 @@ function BarChart({
   if (selectedBar !== null) labelIndices.add(selectedBar)
 
   return (
-    <svg viewBox={`0 0 ${svgW} ${SVG_H}`} width={svgW} height={SVG_H} role="img">
+    <svg viewBox={`0 0 ${svgW} ${SVG_H}`} width="100%" height={SVG_H} role="img">
       <line
         x1="0"
         y1={baselineY}
@@ -99,6 +101,7 @@ function BarChart({
         const val = bar[metric]
         const { y, height, isTick } = barGeometry(val)
         const sel = selectedBar === i
+        const isInactive = bar.keluar === 0 && bar.masuk === 0
         return (
           <rect
             key={i}
@@ -106,12 +109,12 @@ function BarChart({
             y={y}
             width={BAR_W}
             height={height}
-            fill={barFill(i, val, isTick)}
+            fill={isInactive ? 'var(--border-hair)' : barFill(i, val, isTick)}
             stroke={sel ? 'var(--accent)' : undefined}
             strokeWidth={sel ? 1.5 : undefined}
             rx={BAR_RX}
-            style={{ cursor: 'pointer' }}
-            onClick={() => setSelectedBar(sel ? null : i)}
+            style={isInactive ? undefined : { cursor: 'pointer' }}
+            onClick={isInactive ? undefined : () => setSelectedBar(sel ? null : i)}
           />
         )
       })}

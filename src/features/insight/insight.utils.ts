@@ -211,10 +211,7 @@ export function buildChartData(
     const masuk = sumIncome(monthTxs)
     return { year: y, month: m, net: masuk - keluar, keluar, masuk }
   })
-  // Strip leading empty months (no activity). Gaps in the middle are kept.
-  // Current month (last) is always retained even if empty.
-  const firstActive = all.findIndex((b) => b.keluar > 0 || b.masuk > 0)
-  return all.slice(firstActive === -1 ? all.length - 1 : firstActive)
+  return all
 }
 
 export function formatTxDate(dateMs: number, lang: Language): string {

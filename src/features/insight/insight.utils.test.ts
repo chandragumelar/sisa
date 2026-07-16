@@ -263,13 +263,14 @@ describe('buildHeroVariant', () => {
 })
 
 describe('buildChartData', () => {
-  it('single-month data → length 1 (leading empties stripped)', () => {
+  it('single-month data → always 12 full months', () => {
     // juniTxs only has data in Juni 2025 (month 5); endMonth = 5
     const bars = buildChartData(juniTxs, 2025, 5)
-    expect(bars).toHaveLength(1)
-    expect(bars[0].year).toBe(2025)
-    expect(bars[0].month).toBe(5)
-    expect(bars[0].keluar).toBe(sumExpense(juniTxs))
+    expect(bars).toHaveLength(12)
+    expect(bars[11].year).toBe(2025)
+    expect(bars[11].month).toBe(5)
+    expect(bars[11].keluar).toBe(sumExpense(juniTxs))
+    expect(bars[0].keluar).toBe(0) // Jul-24, no data
   })
 
   it('last bar = view month even when it has data', () => {
@@ -279,28 +280,27 @@ describe('buildChartData', () => {
     expect(last.month).toBe(5)
   })
 
-  it('empty txs → returns 1 bar (current month, all zeros)', () => {
+  it('empty txs → returns 12 bars, all zeros', () => {
     const bars = buildChartData([], 2025, 5)
-    expect(bars).toHaveLength(1)
-    expect(bars[0].year).toBe(2025)
-    expect(bars[0].month).toBe(5)
-    expect(bars[0].net).toBe(0)
+    expect(bars).toHaveLength(12)
+    expect(bars[11].year).toBe(2025)
+    expect(bars[11].month).toBe(5)
+    expect(bars.every((b) => b.net === 0)).toBe(true)
   })
 
-  it('gap in middle preserved — no leading empties trimmed past first active month', () => {
+  it('gap in middle preserved', () => {
     // Data in Apr (month 3) and Jun (month 5), nothing in May (month 4)
     const aprTx = makeTx(999, 'keluar', -100_000, 'Test', 'Test', '2025-04-15')
     const junTx = makeTx(998, 'keluar', -200_000, 'Test', 'Test', '2025-06-15')
     const bars = buildChartData([aprTx, junTx], 2025, 5)
-    // Apr is first active → strip months before Apr (8 leading empties gone)
-    // Keep Apr, May (gap), Jun = 3 bars
-    expect(bars).toHaveLength(3)
-    expect(bars[0].month).toBe(3) // Apr
-    expect(bars[1].keluar).toBe(0) // May gap preserved
-    expect(bars[2].month).toBe(5) // Jun
+    expect(bars).toHaveLength(12)
+    expect(bars[9].month).toBe(3) // Apr
+    expect(bars[9].keluar).toBe(100_000)
+    expect(bars[10].keluar).toBe(0) // May gap preserved
+    expect(bars[11].month).toBe(5) // Jun
   })
 
-  it('data in oldest slot → all 12 bars kept (no stripping)', () => {
+  it('data in oldest slot → all 12 bars kept', () => {
     // Tx in July 2024 = the oldest slot when endMonth is June 2025
     const oldTx = makeTx(800, 'keluar', -50_000, 'Test', 'Test', '2024-07-15')
     const bars = buildChartData([oldTx], 2025, 5)
