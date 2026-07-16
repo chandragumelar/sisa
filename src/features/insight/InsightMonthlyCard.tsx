@@ -20,8 +20,8 @@ interface Props {
 }
 
 const METRICS: ChartMetric[] = ['net', 'keluar', 'masuk']
-const BAR_W = 10
-const GAP = 6
+const BAR_W = 14
+const GAP = 10
 const BAR_RX = 2
 const H = 96
 const PAD_T = 8
@@ -85,7 +85,7 @@ function BarChart({
   if (selectedBar !== null) labelIndices.add(selectedBar)
 
   return (
-    <svg viewBox={`0 0 ${svgW} ${SVG_H}`} width={svgW} height={SVG_H} role="img">
+    <svg viewBox={`0 0 ${svgW} ${SVG_H}`} width="100%" height={SVG_H} role="img">
       <line
         x1="0"
         y1={baselineY}
@@ -99,6 +99,7 @@ function BarChart({
         const val = bar[metric]
         const { y, height, isTick } = barGeometry(val)
         const sel = selectedBar === i
+        const isInactive = bar.keluar === 0 && bar.masuk === 0
         return (
           <rect
             key={i}
@@ -106,12 +107,12 @@ function BarChart({
             y={y}
             width={BAR_W}
             height={height}
-            fill={barFill(i, val, isTick)}
+            fill={isInactive ? 'var(--border-hair)' : barFill(i, val, isTick)}
             stroke={sel ? 'var(--accent)' : undefined}
             strokeWidth={sel ? 1.5 : undefined}
             rx={BAR_RX}
-            style={{ cursor: 'pointer' }}
-            onClick={() => setSelectedBar(sel ? null : i)}
+            style={isInactive ? undefined : { cursor: 'pointer' }}
+            onClick={isInactive ? undefined : () => setSelectedBar(sel ? null : i)}
           />
         )
       })}
