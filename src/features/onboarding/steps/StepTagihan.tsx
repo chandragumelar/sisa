@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Info, Trash2, Plus } from 'lucide-react'
 import { useLanguage } from '@/app/providers/useLanguage'
 import type { NominalType } from '@/db/database'
 import { BottomSheet } from '@/shared/components/BottomSheet'
@@ -67,18 +68,7 @@ export function StepTagihan({ tagihan, currency, onChange, onNext }: Props) {
       {tagihan.length === 0 ? (
         <div className="ob-card" style={{ padding: '28px 16px', textAlign: 'center' }}>
           <div className={styles.emptyIcon}>
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.4"
-              strokeLinecap="round"
-            >
-              <circle cx="8" cy="8" r="6.5" />
-              <path d="M8 5v3M8 10.5v.5" />
-            </svg>
+            <Info size={16} strokeWidth={1.75} />
           </div>
           <div className={styles.emptyLabel}>{t('ob.tagihan.empty', lang)}</div>
           <div className={styles.emptyHint}>{t('ob.tagihan.example', lang)}</div>
@@ -133,18 +123,7 @@ export function StepTagihan({ tagihan, currency, onChange, onNext }: Props) {
                   flexShrink: 0,
                 }}
               >
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 14 14"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.3"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M2 3.5h10M5.5 3.5V2h3v1.5M3.5 3.5l.8 8h5.4l.8-8" />
-                </svg>
+                <Trash2 size={12} strokeWidth={1.75} />
               </button>
             </div>
           ))}
@@ -159,17 +138,7 @@ export function StepTagihan({ tagihan, currency, onChange, onNext }: Props) {
           setSheetOpen(true)
         }}
       >
-        <svg
-          width="14"
-          height="14"
-          viewBox="0 0 16 16"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-        >
-          <path d="M8 3V13M3 8H13" />
-        </svg>
+        <Plus size={14} strokeWidth={1.75} />
         {t('ob.tagihan.add', lang)}
       </button>
 

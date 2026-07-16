@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { ChevronLeft } from 'lucide-react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useNow } from '@/app/providers/useNow'
 import { useLanguage } from '@/app/providers/useLanguage'
@@ -292,15 +293,7 @@ export function CekDuluPage() {
           onClick={() => navigate(-1)}
           aria-label={t('common.back_aria', lang)}
         >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path
-              d="M10 3L5 8L10 13"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+          <ChevronLeft size={16} strokeWidth={1.75} />
         </button>
         <span className={styles.title}>{t('cek_dulu.title', lang)}</span>
         <button

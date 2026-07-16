@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Settings2 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useNow } from '@/app/providers/useNow'
 import { useLanguage } from '@/app/providers/useLanguage'
@@ -399,19 +400,7 @@ export function HomePage() {
               onClick={() => navigate('/settings')}
               aria-label={t('a11y.settings', lang)}
             >
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 18 18"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.4"
-                strokeLinecap="round"
-              >
-                <line x1="2.5" y1="4.5" x2="15.5" y2="4.5" />
-                <line x1="2.5" y1="9" x2="15.5" y2="9" />
-                <line x1="5.5" y1="13.5" x2="15.5" y2="13.5" />
-              </svg>
+              <Settings2 size={14} strokeWidth={1.75} />
             </button>
           </div>
         </div>

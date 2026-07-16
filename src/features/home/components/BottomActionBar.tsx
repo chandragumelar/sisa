@@ -1,4 +1,4 @@
-import { TrendingUp } from 'lucide-react'
+import { TrendingUp, Plus } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
@@ -33,18 +33,7 @@ export function BottomActionBar({ onCatat }: Props) {
         }}
         aria-label={t('actions.log_aria', lang)}
       >
-        <svg
-          width="15"
-          height="15"
-          viewBox="0 0 16 16"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-        >
-          <line x1="8" y1="3" x2="8" y2="13" />
-          <line x1="3" y1="8" x2="13" y2="8" />
-        </svg>
+        <Plus size={15} strokeWidth={1.75} />
         <span>{t('actions.log_full_label', lang)}</span>
       </button>
     </div>
