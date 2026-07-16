@@ -381,39 +381,29 @@
   font-family: var(--font-sans);
 }
 
-.dumbbellTrack {
+.bulletTrack {
   position: relative;
   flex: 2;
-  height: 16px;
   min-width: 40px;
+  height: 14px;
+  margin-right: 10px;
 }
 
-.dumbbellLine {
+.bulletGhost {
   position: absolute;
-  top: 50%;
-  height: 2px;
-  transform: translateY(-50%);
-  opacity: 0.5;
-  border-radius: 1px;
+  top: 0;
+  left: 0;
+  height: 14px;
+  background: var(--border-soft);
+  border-radius: 7px;
 }
 
-.dumbbellDotPrev {
+.bulletBar {
   position: absolute;
-  top: 50%;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--ink-tertiary);
-  transform: translate(-50%, -50%);
-}
-
-.dumbbellDotNow {
-  position: absolute;
-  top: 50%;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
+  top: 3px;
+  left: 0;
+  height: 8px;
+  border-radius: 4px;
 }
 
 .rankLegend {
@@ -432,18 +422,18 @@
   gap: 5px;
 }
 
-.rankLegendDotPrev {
-  width: 6px;
+.bulletLegendSwatchGhost {
+  width: 10px;
   height: 6px;
-  border-radius: 50%;
-  background: var(--ink-tertiary);
+  border-radius: 2px;
+  background: var(--border-soft);
   flex-shrink: 0;
 }
 
-.rankLegendDotNow {
+.bulletLegendSwatchNow {
   width: 10px;
-  height: 10px;
-  border-radius: 50%;
+  height: 6px;
+  border-radius: 2px;
   background: var(--accent);
   flex-shrink: 0;
 }

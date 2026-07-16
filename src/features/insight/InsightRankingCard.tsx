@@ -27,6 +27,7 @@ export function InsightRankingCard({ rows, prevMonthLong, currency, lang }: Prop
   }
 
   const maxScale = Math.max(...rows.flatMap((r) => [r.amount, r.prevAmount]), 1)
+  const showLegend = rows.some((r) => r.prevAmount > 0 && r.deltaPct !== null)
 
   return (
     <div className={`${styles.card} ${styles.cardFlush}`}>
@@ -37,27 +38,25 @@ export function InsightRankingCard({ rows, prevMonthLong, currency, lang }: Prop
         </span>
       </div>
 
-      <div className={`${styles.rankLegend} ${styles.cardFlushPad}`}>
-        <span className={styles.rankLegendItem}>
-          <span className={styles.rankLegendDotPrev} />
-          {prevMonthLong}
-        </span>
-        <span className={styles.rankLegendItem}>
-          <span className={styles.rankLegendDotNow} />
-          {t('insight.ranking_legend_now', lang)}
-        </span>
-      </div>
+      {showLegend && (
+        <div className={`${styles.rankLegend} ${styles.cardFlushPad}`}>
+          <span className={styles.rankLegendItem}>
+            <span className={styles.bulletLegendSwatchGhost} />
+            {prevMonthLong}
+          </span>
+          <span className={styles.rankLegendItem}>
+            <span className={styles.bulletLegendSwatchNow} />
+            {t('insight.ranking_legend_now', lang)}
+          </span>
+        </div>
+      )}
 
       {rows.map((row, i) => {
         const isLast = i === rows.length - 1
-        const hasPrev = row.prevAmount > 0 && row.deltaPct !== null
 
         const nowPct = (row.amount / maxScale) * 100
         const prevPct = (row.prevAmount / maxScale) * 100
         const nowColor = row.highlighted ? 'var(--signal-caution)' : 'var(--accent)'
-        let lineColor = 'var(--ink-tertiary)'
-        if (row.deltaPct !== null && row.deltaPct > 0) lineColor = 'var(--signal-caution)'
-        else if (row.deltaPct !== null && row.deltaPct < 0) lineColor = 'var(--signal-safe)'
 
         let deltaText = '—'
         let deltaClass = styles.deltaMute
@@ -78,24 +77,16 @@ export function InsightRankingCard({ rows, prevMonthLong, currency, lang }: Prop
           >
             <span className={styles.rankNum}>{i + 1}</span>
             <span className={styles.rankName}>{row.name}</span>
-            <div className={styles.dumbbellTrack}>
-              {hasPrev && (
+            <div className={styles.bulletTrack}>
+              {row.prevAmount > 0 && (
+                <div className={styles.bulletGhost} style={{ width: `${prevPct}%` }} />
+              )}
+              {row.amount > 0 && (
                 <div
-                  className={styles.dumbbellLine}
-                  style={{
-                    left: `${Math.min(nowPct, prevPct)}%`,
-                    width: `${Math.abs(nowPct - prevPct)}%`,
-                    background: lineColor,
-                  }}
+                  className={styles.bulletBar}
+                  style={{ width: `${nowPct}%`, minWidth: 4, background: nowColor }}
                 />
               )}
-              {hasPrev && (
-                <div className={styles.dumbbellDotPrev} style={{ left: `${prevPct}%` }} />
-              )}
-              <div
-                className={styles.dumbbellDotNow}
-                style={{ left: `${nowPct}%`, background: nowColor }}
-              />
             </div>
             <div className={styles.rankAmtCol}>
               <span className={styles.rankAmt}>{formatCurrency(row.amount, currency)}</span>
