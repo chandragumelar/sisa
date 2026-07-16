@@ -43,14 +43,6 @@
   text-transform: uppercase;
 }
 
-.wordmarkBy {
-  font-size: 8px;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-  color: var(--ink-tertiary);
-  font-family: var(--font-sans);
-}
-
 .headerRight {
   display: flex;
   align-items: center;

@@ -31,7 +31,6 @@ import {
 import { calcUnpaidTagihanTotal, getTagihanUrgency } from './tagihan.utils'
 import { shouldShowBackupReminder, calcBackupUrgency } from './backup-reminder.utils'
 import { calcBudgetPeriode, type BudgetMode } from '@/shared/utils/budget.utils'
-import { BRAND_STUDIO_WITH_COLLAB } from '@/constants/brand'
 import { CekDuluCard } from './components/CekDuluCard'
 import { SaldoModule } from './components/SaldoModule'
 import { MonthlyModule } from './components/MonthlyModule'
@@ -385,7 +384,6 @@ export function HomePage() {
         <div className={styles.header}>
           <div className={styles.wordmark}>
             <span className={styles.wordmarkName}>sisa</span>
-            <span className={styles.wordmarkBy}>by {BRAND_STUDIO_WITH_COLLAB}</span>
           </div>
 
           <div className={styles.headerRight}>
