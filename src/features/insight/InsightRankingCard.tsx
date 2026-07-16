@@ -26,7 +26,7 @@ export function InsightRankingCard({ rows, prevMonthLong, currency, lang }: Prop
     )
   }
 
-  const maxAmount = rows[0].amount
+  const maxScale = Math.max(...rows.flatMap((r) => [r.amount, r.prevAmount]), 1)
 
   return (
     <div className={`${styles.card} ${styles.cardFlush}`}>
@@ -37,9 +37,27 @@ export function InsightRankingCard({ rows, prevMonthLong, currency, lang }: Prop
         </span>
       </div>
 
+      <div className={`${styles.rankLegend} ${styles.cardFlushPad}`}>
+        <span className={styles.rankLegendItem}>
+          <span className={styles.rankLegendDotPrev} />
+          {prevMonthLong}
+        </span>
+        <span className={styles.rankLegendItem}>
+          <span className={styles.rankLegendDotNow} />
+          {t('insight.ranking_legend_now', lang)}
+        </span>
+      </div>
+
       {rows.map((row, i) => {
-        const barWidth = maxAmount > 0 ? Math.round((row.amount / maxAmount) * 100) : 0
         const isLast = i === rows.length - 1
+        const hasPrev = row.prevAmount > 0 && row.deltaPct !== null
+
+        const nowPct = (row.amount / maxScale) * 100
+        const prevPct = (row.prevAmount / maxScale) * 100
+        const nowColor = row.highlighted ? 'var(--signal-caution)' : 'var(--accent)'
+        let lineColor = 'var(--ink-tertiary)'
+        if (row.deltaPct !== null && row.deltaPct > 0) lineColor = 'var(--signal-caution)'
+        else if (row.deltaPct !== null && row.deltaPct < 0) lineColor = 'var(--signal-safe)'
 
         let deltaText = '—'
         let deltaClass = styles.deltaMute
@@ -52,24 +70,31 @@ export function InsightRankingCard({ rows, prevMonthLong, currency, lang }: Prop
         return (
           <div
             key={row.name}
-            className={`${styles.rankRow} ${row.highlighted ? styles.rankRowHighlight : ''}`}
+            className={styles.rankRow}
             style={{
               borderBottom: isLast ? 'none' : '1px solid var(--border-soft)',
               paddingBottom: isLast ? 16 : undefined,
-              borderRadius:
-                isLast && row.highlighted ? '0 0 var(--radius-card) var(--radius-card)' : undefined,
             }}
           >
             <span className={styles.rankNum}>{i + 1}</span>
             <span className={styles.rankName}>{row.name}</span>
-            <div className={styles.rankBar}>
+            <div className={styles.dumbbellTrack}>
+              {hasPrev && (
+                <div
+                  className={styles.dumbbellLine}
+                  style={{
+                    left: `${Math.min(nowPct, prevPct)}%`,
+                    width: `${Math.abs(nowPct - prevPct)}%`,
+                    background: lineColor,
+                  }}
+                />
+              )}
+              {hasPrev && (
+                <div className={styles.dumbbellDotPrev} style={{ left: `${prevPct}%` }} />
+              )}
               <div
-                className={styles.rankBarFill}
-                style={{
-                  width: `${barWidth}%`,
-                  background: row.highlighted ? 'var(--signal-caution)' : 'var(--accent)',
-                  opacity: row.highlighted ? 1 : 0.75,
-                }}
+                className={styles.dumbbellDotNow}
+                style={{ left: `${nowPct}%`, background: nowColor }}
               />
             </div>
             <div className={styles.rankAmtCol}>
