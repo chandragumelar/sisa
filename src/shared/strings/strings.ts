@@ -359,6 +359,10 @@ export type StringKey =
   | 'home.payday_confirm_sub'
   | 'home.payday_confirm_yes'
   | 'home.payday_confirm_no'
+  | 'home.payday_alokasi_tag'
+  | 'home.payday_alokasi_title'
+  | 'home.payday_alokasi_msg'
+  | 'home.payday_alokasi_cta'
   // equiv line (shared)
   | 'equiv.approx'
   // wallets card — multi-currency
@@ -1134,6 +1138,11 @@ const id: StringDictionary = {
   'home.payday_confirm_sub': 'Kalau udah, SISA reset jatah harian dari sekarang.',
   'home.payday_confirm_yes': 'Udah masuk',
   'home.payday_confirm_no': 'Belum',
+  'home.payday_alokasi_tag': 'Gajian masuk?',
+  'home.payday_alokasi_title': 'Atur ulang alokasi lo',
+  'home.payday_alokasi_msg':
+    'Saldo lo kayaknya naik nih. Mau langsung tentuin jatah operasional baru?',
+  'home.payday_alokasi_cta': 'Atur alokasi →',
 
   'equiv.approx': '≈ {equiv} · kurs {date}',
 
@@ -1958,6 +1967,11 @@ const en: StringDictionary = {
   'home.payday_confirm_sub': 'If yes, SISA resets your daily budget from now.',
   'home.payday_confirm_yes': "Yes, it's in",
   'home.payday_confirm_no': 'Not yet',
+  'home.payday_alokasi_tag': 'Payday?',
+  'home.payday_alokasi_title': 'Reset your allocation',
+  'home.payday_alokasi_msg':
+    'Looks like your balance just went up. Want to set your new operational budget now?',
+  'home.payday_alokasi_cta': 'Set allocation →',
 
   'equiv.approx': '≈ {equiv} · rate {date}',
 
