@@ -379,7 +379,7 @@ async function applyWalletBalances(
 function buildSettings(dates: DemoDates): Settings {
   return {
     id: 1,
-    language: 'id',
+    language: 'en',
     theme: 'system',
     incomeType: 'tetap',
     incomeDay: 25,
