@@ -98,15 +98,7 @@ export function ProfilLicenseSheet({ isOpen, onClose, license, nowMs, onUpdate }
           target="_blank"
           rel="noreferrer"
         >
-          Beli di Clicky (IDR) ↗
-        </a>
-        <a
-          className={styles.buyLink}
-          href="https://pikaxustudio.gumroad.com/l/sisa-app"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Beli di Gumroad (USD) ↗
+          Beli di Gumroad ↗
         </a>
       </div>
     </BottomSheet>
