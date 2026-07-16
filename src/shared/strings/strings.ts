@@ -741,6 +741,7 @@ export type StringKey =
   | 'insight.daily_sheet_total'
   | 'insight.card_ranking'
   | 'insight.ranking_vs'
+  | 'insight.ranking_legend_now'
   | 'insight.ranking_empty'
   | 'insight.ranking_empty_sub'
   | 'insight.card_top_tx'
@@ -1564,8 +1565,9 @@ const id: StringDictionary = {
   'insight.daily_legend_high': 'banyak',
   'insight.daily_sheet_empty': 'Tidak ada transaksi hari ini.',
   'insight.daily_sheet_total': 'Total',
-  'insight.card_ranking': 'Klasemen Kategori',
+  'insight.card_ranking': 'Klasemen Kategori Bulan Ini',
   'insight.ranking_vs': 'dibanding {month}',
+  'insight.ranking_legend_now': 'Bulan ini',
   'insight.ranking_empty': 'Belum ada kategori\nyang dicatat bulan ini.',
   'insight.ranking_empty_sub': 'kasih kategori ke tiap transaksi ya',
   'insight.card_top_tx': '5 Transaksi Besar',
@@ -2379,8 +2381,9 @@ const en: StringDictionary = {
   'insight.daily_legend_high': 'many',
   'insight.daily_sheet_empty': 'No transactions this day.',
   'insight.daily_sheet_total': 'Total',
-  'insight.card_ranking': 'Category Ranking',
+  'insight.card_ranking': "This Month's Category Ranking",
   'insight.ranking_vs': 'vs {month}',
+  'insight.ranking_legend_now': 'This month',
   'insight.ranking_empty': 'No categories\nlogged this month.',
   'insight.ranking_empty_sub': 'add a category to each transaction',
   'insight.card_top_tx': '5 Biggest Transactions',

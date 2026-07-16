@@ -360,11 +360,6 @@
   padding: 9px 16px;
 }
 
-.rankRowHighlight {
-  background: var(--signal-caution-bg);
-  margin: 0;
-}
-
 .rankNum {
   font-size: 11px;
   font-weight: 700;
@@ -386,18 +381,61 @@
   font-family: var(--font-sans);
 }
 
-.rankBar {
+.bulletTrack {
+  position: relative;
   flex: 2;
-  height: 5px;
-  background: var(--border-hair);
-  border-radius: 3px;
-  overflow: hidden;
   min-width: 40px;
+  height: 14px;
+  margin-right: 10px;
 }
 
-.rankBarFill {
-  height: 100%;
-  border-radius: 3px;
+.bulletGhost {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 14px;
+  background: var(--border-soft);
+  border-radius: 7px;
+}
+
+.bulletBar {
+  position: absolute;
+  top: 3px;
+  left: 0;
+  height: 8px;
+  border-radius: 4px;
+}
+
+.rankLegend {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 8px;
+  font-size: 10px;
+  color: var(--ink-tertiary);
+  font-family: var(--font-sans);
+}
+
+.rankLegendItem {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.bulletLegendSwatchGhost {
+  width: 10px;
+  height: 6px;
+  border-radius: 2px;
+  background: var(--border-soft);
+  flex-shrink: 0;
+}
+
+.bulletLegendSwatchNow {
+  width: 10px;
+  height: 6px;
+  border-radius: 2px;
+  background: var(--accent);
+  flex-shrink: 0;
 }
 
 .rankAmt {
