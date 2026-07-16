@@ -133,6 +133,8 @@ export function JatahHarianCard({
           {isHabis && <span className={styles.pasBadge}>{t('home.jatah_pas_badge', lang)}</span>}
         </div>
 
+        <div className={styles.headerDivider} />
+
         <div className={styles.heroNum}>{formatCurrency(jatahHariIni, currency)}</div>
 
         <div className={styles.barWrap} aria-hidden="true">
