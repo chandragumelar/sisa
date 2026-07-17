@@ -8,7 +8,7 @@
 
 .filterChip {
   padding: 6px 14px;
-  border-radius: 100px;
+  border-radius: var(--radius-pill);
   border: 1px solid var(--line);
   background: var(--surface-deep);
   font-size: 12px;
@@ -118,7 +118,7 @@
   color: var(--muted);
   font-size: 13px;
   padding: 4px 6px;
-  border-radius: 6px;
+  border-radius: var(--radius-xs);
   font-family: var(--font-display);
 }
 
@@ -139,7 +139,7 @@
   color: var(--signal-danger);
   background: none;
   border: 1px solid var(--signal-danger);
-  border-radius: 100px;
+  border-radius: var(--radius-pill);
   padding: 3px 8px;
   cursor: pointer;
   font-family: var(--font-display);
@@ -150,7 +150,7 @@
   color: var(--muted);
   background: none;
   border: 1px solid var(--line);
-  border-radius: 100px;
+  border-radius: var(--radius-pill);
   padding: 3px 8px;
   cursor: pointer;
   font-family: var(--font-display);

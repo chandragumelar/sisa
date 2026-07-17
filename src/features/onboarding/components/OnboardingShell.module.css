@@ -30,7 +30,7 @@
   color: var(--ink-secondary);
   display: flex;
   align-items: center;
-  border-radius: 6px;
+  border-radius: var(--radius-xs);
   line-height: 0;
 }
 .backBtn:active {

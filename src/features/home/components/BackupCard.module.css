@@ -1,7 +1,7 @@
 .card {
   background: var(--surface-deep);
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: var(--radius-button);
   padding: 14px 16px;
   display: flex;
   gap: 12px;
@@ -141,7 +141,7 @@
   padding: 12px;
   background: var(--surface-deep);
   border: none;
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   font-size: 14px;
   font-weight: 600;
   color: var(--ink);

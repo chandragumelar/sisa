@@ -1,7 +1,7 @@
 .tabRow {
   display: flex;
   background: var(--surface-deep);
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   padding: 3px;
   margin-bottom: 16px;
   gap: 2px;
@@ -11,7 +11,7 @@
   flex: 1;
   padding: 7px;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   background: none;
   font-size: 13px;
   font-weight: 500;
@@ -69,13 +69,13 @@
   gap: 10px;
   padding: 12px;
   background: var(--surface-deep);
-  border-radius: 12px;
+  border-radius: var(--radius-button);
   margin: 4px 0;
 }
 
 .editInput {
   border: 1px solid var(--line);
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   padding: 9px 12px;
   font-size: 14px;
   color: var(--ink);
@@ -103,7 +103,7 @@
   gap: 10px;
   padding: 10px 12px;
   background: color-mix(in srgb, var(--signal-danger) 8%, var(--surface));
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   border: 1px solid color-mix(in srgb, var(--signal-danger) 30%, transparent);
   margin: 4px 0;
 }
@@ -129,7 +129,7 @@
   justify-content: center;
   width: 36px;
   height: 36px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--line);
   background: var(--surface);
   cursor: pointer;
@@ -153,7 +153,7 @@
   justify-content: center;
   width: 32px;
   height: 32px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--line);
   background: var(--surface-deep);
   cursor: pointer;
@@ -173,7 +173,7 @@
   padding: 11px 0;
   background: none;
   border: 1px dashed var(--line);
-  border-radius: 12px;
+  border-radius: var(--radius-button);
   font-size: 13px;
   font-weight: 500;
   color: var(--muted);

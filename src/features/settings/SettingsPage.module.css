@@ -23,7 +23,7 @@
   color: var(--ink);
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: var(--radius-button);
   cursor: pointer;
   flex: none;
 }
@@ -88,7 +88,7 @@
   background: var(--accent);
   color: var(--accent-text);
   padding: 4px 10px;
-  border-radius: 100px;
+  border-radius: var(--radius-pill);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -111,7 +111,7 @@
 .card {
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 16px;
+  border-radius: var(--radius-card);
   overflow: hidden;
 }
 
@@ -249,7 +249,7 @@
 .segmented {
   display: flex;
   background: var(--surface-deep);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   padding: 2px;
   gap: 2px;
 }
@@ -259,7 +259,7 @@
   font-weight: 500;
   color: var(--ink-soft);
   padding: 5px 9px;
-  border-radius: 6px;
+  border-radius: var(--radius-xs);
   border: none;
   background: none;
   cursor: pointer;
@@ -307,7 +307,7 @@
 
 .previewItem {
   background: var(--surface-deep);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   padding: 10px 12px;
   display: flex;
   flex-direction: column;
@@ -350,7 +350,7 @@
   font-size: 16px;
   font-weight: 600;
   border: 1.5px solid var(--line);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   padding: 10px 12px;
   width: 100%;
   letter-spacing: 2px;
@@ -369,7 +369,7 @@
   font-size: 14px;
   font-weight: 600;
   border: none;
-  border-radius: 12px;
+  border-radius: var(--radius-button);
   padding: 13px 0;
   width: 100%;
   cursor: pointer;
@@ -381,7 +381,7 @@
   font-size: 14px;
   font-weight: 600;
   border: none;
-  border-radius: 12px;
+  border-radius: var(--radius-button);
   padding: 13px 0;
   width: 100%;
   cursor: pointer;
@@ -398,7 +398,7 @@
   font-size: 14px;
   font-weight: 500;
   border: none;
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   padding: 10px 0;
   width: 100%;
   cursor: pointer;
