@@ -40,8 +40,10 @@
   --signal-safe-br: #c9ebd8;
 
   /* ── Typography ───────────────────────────────────────── */
-  --font-sans: 'Manrope', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, system-ui, sans-serif;
+  /* Nominal uang pakai SF Pro + tabular figures, bukan monospace */
+  --font-mono: var(--font-sans);
 
   /* ── Shadow + Radius + Spacing ────────────────────────── */
   --shadow-card: none;

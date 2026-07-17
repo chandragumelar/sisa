@@ -18,13 +18,10 @@ html {
 
 body {
   font-family: var(--font-display);
-  font-size: 14px;
-  line-height: 1.4;
+  font-size: 15px;
+  line-height: 1.45;
   color: var(--ink);
   background-color: var(--bg);
-
-  /* Alternate 'l' glyph — cleaner, less ambiguous */
-  font-feature-settings: 'cv11';
 
   /* Smooth rendering on retina */
   -webkit-font-smoothing: antialiased;
