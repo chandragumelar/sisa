@@ -155,6 +155,10 @@
   padding: 0 16px 10px;
 }
 
+.privacyCard {
+  margin-top: 12px;
+}
+
 .privacyHeader {
   display: flex;
   align-items: center;

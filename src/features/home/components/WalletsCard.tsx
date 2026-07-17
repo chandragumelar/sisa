@@ -172,6 +172,9 @@ export function WalletsCard({ wallets, primaryCurrency, onWalletTap, onAddWallet
             <Plus size={14} strokeWidth={1.75} color="var(--ink-secondary)" />
           </button>
         </div>
+      </div>
+      <div className={styles.divider} />
+      <div className={styles.totalBody}>
         {isMulti && rows.length > 0 && (
           <div className={styles.mcSubtotals}>
             {rows.map((row) => (

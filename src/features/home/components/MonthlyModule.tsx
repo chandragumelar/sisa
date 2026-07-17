@@ -9,7 +9,6 @@ interface Props {
   incomeByCurrency: Record<string, number>
   expenseByCurrency: Record<string, number>
   primaryCurrency: string
-  nowMs: number
   onHistoryTap?: () => void
 }
 
@@ -25,14 +24,9 @@ export function MonthlyModule({
   incomeByCurrency,
   expenseByCurrency,
   primaryCurrency,
-  nowMs,
   onHistoryTap,
 }: Props) {
   const lang = useLanguage()
-  const locale = lang === 'en' ? 'en-US' : 'id-ID'
-  const monthLabel = new Intl.DateTimeFormat(locale, { month: 'short', year: 'numeric' }).format(
-    new Date(nowMs),
-  )
 
   const sections = [
     {
@@ -55,7 +49,6 @@ export function MonthlyModule({
         <span className={styles.label}>
           {t('home.monthly_title', lang).replace('{cur}', getCurrencyLabel(primaryCurrency, lang))}
         </span>
-        <span className={styles.month}>{monthLabel}</span>
       </div>
       <div className={styles.headerDivider} />
       <div className={styles.list}>
