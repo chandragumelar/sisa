@@ -4,6 +4,7 @@ import { formatCurrency } from '@/shared/utils/formatCurrency'
 import { t } from '@/shared/strings/strings'
 import { BottomSheet } from '@/shared/components/BottomSheet'
 import { useClock } from '@/app/providers/useClock'
+import { getCategoryDisplayName } from '../category/category-display'
 import { buildDailyHeatmap } from './insight.utils'
 import type { DayCell } from './insight.utils'
 import type { Transaction } from '@/db/database'
@@ -141,7 +142,8 @@ export function InsightDailyCard({ currTxs, viewYear, viewMonth, currency, lang 
               <div className={styles.shBody}>
                 {sheetDay.txs.map((tx, i) => {
                   const lbl = tx.label.trim()
-                  const cat = tx.category.trim()
+                  const catRaw = tx.category.trim()
+                  const cat = catRaw ? getCategoryDisplayName(catRaw, lang) : ''
                   const display =
                     lbl && cat
                       ? `${lbl} · ${cat}`

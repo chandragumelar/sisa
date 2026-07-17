@@ -6,6 +6,7 @@ import { getTransactionsByDateRange } from '@/db/transactions.repository'
 import { aggregateByCategory } from '@/features/insight/insight.utils'
 import { getCurrencyLabel } from '@/constants/currencies'
 import { t } from '@/shared/strings/strings'
+import { getCategoryDisplayName } from '../../category/category-display'
 import { formatCompactCurrency } from './sankey.utils'
 import homeStyles from '../HomePage.module.css'
 import styles from './InsightSankeyCard.module.css'
@@ -108,7 +109,8 @@ function nodeLabel(
     mode === 'persen'
       ? `${Math.round((row.amount / leftTotal) * 100)}%`
       : formatCompactCurrency(row.amount, currency, lang)
-  return `${row.name} · ${value}`
+  const displayName = row.isSisa ? row.name : getCategoryDisplayName(row.name, lang)
+  return `${displayName} · ${value}`
 }
 
 interface SankeyChartProps {

@@ -4,6 +4,7 @@ import type { Language } from '@/db/database'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
 import { t } from '@/shared/strings/strings'
 import { BottomSheet } from '@/shared/components/BottomSheet'
+import { getCategoryDisplayName } from '../category/category-display'
 import type { CategoryRow, CategoryMonthBar } from './insight.utils'
 import { formatMonthShort } from './insight.utils'
 import styles from './InsightPage.module.css'
@@ -124,7 +125,7 @@ export function InsightCategoryCard({
           onClick={() => setSheetOpen(true)}
           aria-label={t('insight.card_category', lang)}
         >
-          <span>{row.name}</span>
+          <span>{getCategoryDisplayName(row.name, lang)}</span>
           <ChevronDown size={14} strokeWidth={2} />
         </button>
       </div>
@@ -240,7 +241,7 @@ export function InsightCategoryCard({
                 setSheetOpen(false)
               }}
             >
-              <span>{r.name}</span>
+              <span>{getCategoryDisplayName(r.name, lang)}</span>
               {r.name === selected && <Check size={16} strokeWidth={2} color="var(--accent)" />}
             </button>
           ))}
