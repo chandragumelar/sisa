@@ -17,6 +17,25 @@ export type StringKey =
   | 'common.days'
   | 'cat.manage_title'
   | 'cat.new_placeholder'
+  | 'cat.tab_expense'
+  | 'cat.tab_income'
+  | 'cat.delete_confirm'
+  | 'cat.add_btn'
+  | 'cat.name_makanan'
+  | 'cat.name_transport'
+  | 'cat.name_belanja'
+  | 'cat.name_tagihan'
+  | 'cat.name_hiburan'
+  | 'cat.name_kesehatan'
+  | 'cat.name_pendidikan'
+  | 'cat.name_transfer'
+  | 'cat.name_lainnya'
+  | 'cat.name_gaji'
+  | 'cat.name_bonus'
+  | 'cat.name_transfer_keluarga'
+  | 'cat.name_hadiah'
+  | 'cat.name_side_income'
+  | 'cat.name_pacar'
   // onboarding install guide
   | 'ob.install.heading'
   | 'ob.install.ios_label'
@@ -784,6 +803,25 @@ const id: StringDictionary = {
 
   'cat.manage_title': 'Kelola Kategori',
   'cat.new_placeholder': 'Nama kategori baru',
+  'cat.tab_expense': 'Pengeluaran',
+  'cat.tab_income': 'Pemasukan',
+  'cat.delete_confirm': 'Hapus "{name}"? Transaksi lama jadi Lainnya.',
+  'cat.add_btn': 'Tambah kategori',
+  'cat.name_makanan': 'Makanan',
+  'cat.name_transport': 'Transport',
+  'cat.name_belanja': 'Belanja',
+  'cat.name_tagihan': 'Tagihan',
+  'cat.name_hiburan': 'Hiburan',
+  'cat.name_kesehatan': 'Kesehatan',
+  'cat.name_pendidikan': 'Pendidikan',
+  'cat.name_transfer': 'Transfer',
+  'cat.name_lainnya': 'Lainnya',
+  'cat.name_gaji': 'Gaji',
+  'cat.name_bonus': 'Bonus',
+  'cat.name_transfer_keluarga': 'Transfer Keluarga',
+  'cat.name_hadiah': 'Hadiah',
+  'cat.name_side_income': 'Side Income',
+  'cat.name_pacar': 'Pacar',
 
   'ob.install.heading': 'Pasang di layar utama biar kayak app beneran',
   'ob.install.ios_label': 'iPhone',
@@ -1625,6 +1663,25 @@ const en: StringDictionary = {
 
   'cat.manage_title': 'Manage Categories',
   'cat.new_placeholder': 'New category name',
+  'cat.tab_expense': 'Expense',
+  'cat.tab_income': 'Income',
+  'cat.delete_confirm': 'Delete "{name}"? Old transactions become Other.',
+  'cat.add_btn': 'Add category',
+  'cat.name_makanan': 'Food',
+  'cat.name_transport': 'Transport',
+  'cat.name_belanja': 'Shopping',
+  'cat.name_tagihan': 'Bills',
+  'cat.name_hiburan': 'Fun',
+  'cat.name_kesehatan': 'Health',
+  'cat.name_pendidikan': 'Education',
+  'cat.name_transfer': 'Transfer',
+  'cat.name_lainnya': 'Other',
+  'cat.name_gaji': 'Salary',
+  'cat.name_bonus': 'Bonus',
+  'cat.name_transfer_keluarga': 'Family Transfer',
+  'cat.name_hadiah': 'Gift',
+  'cat.name_side_income': 'Side Income',
+  'cat.name_pacar': 'Partner',
 
   'ob.install.heading': 'Add to home screen for the full app experience',
   'ob.install.ios_label': 'iPhone',
