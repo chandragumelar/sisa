@@ -1,6 +1,7 @@
 import type { Language } from '@/db/database'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
 import { t } from '@/shared/strings/strings'
+import { getCategoryDisplayName } from '../category/category-display'
 import type { CategoryRow } from './insight.utils'
 import styles from './InsightPage.module.css'
 
@@ -79,7 +80,7 @@ export function InsightRankingCard({ rows, prevMonthLong, currency, lang }: Prop
             }}
           >
             <span className={styles.rankNum}>{i + 1}</span>
-            <span className={styles.rankName}>{row.name}</span>
+            <span className={styles.rankName}>{getCategoryDisplayName(row.name, lang)}</span>
             <div className={styles.bulletTrack}>
               {row.prevAmount > 0 && (
                 <div className={styles.bulletGhost} style={{ width: `${prevPct}%` }} />
