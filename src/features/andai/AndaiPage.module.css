@@ -12,7 +12,14 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 6px 0 14px;
+  padding: calc(6px + env(safe-area-inset-top, 0px)) 0 14px;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--surface-translucent);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid transparent;
 }
 
 .backBtn {
