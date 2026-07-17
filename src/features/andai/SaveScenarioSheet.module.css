@@ -18,7 +18,7 @@
   width: 100%;
   padding: 10px 12px;
   border: 1px solid var(--line);
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   font-family: var(--font-display);
   font-size: 15px;
   color: var(--ink);
@@ -38,7 +38,7 @@
   background: var(--ink);
   color: var(--bg);
   border: none;
-  border-radius: 12px;
+  border-radius: var(--radius-button);
   font-family: var(--font-display);
   font-size: 15px;
   font-weight: 600;

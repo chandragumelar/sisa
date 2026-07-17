@@ -18,10 +18,17 @@
   max-width: 430px;
   margin: 0 auto;
   width: 100%;
-  padding: 6px 14px 10px;
+  padding: calc(6px + env(safe-area-inset-top, 0px)) 14px 10px;
   display: flex;
   align-items: center;
   gap: 10px;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--surface-translucent);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid transparent;
 }
 
 .backBtn {
@@ -32,7 +39,7 @@
   justify-content: center;
   background: var(--surface);
   border: 1px solid var(--border-hair);
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   color: var(--ink-primary);
   flex-shrink: 0;
@@ -182,7 +189,7 @@
   font-weight: 600;
   font-family: var(--font-sans);
   padding: 4px 10px;
-  border-radius: 20px;
+  border-radius: var(--radius-card);
   border: 1px solid var(--border-hair);
   background: none;
   cursor: pointer;
@@ -227,7 +234,7 @@
   color: var(--ink-secondary);
   background: var(--surface-2);
   border: 1px solid var(--border-hair);
-  border-radius: 6px;
+  border-radius: var(--radius-xs);
   padding: 4px 8px;
   cursor: pointer;
   outline: none;
@@ -298,13 +305,13 @@
   flex: 1;
   height: 7px;
   background: var(--border-hair);
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
   overflow: hidden;
 }
 
 .catDetailFill {
   height: 100%;
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
 }
 
 .catDetailAmt {
@@ -344,7 +351,7 @@
 .spendBulletTrack {
   position: relative;
   height: 14px;
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
   overflow: hidden;
   margin: 12px 0 6px;
   background: var(--border-hair);
@@ -369,7 +376,7 @@
   top: 50%;
   transform: translateY(-50%);
   height: 6px;
-  border-radius: 3px;
+  border-radius: var(--radius-xs);
   background: var(--accent);
   transition: width 0.3s ease;
 }
@@ -438,7 +445,7 @@
   left: 0;
   height: 14px;
   background: var(--border-soft);
-  border-radius: 7px;
+  border-radius: var(--radius-xs);
 }
 
 .bulletBar {
@@ -446,7 +453,7 @@
   top: 3px;
   left: 0;
   height: 8px;
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
 }
 
 .rankLegend {

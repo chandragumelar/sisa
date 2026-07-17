@@ -47,7 +47,7 @@
   color: var(--signal-caution);
   background: color-mix(in srgb, var(--signal-caution) 12%, transparent);
   border: 1px solid color-mix(in srgb, var(--signal-caution) 30%, transparent);
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
   padding: 2px 6px;
   font-family: var(--font-sans);
 }
@@ -182,7 +182,7 @@
   color: var(--signal-caution);
   background: color-mix(in srgb, var(--signal-caution) 10%, transparent);
   border: 1px solid color-mix(in srgb, var(--signal-caution) 25%, transparent);
-  border-radius: 6px;
+  border-radius: var(--radius-xs);
   padding: 8px 10px;
   margin-bottom: 12px;
   font-family: var(--font-sans);

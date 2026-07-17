@@ -48,7 +48,7 @@
   gap: 5px;
   padding: 4px 10px 4px 8px;
   border: 1px solid var(--border-hair);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   font-size: 11px;
   color: var(--ink-tertiary);
   font-family: var(--font-sans);
@@ -65,7 +65,7 @@
   font-family: var(--font-sans);
   padding: 3px 8px;
   border: 1px solid var(--signal-danger);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   opacity: 0.85;
 }
 
@@ -78,7 +78,7 @@
   font-family: var(--font-sans);
   padding: 3px 8px;
   border: 1px solid var(--signal-caution);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
 }
 
 /* ── Hero (normal + hari-terakhir) ───────────────────────── */
@@ -316,7 +316,7 @@
   flex-direction: column;
   margin: 0 0 4px;
   border: 1px solid var(--border-soft);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   overflow: hidden;
 }
 
@@ -415,7 +415,7 @@
 
 .shortfallBox {
   border: 1px solid var(--signal-danger);
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   padding: 14px;
   display: flex;
   flex-direction: column;
@@ -499,7 +499,7 @@
   align-items: center;
   gap: 3px;
   padding: 4px 8px;
-  border-radius: 6px;
+  border-radius: var(--radius-xs);
   border: 1px solid var(--border-hair);
   background: var(--surface-deep);
   cursor: pointer;
@@ -591,7 +591,7 @@
   color: var(--accent);
   background: none;
   border: 1px solid var(--accent);
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
   padding: 2px 7px;
   cursor: pointer;
   font-family: var(--font-sans);
@@ -601,7 +601,7 @@
 .addWalletInline {
   background: none;
   border: 1px dashed var(--border-hair);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   padding: 10px 0;
   font-size: 12px;
   font-weight: 500;

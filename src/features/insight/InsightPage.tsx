@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ChevronLeft } from 'lucide-react'
+import { navigateBack } from '@/shared/utils/navigation.utils'
 import { useClock } from '@/app/providers/useClock'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { getSettings } from '@/db/settings.repository'
@@ -30,6 +31,7 @@ import { InsightCategoryCard } from './InsightCategoryCard'
 import { InsightDailyCard } from './InsightDailyCard'
 import { InsightRankingCard } from './InsightRankingCard'
 import { InsightTopTxCard } from './InsightTopTxCard'
+import { markFeatureUsed } from '@/lib/featureUsage'
 import styles from './InsightPage.module.css'
 
 export function InsightPage() {
@@ -48,6 +50,10 @@ export function InsightPage() {
   const [data, setData] = useState<InsightData | null>(null)
   const [currency, setCurrency] = useState('IDR')
   const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    markFeatureUsed('insight')
+  }, [])
 
   useEffect(() => {
     let cancelled = false
@@ -118,7 +124,7 @@ export function InsightPage() {
       <header className={styles.pageHeader}>
         <button
           className={styles.backBtn}
-          onClick={() => navigate(-1)}
+          onClick={() => navigateBack(navigate)}
           aria-label={t('insight.back_aria', lang)}
         >
           <ChevronLeft size={18} strokeWidth={1.8} />

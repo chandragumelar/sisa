@@ -47,7 +47,7 @@
   font-family: var(--font-sans);
   padding: 3px 8px;
   border: 1px solid var(--signal-caution);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   opacity: 0.85;
 }
 
@@ -60,7 +60,7 @@
   font-family: var(--font-sans);
   padding: 3px 8px;
   border: 1px solid var(--signal-danger);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   opacity: 0.85;
 }
 
@@ -73,7 +73,7 @@
   font-family: var(--font-sans);
   padding: 3px 8px;
   border: 1px solid var(--signal-safe);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   opacity: 0.85;
 }
 
@@ -91,7 +91,7 @@
 .barWrap {
   height: 10px;
   background: var(--border-hair);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   position: relative;
   margin-bottom: 8px;
 }
@@ -100,7 +100,7 @@
   height: 100%;
   background: linear-gradient(90deg, var(--accent-br), var(--accent));
   box-shadow: 0 1px 4px rgba(29, 78, 216, 0.35);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   transition: width 0.3s ease;
 }
 
@@ -183,7 +183,7 @@
   padding: 10px 12px;
   background: color-mix(in srgb, var(--signal-caution) 8%, var(--surface));
   border: 1px solid color-mix(in srgb, var(--signal-caution) 25%, transparent);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
 }
 
 .alertLine {
@@ -203,7 +203,7 @@
   padding: 10px 12px;
   background: color-mix(in srgb, var(--signal-danger) 8%, var(--surface));
   border: 1px solid color-mix(in srgb, var(--signal-danger) 25%, transparent);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
 }
 
 .dangerLine {
@@ -219,7 +219,7 @@
   padding: 10px 12px;
   background: color-mix(in srgb, var(--signal-safe) 8%, var(--surface));
   border: 1px solid color-mix(in srgb, var(--signal-safe) 25%, transparent);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
 }
 
 .pasLine {

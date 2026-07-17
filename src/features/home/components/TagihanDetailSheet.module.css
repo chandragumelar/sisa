@@ -37,7 +37,7 @@
   background: var(--ink);
   color: var(--bg);
   border: none;
-  border-radius: 16px;
+  border-radius: var(--radius-card);
   font-size: 15px;
   font-weight: 600;
   font-family: var(--font-display);
@@ -50,7 +50,7 @@
   background: var(--surface-deep);
   color: var(--ink);
   border: none;
-  border-radius: 12px;
+  border-radius: var(--radius-button);
   font-size: 14px;
   font-weight: 500;
   font-family: var(--font-display);
@@ -64,7 +64,7 @@
   background: none;
   color: var(--signal-danger);
   border: none;
-  border-radius: 12px;
+  border-radius: var(--radius-button);
   font-size: 14px;
   font-weight: 500;
   font-family: var(--font-display);
@@ -77,7 +77,7 @@
   font-size: 13px;
   font-weight: 600;
   border: none;
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   padding: 10px 14px;
   cursor: pointer;
   font-family: var(--font-display);
@@ -89,7 +89,7 @@
   font-size: 14px;
   font-weight: 500;
   border: none;
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   padding: 10px 0;
   width: 100%;
   cursor: pointer;
@@ -161,7 +161,7 @@
   color: var(--accent);
   background: var(--surface-deep);
   border: 1px solid var(--line);
-  border-radius: 100px;
+  border-radius: var(--radius-pill);
   padding: 3px 10px;
   cursor: pointer;
   font-family: var(--font-display);

@@ -7,8 +7,10 @@ import { getActiveTagihan } from '@/db/tagihan.repository'
 import { applyTheme } from '@/shared/utils/theme'
 import { applyLanguage } from '@/shared/utils/language'
 import { refreshRatesIfStale } from '@/shared/utils/fx'
+import { sendUsagePing } from '@/lib/supabase/api'
 import { UpdateBanner } from './UpdateBanner'
 import { LanguageProvider } from './providers/LanguageProvider'
+import { useClock } from './providers/useClock'
 import { IS_DEMO } from '@/features/demo/demo.constants'
 
 // Literal check (not the IS_DEMO import) so esbuild folds this to `false` and drops the
@@ -23,6 +25,12 @@ const DemoBanner =
 const DEMO_BANNER_HEIGHT = '34px'
 
 export function App() {
+  const clock = useClock()
+
+  useEffect(() => {
+    void sendUsagePing(clock)
+  }, [clock])
+
   useEffect(() => {
     getSettings().then((s) => {
       if (!s) return

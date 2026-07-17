@@ -17,6 +17,25 @@ export type StringKey =
   | 'common.days'
   | 'cat.manage_title'
   | 'cat.new_placeholder'
+  | 'cat.tab_expense'
+  | 'cat.tab_income'
+  | 'cat.delete_confirm'
+  | 'cat.add_btn'
+  | 'cat.name_makanan'
+  | 'cat.name_transport'
+  | 'cat.name_belanja'
+  | 'cat.name_tagihan'
+  | 'cat.name_hiburan'
+  | 'cat.name_kesehatan'
+  | 'cat.name_pendidikan'
+  | 'cat.name_transfer'
+  | 'cat.name_lainnya'
+  | 'cat.name_gaji'
+  | 'cat.name_bonus'
+  | 'cat.name_transfer_keluarga'
+  | 'cat.name_hadiah'
+  | 'cat.name_side_income'
+  | 'cat.name_pacar'
   // onboarding install guide
   | 'ob.install.heading'
   | 'ob.install.ios_label'
@@ -619,7 +638,6 @@ export type StringKey =
   | 'settings.import_preview_wallets'
   | 'settings.import_preview_txs'
   | 'settings.import_preview_bills'
-  | 'settings.import_preview_goals'
   | 'settings.import_preview_categories'
   | 'settings.import_preview_scenarios'
   | 'settings.import_preview_license'
@@ -633,6 +651,11 @@ export type StringKey =
   | 'settings.delete_type_word'
   | 'settings.delete_type_placeholder'
   | 'settings.delete_confirm_btn'
+  | 'settings.privacy_title'
+  | 'settings.privacy_p1'
+  | 'settings.privacy_p2'
+  | 'settings.privacy_p3'
+  | 'settings.privacy_p4'
   // alokasi editor
   | 'alokasi.buat_dipakai'
   | 'alokasi.uang_mengendap'
@@ -780,6 +803,25 @@ const id: StringDictionary = {
 
   'cat.manage_title': 'Kelola Kategori',
   'cat.new_placeholder': 'Nama kategori baru',
+  'cat.tab_expense': 'Pengeluaran',
+  'cat.tab_income': 'Pemasukan',
+  'cat.delete_confirm': 'Hapus "{name}"? Transaksi lama jadi Lainnya.',
+  'cat.add_btn': 'Tambah kategori',
+  'cat.name_makanan': 'Makanan',
+  'cat.name_transport': 'Transport',
+  'cat.name_belanja': 'Belanja',
+  'cat.name_tagihan': 'Tagihan',
+  'cat.name_hiburan': 'Hiburan',
+  'cat.name_kesehatan': 'Kesehatan',
+  'cat.name_pendidikan': 'Pendidikan',
+  'cat.name_transfer': 'Transfer',
+  'cat.name_lainnya': 'Lainnya',
+  'cat.name_gaji': 'Gaji',
+  'cat.name_bonus': 'Bonus',
+  'cat.name_transfer_keluarga': 'Transfer Keluarga',
+  'cat.name_hadiah': 'Hadiah',
+  'cat.name_side_income': 'Side Income',
+  'cat.name_pacar': 'Pacar',
 
   'ob.install.heading': 'Pasang di layar utama biar kayak app beneran',
   'ob.install.ios_label': 'iPhone',
@@ -950,7 +992,7 @@ const id: StringDictionary = {
   'saldo.jatah_harian_tooltip':
     'Dibagi dari sisa awal periode — ini yang boleh lo pakai per hari. Fixed, bukan berubah tiap hari.',
   'saldo.anggaran_tooltip':
-    'Pemasukan periode dikurangi tagihan belum bayar dan target nabung. Ini uang yang "bebas" untuk operasional harian.',
+    'Pemasukan periode dikurangi tagihan belum bayar. Ini uang yang "bebas" untuk operasional harian.',
   'saldo.expand_btn': 'kok bisa segini?',
   'saldo.collapse_btn': 'sembunyikan',
   'saldo.rincian_tagihan': '− Tagihan belum dibayar',
@@ -973,7 +1015,7 @@ const id: StringDictionary = {
     'Uangmu sudah ter-booking habis sampai gajian — ini yang harus lo tutup:',
   'saldo.mode_bertahan_shortfall_label': 'KEKURANGAN',
   'saldo.mode_bertahan_aman_mulai': 'Aman mulai',
-  'saldo.mode_bertahan_note': 'Tagihan + target nabung melebihi pemasukan periode ini.',
+  'saldo.mode_bertahan_note': 'Tagihan melebihi pemasukan periode ini.',
   'saldo.mode_harigajian_badge': 'Hari Gajian',
   'saldo.mode_harigajian_heading': 'Gaji udah masuk?',
   'saldo.mode_harigajian_sub':
@@ -1130,7 +1172,7 @@ const id: StringDictionary = {
   'home.days_to_payday': '{n} hari ke gajian',
   'home.day_to_payday': '{n} hari ke gajian',
   'home.saldo_bebas': 'Sisa',
-  'home.monthly_title': 'Arus Kas Bulan Ini',
+  'home.monthly_title': 'Arus kas {cur}mu bulan ini',
   'home.income_label': 'Pemasukan',
   'home.expense_label': 'Pengeluaran',
   'home.savings_label': 'Tabungan',
@@ -1446,7 +1488,6 @@ const id: StringDictionary = {
   'settings.import_preview_wallets': 'dompet',
   'settings.import_preview_txs': 'transaksi',
   'settings.import_preview_bills': 'tagihan',
-  'settings.import_preview_goals': 'goal',
   'settings.import_preview_categories': 'kategori kustom',
   'settings.import_preview_scenarios': 'skenario andai',
   'settings.import_preview_license': 'Lisensi',
@@ -1455,12 +1496,21 @@ const id: StringDictionary = {
   'settings.import_error_title': 'Gagal import',
   'settings.delete_title': 'Hapus semua data',
   'settings.delete_warning':
-    'Semua transaksi, wallet, tagihan, dan goal akan dihapus permanen. Lisensi tetap tersimpan.',
+    'Semua transaksi, wallet, dan tagihan akan dihapus permanen. Lisensi tetap tersimpan.',
   'settings.delete_next': 'Lanjut hapus',
   'settings.delete_type_prompt': 'Ketik HAPUS untuk konfirmasi',
   'settings.delete_type_word': 'HAPUS',
   'settings.delete_type_placeholder': 'HAPUS',
   'settings.delete_confirm_btn': 'Hapus semua data',
+  'settings.privacy_title': 'Data Anda Tetap di Perangkat Anda',
+  'settings.privacy_p1':
+    'Sisa dirancang offline-first. Seluruh transaksi, saldo, dan catatan keuangan Anda tersimpan di perangkat Anda sendiri — bukan di server kami. Kami tidak dapat melihatnya, dan memang tidak dirancang untuk itu.',
+  'settings.privacy_p2':
+    'Untuk pengembangan aplikasi, kami hanya mencatat statistik penggunaan yang sepenuhnya anonim: tanggal aplikasi dibuka, pilihan bahasa dan tema, serta fitur yang digunakan. Tanpa nama, tanpa email, dan tanpa satu pun data keuangan Anda. Perangkat Anda hanya tercatat sebagai kode acak.',
+  'settings.privacy_p3':
+    'Jika Anda mengaktifkan pengingat tagihan, nama dan tanggal jatuh tempo tagihan disimpan di server agar notifikasi dapat dikirim. Hanya itu, dan dapat dinonaktifkan kapan saja.',
+  'settings.privacy_p4':
+    'Tidak ada iklan. Tidak ada penjualan data. Sisa didanai dari pembelian lisensi, bukan dari data Anda.',
 
   'alokasi.buat_dipakai': 'Uang operasional sehari-hari',
   'alokasi.uang_mengendap': 'Uang Mengendap',
@@ -1613,6 +1663,25 @@ const en: StringDictionary = {
 
   'cat.manage_title': 'Manage Categories',
   'cat.new_placeholder': 'New category name',
+  'cat.tab_expense': 'Expense',
+  'cat.tab_income': 'Income',
+  'cat.delete_confirm': 'Delete "{name}"? Old transactions become Other.',
+  'cat.add_btn': 'Add category',
+  'cat.name_makanan': 'Food',
+  'cat.name_transport': 'Transport',
+  'cat.name_belanja': 'Shopping',
+  'cat.name_tagihan': 'Bills',
+  'cat.name_hiburan': 'Fun',
+  'cat.name_kesehatan': 'Health',
+  'cat.name_pendidikan': 'Education',
+  'cat.name_transfer': 'Transfer',
+  'cat.name_lainnya': 'Other',
+  'cat.name_gaji': 'Salary',
+  'cat.name_bonus': 'Bonus',
+  'cat.name_transfer_keluarga': 'Family Transfer',
+  'cat.name_hadiah': 'Gift',
+  'cat.name_side_income': 'Side Income',
+  'cat.name_pacar': 'Partner',
 
   'ob.install.heading': 'Add to home screen for the full app experience',
   'ob.install.ios_label': 'iPhone',
@@ -1781,7 +1850,7 @@ const en: StringDictionary = {
   'saldo.jatah_harian_tooltip':
     'Divided from the starting balance of this period — your daily allowance. Fixed at the start, not recalculated daily.',
   'saldo.anggaran_tooltip':
-    'Period income minus unpaid bills and savings targets. This is your free money for daily operations.',
+    'Period income minus unpaid bills. This is your free money for daily operations.',
   'saldo.expand_btn': 'how is this calculated?',
   'saldo.collapse_btn': 'hide',
   'saldo.rincian_tagihan': '− Unpaid bills',
@@ -1803,7 +1872,7 @@ const en: StringDictionary = {
     "Your money is fully booked until payday — here's what you need to cover:",
   'saldo.mode_bertahan_shortfall_label': 'SHORTFALL',
   'saldo.mode_bertahan_aman_mulai': 'Safe from',
-  'saldo.mode_bertahan_note': "Bills + savings targets exceed this period's income.",
+  'saldo.mode_bertahan_note': "Bills exceed this period's income.",
   'saldo.mode_harigajian_badge': 'Payday',
   'saldo.mode_harigajian_heading': 'Did your salary arrive?',
   'saldo.mode_harigajian_sub': 'Confirm so your daily budget can be calculated for the new period.',
@@ -1959,7 +2028,7 @@ const en: StringDictionary = {
   'home.days_to_payday': '{n} days to payday',
   'home.day_to_payday': '{n} day to payday',
   'home.saldo_bebas': 'Left',
-  'home.monthly_title': 'Monthly Cash Flow',
+  'home.monthly_title': 'Your {cur} cash flow this month',
   'home.income_label': 'Income',
   'home.expense_label': 'Expense',
   'home.savings_label': 'Savings',
@@ -2269,7 +2338,6 @@ const en: StringDictionary = {
   'settings.import_preview_wallets': 'wallets',
   'settings.import_preview_txs': 'transactions',
   'settings.import_preview_bills': 'bills',
-  'settings.import_preview_goals': 'goals',
   'settings.import_preview_categories': 'custom categories',
   'settings.import_preview_scenarios': 'what-if scenarios',
   'settings.import_preview_license': 'License',
@@ -2278,12 +2346,21 @@ const en: StringDictionary = {
   'settings.import_error_title': 'Import failed',
   'settings.delete_title': 'Delete all data',
   'settings.delete_warning':
-    'All transactions, wallets, bills, and goals will be permanently deleted. License is kept.',
+    'All transactions, wallets, and bills will be permanently deleted. License is kept.',
   'settings.delete_next': 'Continue to delete',
   'settings.delete_type_prompt': 'Type DELETE to confirm',
   'settings.delete_type_word': 'DELETE',
   'settings.delete_type_placeholder': 'DELETE',
   'settings.delete_confirm_btn': 'Delete all data',
+  'settings.privacy_title': 'Your Data Stays on Your Device',
+  'settings.privacy_p1':
+    'Sisa is built offline-first. All of your transactions, balances, and financial records are stored on your own device — never on our servers. We cannot see them, and the app is not designed to send them.',
+  'settings.privacy_p2':
+    'To improve the app, we collect only fully anonymous usage statistics: the dates the app is opened, your language and theme preferences, and which features are used. No name, no email, and none of your financial data. Your device appears only as a random identifier.',
+  'settings.privacy_p3':
+    "If you enable bill reminders, the bill's name and due date are stored on our server so notifications can be delivered. That is all, and it can be disabled at any time.",
+  'settings.privacy_p4':
+    'No ads. No data selling. Sisa is funded by license purchases, not by your data.',
 
   'alokasi.buat_dipakai': 'Daily operational money',
   'alokasi.uang_mengendap': 'Parked Money',

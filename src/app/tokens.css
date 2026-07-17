@@ -40,11 +40,15 @@
   --signal-safe-br: #c9ebd8;
 
   /* ── Typography ───────────────────────────────────────── */
-  --font-sans: 'Manrope', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, system-ui, sans-serif;
+  /* Nominal uang pakai SF Pro + tabular figures, bukan monospace */
+  --font-mono: var(--font-sans);
 
   /* ── Shadow + Radius + Spacing ────────────────────────── */
   --shadow-card: none;
+  --radius-xs: 6px;
+  --radius-sm: 10px;
   --radius-card: 18px;
   --radius-button: 12px;
   --radius-input: 12px;
@@ -63,6 +67,9 @@
   --muted: var(--ink-tertiary);
   --line: var(--border-hair);
   --font-display: var(--font-sans);
+
+  /* ── Sticky header blur (iOS-style translucent backdrop) ── */
+  --surface-translucent: rgba(245, 246, 248, 0.82);
 
   /* ── Data-viz: heat palette (heatmap calendar) ───────── */
   --heat-0: var(--surface-3);
@@ -140,6 +147,9 @@
   --bahaya-bg: #301414;
   --bahaya-fg: #f79a93;
   --bahaya-br: #f0685f;
+
+  /* --bg dark = --canvas dark (#0a0a0b) as rgba */
+  --surface-translucent: rgba(10, 10, 11, 0.82);
 
   color-scheme: dark;
 }

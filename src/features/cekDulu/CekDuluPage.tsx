@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { ChevronLeft } from 'lucide-react'
 import { useNavigate, useLocation } from 'react-router-dom'
+import { navigateBack } from '@/shared/utils/navigation.utils'
 import { useNow } from '@/app/providers/useNow'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
@@ -24,6 +25,7 @@ import { formatCurrency, getCurrencySymbol } from '@/shared/utils/formatCurrency
 import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
 import { calcCekDulu } from './cekDulu.utils'
 import { QuickLogSheet } from '@/features/quickLog/QuickLogSheet'
+import { markFeatureUsed } from '@/lib/featureUsage'
 import styles from './CekDuluPage.module.css'
 
 type WarnTier = 'diam' | 'netral' | 'tier2' | 'tier2b' | 'tier3a' | 'tier3b' | 'tier3c'
@@ -118,6 +120,10 @@ export function CekDuluPage() {
     return initial ? formatNominalDisplay(parseNominalRaw(String(initial))) : ''
   })
   const [quickLogOpen, setQuickLogOpen] = useState(false)
+
+  useEffect(() => {
+    markFeatureUsed('cek_dulu')
+  }, [])
 
   useEffect(() => {
     let cancelled = false
@@ -290,7 +296,7 @@ export function CekDuluPage() {
       <div className={styles.head}>
         <button
           className={styles.backBtn}
-          onClick={() => navigate(-1)}
+          onClick={() => navigateBack(navigate)}
           aria-label={t('common.back_aria', lang)}
         >
           <ChevronLeft size={16} strokeWidth={1.75} />
@@ -298,7 +304,7 @@ export function CekDuluPage() {
         <span className={styles.title}>{t('cek_dulu.title', lang)}</span>
         <button
           className={styles.closeBtn}
-          onClick={() => navigate(-1)}
+          onClick={() => navigateBack(navigate)}
           aria-label={t('cek_dulu.close_aria', lang)}
         >
           ✕
@@ -454,7 +460,7 @@ export function CekDuluPage() {
 
       {/* Actions */}
       <div className={styles.actions}>
-        <button className={styles.closeAction} onClick={() => navigate(-1)}>
+        <button className={styles.closeAction} onClick={() => navigateBack(navigate)}>
           {t('cek_dulu.close_btn', lang)}
         </button>
         <button
@@ -477,7 +483,7 @@ export function CekDuluPage() {
         initialMode="keluar"
         onCommit={() => {
           setQuickLogOpen(false)
-          navigate('/')
+          navigate('/', { viewTransition: true })
         }}
         uangMengendap={data.mengendap}
       />

@@ -30,7 +30,7 @@
   width: 36px;
   height: 4px;
   background: color-mix(in srgb, var(--ink) 30%, transparent);
-  border-radius: 100px;
+  border-radius: var(--radius-pill);
   margin: 0 auto 16px;
   flex-shrink: 0;
 }

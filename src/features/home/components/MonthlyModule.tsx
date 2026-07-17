@@ -2,6 +2,7 @@ import { TrendingUp, TrendingDown } from 'lucide-react'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
+import { getCurrencyLabel } from '@/constants/currencies'
 import styles from './MonthlyModule.module.css'
 
 interface Props {
@@ -51,7 +52,9 @@ export function MonthlyModule({
   return (
     <div className={styles.card}>
       <div className={styles.header}>
-        <span className={styles.label}>{t('home.monthly_title', lang)}</span>
+        <span className={styles.label}>
+          {t('home.monthly_title', lang).replace('{cur}', getCurrencyLabel(primaryCurrency, lang))}
+        </span>
         <span className={styles.month}>{monthLabel}</span>
       </div>
       <div className={styles.headerDivider} />

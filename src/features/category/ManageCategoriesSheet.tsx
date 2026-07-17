@@ -11,6 +11,7 @@ import {
 } from '@/db/categories.repository'
 import { BottomSheet } from '@/shared/components/BottomSheet'
 import { FALLBACK_CATEGORY, ICON_PICKER_OPTIONS } from './category.types'
+import { getCategoryDisplayName } from './category-display'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
 import styles from './ManageCategoriesSheet.module.css'
@@ -126,7 +127,7 @@ export function ManageCategoriesSheet({ isOpen, onClose }: Props) {
             className={`${styles.tabBtn} ${tab === tabType ? styles.tabBtnActive : ''}`}
             onClick={() => setTab(tabType)}
           >
-            {tabType === 'expense' ? 'Pengeluaran' : 'Pemasukan'}
+            {tabType === 'expense' ? t('cat.tab_expense', lang) : t('cat.tab_income', lang)}
           </button>
         ))}
       </div>
@@ -171,7 +172,10 @@ export function ManageCategoriesSheet({ isOpen, onClose }: Props) {
             return (
               <div key={cat.id} className={styles.deleteConfirmRow}>
                 <span className={styles.deleteMsg}>
-                  Hapus "{cat.name}"? Transaksi lama jadi Lainnya.
+                  {t('cat.delete_confirm', lang).replace(
+                    '{name}',
+                    getCategoryDisplayName(cat.name, lang),
+                  )}
                 </span>
                 <div className={styles.editActions}>
                   <button
@@ -198,13 +202,13 @@ export function ManageCategoriesSheet({ isOpen, onClose }: Props) {
               <span className={styles.catIcon}>
                 <CategoryIcon name={cat.iconName} />
               </span>
-              <span className={styles.catName}>{cat.name}</span>
+              <span className={styles.catName}>{getCategoryDisplayName(cat.name, lang)}</span>
               {!isLainnya && (
                 <div className={styles.catActions}>
                   <button
                     className={styles.iconBtn}
                     onClick={() => startEdit(cat)}
-                    aria-label={`Edit ${cat.name}`}
+                    aria-label={`Edit ${getCategoryDisplayName(cat.name, lang)}`}
                   >
                     <Edit2 size={14} strokeWidth={1.8} />
                   </button>
@@ -254,7 +258,7 @@ export function ManageCategoriesSheet({ isOpen, onClose }: Props) {
       {!addingNew && !editingId && (
         <button className={styles.addBtn} onClick={startAdd}>
           <Plus size={13} strokeWidth={2} />
-          Tambah kategori
+          {t('cat.add_btn', lang)}
         </button>
       )}
     </BottomSheet>

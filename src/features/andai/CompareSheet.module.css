@@ -18,7 +18,7 @@
   padding: 8px;
   background: var(--surface-deep);
   border: 1px solid var(--line);
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -55,7 +55,7 @@
   color: var(--ink-soft);
   text-align: center;
   padding: 6px 8px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
 }
 
 .metricWin {

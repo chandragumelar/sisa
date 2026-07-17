@@ -5,7 +5,7 @@
   padding: 8px 14px;
   background: var(--surface-deep);
   border: 1px solid var(--border-hair);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   margin-bottom: 14px;
 }
 
@@ -35,7 +35,7 @@
   background: var(--accent);
   color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   padding: 13px;
   font-size: 14px;
   font-weight: 600;
@@ -47,7 +47,7 @@
   width: 100%;
   background: var(--surface);
   border: 1px solid var(--border-hair);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   padding: 11px;
   font-size: 14px;
   font-weight: 600;

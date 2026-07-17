@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { navigateBack } from '@/shared/utils/navigation.utils'
 import { useClock } from '@/app/providers/useClock'
 import { useLanguage, useSetLanguage } from '@/app/providers/useLanguage'
 import { getSettings, patchSettings } from '@/db/settings.repository'
@@ -21,7 +22,7 @@ import { collectSnapshot, applySnapshot } from '@/db/snapshot.repository'
 import { parseSnapshot } from '@/db/snapshot.serializer'
 import type { SnapshotPreview } from '@/db/snapshot.serializer'
 import { BRAND_STUDIO_WITH_COLLAB, BRAND_EMAIL } from '@/constants/brand'
-import { ChevronRight } from 'lucide-react'
+import { ChevronRight, ChevronDown, ShieldCheck } from 'lucide-react'
 import styles from './SettingsPage.module.css'
 
 interface PageData {
@@ -47,6 +48,7 @@ export function SettingsPage() {
   const [deleteInput, setDeleteInput] = useState('')
   const [currencyPickerOpen, setCurrencyPickerOpen] = useState(false)
   const [pendingCurrency, setPendingCurrency] = useState<string | null>(null)
+  const [privacyOpen, setPrivacyOpen] = useState(false)
 
   const loadData = useCallback(async () => {
     const [settings, license] = await Promise.all([getSettings(), getLicense()])
@@ -126,13 +128,13 @@ export function SettingsPage() {
     if (!result.ok) return
     await applySnapshot(result.data, clock)
     setImportPreview(null)
-    navigate('/')
+    navigate('/', { viewTransition: true })
   }
 
   async function handleDeleteConfirm() {
     if (deleteInput !== t('settings.delete_type_word', lang)) return
     await clearAllData()
-    navigate('/onboarding')
+    navigate('/onboarding', { viewTransition: true })
   }
 
   const nowMs = clock.now()
@@ -151,7 +153,7 @@ export function SettingsPage() {
       <div className={styles.header}>
         <button
           className={styles.backBtn}
-          onClick={() => navigate(-1)}
+          onClick={() => navigateBack(navigate)}
           aria-label={t('settings.back_aria', lang)}
         >
           ‹
@@ -301,6 +303,34 @@ export function SettingsPage() {
         </a>
       </div>
 
+      {/* Privasi */}
+      <div className={styles.card}>
+        <button
+          type="button"
+          className={styles.privacyHeader}
+          onClick={() => setPrivacyOpen((v) => !v)}
+          aria-expanded={privacyOpen}
+        >
+          <ShieldCheck size={16} stroke="var(--muted)" />
+          <span className={styles.privacyTitle}>{t('settings.privacy_title', lang)}</span>
+          <ChevronDown
+            size={16}
+            stroke="var(--muted)"
+            className={`${styles.privacyChevron} ${privacyOpen ? styles.privacyChevronOpen : ''}`}
+          />
+        </button>
+        <div
+          className={`${styles.privacyCollapse} ${privacyOpen ? styles.privacyCollapseOpen : ''}`}
+        >
+          <div className={styles.privacyBlock}>
+            <p className={styles.privacyPara}>{t('settings.privacy_p1', lang)}</p>
+            <p className={styles.privacyPara}>{t('settings.privacy_p2', lang)}</p>
+            <p className={styles.privacyPara}>{t('settings.privacy_p3', lang)}</p>
+            <p className={styles.privacyPara}>{t('settings.privacy_p4', lang)}</p>
+          </div>
+        </div>
+      </div>
+
       {/* Profil sheets */}
       {data && (
         <ProfilIncomeSheet
@@ -346,12 +376,6 @@ export function SettingsPage() {
                 <span className={styles.previewVal}>{importPreview.preview.tagihanCount}</span>
                 <span className={styles.previewKey}>
                   {t('settings.import_preview_bills', lang)}
-                </span>
-              </div>
-              <div className={styles.previewItem}>
-                <span className={styles.previewVal}>{importPreview.preview.goalCount}</span>
-                <span className={styles.previewKey}>
-                  {t('settings.import_preview_goals', lang)}
                 </span>
               </div>
               <div className={styles.previewItem}>

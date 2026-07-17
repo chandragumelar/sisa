@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { navigateBack } from '@/shared/utils/navigation.utils'
 import { useNow } from '@/app/providers/useNow'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
@@ -32,6 +33,7 @@ import { BottomSheet } from '@/shared/components/BottomSheet'
 import { SaveScenarioSheet } from './SaveScenarioSheet'
 import { ScenariosRack } from './ScenariosRack'
 import { CompareSheet } from './CompareSheet'
+import { markFeatureUsed } from '@/lib/featureUsage'
 import styles from './AndaiPage.module.css'
 
 type AddKind = AndaiKind
@@ -94,6 +96,10 @@ export function AndaiPage() {
   const [compareMode, setCompareMode] = useState(false)
   const [compareIds, setCompareIds] = useState<number[]>([])
   const [compareSheetOpen, setCompareSheetOpen] = useState(false)
+
+  useEffect(() => {
+    markFeatureUsed('andai')
+  }, [])
 
   useEffect(() => {
     let cancelled = false
@@ -247,7 +253,7 @@ export function AndaiPage() {
       <div className={styles.head}>
         <button
           className={styles.backBtn}
-          onClick={() => navigate(-1)}
+          onClick={() => navigateBack(navigate)}
           aria-label={t('andai.back_aria', lang)}
         >
           ←

@@ -15,7 +15,7 @@
 .rowWrapper {
   position: relative;
   overflow: hidden;
-  border-radius: 12px;
+  border-radius: var(--radius-button);
   margin-bottom: 4px;
 }
 
@@ -41,7 +41,7 @@
 .row {
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: var(--radius-button);
   padding: 12px 14px;
   display: flex;
   align-items: center;
@@ -67,7 +67,7 @@
   width: 18px;
   height: 18px;
   border: 2px solid var(--line);
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
   flex-shrink: 0;
 }
 
@@ -75,7 +75,7 @@
   width: 18px;
   height: 18px;
   border: 2px solid var(--accent);
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
   background: var(--accent);
   flex-shrink: 0;
   position: relative;
