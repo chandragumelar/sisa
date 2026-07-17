@@ -32,6 +32,7 @@ import { BottomSheet } from '@/shared/components/BottomSheet'
 import { SaveScenarioSheet } from './SaveScenarioSheet'
 import { ScenariosRack } from './ScenariosRack'
 import { CompareSheet } from './CompareSheet'
+import { markFeatureUsed } from '@/lib/featureUsage'
 import styles from './AndaiPage.module.css'
 
 type AddKind = AndaiKind
@@ -94,6 +95,10 @@ export function AndaiPage() {
   const [compareMode, setCompareMode] = useState(false)
   const [compareIds, setCompareIds] = useState<number[]>([])
   const [compareSheetOpen, setCompareSheetOpen] = useState(false)
+
+  useEffect(() => {
+    markFeatureUsed('andai')
+  }, [])
 
   useEffect(() => {
     let cancelled = false

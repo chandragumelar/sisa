@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { Tagihan } from '@/db/database'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
 import { BottomSheet } from '@/shared/components/BottomSheet'
 import { getTagihanUrgency, rankTagihan, isTagihanPaidThisPeriod } from '../tagihan.utils'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
+import { markFeatureUsed } from '@/lib/featureUsage'
 import styles from './TagihanDetailSheet.module.css'
 
 interface SingleProps {
@@ -30,6 +31,10 @@ export function TagihanDetailSheet({
   const [deleteConfirm, setDeleteConfirm] = useState(false)
   const urgency = getTagihanUrgency(tagihan, nowMs)
   const isPaid = isTagihanPaidThisPeriod(tagihan, nowMs)
+
+  useEffect(() => {
+    if (isOpen) markFeatureUsed('tagihan')
+  }, [isOpen])
 
   function handleClose() {
     setDeleteConfirm(false)

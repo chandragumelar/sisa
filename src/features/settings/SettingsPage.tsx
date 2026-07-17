@@ -301,6 +301,17 @@ export function SettingsPage() {
         </a>
       </div>
 
+      {/* Privasi */}
+      <div className={styles.sectionLabel}>{t('settings.privacy_title', lang)}</div>
+      <div className={styles.card}>
+        <div className={styles.privacyBlock}>
+          <p className={styles.privacyPara}>{t('settings.privacy_p1', lang)}</p>
+          <p className={styles.privacyPara}>{t('settings.privacy_p2', lang)}</p>
+          <p className={styles.privacyPara}>{t('settings.privacy_p3', lang)}</p>
+          <p className={styles.privacyPara}>{t('settings.privacy_p4', lang)}</p>
+        </div>
+      </div>
+
       {/* Profil sheets */}
       {data && (
         <ProfilIncomeSheet
