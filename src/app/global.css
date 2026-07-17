@@ -134,4 +134,15 @@ body {
       transform: translateX(100%);
     }
   }
+
+  /* Browser-driven history traversal (swipe back/forward, hardware back, mouse back
+     button) already animates itself — suppress ours to avoid a double animation.
+     Set by initVTGuard()'s popstate listener in navigation.utils.ts. */
+  html[data-vt-skip] ::view-transition-old(root),
+  html[data-vt-skip] ::view-transition-new(root) {
+    animation: none;
+  }
+  html[data-vt-skip] ::view-transition-group(root) {
+    animation-duration: 0s;
+  }
 }
