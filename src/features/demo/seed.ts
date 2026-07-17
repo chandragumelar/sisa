@@ -13,6 +13,19 @@ import type { IconPickerName } from '@/features/category/category.types'
 /** Structural type of the live Dexie singleton — type-only import, no runtime instantiation. */
 export type SisaDb = typeof liveDb
 
+/**
+ * Bump on every seed data revision. seedDemoDb compares this against the stored value to
+ * decide whether existing demo data needs a full wipe-and-reseed.
+ */
+export const DEMO_SEED_VERSION = 2
+
+/**
+ * `meta` table (db/database.ts) only accepts MetaKey = 'schemaVersion' | 'installId' — not
+ * a fit for an arbitrary new key without touching database.ts, which is out of scope here.
+ * localStorage is a deliberate fallback; see PR description.
+ */
+export const DEMO_SEED_VERSION_STORAGE_KEY = 'sisa.demoSeedVersion'
+
 const DAY_MS = 86_400_000
 
 function dayAt(daysAgoN: number, hour: number, minute = 0): number {
@@ -501,6 +514,33 @@ function buildCurrentMonthDailySpend(w: WalletIds): Omit<Transaction, 'id'>[] {
   return out
 }
 
+function readStoredSeedVersion(): number | null {
+  const raw = localStorage.getItem(DEMO_SEED_VERSION_STORAGE_KEY)
+  if (raw === null) return null
+  const parsed = Number(raw)
+  return Number.isFinite(parsed) ? parsed : null
+}
+
+function writeStoredSeedVersion(version: number): void {
+  localStorage.setItem(DEMO_SEED_VERSION_STORAGE_KEY, String(version))
+}
+
+/** Clears every table the demo persona writes to. Shared by the version-mismatch and
+ * empty-settings seed paths so the table list lives in exactly one place. */
+async function wipeDemoTables(db: SisaDb): Promise<void> {
+  await Promise.all([
+    db.transactions.clear(),
+    db.wallets.clear(),
+    db.tagihan.clear(),
+    db.goals.clear(),
+    db.settings.clear(),
+    db.categories.clear(),
+    db.allocation.clear(),
+    db.savedScenarios.clear(),
+    db.rates.clear(),
+  ])
+}
+
 async function applyWalletBalances(
   db: SisaDb,
   w: WalletIds,
@@ -570,22 +610,20 @@ function buildSavedScenarios(): Omit<SavedScenario, 'id'>[] {
 
 /**
  * Seeds a demo persona (Mia, 27, Indonesian expat in Melbourne) into an empty demo Dexie
- * instance. Caller must supply a demo-only db — never the live singleton. Idempotent:
- * no-ops if settings already exist, so re-running against an already-seeded db is a safe
- * no-op.
+ * instance. Caller must supply a demo-only db — never the live singleton. Idempotent when
+ * settings already exist AND the stored seed version matches DEMO_SEED_VERSION — a no-op
+ * in that case. Otherwise (empty db, or a stale stored version) wipes all demo tables and
+ * reseeds, so bumping DEMO_SEED_VERSION is enough to push fresh data to returning visitors.
  */
 export async function seedDemoDb(db: SisaDb): Promise<void> {
-  if ((await db.settings.count()) > 0) return
+  const settingsCount = await db.settings.count()
+  const storedVersion = readStoredSeedVersion()
+  if (settingsCount > 0 && storedVersion === DEMO_SEED_VERSION) return
 
-  // clearAllData() (Settings → Delete all data) does not clear categories/allocation/
-  // savedScenarios/rates — without this, re-seeding after a reset in the same demo
-  // session would duplicate categories.
-  await Promise.all([
-    db.categories.clear(),
-    db.allocation.clear(),
-    db.savedScenarios.clear(),
-    db.rates.clear(),
-  ])
+  // Also covers clearAllData() (Settings → Delete all data), which does not clear
+  // categories/allocation/savedScenarios/rates — without this, re-seeding after a reset
+  // in the same demo session (or a stale seed version) would duplicate/mix stale rows.
+  await wipeDemoTables(db)
 
   const dates = buildDates()
   const walletSeeds = buildWalletSeeds(dates.createdAt)
@@ -631,4 +669,6 @@ export async function seedDemoDb(db: SisaDb): Promise<void> {
   await db.settings.put(buildSettings(dates))
   await db.allocation.put(buildAllocation(dates))
   await db.savedScenarios.bulkAdd(buildSavedScenarios())
+
+  writeStoredSeedVersion(DEMO_SEED_VERSION)
 }
