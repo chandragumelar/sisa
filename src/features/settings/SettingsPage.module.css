@@ -148,6 +148,20 @@
   padding: 0 16px 10px;
 }
 
+.privacyBlock {
+  padding: 14px 16px;
+}
+
+.privacyPara {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink-secondary, var(--ink));
+}
+
+.privacyPara + .privacyPara {
+  margin-top: 10px;
+}
+
 /* Action row (button) */
 .actionRow {
   display: flex;

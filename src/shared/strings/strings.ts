@@ -633,6 +633,11 @@ export type StringKey =
   | 'settings.delete_type_word'
   | 'settings.delete_type_placeholder'
   | 'settings.delete_confirm_btn'
+  | 'settings.privacy_title'
+  | 'settings.privacy_p1'
+  | 'settings.privacy_p2'
+  | 'settings.privacy_p3'
+  | 'settings.privacy_p4'
   // alokasi editor
   | 'alokasi.buat_dipakai'
   | 'alokasi.uang_mengendap'
@@ -1461,6 +1466,15 @@ const id: StringDictionary = {
   'settings.delete_type_word': 'HAPUS',
   'settings.delete_type_placeholder': 'HAPUS',
   'settings.delete_confirm_btn': 'Hapus semua data',
+  'settings.privacy_title': 'Data Anda Tetap di Perangkat Anda',
+  'settings.privacy_p1':
+    'Sisa dirancang offline-first. Seluruh transaksi, saldo, dan catatan keuangan Anda tersimpan di perangkat Anda sendiri — bukan di server kami. Kami tidak dapat melihatnya, dan memang tidak dirancang untuk itu.',
+  'settings.privacy_p2':
+    'Untuk pengembangan aplikasi, kami hanya mencatat statistik penggunaan yang sepenuhnya anonim: tanggal aplikasi dibuka, pilihan bahasa dan tema, serta fitur yang digunakan. Tanpa nama, tanpa email, dan tanpa satu pun data keuangan Anda. Perangkat Anda hanya tercatat sebagai kode acak.',
+  'settings.privacy_p3':
+    'Jika Anda mengaktifkan pengingat tagihan, nama dan tanggal jatuh tempo tagihan disimpan di server agar notifikasi dapat dikirim. Hanya itu, dan dapat dinonaktifkan kapan saja.',
+  'settings.privacy_p4':
+    'Tidak ada iklan. Tidak ada penjualan data. Sisa didanai dari pembelian lisensi, bukan dari data Anda.',
 
   'alokasi.buat_dipakai': 'Uang operasional sehari-hari',
   'alokasi.uang_mengendap': 'Uang Mengendap',
@@ -2284,6 +2298,15 @@ const en: StringDictionary = {
   'settings.delete_type_word': 'DELETE',
   'settings.delete_type_placeholder': 'DELETE',
   'settings.delete_confirm_btn': 'Delete all data',
+  'settings.privacy_title': 'Your Data Stays on Your Device',
+  'settings.privacy_p1':
+    'Sisa is built offline-first. All of your transactions, balances, and financial records are stored on your own device — never on our servers. We cannot see them, and the app is not designed to send them.',
+  'settings.privacy_p2':
+    'To improve the app, we collect only fully anonymous usage statistics: the dates the app is opened, your language and theme preferences, and which features are used. No name, no email, and none of your financial data. Your device appears only as a random identifier.',
+  'settings.privacy_p3':
+    "If you enable bill reminders, the bill's name and due date are stored on our server so notifications can be delivered. That is all, and it can be disabled at any time.",
+  'settings.privacy_p4':
+    'No ads. No data selling. Sisa is funded by license purchases, not by your data.',
 
   'alokasi.buat_dipakai': 'Daily operational money',
   'alokasi.uang_mengendap': 'Parked Money',

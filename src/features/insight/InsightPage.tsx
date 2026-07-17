@@ -30,6 +30,7 @@ import { InsightCategoryCard } from './InsightCategoryCard'
 import { InsightDailyCard } from './InsightDailyCard'
 import { InsightRankingCard } from './InsightRankingCard'
 import { InsightTopTxCard } from './InsightTopTxCard'
+import { markFeatureUsed } from '@/lib/featureUsage'
 import styles from './InsightPage.module.css'
 
 export function InsightPage() {
@@ -48,6 +49,10 @@ export function InsightPage() {
   const [data, setData] = useState<InsightData | null>(null)
   const [currency, setCurrency] = useState('IDR')
   const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    markFeatureUsed('insight')
+  }, [])
 
   useEffect(() => {
     let cancelled = false

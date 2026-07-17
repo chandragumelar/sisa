@@ -24,6 +24,7 @@ import { formatCurrency, getCurrencySymbol } from '@/shared/utils/formatCurrency
 import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
 import { calcCekDulu } from './cekDulu.utils'
 import { QuickLogSheet } from '@/features/quickLog/QuickLogSheet'
+import { markFeatureUsed } from '@/lib/featureUsage'
 import styles from './CekDuluPage.module.css'
 
 type WarnTier = 'diam' | 'netral' | 'tier2' | 'tier2b' | 'tier3a' | 'tier3b' | 'tier3c'
@@ -118,6 +119,10 @@ export function CekDuluPage() {
     return initial ? formatNominalDisplay(parseNominalRaw(String(initial))) : ''
   })
   const [quickLogOpen, setQuickLogOpen] = useState(false)
+
+  useEffect(() => {
+    markFeatureUsed('cek_dulu')
+  }, [])
 
   useEffect(() => {
     let cancelled = false

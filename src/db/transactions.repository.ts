@@ -108,6 +108,10 @@ export async function getRecentTransactions(limit = 100): Promise<Transaction[]>
   return db.transactions.orderBy('date').reverse().limit(limit).toArray()
 }
 
+export async function getTransactionCount(): Promise<number> {
+  return db.transactions.count()
+}
+
 /**
  * Aggregate income and expense for a pay period [periodStartMs, nowMs].
  * Used as inputs for calcBudgetPeriode.
