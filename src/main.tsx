@@ -4,8 +4,11 @@ import '@/app/tokens.css'
 import '@/app/global.css'
 import { ClockProvider } from '@/app/providers/ClockProvider'
 import { App } from '@/app/App'
+import { initVTGuard } from '@/shared/utils/navigation.utils'
 
 async function init() {
+  initVTGuard()
+
   if (import.meta.env.VITE_DEMO === '1') {
     const { bootstrapDemo } = await import('@/features/demo/bootstrap')
     await bootstrapDemo()
