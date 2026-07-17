@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { navigateBack } from '@/shared/utils/navigation.utils'
 import { useNow } from '@/app/providers/useNow'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
@@ -252,7 +253,7 @@ export function AndaiPage() {
       <div className={styles.head}>
         <button
           className={styles.backBtn}
-          onClick={() => navigate(-1)}
+          onClick={() => navigateBack(navigate)}
           aria-label={t('andai.back_aria', lang)}
         >
           ←

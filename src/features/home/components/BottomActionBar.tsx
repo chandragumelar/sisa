@@ -20,7 +20,7 @@ export function BottomActionBar({ onCatat }: Props) {
     <div className={styles.bar}>
       <button
         className={styles.insightBtn}
-        onClick={() => navigate('/insight')}
+        onClick={() => navigate('/insight', { viewTransition: true })}
         aria-label={t('insight.nav_aria', lang)}
       >
         <TrendingUp size={18} strokeWidth={1.6} />

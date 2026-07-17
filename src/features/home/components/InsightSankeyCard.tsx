@@ -230,7 +230,10 @@ export function InsightSankeyCard({ currency, nowMs, sisaUang }: Props) {
         .replace('{total}', formatCompactCurrency(leftTotal, currency, lang))
 
   return (
-    <button className={homeStyles.insightCard} onClick={() => navigate('/insight')}>
+    <button
+      className={homeStyles.insightCard}
+      onClick={() => navigate('/insight', { viewTransition: true })}
+    >
       <span className={styles.title}>
         {t('home.sankey_title', lang).replace('{cur}', getCurrencyLabel(currency, lang))}
       </span>

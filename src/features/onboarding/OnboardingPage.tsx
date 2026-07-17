@@ -152,7 +152,7 @@ export function OnboardingPage() {
       await putAllocation(allocation)
     }
 
-    navigate('/', { replace: true })
+    navigate('/', { replace: true, viewTransition: true })
   }
 
   return (

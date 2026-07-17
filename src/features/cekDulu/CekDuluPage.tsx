@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { ChevronLeft } from 'lucide-react'
 import { useNavigate, useLocation } from 'react-router-dom'
+import { navigateBack } from '@/shared/utils/navigation.utils'
 import { useNow } from '@/app/providers/useNow'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
@@ -295,7 +296,7 @@ export function CekDuluPage() {
       <div className={styles.head}>
         <button
           className={styles.backBtn}
-          onClick={() => navigate(-1)}
+          onClick={() => navigateBack(navigate)}
           aria-label={t('common.back_aria', lang)}
         >
           <ChevronLeft size={16} strokeWidth={1.75} />
@@ -303,7 +304,7 @@ export function CekDuluPage() {
         <span className={styles.title}>{t('cek_dulu.title', lang)}</span>
         <button
           className={styles.closeBtn}
-          onClick={() => navigate(-1)}
+          onClick={() => navigateBack(navigate)}
           aria-label={t('cek_dulu.close_aria', lang)}
         >
           ✕
@@ -459,7 +460,7 @@ export function CekDuluPage() {
 
       {/* Actions */}
       <div className={styles.actions}>
-        <button className={styles.closeAction} onClick={() => navigate(-1)}>
+        <button className={styles.closeAction} onClick={() => navigateBack(navigate)}>
           {t('cek_dulu.close_btn', lang)}
         </button>
         <button
@@ -482,7 +483,7 @@ export function CekDuluPage() {
         initialMode="keluar"
         onCommit={() => {
           setQuickLogOpen(false)
-          navigate('/')
+          navigate('/', { viewTransition: true })
         }}
         uangMengendap={data.mengendap}
       />

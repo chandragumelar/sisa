@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { navigateBack } from '@/shared/utils/navigation.utils'
 import { useClock } from '@/app/providers/useClock'
 import { useLanguage, useSetLanguage } from '@/app/providers/useLanguage'
 import { getSettings, patchSettings } from '@/db/settings.repository'
@@ -126,13 +127,13 @@ export function SettingsPage() {
     if (!result.ok) return
     await applySnapshot(result.data, clock)
     setImportPreview(null)
-    navigate('/')
+    navigate('/', { viewTransition: true })
   }
 
   async function handleDeleteConfirm() {
     if (deleteInput !== t('settings.delete_type_word', lang)) return
     await clearAllData()
-    navigate('/onboarding')
+    navigate('/onboarding', { viewTransition: true })
   }
 
   const nowMs = clock.now()
@@ -151,7 +152,7 @@ export function SettingsPage() {
       <div className={styles.header}>
         <button
           className={styles.backBtn}
-          onClick={() => navigate(-1)}
+          onClick={() => navigateBack(navigate)}
           aria-label={t('settings.back_aria', lang)}
         >
           ‹
