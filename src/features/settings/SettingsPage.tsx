@@ -22,7 +22,7 @@ import { collectSnapshot, applySnapshot } from '@/db/snapshot.repository'
 import { parseSnapshot } from '@/db/snapshot.serializer'
 import type { SnapshotPreview } from '@/db/snapshot.serializer'
 import { BRAND_STUDIO_WITH_COLLAB, BRAND_EMAIL } from '@/constants/brand'
-import { ChevronRight } from 'lucide-react'
+import { ChevronRight, ChevronDown, ShieldCheck } from 'lucide-react'
 import styles from './SettingsPage.module.css'
 
 interface PageData {
@@ -48,6 +48,7 @@ export function SettingsPage() {
   const [deleteInput, setDeleteInput] = useState('')
   const [currencyPickerOpen, setCurrencyPickerOpen] = useState(false)
   const [pendingCurrency, setPendingCurrency] = useState<string | null>(null)
+  const [privacyOpen, setPrivacyOpen] = useState(false)
 
   const loadData = useCallback(async () => {
     const [settings, license] = await Promise.all([getSettings(), getLicense()])
@@ -303,13 +304,30 @@ export function SettingsPage() {
       </div>
 
       {/* Privasi */}
-      <div className={styles.sectionLabel}>{t('settings.privacy_title', lang)}</div>
       <div className={styles.card}>
-        <div className={styles.privacyBlock}>
-          <p className={styles.privacyPara}>{t('settings.privacy_p1', lang)}</p>
-          <p className={styles.privacyPara}>{t('settings.privacy_p2', lang)}</p>
-          <p className={styles.privacyPara}>{t('settings.privacy_p3', lang)}</p>
-          <p className={styles.privacyPara}>{t('settings.privacy_p4', lang)}</p>
+        <button
+          type="button"
+          className={styles.privacyHeader}
+          onClick={() => setPrivacyOpen((v) => !v)}
+          aria-expanded={privacyOpen}
+        >
+          <ShieldCheck size={16} stroke="var(--muted)" />
+          <span className={styles.privacyTitle}>{t('settings.privacy_title', lang)}</span>
+          <ChevronDown
+            size={16}
+            stroke="var(--muted)"
+            className={`${styles.privacyChevron} ${privacyOpen ? styles.privacyChevronOpen : ''}`}
+          />
+        </button>
+        <div
+          className={`${styles.privacyCollapse} ${privacyOpen ? styles.privacyCollapseOpen : ''}`}
+        >
+          <div className={styles.privacyBlock}>
+            <p className={styles.privacyPara}>{t('settings.privacy_p1', lang)}</p>
+            <p className={styles.privacyPara}>{t('settings.privacy_p2', lang)}</p>
+            <p className={styles.privacyPara}>{t('settings.privacy_p3', lang)}</p>
+            <p className={styles.privacyPara}>{t('settings.privacy_p4', lang)}</p>
+          </div>
         </div>
       </div>
 
