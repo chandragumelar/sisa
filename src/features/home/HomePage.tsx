@@ -495,7 +495,6 @@ export function HomePage() {
             incomeByCurrency={monthlyIncomeByCurrency}
             expenseByCurrency={monthlyExpenseByCurrency}
             primaryCurrency={currency}
-            nowMs={nowMs}
             onHistoryTap={() => setHistoryOpen(true)}
           />
 

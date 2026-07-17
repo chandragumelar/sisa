@@ -28,12 +28,6 @@
   font-family: var(--font-sans);
 }
 
-.month {
-  font-size: 11px;
-  color: var(--ink-tertiary);
-  font-family: var(--font-sans);
-}
-
 .list {
   display: flex;
   flex-direction: column;

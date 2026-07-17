@@ -304,7 +304,7 @@ export function SettingsPage() {
       </div>
 
       {/* Privasi */}
-      <div className={styles.card}>
+      <div className={`${styles.card} ${styles.privacyCard}`}>
         <button
           type="button"
           className={styles.privacyHeader}
