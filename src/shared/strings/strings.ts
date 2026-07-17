@@ -619,7 +619,6 @@ export type StringKey =
   | 'settings.import_preview_wallets'
   | 'settings.import_preview_txs'
   | 'settings.import_preview_bills'
-  | 'settings.import_preview_goals'
   | 'settings.import_preview_categories'
   | 'settings.import_preview_scenarios'
   | 'settings.import_preview_license'
@@ -950,7 +949,7 @@ const id: StringDictionary = {
   'saldo.jatah_harian_tooltip':
     'Dibagi dari sisa awal periode — ini yang boleh lo pakai per hari. Fixed, bukan berubah tiap hari.',
   'saldo.anggaran_tooltip':
-    'Pemasukan periode dikurangi tagihan belum bayar dan target nabung. Ini uang yang "bebas" untuk operasional harian.',
+    'Pemasukan periode dikurangi tagihan belum bayar. Ini uang yang "bebas" untuk operasional harian.',
   'saldo.expand_btn': 'kok bisa segini?',
   'saldo.collapse_btn': 'sembunyikan',
   'saldo.rincian_tagihan': '− Tagihan belum dibayar',
@@ -973,7 +972,7 @@ const id: StringDictionary = {
     'Uangmu sudah ter-booking habis sampai gajian — ini yang harus lo tutup:',
   'saldo.mode_bertahan_shortfall_label': 'KEKURANGAN',
   'saldo.mode_bertahan_aman_mulai': 'Aman mulai',
-  'saldo.mode_bertahan_note': 'Tagihan + target nabung melebihi pemasukan periode ini.',
+  'saldo.mode_bertahan_note': 'Tagihan melebihi pemasukan periode ini.',
   'saldo.mode_harigajian_badge': 'Hari Gajian',
   'saldo.mode_harigajian_heading': 'Gaji udah masuk?',
   'saldo.mode_harigajian_sub':
@@ -1446,7 +1445,6 @@ const id: StringDictionary = {
   'settings.import_preview_wallets': 'dompet',
   'settings.import_preview_txs': 'transaksi',
   'settings.import_preview_bills': 'tagihan',
-  'settings.import_preview_goals': 'goal',
   'settings.import_preview_categories': 'kategori kustom',
   'settings.import_preview_scenarios': 'skenario andai',
   'settings.import_preview_license': 'Lisensi',
@@ -1455,7 +1453,7 @@ const id: StringDictionary = {
   'settings.import_error_title': 'Gagal import',
   'settings.delete_title': 'Hapus semua data',
   'settings.delete_warning':
-    'Semua transaksi, wallet, tagihan, dan goal akan dihapus permanen. Lisensi tetap tersimpan.',
+    'Semua transaksi, wallet, dan tagihan akan dihapus permanen. Lisensi tetap tersimpan.',
   'settings.delete_next': 'Lanjut hapus',
   'settings.delete_type_prompt': 'Ketik HAPUS untuk konfirmasi',
   'settings.delete_type_word': 'HAPUS',
@@ -1781,7 +1779,7 @@ const en: StringDictionary = {
   'saldo.jatah_harian_tooltip':
     'Divided from the starting balance of this period — your daily allowance. Fixed at the start, not recalculated daily.',
   'saldo.anggaran_tooltip':
-    'Period income minus unpaid bills and savings targets. This is your free money for daily operations.',
+    'Period income minus unpaid bills. This is your free money for daily operations.',
   'saldo.expand_btn': 'how is this calculated?',
   'saldo.collapse_btn': 'hide',
   'saldo.rincian_tagihan': '− Unpaid bills',
@@ -1803,7 +1801,7 @@ const en: StringDictionary = {
     "Your money is fully booked until payday — here's what you need to cover:",
   'saldo.mode_bertahan_shortfall_label': 'SHORTFALL',
   'saldo.mode_bertahan_aman_mulai': 'Safe from',
-  'saldo.mode_bertahan_note': "Bills + savings targets exceed this period's income.",
+  'saldo.mode_bertahan_note': "Bills exceed this period's income.",
   'saldo.mode_harigajian_badge': 'Payday',
   'saldo.mode_harigajian_heading': 'Did your salary arrive?',
   'saldo.mode_harigajian_sub': 'Confirm so your daily budget can be calculated for the new period.',
@@ -2269,7 +2267,6 @@ const en: StringDictionary = {
   'settings.import_preview_wallets': 'wallets',
   'settings.import_preview_txs': 'transactions',
   'settings.import_preview_bills': 'bills',
-  'settings.import_preview_goals': 'goals',
   'settings.import_preview_categories': 'custom categories',
   'settings.import_preview_scenarios': 'what-if scenarios',
   'settings.import_preview_license': 'License',
@@ -2278,7 +2275,7 @@ const en: StringDictionary = {
   'settings.import_error_title': 'Import failed',
   'settings.delete_title': 'Delete all data',
   'settings.delete_warning':
-    'All transactions, wallets, bills, and goals will be permanently deleted. License is kept.',
+    'All transactions, wallets, and bills will be permanently deleted. License is kept.',
   'settings.delete_next': 'Continue to delete',
   'settings.delete_type_prompt': 'Type DELETE to confirm',
   'settings.delete_type_word': 'DELETE',
