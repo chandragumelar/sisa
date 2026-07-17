@@ -5,6 +5,7 @@ import type { Category } from '@/db/database'
 import { getCategoriesByType } from '@/db/categories.repository'
 import { seedDefaultCategoriesIfEmpty } from '@/db/categories.repository'
 import { FALLBACK_CATEGORY } from './category.types'
+import { getCategoryDisplayName } from './category-display'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
 import styles from './CategoryPicker.module.css'
@@ -52,7 +53,7 @@ export function CategoryPicker({ type, value, onChange, onManage }: Props) {
                 <span className={styles.chipIcon}>
                   <CategoryIcon name={cat.iconName} />
                 </span>
-                <span className={styles.chipName}>{cat.name}</span>
+                <span className={styles.chipName}>{getCategoryDisplayName(cat.name, lang)}</span>
               </button>
             )
           })}
