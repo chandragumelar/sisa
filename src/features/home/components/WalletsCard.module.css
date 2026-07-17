@@ -93,7 +93,7 @@
 
 .chip {
   padding: 4px 12px;
-  border-radius: 100px;
+  border-radius: var(--radius-pill);
   border: 1px solid var(--border-hair);
   background: var(--surface-deep);
   font-size: 11px;
@@ -205,7 +205,7 @@
 .emptyIcon {
   width: 36px;
   height: 36px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   background: var(--surface-2);
   border: 1px solid var(--border-hair);
   display: flex;
@@ -230,7 +230,7 @@
   margin-top: 12px;
   width: 100%;
   border: 1px solid var(--border-hair);
-  border-radius: 12px;
+  border-radius: var(--radius-button);
   padding: 10px;
   font-size: 13px;
   font-weight: 500;
@@ -247,7 +247,7 @@
 .addBtn {
   width: 26px;
   height: 26px;
-  border-radius: 6px;
+  border-radius: var(--radius-xs);
   border: 1px solid var(--border-hair);
   background: var(--surface);
   display: flex;

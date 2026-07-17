@@ -2,7 +2,7 @@
   background: var(--signal-danger-bg);
   border: 1px solid var(--signal-danger-br);
   border-left: 3px solid var(--signal-danger-br);
-  border-radius: 14px;
+  border-radius: var(--radius-button);
   padding: 11px 12px;
   display: flex;
   align-items: center;

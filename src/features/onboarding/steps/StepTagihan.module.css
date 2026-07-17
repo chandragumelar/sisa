@@ -76,7 +76,7 @@
 .seg {
   flex: 1;
   padding: 6px 8px;
-  border-radius: 6px;
+  border-radius: var(--radius-xs);
   font-size: 12px;
   font-weight: 600;
   font-family: var(--font-sans);

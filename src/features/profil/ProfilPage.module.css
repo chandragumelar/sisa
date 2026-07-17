@@ -41,7 +41,7 @@
   gap: 12px;
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: var(--radius-button);
   margin: 8px 16px 16px;
   padding: 14px;
 }
@@ -49,7 +49,7 @@
 .avatar {
   width: 40px;
   height: 40px;
-  border-radius: 11px;
+  border-radius: var(--radius-sm);
   background: var(--surface-deep);
   display: flex;
   align-items: center;
@@ -88,7 +88,7 @@
   border: 1px solid var(--line);
   background: var(--surface-deep);
   padding: 2px 5px;
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
   line-height: 1;
 }
 
@@ -108,7 +108,7 @@
   align-items: center;
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   margin: 0 16px 8px;
   padding: 12px 14px;
   width: calc(100% - 32px);
@@ -164,7 +164,7 @@
   font-size: 14px;
   font-family: var(--font-display);
   border: 1.5px solid var(--line);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   padding: 10px 12px;
   width: 100%;
   background: var(--surface);
@@ -187,7 +187,7 @@
 .segmented {
   display: flex;
   background: var(--surface-deep);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   padding: 2px;
   gap: 2px;
 }
@@ -198,7 +198,7 @@
   font-weight: 500;
   color: var(--ink-soft);
   padding: 6px 8px;
-  border-radius: 6px;
+  border-radius: var(--radius-xs);
   border: none;
   background: none;
   cursor: pointer;
@@ -226,7 +226,7 @@
   display: flex;
   align-items: center;
   border: 1.5px solid var(--line);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   padding: 8px 12px;
   gap: 6px;
   background: var(--surface);
@@ -249,7 +249,7 @@
   background-repeat: no-repeat;
   background-position: right 6px center;
   border: 1px solid var(--line);
-  border-radius: 6px;
+  border-radius: var(--radius-xs);
   outline: none;
   cursor: pointer;
   flex: none;
@@ -287,7 +287,7 @@
   align-items: center;
   justify-content: space-between;
   background: var(--surface-deep);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   padding: 10px 12px;
   border: none;
   cursor: pointer;
@@ -321,7 +321,7 @@
   justify-content: space-between;
   flex: 1;
   background: var(--surface-deep);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   padding: 10px 12px;
   border: none;
   cursor: pointer;
@@ -416,7 +416,7 @@
   color: var(--ink);
   background: var(--surface-deep);
   border: 1.5px solid transparent;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   padding: 10px 12px;
   text-align: left;
   cursor: pointer;
@@ -450,7 +450,7 @@
 /* License card */
 .licenseCard {
   background: var(--surface-deep);
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   padding: 12px 14px;
   display: flex;
   flex-direction: column;
@@ -507,7 +507,7 @@
   font-size: 14px;
   font-weight: 600;
   border: none;
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   padding: 12px 0;
   width: 100%;
   cursor: pointer;
@@ -525,7 +525,7 @@
   font-size: 13px;
   font-weight: 600;
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   padding: 10px 0;
   width: 100%;
   cursor: pointer;
@@ -537,7 +537,7 @@
   font-size: 13px;
   font-weight: 600;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   padding: 9px 14px;
   cursor: pointer;
 }
@@ -559,7 +559,7 @@
   font-size: 14px;
   font-weight: 500;
   border: none;
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   padding: 10px 0;
   width: 100%;
   cursor: pointer;

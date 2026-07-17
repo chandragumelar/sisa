@@ -19,7 +19,7 @@
   width: 44px;
   height: 44px;
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: var(--radius-button);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -52,7 +52,7 @@
 
 .resetBtn {
   padding: 7px 12px;
-  border-radius: 12px;
+  border-radius: var(--radius-button);
   border: 1px solid var(--line);
   background: var(--surface);
   cursor: pointer;
@@ -137,7 +137,7 @@
 .andaiItem {
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 16px;
+  border-radius: var(--radius-card);
   padding: 12px 14px;
   display: flex;
   align-items: center;
@@ -147,7 +147,7 @@
 .aiRail {
   width: 4px;
   height: 28px;
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
   flex-shrink: 0;
 }
 
@@ -201,7 +201,7 @@
   width: 100%;
   background: transparent;
   border: 1.5px dashed var(--line);
-  border-radius: 16px;
+  border-radius: var(--radius-card);
   padding: 12px;
   color: var(--muted);
   font-family: var(--font-display);
@@ -229,7 +229,7 @@
 .resultCard {
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 20px;
+  border-radius: var(--radius-card);
   overflow: hidden;
 }
 
@@ -351,7 +351,7 @@
   flex: 1;
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 16px;
+  border-radius: var(--radius-card);
   padding: 13px;
   font-family: var(--font-display);
   font-weight: 600;
@@ -377,7 +377,7 @@
   background: var(--accent);
   color: var(--bg);
   border: none;
-  border-radius: 16px;
+  border-radius: var(--radius-card);
   font-family: var(--font-display);
   font-size: 14px;
   font-weight: 600;
@@ -404,7 +404,7 @@
 .addInput {
   width: 100%;
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: var(--radius-button);
   padding: 10px 12px;
   font-size: 14px;
   color: var(--ink);
@@ -478,7 +478,7 @@
   padding: 14px 16px;
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: var(--radius-button);
   cursor: pointer;
   text-align: left;
   width: 100%;
@@ -488,7 +488,7 @@
 .kindPickerRail {
   width: 4px;
   height: 24px;
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
   flex-shrink: 0;
 }
 

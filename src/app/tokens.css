@@ -47,6 +47,8 @@
 
   /* ── Shadow + Radius + Spacing ────────────────────────── */
   --shadow-card: none;
+  --radius-xs: 6px;
+  --radius-sm: 10px;
   --radius-card: 18px;
   --radius-button: 12px;
   --radius-input: 12px;

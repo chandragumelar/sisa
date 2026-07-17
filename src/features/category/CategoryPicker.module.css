@@ -27,7 +27,7 @@
   align-items: center;
   gap: 5px;
   padding: 5px 11px 5px 8px;
-  border-radius: 100px;
+  border-radius: var(--radius-pill);
   border: 1px solid var(--line);
   background: var(--surface-deep);
   font-size: 12px;
@@ -76,7 +76,7 @@
   align-items: center;
   gap: 5px;
   padding: 5px 10px;
-  border-radius: 100px;
+  border-radius: var(--radius-pill);
   border: 1px solid var(--line);
   background: var(--surface-deep);
   font-size: 12px;
