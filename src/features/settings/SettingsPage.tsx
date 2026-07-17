@@ -349,12 +349,6 @@ export function SettingsPage() {
                 </span>
               </div>
               <div className={styles.previewItem}>
-                <span className={styles.previewVal}>{importPreview.preview.goalCount}</span>
-                <span className={styles.previewKey}>
-                  {t('settings.import_preview_goals', lang)}
-                </span>
-              </div>
-              <div className={styles.previewItem}>
                 <span className={styles.previewVal}>
                   {importPreview.preview.customCategoryCount}
                 </span>

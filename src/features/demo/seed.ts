@@ -5,7 +5,6 @@ import type {
   Settings,
   Allocation,
   SavedScenario,
-  Goal,
 } from '@/db/database'
 import type { db as liveDb } from '@/db/database'
 import {
@@ -429,10 +428,6 @@ function buildSavedScenarios(): Omit<SavedScenario, 'id'>[] {
   ]
 }
 
-function buildGoal(createdAt: number): Omit<Goal, 'id'> {
-  return { name: 'Dana Darurat', target: 10_000_000, currency: 'IDR', order: 0, createdAt }
-}
-
 /**
  * Seeds a demo persona (Raka, 24, karyawan Jakarta) into an empty demo Dexie instance.
  * Caller must supply a demo-only db — never the live singleton. Idempotent: no-ops if
@@ -471,5 +466,4 @@ export async function seedDemoDb(db: SisaDb): Promise<void> {
   await db.settings.put(buildSettings(dates))
   await db.allocation.put(buildAllocation(dates))
   await db.savedScenarios.bulkAdd(buildSavedScenarios())
-  await db.goals.add(buildGoal(dates.createdAt))
 }
