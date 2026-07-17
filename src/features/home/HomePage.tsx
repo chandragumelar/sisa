@@ -397,7 +397,7 @@ export function HomePage() {
             )}
             <button
               className={styles.settingsBtn}
-              onClick={() => navigate('/settings')}
+              onClick={() => navigate('/settings', { viewTransition: true })}
               aria-label={t('a11y.settings', lang)}
             >
               <Settings2 size={14} strokeWidth={1.75} />
@@ -453,8 +453,10 @@ export function HomePage() {
             tagihanCount={tagihan.length}
             sisa={sisaPeriode}
             unpaidTagihanTotal={unpaidTagihanTotal}
-            onCekDulu={(amount) => navigate('/cek-dulu', { state: { initialAmount: amount } })}
-            onAndai={() => navigate('/andai')}
+            onCekDulu={(amount) =>
+              navigate('/cek-dulu', { state: { initialAmount: amount }, viewTransition: true })
+            }
+            onAndai={() => navigate('/andai', { viewTransition: true })}
             onAddTagihan={() => setTagihanSheetOpen(true)}
             onAddWallet={() => setWalletSheetOpen(true)}
           />

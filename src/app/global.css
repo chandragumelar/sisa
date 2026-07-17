@@ -71,3 +71,67 @@ body {
 #root {
   min-height: 100dvh;
 }
+
+/* ============================================================
+   View Transitions — iOS-style push/pop slide (root transition)
+   Progressive enhancement: browsers without View Transitions API
+   support just switch pages instantly, no error.
+   ============================================================ */
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root) {
+    animation: 280ms cubic-bezier(0.32, 0.72, 0, 1) both vt-slide-out;
+  }
+  ::view-transition-new(root) {
+    animation: 280ms cubic-bezier(0.32, 0.72, 0, 1) both vt-slide-in;
+  }
+
+  @keyframes vt-slide-in {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes vt-slide-out {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateX(-25%);
+      opacity: 0.6;
+    }
+  }
+
+  /* Back navigation (navigateBack) — reverse direction, old page slides
+     out to the right on top of the new page sliding in from the left. */
+  html[data-vt-direction='back'] ::view-transition-old(root) {
+    animation-name: vt-slide-out-back;
+    z-index: 1;
+  }
+  html[data-vt-direction='back'] ::view-transition-new(root) {
+    animation-name: vt-slide-in-back;
+  }
+
+  @keyframes vt-slide-in-back {
+    from {
+      transform: translateX(-25%);
+      opacity: 0.6;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes vt-slide-out-back {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(100%);
+    }
+  }
+}
