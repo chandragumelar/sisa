@@ -5,12 +5,10 @@ import type {
   Settings,
   Allocation,
   SavedScenario,
+  Category,
 } from '@/db/database'
 import type { db as liveDb } from '@/db/database'
-import {
-  DEFAULT_EXPENSE_CATEGORIES,
-  DEFAULT_INCOME_CATEGORIES,
-} from '@/features/category/category.types'
+import type { IconPickerName } from '@/features/category/category.types'
 
 /** Structural type of the live Dexie singleton — type-only import, no runtime instantiation. */
 export type SisaDb = typeof liveDb
@@ -45,15 +43,23 @@ function occurrencePriorMonth(day: number, hour = 9): number {
   return new Date(now.getFullYear(), now.getMonth() - 1, day, hour).getTime()
 }
 
+/** Same day-of-month as `anchorMs`, `monthsAgo` calendar months earlier. Used for payday history. */
+function monthsBefore(anchorMs: number, monthsAgo: number): number {
+  const d = new Date(anchorMs)
+  d.setMonth(d.getMonth() - monthsAgo)
+  return d.getTime()
+}
+
 interface DemoDates {
   createdAt: number
   lastPayday: number
   nextPayday: number
-  kosLastPaid: number
-  spotifyLastPaid: number
-  listrikLastPaid: number
-  internetLastPaid: number
-  netflixLastPaid: number
+  rentPaid: number
+  electricityPaid: number
+  internetPaid: number
+  netflixPaid: number
+  gymPaid: number
+  bpjsPaid: number
 }
 
 function buildDates(): DemoDates {
@@ -62,213 +68,328 @@ function buildDates(): DemoDates {
   nextPaydayDate.setMonth(nextPaydayDate.getMonth() + 1)
 
   return {
-    createdAt: dayAt(60, 9),
+    createdAt: dayAt(180, 9),
     lastPayday,
     nextPayday: nextPaydayDate.getTime(),
-    kosLastPaid: occurrenceThisMonth(1),
-    spotifyLastPaid: occurrenceThisMonth(5),
-    listrikLastPaid: occurrencePriorMonth(10),
-    internetLastPaid: mostRecentOccurrence(15),
-    netflixLastPaid: occurrencePriorMonth(20),
+    rentPaid: occurrenceThisMonth(1),
+    electricityPaid: occurrencePriorMonth(10),
+    internetPaid: mostRecentOccurrence(15),
+    netflixPaid: occurrencePriorMonth(20),
+    gymPaid: occurrenceThisMonth(5),
+    bpjsPaid: occurrenceThisMonth(12),
   }
 }
 
 interface WalletIds {
-  bca: number
-  gopay: number
+  anz: number
+  up: number
   cash: number
+  bca: number
+  wise: number
 }
 
 interface TagihanIds {
-  kos: number
-  spotify: number
-  listrik: number
+  rent: number
+  electricity: number
+  internet: number
+  netflix: number
+  gym: number
+  bpjs: number
 }
 
 function buildWalletSeeds(createdAt: number): Record<keyof WalletIds, Omit<Wallet, 'id'>> {
   return {
-    bca: { name: 'BCA', balance: 0, currency: 'IDR', order: 0, createdAt },
-    gopay: { name: 'GoPay', balance: 0, currency: 'IDR', order: 1, createdAt },
-    cash: { name: 'Cash', balance: 0, currency: 'IDR', order: 2, createdAt },
+    anz: { name: 'ANZ', balance: 0, currency: 'AUD', order: 0, createdAt },
+    up: { name: 'Up', balance: 0, currency: 'AUD', order: 1, createdAt },
+    cash: { name: 'Cash', balance: 0, currency: 'AUD', order: 2, createdAt },
+    bca: { name: 'BCA', balance: 0, currency: 'IDR', order: 3, createdAt },
+    wise: { name: 'Wise USD', balance: 0, currency: 'USD', order: 4, createdAt },
   }
 }
 
-type TagihanKey = 'kos' | 'spotify' | 'listrik' | 'internet' | 'netflix'
+// ── Categories ──────────────────────────────────────────────────────────────
+// English set for the AU persona — intentionally not DEFAULT_EXPENSE_CATEGORIES /
+// DEFAULT_INCOME_CATEGORIES (those are Indonesian). Icon names checked against
+// ICON_PICKER_OPTIONS via the IconPickerName type.
 
-function buildTagihanSeeds(dates: DemoDates): Record<TagihanKey, Omit<Tagihan, 'id'>> {
-  const base = {
-    anchorDate: dates.createdAt,
-    createdAt: dates.createdAt,
-    frequency: 'bulanan' as const,
-    isActive: true,
-    currency: 'IDR',
-  }
+interface DemoCategorySeed {
+  name: string
+  type: 'expense' | 'income'
+  iconName: IconPickerName
+  order: number
+}
+
+const EXPENSE_CATEGORIES: DemoCategorySeed[] = [
+  { name: 'Food', type: 'expense', iconName: 'Utensils', order: 0 },
+  { name: 'Groceries', type: 'expense', iconName: 'ShoppingBag', order: 1 },
+  { name: 'Transport', type: 'expense', iconName: 'Car', order: 2 },
+  { name: 'Bills', type: 'expense', iconName: 'Receipt', order: 3 },
+  { name: 'Entertainment', type: 'expense', iconName: 'Gamepad2', order: 4 },
+  { name: 'Health', type: 'expense', iconName: 'HeartPulse', order: 5 },
+  { name: 'Shopping', type: 'expense', iconName: 'Package', order: 6 },
+  { name: 'Coffee', type: 'expense', iconName: 'Coffee', order: 7 },
+  { name: 'Transfer', type: 'expense', iconName: 'ArrowLeftRight', order: 8 },
+  { name: 'Other', type: 'expense', iconName: 'Tag', order: 9 },
+]
+
+const INCOME_CATEGORIES: DemoCategorySeed[] = [
+  { name: 'Salary', type: 'income', iconName: 'Wallet', order: 0 },
+  { name: 'Bonus', type: 'income', iconName: 'Gift', order: 1 },
+  { name: 'Side Income', type: 'income', iconName: 'TrendingUp', order: 2 },
+  { name: 'Other', type: 'income', iconName: 'Tag', order: 3 },
+]
+
+function buildCategories(): Omit<Category, 'id'>[] {
+  return [...EXPENSE_CATEGORIES, ...INCOME_CATEGORIES].map((c) => ({ ...c, isDefault: true }))
+}
+
+// ── Tagihan ──────────────────────────────────────────────────────────────────
+
+function buildTagihanSeeds(dates: DemoDates): Record<keyof TagihanIds, Omit<Tagihan, 'id'>> {
+  const base = { anchorDate: dates.createdAt, createdAt: dates.createdAt, isActive: true }
+
   return {
-    kos: {
+    rent: {
       ...base,
-      name: 'Kos',
+      name: 'Rent',
       nominalType: 'tetap',
-      nominalEstimate: 1_500_000,
+      nominalEstimate: 1_800,
       dueDay: 1,
-      lastPaidAt: dates.kosLastPaid,
-      lastPaidAmount: 1_500_000,
+      frequency: 'bulanan',
+      currency: 'AUD',
+      lastPaidAt: dates.rentPaid,
+      lastPaidAmount: 1_800,
     },
-    spotify: {
+    electricity: {
       ...base,
-      name: 'Spotify',
-      nominalType: 'tetap',
-      nominalEstimate: 54_990,
-      dueDay: 5,
-      lastPaidAt: dates.spotifyLastPaid,
-      lastPaidAmount: 54_990,
-    },
-    listrik: {
-      ...base,
-      name: 'Listrik Token',
+      name: 'Electricity — AGL',
       nominalType: 'variabel',
-      nominalEstimate: 150_000,
+      nominalEstimate: 110,
       dueDay: 10,
-      lastPaidAt: dates.listrikLastPaid,
-      lastPaidAmount: 163_500,
+      frequency: 'bulanan',
+      currency: 'AUD',
+      lastPaidAt: dates.electricityPaid,
+      lastPaidAmount: 118.35,
     },
     internet: {
       ...base,
-      name: 'Internet Kuota',
+      name: 'Internet — Telstra',
       nominalType: 'tetap',
-      nominalEstimate: 100_000,
+      nominalEstimate: 89,
       dueDay: 15,
-      lastPaidAt: dates.internetLastPaid,
-      lastPaidAmount: 100_000,
+      frequency: 'bulanan',
+      currency: 'AUD',
+      lastPaidAt: dates.internetPaid,
+      lastPaidAmount: 89,
     },
     netflix: {
       ...base,
-      name: 'Netflix Patungan',
+      name: 'Netflix',
       nominalType: 'tetap',
-      nominalEstimate: 45_000,
+      nominalEstimate: 18.99,
       dueDay: 20,
-      lastPaidAt: dates.netflixLastPaid,
-      lastPaidAmount: 45_000,
+      frequency: 'bulanan',
+      currency: 'AUD',
+      lastPaidAt: dates.netflixPaid,
+      lastPaidAmount: 18.99,
+    },
+    gym: {
+      ...base,
+      name: 'Gym — Anytime Fitness',
+      nominalType: 'tetap',
+      nominalEstimate: 64,
+      dueDay: 5,
+      frequency: 'bulanan',
+      currency: 'AUD',
+      lastPaidAt: dates.gymPaid,
+      lastPaidAmount: 64,
+    },
+    bpjs: {
+      ...base,
+      name: 'BPJS for parents',
+      nominalType: 'tetap',
+      nominalEstimate: 300_000,
+      dueDay: 12,
+      frequency: 'bulanan',
+      currency: 'IDR',
+      lastPaidAt: dates.bpjsPaid,
+      lastPaidAmount: 300_000,
     },
   }
 }
 
-function buildCoreTransactions(
+/** One 'tagihan'-type settlement transaction per bill, dated at its lastPaidAt. */
+function buildTagihanTransactions(
   w: WalletIds,
   t: TagihanIds,
-  dates: DemoDates,
+  tagihanSeeds: Record<keyof TagihanIds, Omit<Tagihan, 'id'>>,
 ): Omit<Transaction, 'id'>[] {
+  const entries: { key: keyof TagihanIds; walletId: number }[] = [
+    { key: 'rent', walletId: w.anz },
+    { key: 'electricity', walletId: w.anz },
+    { key: 'internet', walletId: w.anz },
+    { key: 'netflix', walletId: w.anz },
+    { key: 'gym', walletId: w.anz },
+    { key: 'bpjs', walletId: w.bca },
+  ]
+
+  return entries.map(({ key, walletId }) => {
+    const seed = tagihanSeeds[key]
+    const date = seed.lastPaidAt ?? seed.anchorDate
+    return {
+      walletId,
+      amount: -(seed.lastPaidAmount ?? seed.nominalEstimate),
+      type: 'tagihan',
+      currency: seed.currency,
+      category: 'Bills',
+      tagihanId: t[key],
+      date,
+      createdAt: date,
+      isFromSavings: false,
+      isEarmark: false,
+    }
+  })
+}
+
+// ── Opening balances (BCA + Wise carry a static float, not day-to-day AUD spend) ──
+
+function buildOpeningBalanceTransactions(
+  dates: DemoDates,
+  w: WalletIds,
+): Omit<Transaction, 'id'>[] {
+  return [
+    {
+      walletId: w.bca,
+      // BPJS (IDR 300,000) is debited from this same wallet later — net settles to ~Rp 4,500,000.
+      amount: 4_800_000,
+      type: 'masuk',
+      currency: 'IDR',
+      label: 'Opening balance',
+      category: 'Other',
+      date: dates.createdAt,
+      createdAt: dates.createdAt,
+      isFromSavings: false,
+      isEarmark: false,
+    },
+    {
+      walletId: w.wise,
+      amount: 320,
+      type: 'masuk',
+      currency: 'USD',
+      label: 'Opening balance',
+      category: 'Other',
+      date: dates.createdAt,
+      createdAt: dates.createdAt,
+      isFromSavings: false,
+      isEarmark: false,
+    },
+  ]
+}
+
+// ── Income: 6 monthly paydays + occasional side income ──────────────────────
+
+function buildIncomeTransactions(dates: DemoDates, w: WalletIds): Omit<Transaction, 'id'>[] {
+  const salary: Omit<Transaction, 'id'>[] = [0, 1, 2, 3, 4, 5].map((monthsAgo) => {
+    const date = monthsBefore(dates.lastPayday, monthsAgo)
+    return {
+      walletId: w.anz,
+      amount: 5_400,
+      type: 'masuk',
+      currency: 'AUD',
+      label: 'Salary',
+      category: 'Salary',
+      date,
+      createdAt: date,
+      isFromSavings: false,
+      isEarmark: false,
+    }
+  })
+
+  const sideIncome: { monthsAgo: number; amount: number }[] = [
+    { monthsAgo: 1, amount: 320 },
+    { monthsAgo: 4, amount: 450 },
+  ]
+
+  const side: Omit<Transaction, 'id'>[] = sideIncome.map(({ monthsAgo, amount }) => {
+    const date = monthsBefore(dates.lastPayday, monthsAgo) + DAY_MS * 3
+    return {
+      walletId: w.anz,
+      amount,
+      type: 'masuk',
+      currency: 'AUD',
+      label: 'Side Income',
+      category: 'Side Income',
+      date,
+      createdAt: date,
+      isFromSavings: false,
+      isEarmark: false,
+    }
+  })
+
+  return [...salary, ...side]
+}
+
+// ── Nabung (savings earmark) — separate from wallet balance, once per demo history ──
+
+function buildNabungTransaction(dates: DemoDates, w: WalletIds): Omit<Transaction, 'id'> {
+  const date = dates.lastPayday + DAY_MS
+  return {
+    walletId: w.anz,
+    amount: 300,
+    type: 'nabung',
+    currency: 'AUD',
+    isEarmark: true,
+    label: 'Savings',
+    category: 'Other',
+    date,
+    createdAt: date,
+    isFromSavings: false,
+  }
+}
+
+// ── Inter-wallet transfers ───────────────────────────────────────────────────
+
+function buildTransferTransactions(w: WalletIds): Omit<Transaction, 'id'>[] {
+  const topupDate = dayAt(24, 10)
+  const atmDate = dayAt(10, 11)
+
   const mk = (overrides: Partial<Transaction>): Omit<Transaction, 'id'> => ({
-    walletId: w.bca,
+    walletId: w.anz,
     amount: 0,
-    type: 'keluar',
-    currency: 'IDR',
-    date: dates.lastPayday,
+    type: 'transfer',
+    currency: 'AUD',
+    category: 'Transfer',
+    date: topupDate,
+    createdAt: topupDate,
     isFromSavings: false,
     isEarmark: false,
-    createdAt: dates.lastPayday,
     ...overrides,
   })
 
-  const nabungDate = dates.lastPayday + DAY_MS
-  const topup1Date = dayAt(24, 10)
-  const topup2Date = dayAt(10, 10)
-  const tarikTunaiDate = dayAt(20, 11)
-
   return [
-    mk({ amount: 5_200_000, type: 'masuk', category: 'Gaji' }),
+    mk({ walletId: w.anz, amount: -200, transferPairId: 'topup-1' }),
+    mk({ walletId: w.up, amount: 200, transferPairId: 'topup-1' }),
     mk({
-      amount: 500_000,
-      type: 'nabung',
-      isEarmark: true,
-      label: 'Nabung',
-      date: nabungDate,
-      createdAt: nabungDate,
-    }),
-    mk({
-      amount: -1_500_000,
-      type: 'tagihan',
-      tagihanId: t.kos,
-      category: 'Tagihan',
-      date: dates.kosLastPaid,
-      createdAt: dates.kosLastPaid,
-    }),
-    mk({
-      amount: -54_990,
-      type: 'tagihan',
-      tagihanId: t.spotify,
-      category: 'Tagihan',
-      date: dates.spotifyLastPaid,
-      createdAt: dates.spotifyLastPaid,
-    }),
-    mk({
-      amount: -163_500,
-      type: 'tagihan',
-      tagihanId: t.listrik,
-      category: 'Tagihan',
-      date: dates.listrikLastPaid,
-      createdAt: dates.listrikLastPaid,
-    }),
-    mk({
-      walletId: w.bca,
-      amount: -300_000,
-      type: 'transfer',
-      transferPairId: 'topup-1',
-      category: 'Transfer',
-      date: topup1Date,
-      createdAt: topup1Date,
-    }),
-    mk({
-      walletId: w.gopay,
-      amount: 300_000,
-      type: 'transfer',
-      transferPairId: 'topup-1',
-      category: 'Transfer',
-      date: topup1Date,
-      createdAt: topup1Date,
-    }),
-    mk({
-      walletId: w.bca,
-      amount: -350_000,
-      type: 'transfer',
-      transferPairId: 'topup-2',
-      category: 'Transfer',
-      date: topup2Date,
-      createdAt: topup2Date,
-    }),
-    mk({
-      walletId: w.gopay,
-      amount: 350_000,
-      type: 'transfer',
-      transferPairId: 'topup-2',
-      category: 'Transfer',
-      date: topup2Date,
-      createdAt: topup2Date,
-    }),
-    mk({
-      walletId: w.bca,
-      amount: -370_000,
-      type: 'transfer',
-      transferPairId: 'tarik-tunai',
-      category: 'Transfer',
-      date: tarikTunaiDate,
-      createdAt: tarikTunaiDate,
+      walletId: w.anz,
+      amount: -150,
+      transferPairId: 'atm-withdraw',
+      date: atmDate,
+      createdAt: atmDate,
     }),
     mk({
       walletId: w.cash,
-      amount: 370_000,
-      type: 'transfer',
-      transferPairId: 'tarik-tunai',
-      category: 'Transfer',
-      date: tarikTunaiDate,
-      createdAt: tarikTunaiDate,
+      amount: 150,
+      transferPairId: 'atm-withdraw',
+      date: atmDate,
+      createdAt: atmDate,
     }),
   ]
 }
 
-type SpendRow = readonly [daysAgoN: number, hour: number, amount: number, label: string]
+// ── Historical monthly spend (5 completed months before the current one) ────
 
-interface ManualSpend {
-  daysAgoN: number
+interface MonthlySpendRow {
+  day: number
   hour: number
   amount: number
   label: string
@@ -276,88 +397,108 @@ interface ManualSpend {
   wallet: keyof WalletIds
 }
 
-function toManualSpend(
-  rows: readonly SpendRow[],
+const MONTHLY_PATTERN: readonly MonthlySpendRow[] = [
+  { day: 2, hour: 8, amount: 5.5, label: 'Flat white', category: 'Coffee', wallet: 'up' },
+  { day: 3, hour: 18, amount: 42, label: 'Woolworths run', category: 'Groceries', wallet: 'anz' },
+  { day: 5, hour: 12, amount: 18, label: 'Brunch Degraves St', category: 'Food', wallet: 'up' },
+  { day: 7, hour: 8, amount: 4.6, label: 'Myki top-up', category: 'Transport', wallet: 'up' },
+  { day: 9, hour: 19, amount: 65, label: 'Dinner with friends', category: 'Food', wallet: 'anz' },
+  { day: 12, hour: 17, amount: 28, label: 'Kmart', category: 'Shopping', wallet: 'anz' },
+  { day: 14, hour: 9, amount: 12, label: 'Chemist Warehouse', category: 'Health', wallet: 'cash' },
+  { day: 16, hour: 20, amount: 22, label: 'Uber', category: 'Transport', wallet: 'up' },
+  { day: 19, hour: 20, amount: 16, label: 'Cinema', category: 'Entertainment', wallet: 'anz' },
+  { day: 22, hour: 8, amount: 38, label: 'Woolworths run', category: 'Groceries', wallet: 'anz' },
+  { day: 24, hour: 12, amount: 15, label: 'Brunch Degraves St', category: 'Food', wallet: 'cash' },
+]
+
+function buildHistoricalMonthsSpend(w: WalletIds): Omit<Transaction, 'id'>[] {
+  const now = new Date()
+  const out: Omit<Transaction, 'id'>[] = []
+
+  for (let monthsAgo = 1; monthsAgo <= 5; monthsAgo++) {
+    for (const row of MONTHLY_PATTERN) {
+      const date = new Date(
+        now.getFullYear(),
+        now.getMonth() - monthsAgo,
+        row.day,
+        row.hour,
+      ).getTime()
+      out.push({
+        walletId: w[row.wallet],
+        amount: -row.amount,
+        type: 'keluar',
+        currency: 'AUD',
+        label: row.label,
+        category: row.category,
+        date,
+        createdAt: date,
+        isFromSavings: false,
+        isEarmark: false,
+      })
+    }
+  }
+
+  return out
+}
+
+// ── Current-month daily rhythm: at least one expense every day from the 1st to today ──
+
+const DAILY_CYCLE: readonly [
+  hour: number,
+  amount: number,
+  label: string,
   category: string,
   wallet: keyof WalletIds,
-): ManualSpend[] {
-  return rows.map(([daysAgoN, hour, amount, label]) => ({
-    daysAgoN,
-    hour,
-    amount,
-    label,
-    category,
-    wallet,
-  }))
-}
+][] = [
+  [8, 5.5, 'Flat white', 'Coffee', 'up'],
+  [12, 16, 'Brunch Degraves St', 'Food', 'up'],
+  [18, 12, 'Woolworths run', 'Groceries', 'anz'],
+  [8, 4.6, 'Myki top-up', 'Transport', 'up'],
+  [19, 45, 'Dinner with friends', 'Food', 'anz'],
+  [17, 25, 'Kmart', 'Shopping', 'anz'],
+  [9, 14, 'Chemist Warehouse', 'Health', 'cash'],
+]
 
-function buildManualSpend(): ManualSpend[] {
-  const kopi: SpendRow[] = [
-    [27, 7, 20000, 'Kopi susu'],
-    [24, 8, 22000, 'Americano'],
-    [21, 7, 18000, 'Kopi kenangan'],
-    [18, 9, 25000, 'Kopi susu'],
-    [15, 8, 28000, 'Kopi gula aren'],
-    [12, 7, 20000, 'Americano'],
-    [9, 8, 24000, 'Kopi susu'],
-    [3, 7, 19000, 'Kopi kenangan'],
-  ]
-  const makanSiang: SpendRow[] = [
-    [26, 12, 25000, 'Makan siang'],
-    [23, 13, 30000, 'Makan siang'],
-    [20, 12, 22000, 'Makan siang'],
-    [17, 13, 35000, 'Makan siang'],
-    [14, 12, 28000, 'Makan siang'],
-    [11, 13, 20000, 'Makan siang'],
-    [8, 12, 32000, 'Makan siang'],
-    [2, 13, 24000, 'Makan siang'],
-  ]
-  const gofood: SpendRow[] = [
-    [19, 19, 55000, 'GoFood'],
-    [13, 20, 65000, 'GoFood'],
-    [5, 19, 75000, 'GoFood'],
-  ]
-  const ojol: SpendRow[] = [
-    [25, 8, 15000, 'Ojol'],
-    [22, 18, 18000, 'Ojol'],
-    [16, 8, 20000, 'Ojol'],
-    [7, 18, 22000, 'Ojol'],
-    [4, 8, 25000, 'Ojol'],
-  ]
-  const indomaretCash: SpendRow[] = [
-    [9, 20, 20000, 'Indomaret'],
-    [18, 20, 35000, 'Indomaret'],
-  ]
-  const indomaretBca: SpendRow[] = [[26, 20, 28000, 'Indomaret']]
-  const nonton: SpendRow[] = [[6, 19, 50000, 'Nonton']]
+function buildCurrentMonthDailySpend(w: WalletIds): Omit<Transaction, 'id'>[] {
+  const now = new Date()
+  const today = now.getDate()
+  const out: Omit<Transaction, 'id'>[] = []
 
-  return [
-    ...toManualSpend(kopi, 'Makanan', 'gopay'),
-    ...toManualSpend(makanSiang, 'Makanan', 'cash'),
-    ...toManualSpend(gofood, 'Makanan', 'gopay'),
-    ...toManualSpend(ojol, 'Transport', 'gopay'),
-    ...toManualSpend(indomaretCash, 'Belanja', 'cash'),
-    ...toManualSpend(indomaretBca, 'Belanja', 'bca'),
-    ...toManualSpend(nonton, 'Hiburan', 'bca'),
-  ]
-}
-
-function manualSpendToTransactions(spend: ManualSpend[], w: WalletIds): Omit<Transaction, 'id'>[] {
-  return spend.map((s) => {
-    const date = dayAt(s.daysAgoN, s.hour)
-    return {
-      walletId: w[s.wallet],
-      amount: -s.amount,
+  // Day 1 through yesterday: cycle through a fixed weekly pattern for chart variety.
+  for (let day = 1; day < today; day++) {
+    const [hour, amount, label, category, wallet] = DAILY_CYCLE[(day - 1) % DAILY_CYCLE.length]
+    const date = new Date(now.getFullYear(), now.getMonth(), day, hour).getTime()
+    out.push({
+      walletId: w[wallet],
+      amount: -amount,
       type: 'keluar',
-      currency: 'IDR',
-      label: s.label,
-      category: s.category,
+      currency: 'AUD',
+      label,
+      category,
       date,
+      createdAt: date,
       isFromSavings: false,
       isEarmark: false,
-      createdAt: date,
-    }
+    })
+  }
+
+  // Today: kept small and fixed so spentToday stays well under jatahHarian regardless
+  // of the current day-of-month (jatahHarian ≈ buatDipakai / daysAtLock ≈ AUD 100/day).
+  const todayDate = new Date(now.getFullYear(), now.getMonth(), today, 8).getTime()
+  out.push({
+    walletId: w.up,
+    amount: -5.9,
+    type: 'keluar',
+    currency: 'AUD',
+    label: 'Flat white',
+    category: 'Coffee',
+    date: todayDate,
+    createdAt: todayDate,
+    isFromSavings: false,
+    isEarmark: false,
   })
+
+  return out
 }
 
 async function applyWalletBalances(
@@ -365,14 +506,13 @@ async function applyWalletBalances(
   w: WalletIds,
   tx: Omit<Transaction, 'id'>[],
 ): Promise<void> {
-  const sums: Record<number, number> = { [w.bca]: 0, [w.gopay]: 0, [w.cash]: 0 }
+  const walletIds = Object.values(w)
+  const sums: Record<number, number> = Object.fromEntries(walletIds.map((id) => [id, 0]))
   for (const t of tx) {
     if (t.isEarmark) continue
     sums[t.walletId] += t.amount
   }
-  await db.wallets.update(w.bca, { balance: sums[w.bca] })
-  await db.wallets.update(w.gopay, { balance: sums[w.gopay] })
-  await db.wallets.update(w.cash, { balance: sums[w.cash] })
+  await Promise.all(walletIds.map((id) => db.wallets.update(id, { balance: sums[id] })))
 }
 
 function buildSettings(dates: DemoDates): Settings {
@@ -383,7 +523,7 @@ function buildSettings(dates: DemoDates): Settings {
     incomeType: 'tetap',
     incomeDay: 25,
     freelanceMinBalance: null,
-    primaryCurrency: 'IDR',
+    primaryCurrency: 'AUD',
     incomeFrequency: 'bulanan',
     incomeAnchorDate: dates.lastPayday,
     weekendBehavior: 'tetap',
@@ -392,14 +532,14 @@ function buildSettings(dates: DemoDates): Settings {
     lastPaydayConfirmed: dates.lastPayday,
     avgIncome: null,
     avgIncomeBasis: null,
-    fixedIncome: 5_200_000,
+    fixedIncome: 5_400,
     pushAsked: true,
   }
 }
 
 function buildAllocation(dates: DemoDates): Allocation {
   const daysAtLock = Math.round((dates.nextPayday - dates.lastPayday) / DAY_MS)
-  const buatDipakai = 3_500_000
+  const buatDipakai = 3_000
   return {
     id: 1,
     jatahHarian: Math.round(buatDipakai / daysAtLock),
@@ -414,14 +554,14 @@ function buildSavedScenarios(): Omit<SavedScenario, 'id'>[] {
   const savedAt = dayAt(3, 9)
   return [
     {
-      name: 'Beli sepatu',
-      items: JSON.stringify([{ id: 'item-1', kind: 'beli', desc: 'Sepatu lari', amount: 800_000 }]),
+      name: 'Buy running shoes',
+      items: JSON.stringify([{ id: 'item-1', kind: 'beli', desc: 'Running shoes', amount: 180 }]),
       savedAt,
     },
     {
-      name: 'Freelance masuk',
+      name: 'Freelance payment',
       items: JSON.stringify([
-        { id: 'item-2', kind: 'income', desc: 'Project logo', amount: 1_500_000 },
+        { id: 'item-2', kind: 'income', desc: 'Freelance project', amount: 950 },
       ]),
       savedAt: dayAt(3, 10),
     },
@@ -429,36 +569,61 @@ function buildSavedScenarios(): Omit<SavedScenario, 'id'>[] {
 }
 
 /**
- * Seeds a demo persona (Raka, 24, karyawan Jakarta) into an empty demo Dexie instance.
- * Caller must supply a demo-only db — never the live singleton. Idempotent: no-ops if
- * settings already exist, so re-running against an already-seeded db is a safe no-op.
+ * Seeds a demo persona (Mia, 27, Indonesian expat in Melbourne) into an empty demo Dexie
+ * instance. Caller must supply a demo-only db — never the live singleton. Idempotent:
+ * no-ops if settings already exist, so re-running against an already-seeded db is a safe
+ * no-op.
  */
 export async function seedDemoDb(db: SisaDb): Promise<void> {
   if ((await db.settings.count()) > 0) return
+
+  // clearAllData() (Settings → Delete all data) does not clear categories/allocation/
+  // savedScenarios/rates — without this, re-seeding after a reset in the same demo
+  // session would duplicate categories.
+  await Promise.all([
+    db.categories.clear(),
+    db.allocation.clear(),
+    db.savedScenarios.clear(),
+    db.rates.clear(),
+  ])
 
   const dates = buildDates()
   const walletSeeds = buildWalletSeeds(dates.createdAt)
   const tagihanSeeds = buildTagihanSeeds(dates)
 
-  await db.categories.bulkAdd([...DEFAULT_EXPENSE_CATEGORIES, ...DEFAULT_INCOME_CATEGORIES])
+  await db.categories.bulkAdd(buildCategories())
 
   const walletIds: WalletIds = {
-    bca: (await db.wallets.add(walletSeeds.bca)) as number,
-    gopay: (await db.wallets.add(walletSeeds.gopay)) as number,
+    anz: (await db.wallets.add(walletSeeds.anz)) as number,
+    up: (await db.wallets.add(walletSeeds.up)) as number,
     cash: (await db.wallets.add(walletSeeds.cash)) as number,
+    bca: (await db.wallets.add(walletSeeds.bca)) as number,
+    wise: (await db.wallets.add(walletSeeds.wise)) as number,
   }
+
+  await db.rates.bulkPut([
+    { base: 'AUD', target: 'IDR', rate: 10_500, fetchedAt: Date.now() },
+    { base: 'AUD', target: 'USD', rate: 0.66, fetchedAt: Date.now() },
+  ])
 
   const tagihanIds: TagihanIds = {
-    kos: (await db.tagihan.add(tagihanSeeds.kos)) as number,
-    spotify: (await db.tagihan.add(tagihanSeeds.spotify)) as number,
-    listrik: (await db.tagihan.add(tagihanSeeds.listrik)) as number,
+    rent: (await db.tagihan.add(tagihanSeeds.rent)) as number,
+    electricity: (await db.tagihan.add(tagihanSeeds.electricity)) as number,
+    internet: (await db.tagihan.add(tagihanSeeds.internet)) as number,
+    netflix: (await db.tagihan.add(tagihanSeeds.netflix)) as number,
+    gym: (await db.tagihan.add(tagihanSeeds.gym)) as number,
+    bpjs: (await db.tagihan.add(tagihanSeeds.bpjs)) as number,
   }
-  await db.tagihan.add(tagihanSeeds.internet)
-  await db.tagihan.add(tagihanSeeds.netflix)
 
-  const manualTx = manualSpendToTransactions(buildManualSpend(), walletIds)
-  const coreTx = buildCoreTransactions(walletIds, tagihanIds, dates)
-  const allTx = [...coreTx, ...manualTx]
+  const allTx: Omit<Transaction, 'id'>[] = [
+    ...buildOpeningBalanceTransactions(dates, walletIds),
+    ...buildIncomeTransactions(dates, walletIds),
+    ...buildTagihanTransactions(walletIds, tagihanIds, tagihanSeeds),
+    ...buildTransferTransactions(walletIds),
+    buildNabungTransaction(dates, walletIds),
+    ...buildHistoricalMonthsSpend(walletIds),
+    ...buildCurrentMonthDailySpend(walletIds),
+  ]
 
   await db.transactions.bulkAdd(allTx)
   await applyWalletBalances(db, walletIds, allTx)
