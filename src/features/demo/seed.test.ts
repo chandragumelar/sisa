@@ -3,7 +3,7 @@ import Dexie from 'dexie'
 import { describe, it, expect, beforeEach } from 'vitest'
 import { applyMigrations } from '@/db/migrations'
 import type { Transaction } from '@/db/database'
-import { seedDemoDb, type SisaDb } from './seed'
+import { seedDemoDb, DEMO_SEED_VERSION, DEMO_SEED_VERSION_STORAGE_KEY, type SisaDb } from './seed'
 
 function createTestDb(): SisaDb {
   const raw = new Dexie(`sisa-seed-test-${Math.random()}`)
@@ -29,6 +29,7 @@ describe('seedDemoDb', () => {
 
   beforeEach(() => {
     db = createTestDb()
+    localStorage.clear()
   })
 
   it('marks onboarding as completed and sets the AU persona settings', async () => {
@@ -173,6 +174,39 @@ describe('seedDemoDb', () => {
     const after = await db.transactions.count()
 
     expect(after).toBe(before)
+  })
+
+  it('seeding twice at the same DEMO_SEED_VERSION is a no-op on the second call', async () => {
+    await seedDemoDb(db)
+    const categoriesBefore = await db.categories.count()
+    expect(localStorage.getItem(DEMO_SEED_VERSION_STORAGE_KEY)).toBe(String(DEMO_SEED_VERSION))
+
+    await seedDemoDb(db)
+    const categoriesAfter = await db.categories.count()
+
+    expect(categoriesAfter).toBe(categoriesBefore)
+    expect(categoriesAfter).toBe(EXPENSE_CATEGORY_NAMES.size + 4)
+  })
+
+  it('a stale stored seed version wipes and fully replaces demo data', async () => {
+    await seedDemoDb(db)
+    const originalTxCount = await db.transactions.count()
+    expect(originalTxCount).toBeGreaterThan(0)
+
+    localStorage.setItem(DEMO_SEED_VERSION_STORAGE_KEY, String(DEMO_SEED_VERSION - 1))
+    await seedDemoDb(db)
+
+    expect(localStorage.getItem(DEMO_SEED_VERSION_STORAGE_KEY)).toBe(String(DEMO_SEED_VERSION))
+
+    // Full replace, not an append: same shape as a single fresh seed, no leftover old rows.
+    const txs = await db.transactions.toArray()
+    expect(txs.length).toBe(originalTxCount)
+
+    const categories = await db.categories.toArray()
+    expect(categories.filter((c) => c.name === 'Food')).toHaveLength(1)
+
+    const wallets = await db.wallets.toArray()
+    expect(wallets).toHaveLength(5)
   })
 
   it('clears stale categories/allocation/scenarios/rates before a re-seed', async () => {

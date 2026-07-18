@@ -151,6 +151,18 @@ export type StringKey =
   | 'ob.alokasi.other_currency_label'
   | 'ob.alokasi.start'
   | 'ob.langCurrency.next'
+  // onboarding chat (conversational presentation)
+  | 'ob.chat.ask_currency'
+  | 'ob.chat.echo_license'
+  | 'ob.chat.echo_income_detail'
+  | 'ob.chat.echo_wallet'
+  | 'ob.chat.echo_tagihan'
+  | 'ob.chat.echo_tagihan_skip'
+  | 'ob.chat.echo_pay_first'
+  | 'ob.chat.intro_income_detail'
+  | 'ob.chat.intro_tagihan'
+  | 'ob.chat.intro_wallet'
+  | 'ob.chat.intro_alokasi'
   // currency picker
   | 'currency_picker.search'
   | 'currency_picker.popular'
@@ -945,6 +957,18 @@ const id: StringDictionary = {
   'ob.alokasi.other_currency_label': 'Punya juga dalam mata uang lain',
   'ob.alokasi.start': 'Mulai pakai Sisa →',
   'ob.langCurrency.next': 'Lanjut',
+
+  'ob.chat.ask_currency': 'Oke! Sekarang, mata uang utama lo apa?',
+  'ob.chat.echo_license': '✓ Lisensi aktif',
+  'ob.chat.echo_income_detail': '✓',
+  'ob.chat.echo_wallet': '{n} dompet',
+  'ob.chat.echo_tagihan': '{n} tagihan',
+  'ob.chat.echo_tagihan_skip': 'Lewati dulu',
+  'ob.chat.echo_pay_first': 'Pertama kali',
+  'ob.chat.intro_income_detail': 'Sip, detailnya nih:',
+  'ob.chat.intro_tagihan': 'Sekarang, tagihan rutin lo:',
+  'ob.chat.intro_wallet': 'Terakhir dikit, dompet lo:',
+  'ob.chat.intro_alokasi': 'Oke, terakhir — yuk atur duitnya:',
 
   'currency_picker.search': 'pilih mata uang…',
   'currency_picker.popular': 'Populer',
@@ -1803,6 +1827,18 @@ const en: StringDictionary = {
   'ob.alokasi.other_currency_label': 'Also held in other currencies',
   'ob.alokasi.start': 'Start using Sisa →',
   'ob.langCurrency.next': 'Next',
+
+  'ob.chat.ask_currency': "Cool! Now, what's your main currency?",
+  'ob.chat.echo_license': '✓ License activated',
+  'ob.chat.echo_income_detail': '✓',
+  'ob.chat.echo_wallet': '{n} wallets',
+  'ob.chat.echo_tagihan': '{n} bills',
+  'ob.chat.echo_tagihan_skip': 'Skip for now',
+  'ob.chat.echo_pay_first': 'First time',
+  'ob.chat.intro_income_detail': "Cool, let's get the details:",
+  'ob.chat.intro_tagihan': 'Now, your recurring bills:',
+  'ob.chat.intro_wallet': 'Almost there, your wallets:',
+  'ob.chat.intro_alokasi': "Alright, last one — let's sort your money:",
 
   'currency_picker.search': 'search currency…',
   'currency_picker.popular': 'Popular',

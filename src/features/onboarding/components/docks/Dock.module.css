@@ -1,0 +1,81 @@
+.chipRow {
+  display: flex;
+  gap: 10px;
+}
+
+.chip {
+  flex: 1;
+  background: var(--surface);
+  border: 1.5px solid var(--border-hair);
+  border-radius: var(--radius-button);
+  padding: 12px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-primary);
+  cursor: pointer;
+  font-family: var(--font-sans);
+}
+.chip:active {
+  border-color: var(--accent);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.selectChip {
+  background: var(--surface);
+  border: 1.5px solid var(--border-hair);
+  border-radius: var(--radius-button);
+  padding: 12px 14px;
+  font-size: 14px;
+  color: var(--ink-primary);
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  font-family: var(--font-sans);
+}
+
+.chipColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.optionChip {
+  background: var(--surface);
+  border: 1.5px solid var(--border-hair);
+  border-radius: var(--radius-card);
+  padding: 14px 16px;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  font-family: var(--font-sans);
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+}
+.optionChipSelected {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+}
+
+.optionLabel {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink-primary);
+}
+.optionChipSelected .optionLabel {
+  color: var(--accent);
+}
+
+.optionSub {
+  display: block;
+  font-size: 11px;
+  color: var(--ink-tertiary);
+  margin-top: 2px;
+  font-weight: 400;
+}
