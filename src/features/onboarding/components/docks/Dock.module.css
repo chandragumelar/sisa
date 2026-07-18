@@ -10,7 +10,7 @@
   border-radius: var(--radius-bubble);
   padding: 12px 14px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--accent);
   cursor: pointer;
   font-family: var(--font-sans);
@@ -83,7 +83,7 @@
 .optionLabel {
   display: block;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--ink-primary);
 }
 .optionChipSelected .optionLabel {

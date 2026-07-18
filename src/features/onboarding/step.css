@@ -249,6 +249,10 @@ select.ob-input {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 12%, transparent);
 }
+/* Two stacked rows in the same field (e.g. wallet name + balance) need a gap */
+.ob-input-row + .ob-input-row {
+  margin-top: 8px;
+}
 .ob-input-prefix {
   width: 30px;
   height: 30px;
@@ -258,7 +262,7 @@ select.ob-input {
   color: var(--accent);
   font-family: var(--font-mono);
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -288,6 +292,14 @@ select.ob-input {
   font-weight: 600;
   font-variant-numeric: tabular-nums;
   font-feature-settings: 'tnum';
+}
+/* Placeholder must win over the value rule above with equal specificity, or it
+   inherits the big mono figure style and clips/looks oversized. */
+.ob-input-prefix + .ob-input-bare::placeholder {
+  font-size: 14px;
+  font-weight: 500;
+  font-family: var(--font-sans);
+  font-feature-settings: normal;
 }
 
 /* Select / picker trigger */
@@ -350,7 +362,10 @@ select.ob-input {
   border-radius: var(--radius-pill);
   cursor: pointer;
   background: var(--surface);
-  border: 1px solid var(--border-soft);
+  border: 1.5px solid var(--border-soft);
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--ink-primary) 6%, transparent);
+  color: var(--ink-primary);
+  font-weight: 700;
 }
 .ob-currency-btn::after {
   content: '';
@@ -425,6 +440,10 @@ select.ob-input {
   box-shadow: var(--shadow-card);
   overflow: hidden;
 }
+/* A card immediately followed by the dashed add-button needs breathing room */
+.ob-card + .ob-add-dashed {
+  margin-top: 10px;
+}
 
 .ob-label {
   font-size: 13px;
@@ -472,7 +491,7 @@ select.ob-input {
   border: 1.5px dashed var(--accent-br);
   background: var(--accent-bg);
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--accent);
   cursor: pointer;
   font-family: var(--font-sans);

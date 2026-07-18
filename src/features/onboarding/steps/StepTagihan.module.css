@@ -36,7 +36,7 @@
 
 .fieldLabel {
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--ink-secondary);
   font-family: var(--font-sans);
   margin-bottom: -8px;
@@ -117,7 +117,7 @@
 .amountCurrency {
   padding: 12px 22px 12px 12px;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   font-family: var(--font-mono);
   color: var(--ink-primary);
   background-color: var(--surface);
