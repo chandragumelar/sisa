@@ -80,51 +80,60 @@ export function StepTagihan({ tagihan, currency, onChange, onNext }: Props) {
               key={i}
               style={{
                 display: 'flex',
-                alignItems: 'center',
+                flexDirection: 'column',
+                gap: 6,
                 padding: '12px 14px',
-                gap: 10,
                 borderBottom: i < tagihan.length - 1 ? '1px solid var(--border-soft)' : 'none',
               }}
             >
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--ink-primary)' }}>
+              <div
+                style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+              >
+                <div
+                  style={{ flex: 1, fontSize: 14, fontWeight: 600, color: 'var(--ink-primary)' }}
+                >
                   {item.name}
                 </div>
-                <div style={{ fontSize: 11, color: 'var(--ink-tertiary)', marginTop: 2 }}>
-                  {t(FREQ_LABEL[item.frequency], lang)}
-                </div>
+                <button
+                  type="button"
+                  onClick={() => handleRemove(i)}
+                  style={{
+                    width: 28,
+                    height: 28,
+                    borderRadius: 6,
+                    border: '1px solid var(--border-hair)',
+                    background: 'none',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                  }}
+                >
+                  <Trash2 size={12} strokeWidth={1.75} />
+                </button>
               </div>
-              <span
-                style={{
-                  fontSize: 14,
-                  fontWeight: 700,
-                  fontFamily: 'var(--font-mono)',
-                  color: 'var(--ink-primary)',
-                }}
+              <div
+                style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
               >
-                {formatCurrency(
-                  parseInt(parseNominalRaw(item.nominalEstimate), 10) || 0,
-                  item.currency || currency,
-                )}
-              </span>
-              <button
-                type="button"
-                onClick={() => handleRemove(i)}
-                style={{
-                  width: 28,
-                  height: 28,
-                  borderRadius: 6,
-                  border: '1px solid var(--border-hair)',
-                  background: 'none',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0,
-                }}
-              >
-                <Trash2 size={12} strokeWidth={1.75} />
-              </button>
+                <span style={{ fontSize: 12, fontWeight: 400, color: 'var(--ink-tertiary)' }}>
+                  {t(FREQ_LABEL[item.frequency], lang)}
+                </span>
+                <span
+                  style={{
+                    fontSize: 16,
+                    fontWeight: 600,
+                    fontFamily: 'var(--font-mono)',
+                    fontFeatureSettings: "'tnum'",
+                    color: 'var(--ink-primary)',
+                  }}
+                >
+                  {formatCurrency(
+                    parseInt(parseNominalRaw(item.nominalEstimate), 10) || 0,
+                    item.currency || currency,
+                  )}
+                </span>
+              </div>
             </div>
           ))}
         </div>
