@@ -1,11 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" fill="#F2EDE3"/>
-  <mask id="m">
-    <rect width="64" height="64" fill="black"/>
-    <circle cx="26" cy="33" r="19" fill="white"/>
-    <circle cx="38" cy="25" r="17" fill="black"/>
-  </mask>
-  <g transform="translate(6.4 6.4) scale(0.8)">
-    <circle cx="26" cy="33" r="19" fill="#7c5cff" mask="url(#m)"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <rect width="1024" height="1024" fill="#6A2FE0"/>
+  <g transform="translate(512 512) scale(0.666667) translate(-512 -512)">
+    <path d="M 512 512 L 812 512 A 300 300 0 1 1 512 212 Z" fill="#FBF9FF"/>
   </g>
 </svg>
