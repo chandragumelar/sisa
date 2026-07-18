@@ -40,7 +40,7 @@ export function DockLicense({ onBotSay, onNext }: Props) {
   }
 
   return (
-    <div className={styles.dockPop}>
+    <div className={`${styles.stack} ${styles.dockPop}`}>
       <input
         className="ob-input ob-input-mono"
         type="text"

@@ -6,12 +6,12 @@
 .chip {
   flex: 1;
   background: var(--surface);
-  border: 1px solid var(--border-soft);
+  border: 1px solid var(--accent-bg);
   border-radius: var(--radius-bubble);
   padding: 12px 14px;
   font-size: 14px;
   font-weight: 600;
-  color: var(--ink-primary);
+  color: var(--accent);
   cursor: pointer;
   font-family: var(--font-sans);
   transition:
@@ -21,6 +21,7 @@
 }
 .chip:active {
   border-color: var(--accent);
+  background: var(--accent-bg);
   transform: scale(0.97);
 }
 
@@ -92,13 +93,13 @@
 .optionSub {
   display: block;
   font-size: 11px;
-  color: var(--ink-tertiary);
+  color: var(--ink-secondary);
   margin-top: 2px;
   font-weight: 400;
 }
 
 .dockPop {
-  animation: dockPopIn var(--motion-pop) backwards;
+  /* marker container — the entrance animation runs on children (staggered) below */
 }
 @keyframes dockPopIn {
   from {
@@ -110,8 +111,28 @@
     transform: translateY(0) scale(1);
   }
 }
+
+.dockPop > * {
+  animation: dockPopIn var(--motion-pop) backwards;
+}
+.dockPop > *:nth-child(1) {
+  animation-delay: 0ms;
+}
+.dockPop > *:nth-child(2) {
+  animation-delay: 50ms;
+}
+.dockPop > *:nth-child(3) {
+  animation-delay: 100ms;
+}
+.dockPop > *:nth-child(4) {
+  animation-delay: 150ms;
+}
+.dockPop > *:nth-child(5) {
+  animation-delay: 200ms;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .dockPop {
+  .dockPop > * {
     animation: none;
   }
 }
