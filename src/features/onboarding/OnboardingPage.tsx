@@ -53,6 +53,9 @@ export function OnboardingPage() {
   // Presentation-only state — the chat transcript. Never read by advance/back/handleComplete.
   const [completed, setCompleted] = useState<Array<{ step: OnboardingStep; echo: string }>>([])
   const [extraBotLines, setExtraBotLines] = useState<string[]>([])
+  // One-shot brand intro on fresh start — flips true once and never resets, so back-navigating
+  // to langCurrency later never replays it (a page refresh remounts everything, which is fine).
+  const [introDone, setIntroDone] = useState(false)
 
   useEffect(() => {
     setExtraBotLines([])
@@ -283,6 +286,8 @@ export function OnboardingPage() {
       historyEntries={historyEntries}
       activeStepEntries={activeStepEntries}
       dock={dock}
+      introActive={step === 'langCurrency' && !introDone}
+      onIntroDone={() => setIntroDone(true)}
     />
   )
 }
