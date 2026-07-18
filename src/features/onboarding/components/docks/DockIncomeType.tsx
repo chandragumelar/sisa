@@ -7,10 +7,10 @@ interface Props {
   onNext: (incomeType: IncomeType, echo: string) => void
 }
 
-const OPTIONS: { value: IncomeType; labelKey: StringKey; subKey: StringKey }[] = [
-  { value: 'tetap', labelKey: 'ob.step4a.tetap_label', subKey: 'ob.step4a.tetap_sub' },
-  { value: 'freelance', labelKey: 'ob.step4a.freelance_label', subKey: 'ob.step4a.freelance_sub' },
-  { value: 'mix', labelKey: 'ob.step4a.mix_label', subKey: 'ob.step4a.mix_sub' },
+const OPTIONS: { value: IncomeType; labelKey: StringKey }[] = [
+  { value: 'tetap', labelKey: 'ob.step4a.tetap_label' },
+  { value: 'freelance', labelKey: 'ob.step4a.freelance_label' },
+  { value: 'mix', labelKey: 'ob.step4a.mix_label' },
 ]
 
 export function DockIncomeType({ onNext }: Props) {
@@ -25,7 +25,6 @@ export function DockIncomeType({ onNext }: Props) {
           onClick={() => onNext(opt.value, t(opt.labelKey, lang))}
         >
           <span className={styles.optionLabel}>{t(opt.labelKey, lang)}</span>
-          <span className={styles.optionSub}>{t(opt.subKey, lang)}</span>
         </button>
       ))}
     </div>

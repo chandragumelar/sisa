@@ -64,7 +64,7 @@ export function DockPayConfirm({ previousPaydayMs, onNext }: Props) {
       </button>
       {selected === 'picker' && (
         <input
-          className="ob-input"
+          className={styles.dateInput}
           type="date"
           value={pickerDateStr}
           onChange={(e) => setPickerDateStr(e.target.value)}
@@ -76,7 +76,6 @@ export function DockPayConfirm({ previousPaydayMs, onNext }: Props) {
         onClick={() => setSelected('first')}
       >
         <span className={styles.optionLabel}>{t('ob.payConfirm.first_label', lang)}</span>
-        <span className={styles.optionSub}>{t('ob.payConfirm.first_sub', lang)}</span>
       </button>
 
       <button className="ob-primary-btn" disabled={!canProceed} onClick={handleNext}>

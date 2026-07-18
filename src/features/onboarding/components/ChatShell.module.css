@@ -152,7 +152,7 @@
   min-width: 0;
   background: var(--surface);
   border: 1px solid var(--border-soft);
-  border-radius: 20px;
+  border-radius: var(--radius-card);
   padding: var(--pad-card);
   display: flex;
   flex-direction: column;

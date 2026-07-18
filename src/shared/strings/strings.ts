@@ -163,6 +163,7 @@ export type StringKey =
   | 'ob.chat.intro_tagihan'
   | 'ob.chat.intro_wallet'
   | 'ob.chat.intro_alokasi'
+  | 'ob.chat.income_type_hint'
   // currency picker
   | 'currency_picker.search'
   | 'currency_picker.popular'
@@ -967,6 +968,8 @@ const id: StringDictionary = {
   'ob.chat.echo_pay_first': 'Pertama kali',
   'ob.chat.intro_income_detail': 'Sip, detailnya nih:',
   'ob.chat.intro_tagihan': 'Sekarang, tagihan rutin lo:',
+  'ob.chat.income_type_hint':
+    'Gaji tetap: tanggal sama tiap bulan. Freelance: nggak tentu. Campuran: dikit-dikit dua-duanya.',
   'ob.chat.intro_wallet': 'Terakhir dikit, dompet lo:',
   'ob.chat.intro_alokasi': 'Oke, terakhir — yuk atur duitnya:',
 
@@ -1837,6 +1840,8 @@ const en: StringDictionary = {
   'ob.chat.echo_pay_first': 'First time',
   'ob.chat.intro_income_detail': "Cool, let's get the details:",
   'ob.chat.intro_tagihan': 'Now, your recurring bills:',
+  'ob.chat.income_type_hint':
+    'Fixed: same date every month. Freelance: unpredictable. Mixed: a bit of both.',
   'ob.chat.intro_wallet': 'Almost there, your wallets:',
   'ob.chat.intro_alokasi': "Alright, last one — let's sort your money:",
 

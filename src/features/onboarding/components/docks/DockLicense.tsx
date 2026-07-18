@@ -1,8 +1,10 @@
 import { useState } from 'react'
+import { ArrowUp, Loader2 } from 'lucide-react'
 import { activateLicense } from '@/features/license/license.utils'
 import { useClock } from '@/app/providers/useClock'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
+import styles from './Dock.module.css'
 
 interface Props {
   onBotSay: (text: string) => void
@@ -40,24 +42,27 @@ export function DockLicense({ onBotSay, onNext }: Props) {
 
   return (
     <>
-      <input
-        className="ob-input ob-input-mono"
-        type="text"
-        placeholder={t('ob.step2.hint', lang)}
-        value={key}
-        onChange={(e) => setKey(e.target.value)}
-        onKeyDown={handleKeyDown}
-        autoComplete="off"
-        autoCorrect="off"
-        spellCheck={false}
-      />
-      <button
-        className="ob-primary-btn"
-        disabled={!key.trim() || isLoading}
-        onClick={() => void handleActivate()}
-      >
-        {isLoading ? t('ob.step2.verify', lang) : t('ob.step2.activate', lang)}
-      </button>
+      <div className={styles.composer}>
+        <input
+          className={styles.composerInput}
+          type="text"
+          placeholder={t('ob.step2.hint', lang)}
+          value={key}
+          onChange={(e) => setKey(e.target.value)}
+          onKeyDown={handleKeyDown}
+          autoComplete="off"
+          autoCorrect="off"
+          spellCheck={false}
+        />
+        <button
+          className={styles.sendBtn}
+          disabled={!key.trim() || isLoading}
+          onClick={() => void handleActivate()}
+          aria-label={isLoading ? t('ob.step2.verify', lang) : t('ob.step2.activate', lang)}
+        >
+          {isLoading ? <Loader2 size={18} className={styles.spin} /> : <ArrowUp size={18} />}
+        </button>
+      </div>
       <button
         className="ob-link"
         onClick={() => window.open('https://pikaxustudio.gumroad.com/l/sisa-app', '_blank')}
