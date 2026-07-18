@@ -16,6 +16,8 @@ interface UseChatRevealArgs {
   historyEntries: TranscriptEntry[]
   activeStepEntries: TranscriptEntry[]
   activeStepKey: string
+  /** While true, holds off starting the reveal sequence (e.g. a brand intro is playing). */
+  paused?: boolean
 }
 
 interface UseChatRevealResult {
@@ -38,6 +40,7 @@ export function useChatReveal({
   historyEntries,
   activeStepEntries,
   activeStepKey,
+  paused = false,
 }: UseChatRevealArgs): UseChatRevealResult {
   const reduceMotion = usePrefersReducedMotion()
   const [revealedCount, setRevealedCount] = useState(0)
@@ -81,6 +84,7 @@ export function useChatReveal({
   // Gap, then typing indicator, then mount the next entry — waits for awaitingReveal to
   // clear (the mounted entry's own reveal finishing) before it will run again.
   useEffect(() => {
+    if (paused) return undefined
     if (instantStep || reduceMotion) return undefined
     if (revealedCount >= activeStepEntries.length) return undefined
     if (awaitingReveal) return undefined
@@ -99,7 +103,7 @@ export function useChatReveal({
       clearTimeout(preTimer)
       if (typingTimer) clearTimeout(typingTimer)
     }
-  }, [revealedCount, activeStepEntries.length, reduceMotion, awaitingReveal, instantStep])
+  }, [revealedCount, activeStepEntries.length, reduceMotion, awaitingReveal, instantStep, paused])
 
   // Everything caught up and the last entry finished revealing — bring the dock in.
   useEffect(() => {

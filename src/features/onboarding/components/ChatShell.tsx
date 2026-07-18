@@ -7,6 +7,7 @@ import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
 import { useChatReveal } from './useChatReveal'
 import { ChatTranscript } from './ChatTranscript'
+import { ChatIntro } from './ChatIntro'
 import styles from './ChatShell.module.css'
 
 interface ChatShellProps {
@@ -15,6 +16,9 @@ interface ChatShellProps {
   historyEntries: TranscriptEntry[]
   activeStepEntries: TranscriptEntry[]
   dock: ReactNode | null
+  /** True only for the very first, not-yet-played brand intro (fresh start on langCurrency). */
+  introActive?: boolean
+  onIntroDone?: () => void
 }
 
 export function ChatShell({
@@ -23,6 +27,8 @@ export function ChatShell({
   historyEntries,
   activeStepEntries,
   dock,
+  introActive = false,
+  onIntroDone,
 }: ChatShellProps) {
   const lang = useLanguage()
   const filled = getProgressCount(step)
@@ -32,11 +38,13 @@ export function ChatShell({
   const touchStartY = useRef<number | null>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
+  const introAnchorRef = useRef<HTMLDivElement>(null)
 
   const { entries, animateFromIndex, showTyping, dockVisible, onEntryDone } = useChatReveal({
     historyEntries,
     activeStepEntries,
     activeStepKey: step,
+    paused: introActive,
   })
 
   useEffect(() => {
@@ -105,12 +113,15 @@ export function ChatShell({
           showTyping={showTyping}
           onEntryDone={onEntryDone}
           contentRef={contentRef}
+          leadingAnchorRef={introActive ? introAnchorRef : undefined}
         />
       </div>
 
       {dock && (
         <div className={`${styles.dock} ${dockVisible ? styles.dockVisible : ''}`}>{dock}</div>
       )}
+
+      {introActive && onIntroDone && <ChatIntro anchorRef={introAnchorRef} onDone={onIntroDone} />}
     </div>
   )
 }

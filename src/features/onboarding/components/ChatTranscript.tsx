@@ -1,3 +1,4 @@
+import type { RefObject } from 'react'
 import type { TranscriptEntry } from './chatTranscript.types'
 import { BotBubble, UserBubble, CardEntry, TypingIndicator } from './ChatBubble'
 import styles from './ChatShell.module.css'
@@ -8,6 +9,8 @@ interface Props {
   showTyping: boolean
   onEntryDone: (id: string) => void
   contentRef?: React.Ref<HTMLDivElement>
+  /** Hidden avatar-slot anchor the brand intro measures its landing spot against. */
+  leadingAnchorRef?: RefObject<HTMLDivElement>
 }
 
 export function ChatTranscript({
@@ -16,6 +19,7 @@ export function ChatTranscript({
   showTyping,
   onEntryDone,
   contentRef,
+  leadingAnchorRef,
 }: Props) {
   let lastRole: 'bot' | 'user' | null = null
 
@@ -52,6 +56,15 @@ export function ChatTranscript({
 
   return (
     <div className={styles.transcriptInner} ref={contentRef}>
+      {leadingAnchorRef && (
+        <div className={styles.row}>
+          <div
+            className={styles.avatarSlot}
+            ref={leadingAnchorRef}
+            style={{ visibility: 'hidden' }}
+          />
+        </div>
+      )}
       {rendered}
       {showTyping && <TypingIndicator />}
     </div>
