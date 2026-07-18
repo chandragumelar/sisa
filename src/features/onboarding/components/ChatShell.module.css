@@ -1,0 +1,234 @@
+.screen {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--canvas);
+  padding: 0 24px 32px;
+  max-width: 390px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.header {
+  flex-shrink: 0;
+  padding-top: 8px;
+  margin-bottom: 0;
+}
+
+.headerRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.backBtn {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  padding: 4px 2px;
+  cursor: pointer;
+  color: var(--ink-secondary);
+  display: flex;
+  align-items: center;
+  border-radius: var(--radius-xs);
+  line-height: 0;
+}
+.backBtn:active {
+  background: var(--border-hair);
+}
+
+.segments {
+  display: flex;
+  gap: 4px;
+}
+
+.segment {
+  flex: 1;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--border-hair);
+  transition: background 0.2s;
+}
+
+.segmentDone {
+  flex: 1;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--accent);
+  transition: background 0.2s;
+}
+
+.segmentActive {
+  flex: 2;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--accent);
+  transition: background 0.2s;
+}
+
+.stepLabel {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+  margin-top: 6px;
+}
+
+/* ── Transcript ───────────────────────────────────────── */
+
+.transcriptArea {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.transcriptInner {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 0;
+}
+
+.row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.rowUser {
+  justify-content: flex-end;
+}
+
+.avatarSlot {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: block;
+  object-fit: cover;
+}
+
+.bubble {
+  max-width: 80%;
+  padding: 12px 14px;
+  font-size: 14px;
+  line-height: 1.45;
+  font-family: var(--font-sans);
+}
+
+.bubbleBot {
+  background: var(--canvas);
+  border: 1px solid var(--border-soft);
+  border-radius: 20px;
+  border-bottom-left-radius: 6px;
+  color: var(--ink);
+}
+
+.bubbleUser {
+  background: var(--accent);
+  color: var(--accent-text);
+  border-radius: 20px;
+  border-bottom-right-radius: 6px;
+}
+
+.cardWrap {
+  flex: 1;
+  min-width: 0;
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  border-radius: 20px;
+  padding: var(--pad-card);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Typing indicator ─────────────────────────────────── */
+
+.typing {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 15px 16px;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ink-tertiary);
+  animation: chatDotPulse 1.2s ease-in-out infinite;
+}
+.dot:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.dot:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes chatDotPulse {
+  0%,
+  60%,
+  100% {
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+  30% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ── Reveal animation (bubble + card pop-in) ─────────────── */
+
+.pop {
+  opacity: 0;
+  transform: translateY(8px) scale(0.96);
+  transition:
+    opacity 260ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.pop.popIn {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* ── Input dock ───────────────────────────────────────── */
+
+.dock {
+  flex-shrink: 0;
+  padding-top: 14px;
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 220ms ease,
+    transform 220ms ease;
+  pointer-events: none;
+}
+.dockVisible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pop {
+    transition: none;
+    transform: none;
+    opacity: 1;
+  }
+  .dock {
+    transition: none;
+    transform: none;
+  }
+  .dot {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}

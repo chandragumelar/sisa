@@ -1,24 +1,48 @@
-import { useRef, type ReactNode } from 'react'
+import { useEffect, useRef, type ReactNode } from 'react'
 import { ChevronLeft } from 'lucide-react'
 import type { OnboardingStep } from '../onboarding.types'
+import type { TranscriptEntry } from './chatTranscript.types'
 import { getProgressCount, TOTAL_PROGRESS_DOTS } from '../onboarding.utils'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
-import styles from './OnboardingShell.module.css'
+import { useChatReveal } from './useChatReveal'
+import { ChatTranscript } from './ChatTranscript'
+import styles from './ChatShell.module.css'
 
-interface OnboardingShellProps {
+interface ChatShellProps {
   step: OnboardingStep
-  children: ReactNode
   onBack?: () => void
+  historyEntries: TranscriptEntry[]
+  activeStepEntries: TranscriptEntry[]
+  dock: ReactNode | null
 }
 
-export function OnboardingShell({ step, children, onBack }: OnboardingShellProps) {
+export function ChatShell({
+  step,
+  onBack,
+  historyEntries,
+  activeStepEntries,
+  dock,
+}: ChatShellProps) {
   const lang = useLanguage()
   const filled = getProgressCount(step)
   const filledStr = String(filled).padStart(2, '0')
   const totalStr = String(TOTAL_PROGRESS_DOTS).padStart(2, '0')
   const touchStartX = useRef<number | null>(null)
   const touchStartY = useRef<number | null>(null)
+  const scrollRef = useRef<HTMLDivElement>(null)
+
+  const { entries, animateFromIndex, showTyping, dockVisible } = useChatReveal({
+    historyEntries,
+    activeStepEntries,
+    activeStepKey: step,
+  })
+
+  useEffect(() => {
+    const el = scrollRef.current
+    if (!el) return
+    el.scrollTo({ top: el.scrollHeight })
+  }, [entries.length, showTyping, dockVisible])
 
   function handleTouchStart(e: React.TouchEvent) {
     touchStartX.current = e.touches[0].clientX
@@ -62,7 +86,18 @@ export function OnboardingShell({ step, children, onBack }: OnboardingShellProps
           </div>
         </div>
       )}
-      <div className={styles.body}>{children}</div>
+
+      <div className={styles.transcriptArea} ref={scrollRef}>
+        <ChatTranscript
+          entries={entries}
+          animateFromIndex={animateFromIndex}
+          showTyping={showTyping}
+        />
+      </div>
+
+      {dock && (
+        <div className={`${styles.dock} ${dockVisible ? styles.dockVisible : ''}`}>{dock}</div>
+      )}
     </div>
   )
 }
