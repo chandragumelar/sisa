@@ -34,7 +34,7 @@ export function App() {
   useEffect(() => {
     getSettings().then((s) => {
       if (!s) return
-      applyTheme(s.theme)
+      applyTheme(IS_DEMO ? 'dark' : s.theme)
       applyLanguage(s.language)
       if (!s.onboardingCompleted) return
       // Non-blocking FX rate refresh — run after theme/language are applied
