@@ -6,9 +6,17 @@ interface Props {
   entries: TranscriptEntry[]
   animateFromIndex: number
   showTyping: boolean
+  onEntryDone: (id: string) => void
+  contentRef?: React.Ref<HTMLDivElement>
 }
 
-export function ChatTranscript({ entries, animateFromIndex, showTyping }: Props) {
+export function ChatTranscript({
+  entries,
+  animateFromIndex,
+  showTyping,
+  onEntryDone,
+  contentRef,
+}: Props) {
   let lastRole: 'bot' | 'user' | null = null
 
   const rendered = entries.map((entry, index) => {
@@ -21,18 +29,29 @@ export function ChatTranscript({ entries, animateFromIndex, showTyping }: Props)
     }
     if (entry.card) {
       return (
-        <CardEntry key={entry.id} showAvatar={showAvatar} animate={animate}>
+        <CardEntry
+          key={entry.id}
+          showAvatar={showAvatar}
+          animate={animate}
+          onDone={() => onEntryDone(entry.id)}
+        >
           {entry.card}
         </CardEntry>
       )
     }
     return (
-      <BotBubble key={entry.id} text={entry.text ?? ''} showAvatar={showAvatar} animate={animate} />
+      <BotBubble
+        key={entry.id}
+        text={entry.text ?? ''}
+        showAvatar={showAvatar}
+        animate={animate}
+        onDone={() => onEntryDone(entry.id)}
+      />
     )
   })
 
   return (
-    <div className={styles.transcriptInner}>
+    <div className={styles.transcriptInner} ref={contentRef}>
       {rendered}
       {showTyping && <TypingIndicator />}
     </div>

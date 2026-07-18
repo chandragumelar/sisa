@@ -31,8 +31,9 @@ export function ChatShell({
   const touchStartX = useRef<number | null>(null)
   const touchStartY = useRef<number | null>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
+  const contentRef = useRef<HTMLDivElement>(null)
 
-  const { entries, animateFromIndex, showTyping, dockVisible } = useChatReveal({
+  const { entries, animateFromIndex, showTyping, dockVisible, onEntryDone } = useChatReveal({
     historyEntries,
     activeStepEntries,
     activeStepKey: step,
@@ -43,6 +44,19 @@ export function ChatShell({
     if (!el) return
     el.scrollTo({ top: el.scrollHeight })
   }, [entries.length, showTyping, dockVisible])
+
+  // Catches everything else that changes the transcript's height — typewriter reveal,
+  // card fields appearing/disappearing — so long content never runs off-screen while typing.
+  useEffect(() => {
+    const scrollEl = scrollRef.current
+    const contentEl = contentRef.current
+    if (!scrollEl || !contentEl || typeof ResizeObserver === 'undefined') return undefined
+    const observer = new ResizeObserver(() => {
+      scrollEl.scrollTo({ top: scrollEl.scrollHeight })
+    })
+    observer.observe(contentEl)
+    return () => observer.disconnect()
+  }, [])
 
   function handleTouchStart(e: React.TouchEvent) {
     touchStartX.current = e.touches[0].clientX
@@ -64,12 +78,9 @@ export function ChatShell({
         <div className={styles.header}>
           <div className={styles.headerRow}>
             {onBack && (
-              <button
-                className={styles.backBtn}
-                onClick={onBack}
-                aria-label={t('common.back_aria', lang)}
-              >
+              <button className={styles.backBtn} onClick={onBack}>
                 <ChevronLeft size={18} />
+                <span>{t('common.back_aria', lang)}</span>
               </button>
             )}
             <div className={styles.segments} aria-hidden="true">
@@ -92,6 +103,8 @@ export function ChatShell({
           entries={entries}
           animateFromIndex={animateFromIndex}
           showTyping={showTyping}
+          onEntryDone={onEntryDone}
+          contentRef={contentRef}
         />
       </div>
 
