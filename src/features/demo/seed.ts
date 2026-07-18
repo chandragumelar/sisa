@@ -559,7 +559,7 @@ function buildSettings(dates: DemoDates): Settings {
   return {
     id: 1,
     language: 'en',
-    theme: 'system',
+    theme: 'dark',
     incomeType: 'tetap',
     incomeDay: 25,
     freelanceMinBalance: null,
