@@ -296,7 +296,7 @@ select.ob-input {
 /* Placeholder must win over the value rule above with equal specificity, or it
    inherits the big mono figure style and clips/looks oversized. */
 .ob-input-prefix + .ob-input-bare::placeholder {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   font-family: var(--font-sans);
   font-feature-settings: normal;
@@ -358,7 +358,7 @@ select.ob-input {
 .ob-currency-btn {
   width: auto;
   height: 52px;
-  padding: 0 12px 0 14px;
+  padding: 0 10px 0 12px;
   border-radius: var(--radius-pill);
   cursor: pointer;
   background: var(--surface);

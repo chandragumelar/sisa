@@ -935,9 +935,9 @@ const id: StringDictionary = {
   'ob.step4c.next': 'Lanjut',
 
   'ob.step4d.heading': 'Dompet lo',
-  'ob.step4d.sub': 'Tambah rekening, dompet tunai, atau e-wallet. Saldo bisa diisi nanti.',
+  'ob.step4d.sub': 'Tambah rekening, dompet tunai, atau e-wallet.',
   'ob.step4d.wallet_label': 'Dompet {n}',
-  'ob.step4d.balance_label': 'Saldo sekarang (opsional)',
+  'ob.step4d.balance_label': 'Saldo sekarang',
   'ob.step4d.add_more': '+ Tambah dompet lain',
   'ob.step4d.next': 'Lanjut',
   'ob.step4d.remove_aria': 'Hapus dompet',
@@ -1805,9 +1805,9 @@ const en: StringDictionary = {
   'ob.step4c.next': 'Next',
 
   'ob.step4d.heading': 'Your wallets',
-  'ob.step4d.sub': 'Add your bank accounts, cash, or e-wallets. You can fill in balances later.',
+  'ob.step4d.sub': 'Add your bank accounts, cash, or e-wallets.',
   'ob.step4d.wallet_label': 'Wallet {n}',
-  'ob.step4d.balance_label': 'Current balance (optional)',
+  'ob.step4d.balance_label': 'Current balance',
   'ob.step4d.add_more': '+ Add another wallet',
   'ob.step4d.next': 'Next',
   'ob.step4d.remove_aria': 'Remove wallet',
