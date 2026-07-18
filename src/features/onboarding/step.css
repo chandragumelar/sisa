@@ -6,7 +6,7 @@
 .ob-heading {
   font-family: var(--font-sans);
   font-size: 16px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.2px;
   line-height: 1.15;
   color: var(--ink-primary);
@@ -14,7 +14,8 @@
 }
 
 .ob-subheading {
-  font-size: 12.5px;
+  font-size: 13px;
+  font-weight: 400;
   color: var(--ink-tertiary);
   line-height: 1.5;
   margin-bottom: 16px;
@@ -191,7 +192,7 @@
 }
 .ob-field-label {
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--ink-secondary);
   margin-bottom: 8px;
   display: block;
@@ -205,7 +206,8 @@
   border-radius: var(--radius-input);
   height: 52px;
   padding: 0 14px;
-  font-size: 14px;
+  font-size: 15px;
+  font-weight: 500;
   color: var(--ink-primary);
   width: 100%;
   font-family: var(--font-sans);
@@ -266,7 +268,8 @@ select.ob-input {
 .ob-input-bare {
   flex: 1;
   padding: 12px 12px 12px 0;
-  font-size: 14px;
+  font-size: 15px;
+  font-weight: 500;
   color: var(--ink-primary);
   background: none;
   border: none;
@@ -274,12 +277,17 @@ select.ob-input {
   font-family: var(--font-sans);
   min-width: 0;
 }
+.ob-input-bare::placeholder {
+  font-size: 14px;
+  font-weight: 500;
+}
 /* Value field that follows a prefix badge (nominal amounts) — big mono figure */
 .ob-input-prefix + .ob-input-bare {
   font-family: var(--font-mono);
-  font-size: 19px;
-  font-weight: 700;
+  font-size: 16px;
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
 }
 
 /* Select / picker trigger */
@@ -333,18 +341,31 @@ select.ob-input {
   padding-left: 12px;
 }
 
-/* Currency code prefix button in balance row — pill override of the circular .ob-input-prefix badge */
+/* Currency code prefix button in balance row — pill override of the circular .ob-input-prefix
+   badge, styled as an obvious tappable control (border + chevron) rather than a static badge */
 .ob-currency-btn {
   width: auto;
-  height: 32px;
-  padding: 0 10px;
+  height: 52px;
+  padding: 0 12px 0 14px;
   border-radius: var(--radius-pill);
   cursor: pointer;
-  background: var(--accent-bg);
-  border: none;
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+}
+.ob-currency-btn::after {
+  content: '';
+  width: 0;
+  height: 0;
+  margin-left: 6px;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid var(--ink-tertiary);
 }
 .ob-currency-btn:hover {
   color: var(--accent);
+}
+.ob-currency-btn:active {
+  background: var(--accent-bg);
 }
 
 /* Small inline remove button (✕) */
@@ -376,7 +397,7 @@ select.ob-input {
   align-items: center;
   justify-content: center;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--accent);
   text-align: center;
   border: 1.5px dashed var(--accent-br);
@@ -406,11 +427,9 @@ select.ob-input {
 }
 
 .ob-label {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 1.1px;
-  text-transform: uppercase;
-  color: var(--ink-tertiary);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-secondary);
   font-family: var(--font-sans);
 }
 
@@ -453,7 +472,7 @@ select.ob-input {
   border: 1.5px dashed var(--accent-br);
   background: var(--accent-bg);
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--accent);
   cursor: pointer;
   font-family: var(--font-sans);
@@ -478,8 +497,8 @@ select.ob-input {
 }
 
 .ob-footer-total-amt {
-  font-size: 18px;
-  font-weight: 700;
+  font-size: 16px;
+  font-weight: 600;
   font-family: var(--font-mono);
   font-feature-settings: 'tnum';
 }
