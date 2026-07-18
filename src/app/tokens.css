@@ -55,6 +55,8 @@
   --radius-pill: 999px;
   --radius-squircle: 12px;
   --radius-sheet: 24px;
+  --radius-bubble: 20px;
+  --motion-pop: 260ms cubic-bezier(0.34, 1.56, 0.64, 1);
   --pad-page: 14px;
   --pad-card: 18px;
   --gap-cards: 10px;
