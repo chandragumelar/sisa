@@ -43,7 +43,7 @@ export function DockLangCurrency({ onBotSay, onNext }: Props) {
 
   if (!selectedLang) {
     return (
-      <div className={styles.chipRow}>
+      <div className={`${styles.chipRow} ${styles.dockPop}`}>
         <button className={styles.chip} onClick={() => pickLang('id')}>
           {LANG_LABELS.id}
         </button>
@@ -55,7 +55,7 @@ export function DockLangCurrency({ onBotSay, onNext }: Props) {
   }
 
   return (
-    <div className={styles.stack}>
+    <div className={`${styles.stack} ${styles.dockPop}`}>
       <button className={styles.selectChip} onClick={() => setSheetOpen(true)}>
         {selectedCurrency
           ? `${selectedCurrency.code} — ${selectedCurrency.name}`

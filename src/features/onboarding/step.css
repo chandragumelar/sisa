@@ -31,7 +31,7 @@
   background: var(--accent);
   color: var(--accent-text);
   border: none;
-  border-radius: var(--radius-button);
+  border-radius: var(--radius-bubble);
   padding: 14px 18px;
   font-size: 15px;
   font-weight: 600;
@@ -39,7 +39,9 @@
   cursor: pointer;
   font-family: var(--font-sans);
   text-align: center;
-  transition: background 0.15s;
+  transition:
+    background 0.15s,
+    transform var(--motion-pop);
 }
 .ob-primary-btn:disabled {
   opacity: 0.38;
@@ -47,6 +49,7 @@
 }
 .ob-primary-btn:active:not(:disabled) {
   background: var(--accent-hover);
+  transform: scale(0.98);
 }
 
 /* Ghost / secondary button */
@@ -54,8 +57,8 @@
   width: 100%;
   background: var(--surface);
   color: var(--ink-primary);
-  border: 1px solid var(--border-hair);
-  border-radius: var(--radius-button);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-bubble);
   padding: 14px 18px;
   font-size: 15px;
   font-weight: 500;
@@ -103,8 +106,8 @@
 /* Selectable option card */
 .ob-option {
   background: var(--surface);
-  border: 2px solid var(--border-hair);
-  border-radius: var(--radius-card);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-bubble);
   padding: 16px 18px;
   display: flex;
   justify-content: space-between;
@@ -116,12 +119,17 @@
   text-align: left;
   font-family: var(--font-sans);
   transition:
+    transform var(--motion-pop),
     border-color 0.15s,
     background 0.15s;
+}
+.ob-option:active {
+  transform: scale(0.98);
 }
 .ob-option-selected {
   border-color: var(--accent);
   background: var(--accent-bg);
+  box-shadow: 0 0 0 0.5px var(--accent);
 }
 
 /* Custom radio dot */
@@ -129,7 +137,7 @@
   width: 17px;
   height: 17px;
   border-radius: 50%;
-  border: 1.5px solid var(--border-hair);
+  border: 1px solid var(--border-hair);
   flex-shrink: 0;
   position: relative;
 }
@@ -191,7 +199,7 @@
 /* Plain text / mono input */
 .ob-input {
   background: var(--surface-2);
-  border: 1px solid var(--border-hair);
+  border: 1px solid var(--border-soft);
   border-radius: var(--radius-button);
   padding: 12px;
   font-size: 14px;

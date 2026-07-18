@@ -46,7 +46,7 @@ export function DockPayConfirm({ previousPaydayMs, onNext }: Props) {
     selected === 'first' || selected === 'preset' || (selected === 'picker' && pickerDateStr !== '')
 
   return (
-    <div className={styles.chipColumn}>
+    <div className={`${styles.chipColumn} ${styles.dockPop}`}>
       <button
         className={`${styles.optionChip} ${selected === 'preset' ? styles.optionChipSelected : ''}`}
         onClick={() => setSelected('preset')}
