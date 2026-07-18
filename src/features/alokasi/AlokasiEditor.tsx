@@ -35,7 +35,11 @@ function NumInput({ value, onChange, symbol, accent = false, compact = false }: 
         className={`${styles.inputNum} ${compact ? styles.inputNumCompact : ''}`}
         value={display}
         onFocus={() => setRaw(value === 0 ? '' : String(value))}
-        onChange={(e) => setRaw(e.target.value.replace(/\D/g, ''))}
+        onChange={(e) => {
+          const cleaned = e.target.value.replace(/\D/g, '')
+          setRaw(cleaned)
+          onChange(parseInt(cleaned || '0', 10))
+        }}
         onBlur={() => {
           if (raw !== null) {
             onChange(parseInt(raw || '0', 10))

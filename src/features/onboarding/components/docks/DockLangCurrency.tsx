@@ -26,6 +26,7 @@ export function DockLangCurrency({ onBotSay, onNext }: Props) {
     setLang(language)
     setSelectedLang(language)
     onBotSay(t('ob.chat.ask_currency', language))
+    onBotSay(t('ob.langCurrency.explainer', language))
   }
 
   function handleSelect(currency: Currency) {
@@ -43,7 +44,7 @@ export function DockLangCurrency({ onBotSay, onNext }: Props) {
 
   if (!selectedLang) {
     return (
-      <div className={styles.chipRow}>
+      <div className={`${styles.chipRow} ${styles.dockPop}`}>
         <button className={styles.chip} onClick={() => pickLang('id')}>
           {LANG_LABELS.id}
         </button>
@@ -55,7 +56,7 @@ export function DockLangCurrency({ onBotSay, onNext }: Props) {
   }
 
   return (
-    <div className={styles.stack}>
+    <div className={`${styles.stack} ${styles.dockPop}`}>
       <button className={styles.selectChip} onClick={() => setSheetOpen(true)}>
         {selectedCurrency
           ? `${selectedCurrency.code} — ${selectedCurrency.name}`

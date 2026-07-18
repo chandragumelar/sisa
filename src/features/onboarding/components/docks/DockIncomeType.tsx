@@ -17,7 +17,7 @@ export function DockIncomeType({ onNext }: Props) {
   const lang = useLanguage()
 
   return (
-    <div className={styles.chipColumn}>
+    <div className={`${styles.chipColumn} ${styles.dockPop}`}>
       {OPTIONS.map((opt) => (
         <button
           key={opt.value}

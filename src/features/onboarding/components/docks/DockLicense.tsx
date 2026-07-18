@@ -3,6 +3,7 @@ import { activateLicense } from '@/features/license/license.utils'
 import { useClock } from '@/app/providers/useClock'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
+import styles from './Dock.module.css'
 
 interface Props {
   onBotSay: (text: string) => void
@@ -39,7 +40,7 @@ export function DockLicense({ onBotSay, onNext }: Props) {
   }
 
   return (
-    <>
+    <div className={`${styles.stack} ${styles.dockPop}`}>
       <input
         className="ob-input ob-input-mono"
         type="text"
@@ -64,6 +65,6 @@ export function DockLicense({ onBotSay, onNext }: Props) {
       >
         {t('ob.step2.buy_cta', lang)}
       </button>
-    </>
+    </div>
   )
 }

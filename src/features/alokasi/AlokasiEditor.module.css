@@ -153,6 +153,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
   background: color-mix(in srgb, var(--signal-safe) 8%, var(--surface));
   border: 1px solid color-mix(in srgb, var(--signal-safe) 30%, transparent);
   border-radius: var(--radius-sm);
@@ -164,12 +165,19 @@
   color: var(--signal-safe);
   font-weight: 500;
   font-family: var(--font-sans);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .jatahRight {
   display: flex;
   align-items: baseline;
   gap: 4px;
+  flex-shrink: 1;
+  min-width: 0;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  text-align: right;
 }
 
 .jatahNum {
