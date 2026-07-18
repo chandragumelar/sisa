@@ -26,6 +26,7 @@ export function DockLangCurrency({ onBotSay, onNext }: Props) {
     setLang(language)
     setSelectedLang(language)
     onBotSay(t('ob.chat.ask_currency', language))
+    onBotSay(t('ob.langCurrency.explainer', language))
   }
 
   function handleSelect(currency: Currency) {

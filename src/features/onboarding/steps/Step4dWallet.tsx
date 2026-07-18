@@ -48,7 +48,11 @@ export function Step4dWallet({ primaryCurrency, wallets, onChange, onNext }: Pro
     setOpenCurrencyPickerFor(null)
   }
 
-  const canProceed = wallets.length > 0 && wallets[0].name.trim() !== ''
+  const canProceed =
+    wallets.length > 0 &&
+    wallets[0].name.trim() !== '' &&
+    parseNominalRaw(wallets[0].balance) !== '' &&
+    parseInt(parseNominalRaw(wallets[0].balance), 10) >= 0
 
   return (
     <>
