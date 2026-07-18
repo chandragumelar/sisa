@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './step.css'
 import { useClock } from '@/app/providers/useClock'
@@ -10,22 +10,19 @@ import { syncTagihanReminder } from '@/lib/supabase/api'
 import { putAllocation } from '@/db/allocation.repository'
 import { computeAnchor } from '@/features/profil/ProfilTagihanSheet.utils'
 import { parseNominalRaw } from '@/shared/utils/formatNominalInput'
-import { OnboardingShell } from './components/OnboardingShell'
-import { StepLangCurrency } from './steps/StepLangCurrency'
-import { Step2License } from './steps/Step2License'
-import { Step4aIncomeType } from './steps/Step4aIncomeType'
-import { Step4bIncomeDetail } from './steps/Step4bIncomeDetail'
-import { StepPayConfirm } from './steps/StepPayConfirm'
-import { Step4dWallet } from './steps/Step4dWallet'
-import { StepTagihan } from './steps/StepTagihan'
-import { StepAlokasi } from './steps/StepAlokasi'
+import { ChatShell } from './components/ChatShell'
+import { StepCardSlot } from './components/StepCardSlot'
+import { DockLangCurrency } from './components/docks/DockLangCurrency'
+import { DockLicense } from './components/docks/DockLicense'
+import { DockIncomeType } from './components/docks/DockIncomeType'
+import { DockPayConfirm } from './components/docks/DockPayConfirm'
+import { getBaseBotLines, CARD_STEPS } from './components/chatScript'
+import type { TranscriptEntry } from './components/chatTranscript.types'
 import {
   INITIAL_ACCUMULATED,
   type OnboardingAccumulated,
   type OnboardingStep,
-  type WalletInput,
 } from './onboarding.types'
-import type { FormState } from '@/features/profil/ProfilTagihanSheet.utils'
 import {
   buildSettings,
   buildWalletRecords,
@@ -35,7 +32,8 @@ import {
 } from './onboarding.utils'
 import { getPaydayDate, calcDaysUntilPayday } from '@/features/home/home.utils'
 import { relock } from '@/shared/utils/budget.utils'
-import type { IncomeFrequency } from '@/db/database'
+import { t } from '@/shared/strings/strings'
+import type { IncomeFrequency, Language } from '@/db/database'
 
 function getPreviousPaydayMs(nextPaydayMs: number, frequency: IncomeFrequency): number {
   const d = new Date(nextPaydayMs)
@@ -51,6 +49,14 @@ export function OnboardingPage() {
   const setLang = useSetLanguage()
   const [step, setStep] = useState<OnboardingStep>('langCurrency')
   const [data, setData] = useState<OnboardingAccumulated>(INITIAL_ACCUMULATED)
+
+  // Presentation-only state — the chat transcript. Never read by advance/back/handleComplete.
+  const [completed, setCompleted] = useState<Array<{ step: OnboardingStep; echo: string }>>([])
+  const [extraBotLines, setExtraBotLines] = useState<string[]>([])
+
+  useEffect(() => {
+    setExtraBotLines([])
+  }, [step])
 
   function back() {
     const prev = getPrevStep(step, data.incomeType)
@@ -155,139 +161,128 @@ export function OnboardingPage() {
     navigate('/', { replace: true, viewTransition: true })
   }
 
-  return (
-    <OnboardingShell step={step} onBack={step !== 'langCurrency' ? back : undefined}>
-      {step === 'langCurrency' && (
-        <StepLangCurrency
-          onNext={({ language, primaryCurrency }) => advance({ language, primaryCurrency })}
-        />
-      )}
-      {step === 'license' && <Step2License onNext={() => advance()} />}
-      {step === 'incomeType' && (
-        <Step4aIncomeType onNext={(incomeType) => advance({ incomeType })} />
-      )}
-      {step === 'incomeDetail' && (
-        <Step4bIncomeDetail
-          incomeType={data.incomeType ?? 'tetap'}
-          currency={data.primaryCurrency ?? 'IDR'}
-          onNext={({
-            incomeDay,
-            freelanceMinBalance,
-            fixedIncome,
-            incomeFrequency,
-            incomeAnchorDate,
-            avgIncome,
-            avgIncomeBasis,
-          }) =>
-            advance({
-              incomeDay,
-              freelanceMinBalance,
-              fixedIncome,
-              incomeFrequency,
-              incomeAnchorDate,
-              avgIncome,
-              avgIncomeBasis,
-            })
-          }
-        />
-      )}
-      {step === 'payConfirm' && (
-        <StepPayConfirm
-          previousPaydayMs={getPreviousPaydayMs(
-            getPaydayDate(clock.now(), {
-              incomeType: data.incomeType ?? 'tetap',
-              incomeFrequency: data.incomeFrequency ?? 'bulanan',
-              incomeAnchorDate: data.incomeAnchorDate,
-              incomeDay: data.incomeDay,
-              weekendBehavior: 'tetap',
-            } as import('@/db/database').Settings).getTime(),
-            data.incomeFrequency ?? 'bulanan',
-          )}
-          onNext={(lastPaydayConfirmed) => advance({ lastPaydayConfirmed })}
-        />
-      )}
-      {step === 'tagihan' && (
-        <StepTagihan
-          tagihan={data.tagihanInputs}
-          currency={data.primaryCurrency ?? 'IDR'}
-          onChange={(tagihanInputs) => setData((d) => ({ ...d, tagihanInputs }))}
-          onNext={() => advance()}
-        />
-      )}
-      {step === 'wallet' && (
-        <Step4dWallet
-          primaryCurrency={data.primaryCurrency ?? 'IDR'}
-          language={data.language}
-          wallets={data.wallets}
-          onChange={(wallets) => setData((d) => ({ ...d, wallets }))}
-          onNext={() => advance()}
-        />
-      )}
-      {step === 'alokasi' &&
-        (() => {
-          const currency = data.primaryCurrency ?? 'IDR'
-          const namedWallets = data.wallets.filter((w) => w.name.trim())
-          const resolveWCur = (w: WalletInput) => w.currency?.trim() || currency
-          const resolveTCur = (tg: FormState) => tg.currency?.trim() || currency
-          const primaryWallets = namedWallets
-            .filter((w) => resolveWCur(w) === currency)
-            .map((w) => ({ name: w.name.trim(), amount: parseWalletBalance(w.balance) }))
-          const otherWallets = namedWallets
-            .filter((w) => resolveWCur(w) !== currency)
-            .map((w) => ({
-              name: w.name.trim(),
-              amount: parseWalletBalance(w.balance),
-              currency: resolveWCur(w),
-            }))
-          const primaryTagihan = data.tagihanInputs
-            .filter((tg) => resolveTCur(tg) === currency)
-            .map((tg) => ({
-              name: tg.name.trim(),
-              amount: parseInt(parseNominalRaw(tg.nominalEstimate), 10) || 0,
-            }))
-          const otherTagihan = data.tagihanInputs
-            .filter((tg) => resolveTCur(tg) !== currency)
-            .map((tg) => ({
-              name: tg.name.trim(),
-              amount: parseInt(parseNominalRaw(tg.nominalEstimate), 10) || 0,
-              currency: resolveTCur(tg),
-            }))
-          const totalSaldo = primaryWallets.reduce((s, w) => s + w.amount, 0)
-          const tagihanTotal = primaryTagihan.reduce((s, tg) => s + tg.amount, 0)
-          const nowMs = clock.now()
-          const nowDate = new Date(nowMs)
-          const effectivePeriodEnd =
-            data.periodEndDate ??
-            new Date(nowDate.getFullYear(), nowDate.getMonth() + 1, 0).getTime()
-          const sisaHari =
-            data.incomeType === 'freelance'
-              ? Math.max(1, Math.round((effectivePeriodEnd - nowMs) / 86_400_000))
-              : calcDaysUntilPayday(nowMs, {
-                  incomeType: data.incomeType ?? 'tetap',
-                  incomeFrequency: data.incomeFrequency ?? 'bulanan',
-                  incomeAnchorDate: data.incomeAnchorDate,
-                  incomeDay: data.incomeDay,
-                  weekendBehavior: 'tetap',
-                } as import('@/db/database').Settings)
-          return (
-            <StepAlokasi
-              incomeType={data.incomeType ?? 'tetap'}
-              totalSaldo={totalSaldo}
-              tagihanTotal={tagihanTotal}
-              sisaHari={sisaHari}
-              currency={currency}
-              periodEndDate={data.periodEndDate}
-              primaryWallets={primaryWallets}
-              primaryTagihan={primaryTagihan}
-              otherWallets={otherWallets}
-              otherTagihan={otherTagihan}
-              onPeriodEndDateChange={(ms) => setData((d) => ({ ...d, periodEndDate: ms }))}
-              onNext={(operasionalBudget, periodEndDate) =>
+  // ── Presentation wiring: pushes the just-answered step into the transcript, then ──
+  // ── defers to the untouched advance()/back() above for the actual state machine. ──
+  function pushCompletedAndAdvance(patch: Partial<OnboardingAccumulated>, echo: string) {
+    setCompleted((c) => [...c, { step, echo }])
+    advance(patch)
+  }
+
+  function popCompletedAndBack() {
+    setCompleted((c) => c.slice(0, -1))
+    back()
+  }
+
+  const lang: Language = data.language ?? 'id'
+
+  const historyEntries: TranscriptEntry[] = completed.flatMap(({ step: s, echo }) => {
+    const botEntries: TranscriptEntry[] = getBaseBotLines(s, lang).map((text, i) => ({
+      id: `${s}-bot-${i}`,
+      role: 'bot',
+      text,
+    }))
+    return [...botEntries, { id: `${s}-echo`, role: 'user', text: echo }]
+  })
+
+  const activeBotEntries: TranscriptEntry[] = getBaseBotLines(step, lang).map((text, i) => ({
+    id: `${step}-bot-${i}`,
+    role: 'bot',
+    text,
+  }))
+  const activeExtraEntries: TranscriptEntry[] = extraBotLines.map((text, i) => ({
+    id: `${step}-extra-${i}`,
+    role: 'bot',
+    text,
+  }))
+  const activeCardEntry: TranscriptEntry[] = CARD_STEPS.includes(step)
+    ? [
+        {
+          id: `${step}-card`,
+          role: 'bot',
+          card: (
+            <StepCardSlot
+              step={step}
+              data={data}
+              nowMs={clock.now()}
+              onDataChange={setData}
+              onIncomeDetailNext={(vals) =>
+                pushCompletedAndAdvance(vals, t('ob.chat.echo_income_detail', lang))
+              }
+              onTagihanNext={() => {
+                const n = data.tagihanInputs.length
+                const echo =
+                  n > 0
+                    ? t('ob.chat.echo_tagihan', lang).replace('{n}', String(n))
+                    : t('ob.chat.echo_tagihan_skip', lang)
+                pushCompletedAndAdvance({}, echo)
+              }}
+              onWalletNext={() => {
+                const n = data.wallets.filter((w) => w.name.trim()).length
+                pushCompletedAndAdvance(
+                  {},
+                  t('ob.chat.echo_wallet', lang).replace('{n}', String(n)),
+                )
+              }}
+              onAlokasiNext={(operasionalBudget, periodEndDate) =>
                 advance({ operasionalBudget, periodEndDate })
               }
             />
-          )
-        })()}
-    </OnboardingShell>
+          ),
+        },
+      ]
+    : []
+
+  const activeStepEntries: TranscriptEntry[] = [
+    ...activeBotEntries,
+    ...activeExtraEntries,
+    ...activeCardEntry,
+  ]
+
+  const onBotSay = (text: string) => setExtraBotLines((prev) => [...prev, text])
+
+  let dock: React.ReactNode = null
+  if (step === 'langCurrency') {
+    dock = (
+      <DockLangCurrency
+        onBotSay={onBotSay}
+        onNext={(result, echo) => pushCompletedAndAdvance(result, echo)}
+      />
+    )
+  } else if (step === 'license') {
+    dock = <DockLicense onBotSay={onBotSay} onNext={(echo) => pushCompletedAndAdvance({}, echo)} />
+  } else if (step === 'incomeType') {
+    dock = (
+      <DockIncomeType
+        onNext={(incomeType, echo) => pushCompletedAndAdvance({ incomeType }, echo)}
+      />
+    )
+  } else if (step === 'payConfirm') {
+    dock = (
+      <DockPayConfirm
+        previousPaydayMs={getPreviousPaydayMs(
+          getPaydayDate(clock.now(), {
+            incomeType: data.incomeType ?? 'tetap',
+            incomeFrequency: data.incomeFrequency ?? 'bulanan',
+            incomeAnchorDate: data.incomeAnchorDate,
+            incomeDay: data.incomeDay,
+            weekendBehavior: 'tetap',
+          } as import('@/db/database').Settings).getTime(),
+          data.incomeFrequency ?? 'bulanan',
+        )}
+        onNext={(lastPaydayConfirmed, echo) =>
+          pushCompletedAndAdvance({ lastPaydayConfirmed }, echo)
+        }
+      />
+    )
+  }
+
+  return (
+    <ChatShell
+      step={step}
+      onBack={step !== 'langCurrency' ? popCompletedAndBack : undefined}
+      historyEntries={historyEntries}
+      activeStepEntries={activeStepEntries}
+      dock={dock}
+    />
   )
 }
