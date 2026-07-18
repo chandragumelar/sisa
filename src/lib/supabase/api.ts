@@ -92,19 +92,27 @@ export async function sendUsagePing(clock: Clock): Promise<void> {
     const featuresUsed = new Set(getUsedFeatures())
     if (wallets.length > 1) featuresUsed.add('multi_wallet')
 
-    await supabase.from('usage_ping').upsert({
-      anonymous_id: anonId,
-      day: today,
-      app_version: null, // no build-exposed app version constant in this repo yet
-      has_license: licenseStatus === 'active',
-      is_demo: import.meta.env.VITE_DEMO === '1',
-      locale: settings?.language ?? null,
-      theme: settings?.theme ?? null,
-      primary_currency: settings?.primaryCurrency ?? null,
-      platform: detectPlatform(navigator.userAgent),
-      tx_count_bucket: bucketTxCount(txCount),
-      features_used: [...featuresUsed],
-    })
+    const { error } = await supabase.from('usage_ping').upsert(
+      {
+        anonymous_id: anonId,
+        day: today,
+        app_version: null, // no build-exposed app version constant in this repo yet
+        has_license: licenseStatus === 'active',
+        is_demo: import.meta.env.VITE_DEMO === '1',
+        locale: settings?.language ?? null,
+        theme: settings?.theme ?? null,
+        primary_currency: settings?.primaryCurrency ?? null,
+        platform: detectPlatform(navigator.userAgent),
+        tx_count_bucket: bucketTxCount(txCount),
+        features_used: [...featuresUsed],
+      },
+      { onConflict: 'anonymous_id,day' },
+    )
+
+    if (error) {
+      console.debug('[usage_ping]', error.message)
+      return
+    }
 
     localStorage.setItem(LAST_PING_STORAGE_KEY, today)
   } catch {
