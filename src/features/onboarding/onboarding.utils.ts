@@ -22,6 +22,8 @@ export function getPrevStep(
       return 'tagihan'
     case 'alokasi':
       return 'wallet'
+    case 'handoff':
+      return null
   }
 }
 
@@ -36,6 +38,7 @@ const STEP_PROGRESS: Record<OnboardingStep, number> = {
   tagihan: 4,
   wallet: 4,
   alokasi: 5,
+  handoff: 5,
 }
 
 export function getProgressCount(step: OnboardingStep): number {
@@ -62,6 +65,8 @@ export function getNextStep(
     case 'wallet':
       return 'alokasi'
     case 'alokasi':
+      return 'handoff'
+    case 'handoff':
       return 'done'
   }
 }

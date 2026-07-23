@@ -10,6 +10,7 @@ export type OnboardingStep =
   | 'tagihan'
   | 'wallet'
   | 'alokasi'
+  | 'handoff'
 
 export interface WalletInput {
   id: string
