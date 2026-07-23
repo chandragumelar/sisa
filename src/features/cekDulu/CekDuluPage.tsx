@@ -23,7 +23,7 @@ import { calcUnpaidTagihanTotal } from '@/features/home/tagihan.utils'
 import { calcBudgetPeriode, resolveBudgetView } from '@/shared/utils/budget.utils'
 import { formatCurrency, getCurrencySymbol } from '@/shared/utils/formatCurrency'
 import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
-import { calcCekDulu } from './cekDulu.utils'
+import { calcCekDulu, fillWarnPlaceholders } from './cekDulu.utils'
 import { QuickLogSheet } from '@/features/quickLog/QuickLogSheet'
 import { markFeatureUsed } from '@/lib/featureUsage'
 import styles from './CekDuluPage.module.css'
@@ -228,6 +228,11 @@ export function CekDuluPage() {
       ? Math.round((-result.dailyDelta / result.dailyBefore) * 100)
       : 0
 
+  const fundPct =
+    result && data && data.mengendap > 0
+      ? Math.max(0, Math.round((result.mengendapAfter / data.mengendap) * 100))
+      : 0
+
   let tier: WarnTier = 'diam'
   if (result) {
     const { mengendapDrawn, mengendapAfter, dailyBefore } = result
@@ -281,10 +286,7 @@ export function CekDuluPage() {
               : null
 
   const warnText = warnKey
-    ? t(warnKey, lang)
-        .replace('{dropPct}', String(dropPct))
-        .replace('{recoveryDays}', String(result.recoveryDays))
-        .replace('{daysUntilPayday}', String(daysUntilPayday))
+    ? fillWarnPlaceholders(t(warnKey, lang), { dropPct, fundPct, daysUntilPayday })
     : null
 
   const warnBoxClass = tier === 'tier2' ? styles.warnCaution : isGated ? styles.warnDanger : ''
