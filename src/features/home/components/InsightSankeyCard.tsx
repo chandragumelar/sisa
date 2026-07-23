@@ -4,7 +4,6 @@ import { useLanguage } from '@/app/providers/useLanguage'
 import type { Language } from '@/db/database'
 import { getTransactionsByDateRange } from '@/db/transactions.repository'
 import { aggregateByCategory } from '@/features/insight/insight.utils'
-import { getCurrencyLabel } from '@/constants/currencies'
 import { t } from '@/shared/strings/strings'
 import { getCategoryDisplayName } from '../../category/category-display'
 import { formatCompactCurrency } from './sankey.utils'
@@ -237,9 +236,7 @@ export function InsightSankeyCard({ currency, nowMs, sisaUang }: Props) {
       className={homeStyles.insightCard}
       onClick={() => navigate('/insight', { viewTransition: true })}
     >
-      <span className={styles.title}>
-        {t('home.sankey_title', lang).replace('{cur}', getCurrencyLabel(currency, lang))}
-      </span>
+      <span className={styles.title}>{t('home.sankey_title', lang)}</span>
 
       <div className={styles.headerDivider} />
 

@@ -3,7 +3,6 @@ import { Info } from 'lucide-react'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
-import { getCurrencyLabel } from '@/constants/currencies'
 import { BottomSheet } from '@/shared/components/BottomSheet'
 import styles from './JatahHarianCard.module.css'
 
@@ -37,7 +36,6 @@ export function JatahHarianCard({
   saldoBertahan,
 }: Props) {
   const lang = useLanguage()
-  const curLabel = getCurrencyLabel(currency, lang)
   const [tooltipOpen, setTooltipOpen] = useState(false)
   const isOverBar = spentToday > jatahHariIni && jatahHariIni > 0
   const fillPct = isOverBar
@@ -115,9 +113,7 @@ export function JatahHarianCard({
       <div className={cardClass}>
         <div className={styles.headerRow}>
           <div className={styles.labelRow}>
-            <span className={styles.label}>
-              {t('home.jatah_harian_dynamic', lang).replace('{cur}', curLabel)}
-            </span>
+            <span className={styles.label}>{t('home.jatah_harian_dynamic', lang)}</span>
             <button
               className={styles.tooltipBtn}
               onClick={() => setTooltipOpen(true)}
