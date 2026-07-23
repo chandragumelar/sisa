@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { ReactNode } from 'react'
-import { Info, Clock, Lock } from 'lucide-react'
+import { Info, Clock, Lock, ChevronDown, ChevronUp } from 'lucide-react'
 import type { BudgetMode } from '@/shared/utils/budget.utils'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
 import { useLanguage } from '@/app/providers/useLanguage'
@@ -8,6 +8,8 @@ import { t } from '@/shared/strings/strings'
 import { getCurrencyLabel } from '@/constants/currencies'
 import { BottomSheet } from '@/shared/components/BottomSheet'
 import styles from './SaldoModule.module.css'
+
+const RINCIAN_COLLAPSED_KEY = 'sisa:saldoRincianCollapsed'
 
 interface Props {
   currency: string
@@ -39,7 +41,13 @@ export function SaldoModule({
   onEditAlokasi,
 }: Props) {
   const lang = useLanguage()
-  const [expanded, setExpanded] = useState(false)
+  const [expanded, setExpanded] = useState(() => {
+    try {
+      return localStorage.getItem(RINCIAN_COLLAPSED_KEY) !== '1'
+    } catch {
+      return true
+    }
+  })
   const [tooltipOpen, setTooltipOpen] = useState(false)
 
   const curLabel = getCurrencyLabel(currency, lang)
@@ -48,6 +56,22 @@ export function SaldoModule({
   const paydayLabel = `${nextPaydayDate.getDate()} ${nextPaydayDate.toLocaleString(lang === 'en' ? 'en-US' : 'id-ID', { month: 'short' })} ${nextPaydayDate.getFullYear()}`
 
   const cadanganState = sisaUang > 0 ? 'aman' : mengendap > 0 ? 'makan-cadangan' : 'cadangan-habis'
+
+  function toggleExpanded() {
+    setExpanded((v) => {
+      const next = !v
+      try {
+        if (next) {
+          localStorage.removeItem(RINCIAN_COLLAPSED_KEY)
+        } else {
+          localStorage.setItem(RINCIAN_COLLAPSED_KEY, '1')
+        }
+      } catch {
+        // storage unavailable — state tetap jalan untuk sesi ini
+      }
+      return next
+    })
+  }
 
   return (
     <>
@@ -145,10 +169,18 @@ export function SaldoModule({
               {cadanganState === 'cadangan-habis' && (
                 <p className={styles.cadanganHabis}>{t('saldo.cadangan_habis', lang)}</p>
               )}
-              <button className={styles.expandBtn} onClick={() => setExpanded((v) => !v)}>
-                <span className={styles.expandChevron}>{expanded ? '∧' : '∨'}</span>
+              <button className={styles.expandBtn} onClick={toggleExpanded}>
+                {expanded ? (
+                  <ChevronUp size={12} strokeWidth={1.75} className={styles.expandChevron} />
+                ) : (
+                  <ChevronDown size={12} strokeWidth={1.75} className={styles.expandChevron} />
+                )}
                 {expanded ? t('home.expand_hide', lang) : t('home.expand_show', lang)}
-                <span className={styles.expandChevron}>{expanded ? '∧' : '∨'}</span>
+                {expanded ? (
+                  <ChevronUp size={12} strokeWidth={1.75} className={styles.expandChevron} />
+                ) : (
+                  <ChevronDown size={12} strokeWidth={1.75} className={styles.expandChevron} />
+                )}
               </button>
 
               {expanded && (

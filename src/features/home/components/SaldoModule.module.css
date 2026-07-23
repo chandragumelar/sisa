@@ -189,7 +189,7 @@
 }
 
 .expandChevron {
-  font-size: 10px;
+  flex-shrink: 0;
   opacity: 0.5;
 }
 
