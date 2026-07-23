@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { ReactNode } from 'react'
-import { Info, Clock, Lock } from 'lucide-react'
+import { Info, Clock, Lock, ChevronDown, ChevronUp } from 'lucide-react'
 import type { BudgetMode } from '@/shared/utils/budget.utils'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
 import { useLanguage } from '@/app/providers/useLanguage'
@@ -170,9 +170,17 @@ export function SaldoModule({
                 <p className={styles.cadanganHabis}>{t('saldo.cadangan_habis', lang)}</p>
               )}
               <button className={styles.expandBtn} onClick={toggleExpanded}>
-                <span className={styles.expandChevron}>{expanded ? '∧' : '∨'}</span>
+                {expanded ? (
+                  <ChevronUp size={12} strokeWidth={1.75} className={styles.expandChevron} />
+                ) : (
+                  <ChevronDown size={12} strokeWidth={1.75} className={styles.expandChevron} />
+                )}
                 {expanded ? t('home.expand_hide', lang) : t('home.expand_show', lang)}
-                <span className={styles.expandChevron}>{expanded ? '∧' : '∨'}</span>
+                {expanded ? (
+                  <ChevronUp size={12} strokeWidth={1.75} className={styles.expandChevron} />
+                ) : (
+                  <ChevronDown size={12} strokeWidth={1.75} className={styles.expandChevron} />
+                )}
               </button>
 
               {expanded && (
