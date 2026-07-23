@@ -214,12 +214,13 @@ export function InsightSankeyCard({ currency, nowMs, sisaUang }: Props) {
   }, [nowMs, currency])
 
   const expenseTotal = categoryRows.reduce((s, r) => s + r.amount, 0)
+  if (expenseTotal <= 0) return null
+
   const isOverspend = sisaUang <= 0
   const leftTotal = isOverspend ? expenseTotal : expenseTotal + sisaUang
   const chartRows: SankeyRow[] = isOverspend
     ? categoryRows
     : [...categoryRows, { name: t('home.sankey_node_sisa', lang), amount: sisaUang, isSisa: true }]
-  const hasData = chartRows.length > 0 && leftTotal > 0
 
   const breakdownText = isOverspend
     ? t('home.sankey_breakdown_overspend', lang).replace(
@@ -242,39 +243,33 @@ export function InsightSankeyCard({ currency, nowMs, sisaUang }: Props) {
 
       <div className={styles.headerDivider} />
 
-      {hasData && (
-        <div className={styles.subRow}>
-          <p className={styles.subtext}>{breakdownText}</p>
-          <div className={styles.toggle} onClick={(e) => e.stopPropagation()}>
-            <button
-              className={`${styles.toggleBtn} ${mode === 'nominal' ? styles.toggleBtnActive : ''}`}
-              onClick={() => setMode('nominal')}
-            >
-              {t('home.sankey_toggle_nominal', lang)}
-            </button>
-            <button
-              className={`${styles.toggleBtn} ${mode === 'persen' ? styles.toggleBtnActive : ''}`}
-              onClick={() => setMode('persen')}
-            >
-              {t('home.sankey_toggle_persen', lang)}
-            </button>
-          </div>
+      <div className={styles.subRow}>
+        <p className={styles.subtext}>{breakdownText}</p>
+        <div className={styles.toggle} onClick={(e) => e.stopPropagation()}>
+          <button
+            className={`${styles.toggleBtn} ${mode === 'nominal' ? styles.toggleBtnActive : ''}`}
+            onClick={() => setMode('nominal')}
+          >
+            {t('home.sankey_toggle_nominal', lang)}
+          </button>
+          <button
+            className={`${styles.toggleBtn} ${mode === 'persen' ? styles.toggleBtnActive : ''}`}
+            onClick={() => setMode('persen')}
+          >
+            {t('home.sankey_toggle_persen', lang)}
+          </button>
         </div>
-      )}
+      </div>
 
-      {!hasData ? (
-        <span className={homeStyles.insightCardText}>{t('home.insight_teaser_generic', lang)}</span>
-      ) : (
-        <div className={styles.chartWrap}>
-          <SankeyChart
-            rows={chartRows}
-            leftTotal={leftTotal}
-            currency={currency}
-            mode={mode}
-            lang={lang}
-          />
-        </div>
-      )}
+      <div className={styles.chartWrap}>
+        <SankeyChart
+          rows={chartRows}
+          leftTotal={leftTotal}
+          currency={currency}
+          mode={mode}
+          lang={lang}
+        />
+      </div>
 
       {isOverspend && (
         <span className={styles.overspendBadge}>
