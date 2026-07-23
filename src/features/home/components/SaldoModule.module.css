@@ -7,7 +7,11 @@
 /* ── Card base ───────────────────────────────────────────── */
 .card {
   background: var(--surface);
-  background: linear-gradient(160deg, var(--accent-bg) 0%, var(--surface) 65%);
+  background: linear-gradient(
+    160deg,
+    var(--accent-bg-elevated, var(--accent-bg)) 0%,
+    var(--surface) 65%
+  );
   border: none;
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-card);

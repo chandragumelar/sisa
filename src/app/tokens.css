@@ -149,6 +149,14 @@
   --accent-bg: #1e1830;
   --accent-br: #3a2e5c;
   --accent-text: #ffffff;
+  /* Dark-only, one consumer: SaldoModule's elevated-card gradient.
+     --accent-bg itself can't move — it's also the background under
+     ~accent text (chips, option-selected labels, add-line buttons)
+     in 5+ other files, and raising it there drops that text's
+     contrast from ~4:1 to ~2.5:1. #403366 is the low end of the
+     1.6–1.8:1-vs-surface range — just enough to read as different,
+     not a competing focal point above the sisa number. */
+  --accent-bg-elevated: #403366;
 
   /* Signals — bg/br gelap-redup, fg terang */
   --signal-danger: #f0685f;
