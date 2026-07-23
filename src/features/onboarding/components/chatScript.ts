@@ -42,4 +42,5 @@ export const CARD_STEPS: readonly OnboardingStep[] = [
   'tagihan',
   'wallet',
   'alokasi',
+  'handoff',
 ]
