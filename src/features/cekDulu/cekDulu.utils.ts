@@ -75,3 +75,15 @@ export function calcCekDulu(input: CekDuluInput): CekDuluResult {
     recoveryDays,
   }
 }
+
+/** Fills all placeholder tokens in a warning copy template. Replaces every
+ * occurrence (not just the first) since some copy repeats a token twice. */
+export function fillWarnPlaceholders(
+  template: string,
+  vals: { dropPct: number; fundPct: number; daysUntilPayday: number },
+): string {
+  return template
+    .replace(/\{dropPct\}/g, String(vals.dropPct))
+    .replace(/\{fundPct\}/g, String(vals.fundPct))
+    .replace(/\{daysUntilPayday\}/g, String(vals.daysUntilPayday))
+}
