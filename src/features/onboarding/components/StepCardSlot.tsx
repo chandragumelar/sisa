@@ -2,7 +2,13 @@ import { Step4bIncomeDetail } from '../steps/Step4bIncomeDetail'
 import { StepTagihan } from '../steps/StepTagihan'
 import { Step4dWallet } from '../steps/Step4dWallet'
 import { StepAlokasi } from '../steps/StepAlokasi'
-import type { OnboardingAccumulated, OnboardingStep, WalletInput } from '../onboarding.types'
+import { StepHandoff } from '../steps/StepHandoff'
+import type {
+  HandoffView,
+  OnboardingAccumulated,
+  OnboardingStep,
+  WalletInput,
+} from '../onboarding.types'
 import type { FormState } from '@/features/profil/ProfilTagihanSheet.utils'
 import { parseWalletBalance } from '../onboarding.utils'
 import { parseNominalRaw } from '@/shared/utils/formatNominalInput'
@@ -26,6 +32,8 @@ interface Props {
   onTagihanNext: () => void
   onWalletNext: () => void
   onAlokasiNext: (operasionalBudget: number, periodEndDate: number | null) => void
+  handoffView: HandoffView | null
+  onHandoffCta: () => void
 }
 
 /** Renders the current complex step's existing form component unchanged, for embedding in a chat card. */
@@ -38,7 +46,13 @@ export function StepCardSlot({
   onTagihanNext,
   onWalletNext,
   onAlokasiNext,
+  handoffView,
+  onHandoffCta,
 }: Props) {
+  if (step === 'handoff') {
+    return <StepHandoff view={handoffView} onCta={onHandoffCta} />
+  }
+
   if (step === 'incomeDetail') {
     return (
       <Step4bIncomeDetail

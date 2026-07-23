@@ -10,6 +10,7 @@ export type OnboardingStep =
   | 'tagihan'
   | 'wallet'
   | 'alokasi'
+  | 'handoff'
 
 export interface WalletInput {
   id: string
@@ -37,6 +38,13 @@ export interface OnboardingAccumulated {
   tagihanInputs: FormState[]
   operasionalBudget: number | null
   periodEndDate: number | null
+}
+
+export interface HandoffView {
+  sisaUang: number
+  jatahHariIni: number
+  currency: string
+  sisaHari: number
 }
 
 export const INITIAL_ACCUMULATED: OnboardingAccumulated = {

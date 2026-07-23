@@ -23,6 +23,8 @@ describe('getProgressCount', () => {
   it('tagihan → 4', () => expect(getProgressCount('tagihan')).toBe(4))
   it('wallet → 4 (same dot as tagihan)', () => expect(getProgressCount('wallet')).toBe(4))
   it('alokasi → 5', () => expect(getProgressCount('alokasi')).toBe(5))
+  it('handoff → 5 (same dot as alokasi, not a new step)', () =>
+    expect(getProgressCount('handoff')).toBe(getProgressCount('alokasi')))
   it('max filled equals TOTAL_PROGRESS_DOTS', () => {
     expect(getProgressCount('alokasi')).toBe(TOTAL_PROGRESS_DOTS)
   })
@@ -60,8 +62,11 @@ describe('getNextStep', () => {
   it('wallet → alokasi', () => {
     expect(getNextStep('wallet', 'tetap')).toBe('alokasi')
   })
-  it('alokasi → done', () => {
-    expect(getNextStep('alokasi', 'tetap')).toBe('done')
+  it('alokasi → handoff', () => {
+    expect(getNextStep('alokasi', 'tetap')).toBe('handoff')
+  })
+  it('handoff → done', () => {
+    expect(getNextStep('handoff', 'tetap')).toBe('done')
   })
 })
 

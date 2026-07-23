@@ -32,6 +32,8 @@ export function getBaseBotLines(step: OnboardingStep, lang: Language): string[] 
       return [t('ob.chat.intro_wallet', lang)]
     case 'alokasi':
       return [t('ob.chat.intro_alokasi', lang)]
+    case 'handoff':
+      return []
   }
 }
 
