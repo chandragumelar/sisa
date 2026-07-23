@@ -45,6 +45,14 @@
   /* Nominal uang pakai SF Pro + tabular figures, bukan monospace */
   --font-mono: var(--font-sans);
 
+  /* ── Type scale ───────────────────────────────────────── */
+  --text-hero: 40px;
+  --text-title: 24px;
+  --text-lead: 17px;
+  --text-body: 14px;
+  --text-sm: 13px;
+  --text-xs: 11px;
+
   /* ── Shadow + Radius + Spacing ────────────────────────── */
   --shadow-card: none;
   --radius-xs: 6px;
