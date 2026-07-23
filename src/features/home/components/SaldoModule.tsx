@@ -5,7 +5,6 @@ import type { BudgetMode } from '@/shared/utils/budget.utils'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
-import { getCurrencyLabel } from '@/constants/currencies'
 import { BottomSheet } from '@/shared/components/BottomSheet'
 import styles from './SaldoModule.module.css'
 
@@ -50,8 +49,6 @@ export function SaldoModule({
   })
   const [tooltipOpen, setTooltipOpen] = useState(false)
 
-  const curLabel = getCurrencyLabel(currency, lang)
-
   const nextPaydayDate = new Date(nextPaydayMs)
   const paydayLabel = `${nextPaydayDate.getDate()} ${nextPaydayDate.toLocaleString(lang === 'en' ? 'en-US' : 'id-ID', { month: 'short' })} ${nextPaydayDate.getFullYear()}`
 
@@ -82,9 +79,7 @@ export function SaldoModule({
         >
           <div className={styles.headerRow}>
             <div className={styles.heroLabelRow}>
-              <span className={styles.label}>
-                {t('home.sisa_uang_dynamic', lang).replace('{cur}', curLabel)}
-              </span>
+              <span className={styles.label}>{t('home.sisa_uang_dynamic', lang)}</span>
               <button
                 className={styles.tooltipBtn}
                 onClick={() => setTooltipOpen(true)}
