@@ -377,6 +377,10 @@ export function HomePage() {
     (tg) => tg.isActive && getTagihanUrgency(tg, nowMs) === 'lewat-tempo',
   ).length
 
+  const hasMonthlyActivity =
+    Object.values(monthlyIncomeByCurrency).some((v) => v > 0) ||
+    Object.values(monthlyExpenseByCurrency).some((v) => v > 0)
+
   return (
     <div className={styles.shell}>
       <main className={styles.page}>
@@ -491,12 +495,14 @@ export function HomePage() {
             onAddWallet={() => setWalletSheetOpen(true)}
           />
 
-          <MonthlyModule
-            incomeByCurrency={monthlyIncomeByCurrency}
-            expenseByCurrency={monthlyExpenseByCurrency}
-            primaryCurrency={currency}
-            onHistoryTap={() => setHistoryOpen(true)}
-          />
+          {hasMonthlyActivity && (
+            <MonthlyModule
+              incomeByCurrency={monthlyIncomeByCurrency}
+              expenseByCurrency={monthlyExpenseByCurrency}
+              primaryCurrency={currency}
+              onHistoryTap={() => setHistoryOpen(true)}
+            />
+          )}
 
           <WalletsCard
             wallets={wallets}
