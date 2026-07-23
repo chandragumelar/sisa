@@ -144,17 +144,7 @@ export function CekDuluCard({
         {/* ── State 2: full (existing DecisionHero layout) ── */}
         {cardState === 2 && (
           <>
-            <div className={styles.headerRow}>
-              <div className={styles.eyebrow}>
-                {t('cek.card_title_dynamic', lang).replace('{cur}', curLabel)}
-              </div>
-            </div>
-
-            <div className={styles.heading}>
-              {t('decision.heading_line1', lang)}
-              <br />
-              {t('decision.heading_line2', lang)}
-            </div>
+            <div className={styles.heading}>{t('decision.heading', lang)}</div>
 
             <div className={styles.inputWrapper}>
               <span className={styles.currencySymbol}>{getCurrencySymbol(currency)}</span>

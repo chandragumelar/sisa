@@ -303,6 +303,7 @@ export type StringKey =
   | 'actions.andai_label'
   | 'actions.log_full_label'
   // decision hero card
+  | 'decision.heading'
   | 'decision.heading_line1'
   | 'decision.heading_line2'
   | 'decision.input_placeholder'
@@ -1116,6 +1117,7 @@ const id: StringDictionary = {
   'actions.andai_label': 'Andai',
   'actions.log_full_label': 'Catat pengeluaran / pemasukan',
 
+  'decision.heading': 'Aman beli sekarang?',
   'decision.heading_line1': 'Aman beli',
   'decision.heading_line2': 'sekarang?',
   'decision.input_placeholder': 'Berapa harganya?',
@@ -1981,6 +1983,7 @@ const en: StringDictionary = {
   'actions.andai_label': 'What If',
   'actions.log_full_label': 'Log expense / income',
 
+  'decision.heading': 'Safe to buy now?',
   'decision.heading_line1': 'Safe to',
   'decision.heading_line2': 'buy now?',
   'decision.input_placeholder': 'How much is it?',
