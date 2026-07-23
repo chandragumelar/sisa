@@ -7,15 +7,15 @@
 /* ── Card base ───────────────────────────────────────────── */
 .card {
   background: var(--surface);
-  background: linear-gradient(160deg, var(--accent-bg) 0%, var(--surface) 60%);
-  border: 1px solid var(--border-hair);
+  background: linear-gradient(160deg, var(--accent-bg) 0%, var(--surface) 65%);
+  border: none;
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-card);
   padding: var(--pad-card);
 }
 
 .cardBertahan {
-  border-color: var(--signal-danger);
+  border: 1px solid var(--signal-danger);
   background: color-mix(in srgb, var(--signal-danger) 5%, var(--surface));
 }
 
