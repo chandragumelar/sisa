@@ -40,6 +40,13 @@ export interface OnboardingAccumulated {
   periodEndDate: number | null
 }
 
+export interface HandoffView {
+  sisaUang: number
+  jatahHariIni: number
+  currency: string
+  sisaHari: number
+}
+
 export const INITIAL_ACCUMULATED: OnboardingAccumulated = {
   language: null,
   incomeType: null,

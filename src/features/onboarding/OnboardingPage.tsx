@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './step.css'
 import { useClock } from '@/app/providers/useClock'
@@ -10,6 +10,7 @@ import { syncTagihanReminder } from '@/lib/supabase/api'
 import { putAllocation } from '@/db/allocation.repository'
 import { computeAnchor } from '@/features/profil/ProfilTagihanSheet.utils'
 import { parseNominalRaw } from '@/shared/utils/formatNominalInput'
+import { formatCurrency } from '@/shared/utils/formatCurrency'
 import { ChatShell } from './components/ChatShell'
 import { StepCardSlot } from './components/StepCardSlot'
 import { DockLangCurrency } from './components/docks/DockLangCurrency'
@@ -20,6 +21,7 @@ import { getBaseBotLines, CARD_STEPS } from './components/chatScript'
 import type { TranscriptEntry } from './components/chatTranscript.types'
 import {
   INITIAL_ACCUMULATED,
+  type HandoffView,
   type OnboardingAccumulated,
   type OnboardingStep,
 } from './onboarding.types'
@@ -31,9 +33,22 @@ import {
   parseWalletBalance,
 } from './onboarding.utils'
 import { getPaydayDate, calcDaysUntilPayday } from '@/features/home/home.utils'
-import { relock } from '@/shared/utils/budget.utils'
+import { relock, calcBudgetPeriode, resolveBudgetView } from '@/shared/utils/budget.utils'
 import { t } from '@/shared/strings/strings'
 import type { IncomeFrequency, Language } from '@/db/database'
+
+function buildHandoffLines(lang: Language, view: HandoffView): string[] {
+  const sisaFmt = formatCurrency(view.sisaUang, view.currency)
+  const jatahFmt = formatCurrency(view.jatahHariIni, view.currency)
+  return [
+    t('ob.handoff.line1', lang),
+    t('ob.handoff.line2', lang).replace('{sisa}', sisaFmt),
+    t('ob.handoff.line3', lang)
+      .replace('{hari}', String(view.sisaHari))
+      .replace('{jatah}', jatahFmt),
+    t('ob.handoff.line4', lang),
+  ]
+}
 
 function getPreviousPaydayMs(nextPaydayMs: number, frequency: IncomeFrequency): number {
   const d = new Date(nextPaydayMs)
@@ -50,12 +65,17 @@ export function OnboardingPage() {
   const [step, setStep] = useState<OnboardingStep>('langCurrency')
   const [data, setData] = useState<OnboardingAccumulated>(INITIAL_ACCUMULATED)
 
-  // Presentation-only state — the chat transcript. Never read by advance/back/handleComplete.
+  // Presentation-only state — the chat transcript. Never read by advance/back/persistOnboarding.
   const [completed, setCompleted] = useState<Array<{ step: OnboardingStep; echo: string }>>([])
   const [extraBotLines, setExtraBotLines] = useState<string[]>([])
   // One-shot brand intro on fresh start — flips true once and never resets, so back-navigating
   // to langCurrency later never replays it (a page refresh remounts everything, which is fine).
   const [introDone, setIntroDone] = useState(false)
+  // Numbers shown on the handoff card — null while persistOnboarding is still writing to DB.
+  const [handoffView, setHandoffView] = useState<HandoffView | null>(null)
+  // Guards against persisting twice (e.g. a double-tap on alokasi's CTA before the
+  // step transition commits) — writes to DB, so unlike every other step it can't be redone.
+  const persistedRef = useRef(false)
 
   useEffect(() => {
     setExtraBotLines([])
@@ -71,14 +91,27 @@ export function OnboardingPage() {
     if (patch.language) setLang(patch.language)
     setData(next)
     const nextStep = getNextStep(step, next.incomeType)
+    // 'done' is unreachable in practice — the handoff card's CTA navigates directly
+    // instead of calling advance() again. Kept only so the switch stays exhaustive.
     if (nextStep === 'done') {
-      void handleComplete(next)
-    } else {
-      setStep(nextStep)
+      navigate('/', { replace: true, viewTransition: true })
+      return
+    }
+    setStep(nextStep)
+    if (nextStep === 'handoff' && !persistedRef.current) {
+      persistedRef.current = true
+      void persistOnboarding(next).then((view) => {
+        setHandoffView(view)
+        setExtraBotLines(buildHandoffLines(next.language ?? 'id', view))
+      })
     }
   }
 
-  async function handleComplete(final: OnboardingAccumulated) {
+  function handleHandoffCta() {
+    navigate('/', { replace: true, viewTransition: true })
+  }
+
+  async function persistOnboarding(final: OnboardingAccumulated): Promise<HandoffView> {
     const language = final.language ?? 'id'
     const incomeType = final.incomeType ?? 'tetap'
     const primaryCurrency = final.primaryCurrency ?? 'IDR'
@@ -132,25 +165,27 @@ export function OnboardingPage() {
       void syncTagihanReminder({ id: newId, ...newTagihan }).catch(() => {})
     }
 
+    const partialSettings = {
+      incomeType,
+      incomeFrequency: final.incomeFrequency ?? 'bulanan',
+      incomeAnchorDate: final.incomeAnchorDate,
+      incomeDay: final.incomeDay,
+      weekendBehavior: 'tetap',
+    } as import('@/db/database').Settings
+    const totalSaldoForAlokasi = final.wallets
+      .filter((w) => w.name.trim())
+      .reduce((s, w) => s + parseWalletBalance(w.balance), 0)
+    const tagihanTotal = final.tagihanInputs.reduce(
+      (s, tg) => s + (parseInt(parseNominalRaw(tg.nominalEstimate), 10) || 0),
+      0,
+    )
+    const sisaHari = final.periodEndDate
+      ? Math.max(1, Math.round((final.periodEndDate - nowMs) / 86_400_000))
+      : calcDaysUntilPayday(nowMs, partialSettings)
+
+    let allocation = null
     if (final.operasionalBudget != null) {
-      const partialSettings = {
-        incomeType,
-        incomeFrequency: final.incomeFrequency ?? 'bulanan',
-        incomeAnchorDate: final.incomeAnchorDate,
-        incomeDay: final.incomeDay,
-        weekendBehavior: 'tetap',
-      } as import('@/db/database').Settings
-      const totalSaldoForAlokasi = final.wallets
-        .filter((w) => w.name.trim())
-        .reduce((s, w) => s + parseWalletBalance(w.balance), 0)
-      const tagihanTotal = final.tagihanInputs.reduce(
-        (s, tg) => s + (parseInt(parseNominalRaw(tg.nominalEstimate), 10) || 0),
-        0,
-      )
-      const sisaHari = final.periodEndDate
-        ? Math.max(1, Math.round((final.periodEndDate - nowMs) / 86_400_000))
-        : calcDaysUntilPayday(nowMs, partialSettings)
-      const allocation = relock({
+      allocation = relock({
         totalSaldo: totalSaldoForAlokasi,
         tagihanUnpaid: tagihanTotal,
         buatDipakai: final.operasionalBudget,
@@ -161,7 +196,31 @@ export function OnboardingPage() {
       await putAllocation(allocation)
     }
 
-    navigate('/', { replace: true, viewTransition: true })
+    // spentSinceLock/spentToday are 0 — this is a brand-new user, nothing spent yet.
+    const budget = calcBudgetPeriode({
+      pemasukanPeriode: 0,
+      unpaidTagihanTotal: tagihanTotal,
+      hariPeriode: sisaHari,
+      spentThisPeriode: 0,
+      spentToday: 0,
+      totalSaldo: totalSaldoForAlokasi,
+      useSaldoFloor: incomeType === 'freelance',
+      operasionalBudget: final.operasionalBudget,
+      jatahHarianLocked: allocation?.jatahHarian,
+    })
+    const view = resolveBudgetView(allocation, budget, {
+      totalSaldo: totalSaldoForAlokasi,
+      tagihanUnpaid: tagihanTotal,
+      spentSinceLock: 0,
+      spentToday: 0,
+    })
+
+    return {
+      sisaUang: view.sisaUang,
+      jatahHariIni: view.jatahHariIni,
+      currency: primaryCurrency,
+      sisaHari,
+    }
   }
 
   // ── Presentation wiring: pushes the just-answered step into the transcript, then ──
@@ -229,6 +288,8 @@ export function OnboardingPage() {
               onAlokasiNext={(operasionalBudget, periodEndDate) =>
                 advance({ operasionalBudget, periodEndDate })
               }
+              handoffView={handoffView}
+              onHandoffCta={handleHandoffCta}
             />
           ),
         },
@@ -282,7 +343,7 @@ export function OnboardingPage() {
   return (
     <ChatShell
       step={step}
-      onBack={step !== 'langCurrency' ? popCompletedAndBack : undefined}
+      onBack={step !== 'langCurrency' && step !== 'handoff' ? popCompletedAndBack : undefined}
       historyEntries={historyEntries}
       activeStepEntries={activeStepEntries}
       dock={dock}
