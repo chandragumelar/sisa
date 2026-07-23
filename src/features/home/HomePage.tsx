@@ -447,20 +447,6 @@ export function HomePage() {
 
         {/* Cards */}
         <div className={styles.cards}>
-          <CekDuluCard
-            currency={currency}
-            walletCount={wallets.filter((w) => w.currency === currency).length}
-            tagihanCount={tagihan.length}
-            sisa={sisaPeriode}
-            unpaidTagihanTotal={unpaidTagihanTotal}
-            onCekDulu={(amount) =>
-              navigate('/cek-dulu', { state: { initialAmount: amount }, viewTransition: true })
-            }
-            onAndai={() => navigate('/andai', { viewTransition: true })}
-            onAddTagihan={() => setTagihanSheetOpen(true)}
-            onAddWallet={() => setWalletSheetOpen(true)}
-          />
-
           <SaldoModule
             currency={currency}
             sisaUang={sisaUang}
@@ -490,6 +476,20 @@ export function HomePage() {
               saldoBertahan={mode === 'bertahan'}
             />
           )}
+
+          <CekDuluCard
+            currency={currency}
+            walletCount={wallets.filter((w) => w.currency === currency).length}
+            tagihanCount={tagihan.length}
+            sisa={sisaPeriode}
+            unpaidTagihanTotal={unpaidTagihanTotal}
+            onCekDulu={(amount) =>
+              navigate('/cek-dulu', { state: { initialAmount: amount }, viewTransition: true })
+            }
+            onAndai={() => navigate('/andai', { viewTransition: true })}
+            onAddTagihan={() => setTagihanSheetOpen(true)}
+            onAddWallet={() => setWalletSheetOpen(true)}
+          />
 
           <MonthlyModule
             incomeByCurrency={monthlyIncomeByCurrency}
