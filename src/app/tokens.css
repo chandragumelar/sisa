@@ -101,6 +101,31 @@
   --bahaya-br: #c8362f;
 }
 
+/* ============================================================
+   Home card treatment — default + 2 exceptions
+
+   Default (all 7 home cards, unless noted below):
+     background: var(--surface); border: 1px solid var(--border-hair);
+     border-radius: var(--radius-card); box-shadow: var(--shadow-card);
+     padding: var(--pad-card);
+
+   This is not a 3-way taxonomy to pick from when adding a card — the
+   answer is almost always the default. These two are exceptions, each
+   earned by what the card *is*, not a style to reach for.
+
+   Exception 1 — Sisa card (SaldoModule.module.css `.card`):
+     border: none. It isn't one of the seven — it's the number the
+     other six explain. Losing the border (nothing else has none) is
+     what signals "above the grid", without adding a competing color.
+
+   Exception 2 — Cek Dulu card (CekDuluCard.module.css `.card`):
+     border: 1px solid var(--accent-br). It's the only card you tap —
+     the border marks it as an action. Deliberately no accent
+     background: giving the one actionable card a filled background
+     would out-compete the Sisa number for attention, which is backwards
+     for what this product is about.
+   ============================================================ */
+
 [data-theme='dark'] {
   /* Surfaces — naik dari canvas near-black ke surface lebih terang */
   --canvas: #0a0a0b;
