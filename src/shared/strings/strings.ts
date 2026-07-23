@@ -163,6 +163,14 @@ export type StringKey =
   | 'ob.chat.intro_tagihan'
   | 'ob.chat.intro_wallet'
   | 'ob.chat.intro_alokasi'
+  // onboarding handoff (closing step, explains the numbers before navigating home)
+  | 'ob.handoff.line1'
+  | 'ob.handoff.line2'
+  | 'ob.handoff.line3'
+  | 'ob.handoff.line4'
+  | 'ob.handoff.sisa_label'
+  | 'ob.handoff.jatah_label'
+  | 'ob.handoff.cta'
   // currency picker
   | 'currency_picker.search'
   | 'currency_picker.popular'
@@ -970,6 +978,15 @@ const id: StringDictionary = {
   'ob.chat.intro_tagihan': 'Sekarang, tagihan rutin lo:',
   'ob.chat.intro_wallet': 'Terakhir dikit, dompet lo:',
   'ob.chat.intro_alokasi': 'Oke, terakhir — yuk atur duitnya:',
+
+  'ob.handoff.line1': 'Udah, semua kehitung.',
+  'ob.handoff.line2':
+    'Sisa lo {sisa}. Itu duit yang udah dipotong tagihan sama uang yang lo tahan.',
+  'ob.handoff.line3': 'Dibagi {hari} hari sampai gajian, aman jajan {jatah} per hari.',
+  'ob.handoff.line4': 'Dari sini, tinggal catat tiap keluar-masuk duit — sisanya lo lihat di sini.',
+  'ob.handoff.sisa_label': 'Sisa kamu',
+  'ob.handoff.jatah_label': 'Aman per hari',
+  'ob.handoff.cta': 'Gas, buka Sisa',
 
   'currency_picker.search': 'pilih mata uang…',
   'currency_picker.popular': 'Populer',
@@ -1838,6 +1855,14 @@ const en: StringDictionary = {
   'ob.chat.intro_tagihan': 'Now, your recurring bills:',
   'ob.chat.intro_wallet': 'Almost there, your wallets:',
   'ob.chat.intro_alokasi': "Alright, last one — let's sort your money:",
+
+  'ob.handoff.line1': "Done, everything's counted.",
+  'ob.handoff.line2': "Your Sisa is {sisa} — that's after bills and money you're holding back.",
+  'ob.handoff.line3': "Split across {hari} days to payday, that's {jatah} safe to spend a day.",
+  'ob.handoff.line4': "From here, just log what comes in and out — you'll see it all right here.",
+  'ob.handoff.sisa_label': 'Your remaining',
+  'ob.handoff.jatah_label': 'Safe per day',
+  'ob.handoff.cta': "Let's go",
 
   'currency_picker.search': 'search currency…',
   'currency_picker.popular': 'Popular',
