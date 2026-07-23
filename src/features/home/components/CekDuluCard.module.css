@@ -266,7 +266,7 @@
 /* ── State 2 (full — existing DecisionHero layout) ── */
 
 .heading {
-  font-size: 21px;
+  font-size: var(--text-lead);
   font-weight: 700;
   color: var(--ink-primary);
   line-height: 1.22;

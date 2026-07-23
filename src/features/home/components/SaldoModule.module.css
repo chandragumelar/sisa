@@ -105,10 +105,10 @@
 
 .heroNum {
   font-family: var(--font-mono);
-  font-size: 32px;
+  font-size: clamp(26px, 9vw, var(--text-hero));
   font-weight: 700;
   color: var(--ink-primary);
-  letter-spacing: -1px;
+  letter-spacing: -0.02em;
   line-height: 1.05;
   font-feature-settings: 'tnum', 'lnum';
   margin-bottom: 6px;

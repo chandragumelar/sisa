@@ -78,7 +78,7 @@
 }
 
 .heroNum {
-  font-size: 28px;
+  font-size: var(--text-title);
   font-weight: 700;
   font-family: var(--font-mono);
   color: var(--ink-primary);
