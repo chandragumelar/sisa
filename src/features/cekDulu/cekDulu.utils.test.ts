@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
-import { calcCekDulu } from './cekDulu.utils'
+import { calcCekDulu, fillWarnPlaceholders } from './cekDulu.utils'
 import type { CekDuluInput } from './cekDulu.utils'
+import { t } from '@/shared/strings/strings'
 
 // Self-consistent baseline:
 //   sisaUang=1jt (live remaining operational budget)
@@ -185,5 +186,38 @@ describe('calcCekDulu — edge: no tagihan and no mengendap → sisa equals pema
     expect(r.dailyBefore).toBe(250_000)
     expect(r.showSisaRow).toBe(false)
     expect(r.showMengendapRow).toBe(false)
+  })
+})
+
+describe('fillWarnPlaceholders', () => {
+  it('happy: replaces every occurrence of a repeated token, not just the first', () => {
+    const template = t('cek_dulu.warn_t2_10', 'id')
+    const result = fillWarnPlaceholders(template, {
+      dropPct: 22,
+      fundPct: 0,
+      daysUntilPayday: 0,
+    })
+    expect(result).not.toContain('{dropPct}')
+    expect(result).toContain('22%')
+  })
+
+  it('empty: template with no tokens returns unchanged', () => {
+    const result = fillWarnPlaceholders('teks tanpa token', {
+      dropPct: 10,
+      fundPct: 20,
+      daysUntilPayday: 3,
+    })
+    expect(result).toBe('teks tanpa token')
+  })
+
+  it('boundary: all three tokens present and repeated resolve fully', () => {
+    const template =
+      '{dropPct}% turun, {fundPct}% sisa, {daysUntilPayday} hari lagi, {dropPct}% lagi'
+    const result = fillWarnPlaceholders(template, {
+      dropPct: 15,
+      fundPct: 40,
+      daysUntilPayday: 5,
+    })
+    expect(result).toBe('15% turun, 40% sisa, 5 hari lagi, 15% lagi')
   })
 })

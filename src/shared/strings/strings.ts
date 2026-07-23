@@ -1304,19 +1304,16 @@ const id: StringDictionary = {
   'cek_dulu.warn_t2b_10':
     'Lo motong {dropPct}% jatah harian dalam satu gerakan. Rem dulu, mikir dulu.',
   'cek_dulu.warn_t3a_1':
-    'Woy. Itu dana darurat, bukan dana lapar mata. Baliknya butuh {recoveryDays} hari.',
-  'cek_dulu.warn_t3a_2': 'Lo baru nyolek tabungan darurat. Nambalnya makan {recoveryDays} hari.',
-  'cek_dulu.warn_t3a_3': 'Alarm pertama bunyi. Lo perlu {recoveryDays} hari buat balikin ini.',
-  'cek_dulu.warn_t3a_4':
-    'Ini payung pas hujan. Kenapa malah dipotong? Recovery: {recoveryDays} hari.',
-  'cek_dulu.warn_t3a_5': 'Dana darurat itu bodyguard. Lo baru PHK dia selama {recoveryDays} hari.',
-  'cek_dulu.warn_t3a_6':
-    'Kalau besok apes, jangan lihat gue. Balikin dulu dalam {recoveryDays} hari.',
-  'cek_dulu.warn_t3a_7': 'Lo lagi makan cadangan hidup sendiri. Perbaikannya {recoveryDays} hari.',
-  'cek_dulu.warn_t3a_8': 'Itu duit "amit-amit". Sekarang perlu {recoveryDays} hari buat utuh lagi.',
-  'cek_dulu.warn_t3a_9': 'Satu klik checkout. {recoveryDays} hari penyesalan finansial.',
-  'cek_dulu.warn_t3a_10':
-    'Beli boleh. Tapi lo baru minjem dari diri sendiri selama {recoveryDays} hari.',
+    'Woy. Itu dana darurat, bukan dana lapar mata. Sisanya tinggal {fundPct}%.',
+  'cek_dulu.warn_t3a_2': 'Lo baru nyolek tabungan darurat. Yang nyisa {fundPct}%.',
+  'cek_dulu.warn_t3a_3': 'Alarm pertama bunyi. Bantalan lo tinggal {fundPct}%.',
+  'cek_dulu.warn_t3a_4': 'Ini payung pas hujan. Kenapa malah dipotong sampai nyisa {fundPct}%?',
+  'cek_dulu.warn_t3a_5': 'Dana darurat itu bodyguard. Lo baru mecat {fundPct}% dari dia.',
+  'cek_dulu.warn_t3a_6': 'Kalau besok apes, jangan lihat gue. Cadangan lo tinggal {fundPct}%.',
+  'cek_dulu.warn_t3a_7': 'Lo lagi makan cadangan hidup sendiri. Sisa {fundPct}%.',
+  'cek_dulu.warn_t3a_8': 'Itu duit "amit-amit". Sekarang tinggal {fundPct}% yang jaga lo.',
+  'cek_dulu.warn_t3a_9': 'Satu klik checkout. Bantalan lo langsung tinggal {fundPct}%.',
+  'cek_dulu.warn_t3a_10': 'Beli boleh. Tapi pengaman lo tinggal {fundPct}%.',
   'cek_dulu.warn_t3b_1':
     'Lampu indikator udah merah semua. Masih ada {daysUntilPayday} hari menuju gajian.',
   'cek_dulu.warn_t3b_2': 'Ini pengaman terakhir, woy. Gajian masih {daysUntilPayday} hari lagi.',
@@ -2169,20 +2166,16 @@ const en: StringDictionary = {
   'cek_dulu.warn_t2b_10':
     'You cut {dropPct}% of your daily budget in one move. Brake first, think first.',
   'cek_dulu.warn_t3a_1':
-    "Hey genius. That's emergency money, not snack money. Recovery: {recoveryDays} days.",
-  'cek_dulu.warn_t3a_2':
-    "You just poked the emergency fund. It'll take {recoveryDays} days to heal.",
-  'cek_dulu.warn_t3a_3': 'First warning siren. Recovery takes {recoveryDays} days.',
-  'cek_dulu.warn_t3a_4':
-    "That's the umbrella for rainy days. Why cut it up? {recoveryDays} days to recover.",
-  'cek_dulu.warn_t3a_5':
-    'Your emergency fund is your bodyguard. You just fired it for {recoveryDays} days.',
-  'cek_dulu.warn_t3a_6': "If tomorrow goes badly, don't look at me. Recovery: {recoveryDays} days.",
-  'cek_dulu.warn_t3a_7': "You're spending your own safety net. Rebuild time: {recoveryDays} days.",
-  'cek_dulu.warn_t3a_8':
-    'That\'s "just in case" money. It\'ll take {recoveryDays} days to restore.',
-  'cek_dulu.warn_t3a_9': 'One checkout. {recoveryDays} days of financial regret.',
-  'cek_dulu.warn_t3a_10': "Sure, buy it. You're borrowing from Future You for {recoveryDays} days.",
+    "Hey genius. That's emergency money, not snack money. You're down to {fundPct}%.",
+  'cek_dulu.warn_t3a_2': 'You just poked the emergency fund. {fundPct}% of it left.',
+  'cek_dulu.warn_t3a_3': 'First warning siren. Your cushion is at {fundPct}%.',
+  'cek_dulu.warn_t3a_4': "That's the umbrella for rainy days. Why cut it down to {fundPct}%?",
+  'cek_dulu.warn_t3a_5': 'Your emergency fund is your bodyguard. You just fired {fundPct}% of him.',
+  'cek_dulu.warn_t3a_6': "If tomorrow goes badly, don't look at me. You've got {fundPct}% left.",
+  'cek_dulu.warn_t3a_7': "You're spending your own safety net. {fundPct}% remaining.",
+  'cek_dulu.warn_t3a_8': 'That\'s "just in case" money. Only {fundPct}% is still guarding you.',
+  'cek_dulu.warn_t3a_9': 'One checkout. Your cushion drops to {fundPct}%.',
+  'cek_dulu.warn_t3a_10': 'Sure, buy it. Your safety net is at {fundPct}% now.',
   'cek_dulu.warn_t3b_1': 'Every warning light is red. Payday is still {daysUntilPayday} days away.',
   'cek_dulu.warn_t3b_2': 'This is your last airbag. Payday in {daysUntilPayday} days.',
   'cek_dulu.warn_t3b_3':
