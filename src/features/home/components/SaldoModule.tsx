@@ -9,6 +9,8 @@ import { getCurrencyLabel } from '@/constants/currencies'
 import { BottomSheet } from '@/shared/components/BottomSheet'
 import styles from './SaldoModule.module.css'
 
+const RINCIAN_COLLAPSED_KEY = 'sisa:saldoRincianCollapsed'
+
 interface Props {
   currency: string
   sisaUang: number
@@ -39,7 +41,13 @@ export function SaldoModule({
   onEditAlokasi,
 }: Props) {
   const lang = useLanguage()
-  const [expanded, setExpanded] = useState(false)
+  const [expanded, setExpanded] = useState(() => {
+    try {
+      return localStorage.getItem(RINCIAN_COLLAPSED_KEY) !== '1'
+    } catch {
+      return true
+    }
+  })
   const [tooltipOpen, setTooltipOpen] = useState(false)
 
   const curLabel = getCurrencyLabel(currency, lang)
@@ -48,6 +56,22 @@ export function SaldoModule({
   const paydayLabel = `${nextPaydayDate.getDate()} ${nextPaydayDate.toLocaleString(lang === 'en' ? 'en-US' : 'id-ID', { month: 'short' })} ${nextPaydayDate.getFullYear()}`
 
   const cadanganState = sisaUang > 0 ? 'aman' : mengendap > 0 ? 'makan-cadangan' : 'cadangan-habis'
+
+  function toggleExpanded() {
+    setExpanded((v) => {
+      const next = !v
+      try {
+        if (next) {
+          localStorage.removeItem(RINCIAN_COLLAPSED_KEY)
+        } else {
+          localStorage.setItem(RINCIAN_COLLAPSED_KEY, '1')
+        }
+      } catch {
+        // storage unavailable — state tetap jalan untuk sesi ini
+      }
+      return next
+    })
+  }
 
   return (
     <>
@@ -145,7 +169,7 @@ export function SaldoModule({
               {cadanganState === 'cadangan-habis' && (
                 <p className={styles.cadanganHabis}>{t('saldo.cadangan_habis', lang)}</p>
               )}
-              <button className={styles.expandBtn} onClick={() => setExpanded((v) => !v)}>
+              <button className={styles.expandBtn} onClick={toggleExpanded}>
                 <span className={styles.expandChevron}>{expanded ? '∧' : '∨'}</span>
                 {expanded ? t('home.expand_hide', lang) : t('home.expand_show', lang)}
                 <span className={styles.expandChevron}>{expanded ? '∧' : '∨'}</span>
