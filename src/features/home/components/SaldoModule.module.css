@@ -4,18 +4,18 @@
   gap: 8px;
 }
 
-/* ── Hero (not a card) ───────────────────────────────────── */
+/* ── Card base ───────────────────────────────────────────── */
 .card {
-  padding: 4px 0 0;
+  background: var(--surface);
+  border: 1px solid var(--border-hair);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: var(--pad-card);
 }
 
-/* Exception: bertahan is the one state that gets a container — leaving the
-   normal (containerless) pattern is itself the "this is not normal" signal. */
 .cardBertahan {
+  border-color: var(--signal-danger);
   background: color-mix(in srgb, var(--signal-danger) 5%, var(--surface));
-  border: 1px solid var(--signal-danger);
-  border-radius: var(--radius-card);
-  padding: var(--pad-card);
 }
 
 /* ── Header row ──────────────────────────────────────────── */
