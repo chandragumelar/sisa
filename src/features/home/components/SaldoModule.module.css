@@ -26,12 +26,6 @@
   margin-bottom: 12px;
 }
 
-.headerDivider {
-  height: 1px;
-  background: var(--border-hair);
-  margin: 0 calc(var(--pad-card) * -1) 12px;
-}
-
 .label {
   font-size: var(--text-xs);
   font-weight: 700;
@@ -194,8 +188,7 @@
 
 /* ── Rincian (expanded formula) ──────────────────────────── */
 .rincian {
-  border-top: 1px solid var(--border-soft);
-  padding-top: 12px;
+  padding-top: 20px;
   margin-top: 4px;
   display: flex;
   flex-direction: column;
