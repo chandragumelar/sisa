@@ -36,6 +36,7 @@
   text-transform: uppercase;
   color: var(--ink-tertiary);
   font-family: var(--font-sans);
+  opacity: 0.75;
 }
 
 .overBadge {
@@ -78,10 +79,13 @@
 }
 
 .heroNum {
-  font-size: var(--text-title);
-  font-weight: 700;
+  /* Intentionally below the type scale (--text-lead is 17px, still too
+     big) — this number needs to read as secondary next to Sisa's
+     --text-hero-xl, not just "a bit smaller". */
+  font-size: 18px;
+  font-weight: 600;
   font-family: var(--font-mono);
-  color: var(--ink-primary);
+  color: var(--ink-secondary);
   letter-spacing: -1px;
   line-height: 1;
   font-feature-settings: 'tnum';
@@ -89,7 +93,7 @@
 }
 
 .barWrap {
-  height: 10px;
+  height: 4px;
   background: var(--border-hair);
   border-radius: var(--radius-pill);
   position: relative;
