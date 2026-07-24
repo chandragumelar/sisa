@@ -7,19 +7,14 @@
 /* ── Card base ───────────────────────────────────────────── */
 .card {
   background: var(--surface);
-  background: linear-gradient(
-    160deg,
-    var(--accent-bg-elevated, var(--accent-bg)) 0%,
-    var(--surface) 65%
-  );
-  border: none;
+  border: 1px solid var(--border-hair);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-card);
   padding: var(--pad-card);
 }
 
 .cardBertahan {
-  border: 1px solid var(--signal-danger);
+  border-color: var(--signal-danger);
   background: color-mix(in srgb, var(--signal-danger) 5%, var(--surface));
 }
 
@@ -29,12 +24,6 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
-}
-
-.headerDivider {
-  height: 1px;
-  background: var(--border-hair);
-  margin: 0 calc(var(--pad-card) * -1) 12px;
 }
 
 .label {
@@ -47,10 +36,11 @@
 }
 
 .paydayPill {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 5px;
   padding: 4px 10px 4px 8px;
+  margin: 8px 0 10px;
   border: 1px solid var(--border-hair);
   border-radius: var(--radius-pill);
   font-size: 11px;
@@ -109,13 +99,21 @@
 
 .heroNum {
   font-family: var(--font-mono);
-  font-size: clamp(26px, 9vw, var(--text-hero));
-  font-weight: 700;
+  font-size: var(--text-hero-xl);
+  font-weight: 800;
   color: var(--ink-primary);
   letter-spacing: -0.02em;
   line-height: 1.05;
   font-feature-settings: 'tnum', 'lnum';
   margin-bottom: 6px;
+}
+
+.heroPrefix {
+  display: block;
+  color: var(--accent);
+  font-size: 0.95em;
+  font-weight: 800;
+  line-height: 1;
 }
 
 .heroUnit {
@@ -199,8 +197,7 @@
 
 /* ── Rincian (expanded formula) ──────────────────────────── */
 .rincian {
-  border-top: 1px solid var(--border-soft);
-  padding-top: 12px;
+  padding-top: 20px;
   margin-top: 4px;
   display: flex;
   flex-direction: column;
