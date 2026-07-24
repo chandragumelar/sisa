@@ -94,17 +94,7 @@ export function SaldoModule({
               <span className={styles.badgeHariTerakhir}>
                 {t('saldo.mode_hariterakhir_badge', lang)}
               </span>
-            ) : (
-              <div className={styles.paydayPill}>
-                <Clock size={11} strokeWidth={1.75} />
-                <span>
-                  {(daysUntilPayday === 1
-                    ? t('home.day_to_payday', lang)
-                    : t('home.days_to_payday', lang)
-                  ).replace('{n}', String(daysUntilPayday))}
-                </span>
-              </div>
-            )}
+            ) : null}
           </div>
 
           {/* Mode: Bertahan */}
@@ -143,6 +133,15 @@ export function SaldoModule({
           {mode === 'normal' && (
             <>
               <div className={styles.heroNum}>{formatCurrency(sisaUang, currency)}</div>
+              <div className={styles.paydayPill}>
+                <Clock size={11} strokeWidth={1.75} />
+                <span>
+                  {(daysUntilPayday === 1
+                    ? t('home.day_to_payday', lang)
+                    : t('home.days_to_payday', lang)
+                  ).replace('{n}', String(daysUntilPayday))}
+                </span>
+              </div>
               {conditionLabel && (
                 <span
                   className={styles.conditionBadge}

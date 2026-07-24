@@ -36,10 +36,11 @@
 }
 
 .paydayPill {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 5px;
   padding: 4px 10px 4px 8px;
+  margin: 8px 0 10px;
   border: 1px solid var(--border-hair);
   border-radius: var(--radius-pill);
   font-size: 11px;
