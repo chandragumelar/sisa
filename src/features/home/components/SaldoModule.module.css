@@ -99,13 +99,21 @@
 
 .heroNum {
   font-family: var(--font-mono);
-  font-size: clamp(26px, 9vw, var(--text-hero));
-  font-weight: 700;
+  font-size: var(--text-hero-xl);
+  font-weight: 800;
   color: var(--ink-primary);
   letter-spacing: -0.02em;
   line-height: 1.05;
   font-feature-settings: 'tnum', 'lnum';
   margin-bottom: 6px;
+}
+
+.heroPrefix {
+  display: block;
+  color: var(--accent);
+  font-size: 0.95em;
+  font-weight: 800;
+  line-height: 1;
 }
 
 .heroUnit {

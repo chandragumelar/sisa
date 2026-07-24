@@ -2,13 +2,30 @@ import { useState } from 'react'
 import type { ReactNode } from 'react'
 import { Info, Clock, Lock, ChevronDown, ChevronUp } from 'lucide-react'
 import type { BudgetMode } from '@/shared/utils/budget.utils'
-import { formatCurrency } from '@/shared/utils/formatCurrency'
+import { formatCurrency, getCurrencySymbol } from '@/shared/utils/formatCurrency'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
 import { BottomSheet } from '@/shared/components/BottomSheet'
 import styles from './SaldoModule.module.css'
 
 const RINCIAN_COLLAPSED_KEY = 'sisa:saldoRincianCollapsed'
+
+/** Splits formatCurrency's own output on its own currency symbol — never
+ * assumes prefix length/position, since IDR ("Rp 500.000") and AUD
+ * ("AU$500.000") differ on both counts. */
+function HeroAmount({ amount, currency }: { amount: number; currency: string }) {
+  const formatted = formatCurrency(amount, currency)
+  const symbol = getCurrencySymbol(currency)
+  const numberPart = formatted.replace(symbol, '').trim()
+  return (
+    <div className={styles.heroNum} aria-label={formatted}>
+      <span className={styles.heroPrefix} aria-hidden="true">
+        {symbol}
+      </span>
+      <span aria-hidden="true">{numberPart}</span>
+    </div>
+  )
+}
 
 interface Props {
   currency: string
@@ -124,7 +141,7 @@ export function SaldoModule({
               <div className={styles.heroSublabel}>
                 {t('saldo.mode_hariterakhir_sub_label', lang)}
               </div>
-              <div className={styles.heroNum}>{formatCurrency(sisaUang, currency)}</div>
+              <HeroAmount amount={sisaUang} currency={currency} />
               <p className={styles.hariterakhirNote}>{t('saldo.mode_hariterakhir_note', lang)}</p>
             </>
           )}
@@ -132,7 +149,7 @@ export function SaldoModule({
           {/* Mode: Normal */}
           {mode === 'normal' && (
             <>
-              <div className={styles.heroNum}>{formatCurrency(sisaUang, currency)}</div>
+              <HeroAmount amount={sisaUang} currency={currency} />
               <div className={styles.paydayPill}>
                 <Clock size={11} strokeWidth={1.75} />
                 <span>
