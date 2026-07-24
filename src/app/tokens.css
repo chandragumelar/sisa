@@ -46,6 +46,7 @@
   --font-mono: var(--font-sans);
 
   /* ── Type scale ───────────────────────────────────────── */
+  --text-hero-xl: clamp(44px, 13vw, 56px);
   --text-hero: 40px;
   --text-title: 24px;
   --text-lead: 17px;
