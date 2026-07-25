@@ -60,7 +60,7 @@ export function InsightRankingCard({ rows, prevMonthLong, currency, lang }: Prop
 
         const nowPct = (row.amount / maxScale) * 100
         const prevPct = (row.prevAmount / maxScale) * 100
-        const nowColor = row.highlighted ? 'var(--signal-caution)' : 'var(--accent)'
+        const nowColor = row.highlighted ? 'var(--signal-caution)' : 'var(--ink-tertiary)'
 
         let deltaText = '—'
         let deltaClass = styles.deltaMute

@@ -10,7 +10,7 @@
 .waveBar {
   flex: 1;
   border-radius: 2px 2px 0 0;
-  background: var(--accent);
+  background: var(--ink-tertiary);
   position: relative;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
@@ -41,7 +41,7 @@
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: var(--accent);
+  background: var(--ink-primary);
 }
 
 .waveLabels {
