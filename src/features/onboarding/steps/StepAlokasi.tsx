@@ -262,6 +262,7 @@ export function StepAlokasi({
             </div>
             <label
               style={{
+                position: 'relative',
                 display: 'flex',
                 alignItems: 'center',
                 gap: 5,
@@ -280,10 +281,12 @@ export function StepAlokasi({
                 type="date"
                 style={{
                   position: 'absolute',
+                  inset: 0,
                   opacity: 0,
-                  pointerEvents: 'none',
-                  width: 0,
-                  height: 0,
+                  width: '100%',
+                  height: '100%',
+                  zIndex: 1,
+                  cursor: 'pointer',
                 }}
                 value={toInputDate(effectivePeriodEnd)}
                 onChange={handleDateChange}
