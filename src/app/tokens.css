@@ -88,7 +88,9 @@
   --heat-2: #c4b5fd;
   --heat-3: #a78bfa;
   --heat-4: #8b5cf6;
-  --heat-5: var(--accent);
+  /* Continues the heat-1..4 HSL progression (hue +3-4, sat ~88%, light -9)
+     rather than borrowing --accent — heatmap is a data scale, not a button. */
+  --heat-5: #7831f2;
 
   /* Verdict aliases (used by CekDulu + existing CSS) */
   --aman-bg: #e9f7ef;
