@@ -42,10 +42,11 @@
   /* ── Typography ───────────────────────────────────────── */
   --font-sans:
     -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, system-ui, sans-serif;
-  /* Nominal uang pakai SF Pro + tabular figures, bukan monospace */
-  --font-mono: var(--font-sans);
+  --font-mono:
+    ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
 
   /* ── Type scale ───────────────────────────────────────── */
+  --text-hero-xl: clamp(44px, 13vw, 56px);
   --text-hero: 40px;
   --text-title: 24px;
   --text-lead: 17px;
@@ -102,23 +103,23 @@
 }
 
 /* ============================================================
-   Home card treatment — default + 2 exceptions
+   Home card treatment — default + 1 exception
 
-   Default (all 7 home cards, unless noted below):
+   Default (all 7 home cards, including Sisa — SaldoModule.module.css
+   `.card`, unless noted below):
      background: var(--surface); border: 1px solid var(--border-hair);
      border-radius: var(--radius-card); box-shadow: var(--shadow-card);
      padding: var(--pad-card);
 
-   This is not a 3-way taxonomy to pick from when adding a card — the
-   answer is almost always the default. These two are exceptions, each
-   earned by what the card *is*, not a style to reach for.
+   This is not a taxonomy to pick from when adding a card — the answer
+   is almost always the default. Sisa tried standing out via card-level
+   treatment (gradient background, no border, extra padding) across
+   several iterations; all of them either didn't read in light mode or
+   made the card feel empty. It reads as a normal card now — hierarchy
+   comes from internal type scale (see SaldoModule.module.css `.heroNum`),
+   not from the container.
 
-   Exception 1 — Sisa card (SaldoModule.module.css `.card`):
-     border: none. It isn't one of the seven — it's the number the
-     other six explain. Losing the border (nothing else has none) is
-     what signals "above the grid", without adding a competing color.
-
-   Exception 2 — Cek Dulu card (CekDuluCard.module.css `.card`):
+   Exception — Cek Dulu card (CekDuluCard.module.css `.card`):
      border: 1px solid var(--accent-br). It's the only card you tap —
      the border marks it as an action. Deliberately no accent
      background: giving the one actionable card a filled background
@@ -149,14 +150,6 @@
   --accent-bg: #1e1830;
   --accent-br: #3a2e5c;
   --accent-text: #ffffff;
-  /* Dark-only, one consumer: SaldoModule's elevated-card gradient.
-     --accent-bg itself can't move — it's also the background under
-     ~accent text (chips, option-selected labels, add-line buttons)
-     in 5+ other files, and raising it there drops that text's
-     contrast from ~4:1 to ~2.5:1. #403366 is the low end of the
-     1.6–1.8:1-vs-surface range — just enough to read as different,
-     not a competing focal point above the sisa number. */
-  --accent-bg-elevated: #403366;
 
   /* Signals — bg/br gelap-redup, fg terang */
   --signal-danger: #f0685f;
