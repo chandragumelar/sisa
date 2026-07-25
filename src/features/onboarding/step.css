@@ -253,6 +253,9 @@ select.ob-input {
 .ob-input-row + .ob-input-row {
   margin-top: 8px;
 }
+/* Exception to "--accent = action only" (tokens.css) — currency-symbol
+   prefix badge, not a button or data. Same exception as .heroPrefix
+   in SaldoModule.module.css. */
 .ob-input-prefix {
   width: 30px;
   height: 30px;

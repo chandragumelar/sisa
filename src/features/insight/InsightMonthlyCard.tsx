@@ -78,7 +78,7 @@ function BarChart({
   function barFill(i: number, val: number, isTick: boolean): string {
     if (isTick) return 'var(--border-hair)'
     if (i !== n - 1) return 'var(--border-hair)'
-    if (metric !== 'net') return 'var(--accent)'
+    if (metric !== 'net') return 'var(--ink-primary)'
     return val >= 0 ? 'var(--signal-safe)' : 'var(--signal-caution)'
   }
 

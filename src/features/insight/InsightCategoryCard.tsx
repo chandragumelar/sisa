@@ -146,8 +146,8 @@ export function InsightCategoryCard({
         <svg viewBox={`0 0 ${svgW} ${SVG_H}`} width="100%" height={SVG_H} role="img">
           <defs>
             <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.18" />
-              <stop offset="100%" stopColor="var(--accent)" stopOpacity="0" />
+              <stop offset="0%" stopColor="var(--ink-tertiary)" stopOpacity="0.18" />
+              <stop offset="100%" stopColor="var(--ink-tertiary)" stopOpacity="0" />
             </linearGradient>
           </defs>
 
@@ -161,7 +161,7 @@ export function InsightCategoryCard({
           />
 
           <path d={areaPath} fill={`url(#${gradientId})`} stroke="none" />
-          <path d={linePath} fill="none" stroke="var(--accent)" strokeWidth={2} />
+          <path d={linePath} fill="none" stroke="var(--ink-tertiary)" strokeWidth={2} />
 
           {points.map((p, i) => {
             const isLast = i === lastIdx

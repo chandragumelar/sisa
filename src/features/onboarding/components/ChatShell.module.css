@@ -141,8 +141,8 @@
 }
 
 .bubbleUser {
-  background: var(--accent);
-  color: var(--accent-text);
+  background: var(--surface-3);
+  color: var(--ink-primary);
   border-radius: 20px;
   border-bottom-right-radius: 6px;
 }

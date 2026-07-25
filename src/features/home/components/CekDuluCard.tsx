@@ -198,7 +198,7 @@ function CheckRow({ done, label, doneText, todoText, onTodo }: CheckRowProps) {
           className={styles.checkIconTodo}
           size={15}
           strokeWidth={1.75}
-          color="var(--accent)"
+          color="var(--ink-tertiary)"
         />
       )}
       <span className={styles.checkLabel}>{label}</span>

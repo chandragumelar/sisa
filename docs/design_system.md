@@ -51,7 +51,7 @@ Violet sengaja occupy hue yang ga disentuh signal apapun (merah/amber/hijau). In
 
 | Token            | Hex (light) | Hex (dark) | Pakai untuk                                     |
 | ---------------- | ----------- | ---------- | -------------------------------------------------- |
-| `--accent`       | `#7C5CFF`   | `#8B5CF6`  | CTA utama (Cek Dulu), progress bar budget, link |
+| `--accent`       | `#7C5CFF`   | `#8B5CF6`  | CTA utama (Cek Dulu), link, elemen yang bisa ditap |
 | `--accent-hover` | `#6A47F5`   | `#9E75FF`  | Hover/pressed state                             |
 | `--accent-bg`    | `#F1EEFF`   | `#1E1830`  | Background subtle untuk info chip / hint        |
 | `--accent-br`    | `#D9D0FF`   | `#3A2E5C`  | Border accent, underline decoration link        |
@@ -83,6 +83,8 @@ Dark mode bukan cuma invert warna — surface naik bertingkat dari canvas near-b
 - **Jangan pakai signal untuk dekorasi.** Merah cuma keluar kalau memang ada masalah.
 - **Jangan campur signal di satu komponen.** Satu card = satu mood. Notif merah ya merah semua, bukan merah + amber.
 - **Hijau jarang muncul.** Hijau itu hadiah, bukan default. Default-nya neutral ink.
+- **`--accent` = tindakan, titik.** Kalau user gak bisa nge-tap elemennya, itu bukan tempat buat violet — progress bar, node chart, dot data, ujung skala heatmap semua pakai neutral ink atau `--heat-*`, bukan `--accent`. Refactor `refactor/accent-semantics` nyeberangin ini dari 130+ pemakaian yang campur aduk jadi satu aturan.
+- **Satu pengecualian: prefix simbol mata uang.** `.heroPrefix` (angka Sisa, `SaldoModule.module.css`) dan `.ob-input-prefix` (badge "Rp" di input nominal onboarding, `step.css`) tetap violet — bukan tindakan, bukan data, tapi signature brand yang disengaja di titik-titik nominal uang paling penting. Ditulis juga sebagai komentar persis di kedua selektor itu.
 
 ---
 
@@ -224,17 +226,17 @@ Pattern: `[module-label]` → `[hero-amount 38px atau big-amount 30px]` → `[he
 
 **Bar Tebal (hero, untuk Budget Hari Ini):**
 
-- Height `22px`, background `--surface-2`, radius `var(--radius-pill)`
-- Fill: `--accent` (violet), radius `var(--radius-pill)` di kiri (sudut kanan flat — bar belum penuh)
+- Height `4px`, background `--border-hair`, radius `var(--radius-pill)`
+- Fill: gradient neutral `--border-soft` → `--ink-tertiary`, radius `var(--radius-pill)` di kiri (sudut kanan flat — bar belum penuh)
 - Footer 2-kolom: kiri "terpakai", kanan "sisa hari ini" (`--ink-primary` bold)
 
 **Bar Tipis (Goal):**
 
 - Height `3px`, background `--border-hair`, radius `2px`
-- Fill: `--ink-primary` (bukan violet — goal pakai neutral karena violet sudah "milik" budget)
+- Fill: `--ink-primary`
 - Marker target: triangle ke bawah `--ink-tertiary` di ujung kanan
 
-> **Kenapa beda warna fill?** Violet = "duit lo yang bisa ditekan/dipakai sekarang" (budget aktif). Hitam = "progress menabung" (goal jangka panjang). Pembedaan semantik, bukan estetik.
+> **Kenapa netral, bukan violet?** Progress bar itu indikator data (berapa persen jatah harian yang udah kepake), bukan tombol — user gak nge-tap dia. `--accent` cuma buat yang bisa ditekan (lihat §1.7). Budget dan goal sama-sama neutral sekarang; bedanya cuma tebal-tipis sesuai hierarki visual (lihat `refactor/sisa-as-hero-section` — Jatah Harian sengaja jadi elemen sekunder).
 
 ### 4.5 Two-Column Stat Card
 
