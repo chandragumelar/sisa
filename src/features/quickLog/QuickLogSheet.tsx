@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import type { Wallet } from '@/db/database'
 import { formatCurrency, getCurrencySymbol } from '@/shared/utils/formatCurrency'
 import { formatNominalDisplay, parseNominalRaw } from '@/shared/utils/formatNominalInput'
@@ -76,7 +76,6 @@ export function QuickLogSheet({
   const [submitting, setSubmitting] = useState(false)
   const [manageOpen, setManageOpen] = useState(false)
   const [confirm, setConfirm] = useState<null | 'wallet' | 'mengendap'>(null)
-  const dateInputRef = useRef<HTMLInputElement>(null)
 
   const amount = parseInt(parseNominalRaw(amountStr), 10) || 0
   const currencyWallets = wallets.filter((w) => w.currency === activeCurrency)
@@ -122,22 +121,6 @@ export function QuickLogSheet({
     if (!val) return
     const [y, m, d] = val.split('-').map(Number)
     setDateMs(new Date(y, m - 1, d, 12, 0, 0).getTime())
-  }
-
-  function openDatePicker() {
-    const input = dateInputRef.current
-    if (!input) return
-    try {
-      if (typeof input.showPicker === 'function') {
-        input.showPicker()
-      } else {
-        input.focus()
-        input.click()
-      }
-    } catch {
-      input.focus()
-      input.click()
-    }
   }
 
   async function doSubmit() {
@@ -300,22 +283,30 @@ export function QuickLogSheet({
           >
             {t('common.yesterday', lang)}
           </button>
-          <button
-            type="button"
+          <label
             className={`${styles.datePill} ${styles.datePillCalendar} ${isCustomDate ? styles.datePillActive : ''}`}
-            onClick={openDatePicker}
           >
             {isCustomDate ? dateStr : t('quick_log.date_label', lang)}
             <input
-              ref={dateInputRef}
               type="date"
               className={styles.dateInputHidden}
               max={todayStr}
               value={isCustomDate ? dateStr : ''}
               onChange={(e) => handleDateInput(e.target.value)}
+              onClick={(e) => {
+                const input = e.currentTarget
+                if (typeof input.showPicker === 'function') {
+                  try {
+                    input.showPicker()
+                  } catch {
+                    // some browsers throw if called outside a direct user gesture —
+                    // safe to ignore, the native default tap-to-open still applies
+                  }
+                }
+              }}
               aria-label={t('quick_log.date_custom_aria', lang)}
             />
-          </button>
+          </label>
         </div>
 
         {/* Submit */}

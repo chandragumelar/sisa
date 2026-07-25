@@ -262,6 +262,7 @@ export function StepAlokasi({
             </div>
             <label
               style={{
+                position: 'relative',
                 display: 'flex',
                 alignItems: 'center',
                 gap: 5,
@@ -280,13 +281,26 @@ export function StepAlokasi({
                 type="date"
                 style={{
                   position: 'absolute',
+                  inset: 0,
                   opacity: 0,
-                  pointerEvents: 'none',
-                  width: 0,
-                  height: 0,
+                  width: '100%',
+                  height: '100%',
+                  zIndex: 1,
+                  cursor: 'pointer',
                 }}
                 value={toInputDate(effectivePeriodEnd)}
                 onChange={handleDateChange}
+                onClick={(e) => {
+                  const input = e.currentTarget
+                  if (typeof input.showPicker === 'function') {
+                    try {
+                      input.showPicker()
+                    } catch {
+                      // some browsers throw if called outside a direct user gesture —
+                      // safe to ignore, the native default tap-to-open still applies
+                    }
+                  }
+                }}
               />
             </label>
           </div>
