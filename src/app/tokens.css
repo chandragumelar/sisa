@@ -21,6 +21,13 @@
   --border-soft: #d8d5e3;
 
   /* ── Accent — Electric Violet ─────────────────────────── */
+  /* --accent marks ACTION — button, link, FAB, active/selected state on
+     something tappable. Never a progress bar, chart node/line, badge, or
+     any other data element — those get a neutral ink shade or --heat-*.
+     One exception: currency-symbol prefixes (.heroPrefix in
+     SaldoModule.module.css, .ob-input-prefix in onboarding/step.css) —
+     not action, not data, a deliberate brand signature at the app's most
+     important nominal-value moments. See docs/design_system.md §1.7. */
   --accent: #7c5cff;
   --accent-hover: #6a47f5;
   --accent-dim: #6a47f5;

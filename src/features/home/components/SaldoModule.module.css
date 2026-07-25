@@ -108,6 +108,10 @@
   margin-bottom: 6px;
 }
 
+/* Exception to "--accent = action only" (tokens.css) — currency-symbol
+   prefix, not a button or data. Deliberate brand signature at the app's
+   most important number. Same exception applies to .ob-input-prefix
+   in onboarding/step.css. */
 .heroPrefix {
   display: block;
   color: var(--accent);
