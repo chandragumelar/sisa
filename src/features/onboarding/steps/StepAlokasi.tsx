@@ -290,6 +290,17 @@ export function StepAlokasi({
                 }}
                 value={toInputDate(effectivePeriodEnd)}
                 onChange={handleDateChange}
+                onClick={(e) => {
+                  const input = e.currentTarget
+                  if (typeof input.showPicker === 'function') {
+                    try {
+                      input.showPicker()
+                    } catch {
+                      // some browsers throw if called outside a direct user gesture —
+                      // safe to ignore, the native default tap-to-open still applies
+                    }
+                  }
+                }}
               />
             </label>
           </div>

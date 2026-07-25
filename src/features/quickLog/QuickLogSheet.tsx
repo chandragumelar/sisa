@@ -293,6 +293,17 @@ export function QuickLogSheet({
               max={todayStr}
               value={isCustomDate ? dateStr : ''}
               onChange={(e) => handleDateInput(e.target.value)}
+              onClick={(e) => {
+                const input = e.currentTarget
+                if (typeof input.showPicker === 'function') {
+                  try {
+                    input.showPicker()
+                  } catch {
+                    // some browsers throw if called outside a direct user gesture —
+                    // safe to ignore, the native default tap-to-open still applies
+                  }
+                }
+              }}
               aria-label={t('quick_log.date_custom_aria', lang)}
             />
           </label>
