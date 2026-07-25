@@ -33,3 +33,6 @@ coverage/
 
 # Supabase local
 supabase/.temp/
+
+# Claude Code (local)
+.claude/
