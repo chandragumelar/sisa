@@ -283,8 +283,7 @@ export function QuickLogSheet({
           >
             {t('common.yesterday', lang)}
           </button>
-          <button
-            type="button"
+          <label
             className={`${styles.datePill} ${styles.datePillCalendar} ${isCustomDate ? styles.datePillActive : ''}`}
           >
             {isCustomDate ? dateStr : t('quick_log.date_label', lang)}
@@ -296,7 +295,7 @@ export function QuickLogSheet({
               onChange={(e) => handleDateInput(e.target.value)}
               aria-label={t('quick_log.date_custom_aria', lang)}
             />
-          </button>
+          </label>
         </div>
 
         {/* Submit */}
