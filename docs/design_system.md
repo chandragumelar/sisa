@@ -337,22 +337,52 @@ terakhir dicatat: Kopi −Rp 18rb · 2 jam lalu        semua catatan ›
 - Amount keluar pakai **mono** `--signal-danger` 500 dengan prefix `−`
 - "semua catatan ›" `--accent` dengan underline `--accent-br` (decoration warna lembut, biar ga "loud")
 
-### 4.11 Bottom Action Bar (Fixed)
+### 4.11 Two-Tier Bottom Bar (Fixed)
+
+**Tier 1 — three-slot bar (always visible):**
 
 ```
-┌────┐  ┌──────────────────────┐  ┌────┐
-│ +  │  │     Cek Dulu         │  │ ⋮  │
-│Catat│  │ aman ga gue beli ini?│  │Andai│
-└────┘  └──────────────────────┘  └────┘
+┌─────────────────────────────────────────────┐
+│  [Insight]    [Rp — aman beli?]    [Catat]  │
+│  icon+label    pill accent CTA    icon+label │
+└─────────────────────────────────────────────┘
 ```
 
-- Position absolute, `bottom: 12px`, `left/right: 12px`, gap `8px`
-- **Cek Dulu (CTA utama):** flex 1, bg `--accent`, text white, radius `var(--radius-button)`
-  - Label 17px 600, sub `#C5D0F7` 10px (subtle violet-tint di atas accent — bukan putih buram)
-- **Catat & Andai (CTA sekunder):** width `64px` fixed, bg `--surface`, text `--ink-primary`, radius `var(--radius-button)`
-  - Icon stroke 1.5px, label 10px 500
+- Sticky bottom, `background: --canvas`, `border-top: 1px solid --border-hair`
+- Padding `12px 18px calc(18px + safe-area-inset-bottom)`
+- **Left/right slots (Insight, Catat):** circle `44px`, label 9.5px 700 `--ink-tertiary` underneath
+  - Insight: bg `--surface`, border `1px solid --border-hair`, icon `TrendingUp` 16px stroke `--ink-secondary`
+  - Catat: bg `--accent`, no border, icon `Plus` 16px stroke white 2.6, haptic on tap
+- **Center slot (pill CTA):** flex 1, max-width `190px`, `border-radius: --radius-pill`, mono font, 13px 700
+  - **State 0 (no wallet + no tagihan):** bg `--surface-2`, border `1px solid --border-hair`, no shadow, text `--ink-tertiary` = "tambah wallet dulu" → tap adds wallet
+  - **State 1 (partial — one missing):** accent bg, tap navigates to add the missing item directly (no expand sheet)
+  - **State 2 (full):** accent bg + `--shadow-pill-accent`, text = `{symbol} — aman beli?`, tap toggles Tier 2 expand sheet
 
-> **Hierarchy intentional:** Cek Dulu paling lebar + paling warna karena ini **flagship action** ("aman ga gue beli ini?"). Catat di kiri karena urutan natural (catat dulu → cek → andai). Andai di kanan karena ini **explorasi**, bukan keputusan utama.
+**Tier 2 — expand sheet (state 2 only, in-place slide-up above bar):**
+
+```
+┌─────────────────────────────────────────────┐
+│  [Cek Dulu]  [Andai]     ← segmented tab   │
+│  ┌──────────────────────────────────┐       │
+│  │ Rp  65.000                       │       │
+│  └──────────────────────────────────┘       │
+│  ┌──────────────────────────────────┐       │
+│  │         Cek sekarang             │       │
+│  └──────────────────────────────────┘       │
+└─────────────────────────────────────────────┘
+```
+
+- Container bg `--surface`, border-top `1px solid --border-hair`
+- Segmented tab: bg `--surface-3`, pill radius, active tab bg `--canvas` + `--ink-primary`
+- **Cek Dulu tab:** currency-prefixed numeric input + full-width accent "Cek sekarang" button
+- **Andai tab:** single accent button "Buka Andai →" navigating to `/andai`
+- Semi-transparent backdrop `rgba(0,0,0,0.15)` behind bar while expanded — tap closes
+
+**Shadow exception:** `--shadow-pill-accent` is the **only** shadow token with a non-`none` value — intentional elevation for the primary CTA pill, since every other surface in this system is flat (elevation via border).
+
+**Animation:** expand sheet slides in with `transform: translateY` + `200ms ease-out`. No spring bounce (per §6).
+
+> **Hierarchy intentional:** pill CTA stays center + widest + only elevated element because it's the **flagship action** ("aman beli?"). Insight left (reflective/backward-looking), Catat right (forward action, always available regardless of pill state).
 
 ### 4.12 Status Bar / Header
 

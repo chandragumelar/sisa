@@ -310,6 +310,11 @@ export type StringKey =
   | 'actions.andai_aria'
   | 'actions.andai_label'
   | 'actions.log_full_label'
+  | 'bar.pill_empty'
+  | 'bar.pill_label'
+  | 'bar.andai_cta'
+  | 'bar.insight_label'
+  | 'bar.catat_label'
   // decision hero card
   | 'decision.heading'
   | 'decision.heading_line1'
@@ -1133,6 +1138,11 @@ const id: StringDictionary = {
   'actions.andai_aria': 'Andai',
   'actions.andai_label': 'Andai',
   'actions.log_full_label': 'Catat pengeluaran / pemasukan',
+  'bar.pill_empty': 'tambah wallet dulu',
+  'bar.pill_label': 'aman beli?',
+  'bar.andai_cta': 'Buka Andai →',
+  'bar.insight_label': 'Insight',
+  'bar.catat_label': 'Catat',
 
   'decision.heading': 'Aman beli sekarang?',
   'decision.heading_line1': 'Aman beli',
@@ -2007,6 +2017,11 @@ const en: StringDictionary = {
   'actions.andai_aria': 'What If',
   'actions.andai_label': 'What If',
   'actions.log_full_label': 'Log expense / income',
+  'bar.pill_empty': 'add wallet first',
+  'bar.pill_label': 'safe to buy?',
+  'bar.andai_cta': 'Open Andai →',
+  'bar.insight_label': 'Insight',
+  'bar.catat_label': 'Log',
 
   'decision.heading': 'Safe to buy now?',
   'decision.heading_line1': 'Safe to',

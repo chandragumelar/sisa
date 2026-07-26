@@ -31,7 +31,6 @@ import {
 import { calcUnpaidTagihanTotal, getTagihanUrgency } from './tagihan.utils'
 import { shouldShowBackupReminder, calcBackupUrgency } from './backup-reminder.utils'
 import { calcBudgetPeriode, type BudgetMode } from '@/shared/utils/budget.utils'
-import { CekDuluCard } from './components/CekDuluCard'
 import { SaldoModule } from './components/SaldoModule'
 import { MonthlyModule } from './components/MonthlyModule'
 import { TagihanModule } from './components/TagihanModule'
@@ -71,7 +70,7 @@ interface HomeData {
   jatahHariIni: number
   spentToday: number
   spentSinceLock: number
-  // legacy fields for CekDuluCard and other consumers
+  // shared fields for BottomActionBar and other consumers
   sisaPeriode: number
   jatahHarian: number | null
   anggaranOperasional: number
@@ -481,20 +480,6 @@ export function HomePage() {
             />
           )}
 
-          <CekDuluCard
-            currency={currency}
-            walletCount={wallets.filter((w) => w.currency === currency).length}
-            tagihanCount={tagihan.length}
-            sisa={sisaPeriode}
-            unpaidTagihanTotal={unpaidTagihanTotal}
-            onCekDulu={(amount) =>
-              navigate('/cek-dulu', { state: { initialAmount: amount }, viewTransition: true })
-            }
-            onAndai={() => navigate('/andai', { viewTransition: true })}
-            onAddTagihan={() => setTagihanSheetOpen(true)}
-            onAddWallet={() => setWalletSheetOpen(true)}
-          />
-
           {hasMonthlyActivity && (
             <MonthlyModule
               incomeByCurrency={monthlyIncomeByCurrency}
@@ -524,7 +509,20 @@ export function HomePage() {
         </div>
       </main>
 
-      <BottomActionBar onCatat={() => setQuickLogOpen(true)} />
+      <BottomActionBar
+        onCatat={() => setQuickLogOpen(true)}
+        currency={currency}
+        walletCount={wallets.filter((w) => w.currency === currency).length}
+        tagihanCount={tagihan.length}
+        sisa={sisaPeriode}
+        unpaidTagihanTotal={unpaidTagihanTotal}
+        onCekDulu={(amount) =>
+          navigate('/cek-dulu', { state: { initialAmount: amount }, viewTransition: true })
+        }
+        onAndai={() => navigate('/andai', { viewTransition: true })}
+        onAddTagihan={() => setTagihanSheetOpen(true)}
+        onAddWallet={() => setWalletSheetOpen(true)}
+      />
 
       {/* Toast */}
       {toast && (
