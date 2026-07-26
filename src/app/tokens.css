@@ -63,6 +63,7 @@
 
   /* ── Shadow + Radius + Spacing ────────────────────────── */
   --shadow-card: none;
+  --shadow-pill-accent: 0 8px 20px -6px rgba(124, 92, 255, 0.5);
   --radius-xs: 6px;
   --radius-sm: 10px;
   --radius-card: 18px;
@@ -173,6 +174,7 @@
 
   /* Shadow — flat, elevation via border */
   --shadow-card: none;
+  --shadow-pill-accent: 0 8px 20px -6px rgba(139, 92, 246, 0.45);
 
   /* Heat — dari violet redup ke terang */
   --heat-0: var(--surface-3);
