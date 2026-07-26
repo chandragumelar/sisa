@@ -70,7 +70,7 @@ export function BottomActionBar({
   const pillText =
     cardState === 0
       ? t('bar.pill_empty', lang)
-      : `${getCurrencySymbol(currency)} — ${t('bar.pill_label', lang)}`
+      : `${getCurrencySymbol(currency)} · ${t('bar.pill_label', lang)}`
 
   return (
     <>
