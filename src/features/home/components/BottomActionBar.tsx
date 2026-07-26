@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { TrendingUp, Plus } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { TrendingUp, Search, Plus } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
@@ -53,7 +53,12 @@ export function BottomActionBar({
   const hasTagihan = tagihanCount > 0
   const onAddMissing = hasTagihan ? onAddWallet : onAddTagihan
 
-  function handlePillClick() {
+  function closeSheet() {
+    setExpanded(false)
+    setAmountStr('')
+  }
+
+  function handleCekDuluClick() {
     if (cardState === 0) return onAddWallet()
     if (cardState === 1) return onAddMissing()
     setExpanded((v) => !v)
@@ -63,22 +68,29 @@ export function BottomActionBar({
     const raw = parseNominalRaw(amountStr)
     const val = parseInt(raw, 10)
     onCekDulu(isNaN(val) || val === 0 ? undefined : val)
+    closeSheet()
   }
 
-  const pillClass =
-    cardState === 0 ? `${styles.pill} ${styles.pillEmpty}` : `${styles.pill} ${styles.pillAccent}`
-  const pillText =
-    cardState === 0
-      ? t('bar.pill_empty', lang)
-      : `${getCurrencySymbol(currency)} · ${t('bar.pill_label', lang)}`
+  function handleAndai() {
+    onAndai()
+    closeSheet()
+  }
+
+  const sheetOpen = expanded && cardState === 2
+  const cekDuluClass = [
+    styles.cekDuluBtn,
+    cardState === 0 && styles.cekDuluEmpty,
+    cardState === 1 && styles.cekDuluPartial,
+    sheetOpen && styles.cekDuluActive,
+  ]
+    .filter(Boolean)
+    .join(' ')
 
   return (
     <>
-      {expanded && cardState === 2 && (
-        <div className={styles.backdrop} onClick={() => setExpanded(false)} />
-      )}
+      {sheetOpen && <div className={styles.backdrop} onClick={closeSheet} />}
       <div className={styles.wrap}>
-        {expanded && cardState === 2 && (
+        {sheetOpen && (
           <ExpandSheet
             tab={tab}
             setTab={setTab}
@@ -86,35 +98,32 @@ export function BottomActionBar({
             amountStr={amountStr}
             setAmountStr={setAmountStr}
             onSubmit={handleSubmit}
-            onAndai={onAndai}
+            onAndai={handleAndai}
           />
         )}
-        <div className={styles.bar}>
+        <div className={sheetOpen ? `${styles.bar} ${styles.barDimmed}` : styles.bar}>
           <button
-            className={styles.sideBtn}
+            className={styles.insightBtn}
             onClick={() => navigate('/insight', { viewTransition: true })}
+            aria-label={t('bar.insight_label', lang)}
           >
-            <span className={styles.sideIcon}>
-              <TrendingUp size={16} strokeWidth={1.6} />
-            </span>
-            <span className={styles.sideLabel}>{t('bar.insight_label', lang)}</span>
+            <TrendingUp size={18} strokeWidth={2} />
           </button>
 
-          <button className={pillClass} onClick={handlePillClick}>
-            {pillText}
+          <button className={cekDuluClass} onClick={handleCekDuluClick}>
+            <Search size={15} strokeWidth={2} />
+            <span>{t('actions.cek_label', lang)}</span>
           </button>
 
           <button
-            className={styles.sideBtn}
+            className={styles.catatBtn}
             onClick={() => {
               haptic()
               onCatat()
             }}
           >
-            <span className={`${styles.sideIcon} ${styles.sideIconAccent}`}>
-              <Plus size={16} strokeWidth={2.6} />
-            </span>
-            <span className={styles.sideLabel}>{t('bar.catat_label', lang)}</span>
+            <Plus size={17} strokeWidth={2.4} />
+            <span>{t('bar.catat_label', lang)}</span>
           </button>
         </div>
       </div>
@@ -142,8 +151,15 @@ function ExpandSheet({
   onAndai,
 }: ExpandSheetProps) {
   const lang = useLanguage()
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (tab === 'cekdulu') inputRef.current?.focus()
+  }, [tab])
+
   return (
     <div className={styles.sheet}>
+      <div className={styles.handle} />
       <div className={styles.tabs}>
         <button
           className={tab === 'cekdulu' ? `${styles.tab} ${styles.tabActive}` : styles.tab}
@@ -164,6 +180,7 @@ function ExpandSheet({
           <div className={styles.inputRow}>
             <span className={styles.currencySymbol}>{getCurrencySymbol(currency)}</span>
             <input
+              ref={inputRef}
               className={styles.input}
               type="text"
               inputMode="numeric"

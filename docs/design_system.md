@@ -337,52 +337,55 @@ terakhir dicatat: Kopi −Rp 18rb · 2 jam lalu        semua catatan ›
 - Amount keluar pakai **mono** `--signal-danger` 500 dengan prefix `−`
 - "semua catatan ›" `--accent` dengan underline `--accent-br` (decoration warna lembut, biar ga "loud")
 
-### 4.11 Two-Tier Bottom Bar (Fixed)
+### 4.11 Priority Weight Bar (Fixed)
 
-**Tier 1 — three-slot bar (always visible):**
+Three buttons, visual weight scaled by usage frequency — not three equal slots. No input or number visible in the collapsed bar; the input only appears inside the expand sheet.
 
 ```
-┌─────────────────────────────────────────────┐
-│  [Insight]    [Rp — aman beli?]    [Catat]  │
-│  icon+label    pill accent CTA    icon+label │
-└─────────────────────────────────────────────┘
+┌───────────────────────────────────────────────────┐
+│ [↗]   [🔍 Cek Dulu]         [  + Catat         ] │
+│ ghost   outline pill          solid accent flex:1  │
+└───────────────────────────────────────────────────┘
 ```
 
 - Sticky bottom, `background: --canvas`, `border-top: 1px solid --border-hair`
-- Padding `12px 18px calc(18px + safe-area-inset-bottom)`
-- **Left/right slots (Insight, Catat):** circle `44px`, label 9.5px 700 `--ink-tertiary` underneath
-  - Insight: bg `--surface`, border `1px solid --border-hair`, icon `TrendingUp` 16px stroke `--ink-secondary`
-  - Catat: bg `--accent`, no border, icon `Plus` 16px stroke white 2.6, haptic on tap
-- **Center slot (pill CTA):** flex 1, max-width `190px`, `border-radius: --radius-pill`, mono font, 13px 700
-  - **State 0 (no wallet + no tagihan):** bg `--surface-2`, border `1px solid --border-hair`, no shadow, text `--ink-tertiary` = "tambah wallet dulu" → tap adds wallet
-  - **State 1 (partial — one missing):** accent bg, tap navigates to add the missing item directly (no expand sheet)
-  - **State 2 (full):** accent bg + `--shadow-pill-accent`, text = `{symbol} — aman beli?`, tap toggles Tier 2 expand sheet
+- Padding `14px 14px calc(20px + safe-area-inset-bottom)`, flex row, `align-items: center`, gap `8px`
+- **Insight (ghost, smallest):** `34×34px`, radius `12px`, no bg/border, icon `TrendingUp` 18px stroke 2, `--ink-tertiary`. Icon only, no label.
+- **Cek Dulu (outline pill, medium):** height `48px`, padding `0 15px`, radius `14px`, border `1.5px solid --border-soft`, bg `--canvas`, color `--ink-secondary`. Icon `Search` 15px + label, gap `7px`.
+  - **State 0 (empty):** border `--border-hair`, color `--ink-tertiary`, `opacity: 0.5` → tap adds wallet
+  - **State 1 (partial):** border `--signal-caution` + 6px caution dot top-right → tap adds missing item
+  - **State 2 (full):** border `--border-soft` (default) → tap toggles expand sheet
+  - **Active (sheet open):** border + color `--accent`
+- **Catat (solid, dominant):** `flex: 1` — biggest element in the bar, height `48px`, radius `14px`, bg `--accent`, color white, icon `Plus` 17px + label, `box-shadow: --shadow-pill-accent`, haptic on tap.
 
-**Tier 2 — expand sheet (state 2 only, in-place slide-up above bar):**
+**Expand sheet (Cek Dulu tap, state 2 only) — bottom sheet, not in-place:**
 
 ```
-┌─────────────────────────────────────────────┐
-│  [Cek Dulu]  [Andai]     ← segmented tab   │
-│  ┌──────────────────────────────────┐       │
-│  │ Rp  65.000                       │       │
-│  └──────────────────────────────────┘       │
-│  ┌──────────────────────────────────┐       │
-│  │         Cek sekarang             │       │
-│  └──────────────────────────────────┘       │
-└─────────────────────────────────────────────┘
+┌───────────────────────────────────────────┐
+│                   ──                       │ ← handle
+│  [ Cek Dulu ]  [ Andai ]   ← segmented tab │
+│  ┌───────────────────────────────────┐     │
+│  │ Rp  Berapa harganya?               │     │
+│  └───────────────────────────────────┘     │
+│  ┌───────────────────────────────────┐     │
+│  │         Cek sekarang               │     │
+│  └───────────────────────────────────┘     │
+└───────────────────────────────────────────┘
 ```
 
-- Container bg `--surface`, border-top `1px solid --border-hair`
-- Segmented tab: bg `--surface-3`, pill radius, active tab bg `--canvas` + `--ink-primary`
-- **Cek Dulu tab:** currency-prefixed numeric input + full-width accent "Cek sekarang" button
+- `position: absolute`, `bottom: 0`, full-width, `background: --canvas`, radius `24px 24px 0 0`, `box-shadow: --shadow-sheet`
+- Handle bar `36×4px`, radius pill, `--border-soft`, centered
+- Segmented tab: bg `--surface-2`, border `1px solid --border-hair`, pill radius, active tab bg `--accent` + white text
+- **Cek Dulu tab:** currency-prefixed numeric input (auto-focused on open) + full-width accent "Cek sekarang" button
 - **Andai tab:** single accent button "Buka Andai →" navigating to `/andai`
-- Semi-transparent backdrop `rgba(0,0,0,0.15)` behind bar while expanded — tap closes
+- Backdrop `rgba(20, 18, 22, 0.35)` fixed behind sheet — tap closes
+- Bar behind the sheet stays visible but dimmed (`opacity: 0.4`, `pointer-events: none`); Cek Dulu button shows its active (accent) state
 
-**Shadow exception:** `--shadow-pill-accent` is the **only** shadow token with a non-`none` value — intentional elevation for the primary CTA pill, since every other surface in this system is flat (elevation via border).
+**Shadow tokens:** `--shadow-pill-accent` on Catat, `--shadow-sheet` on the expand sheet — the only two non-`none` shadows in the system, both intentional elevation for the primary action and the modal-like sheet. Every other surface stays flat (elevation via border).
 
-**Animation:** expand sheet slides in with `transform: translateY` + `200ms ease-out`. No spring bounce (per §6).
+**Animation:** backdrop fades in `150ms ease-out`; sheet slides up `transform: translateY(100%) → translateY(0)`, `200ms ease-out`. No spring bounce (per §6).
 
-> **Hierarchy intentional:** pill CTA stays center + widest + only elevated element because it's the **flagship action** ("aman beli?"). Insight left (reflective/backward-looking), Catat right (forward action, always available regardless of pill state).
+> **Hierarchy intentional:** Catat is the dominant, most-used action — solid, flex:1, only elevated bar button. Cek Dulu is medium-frequency — visible outline pill, no numbers shown until tapped. Insight is lowest-frequency — icon-only ghost button, no label needed once learned.
 
 ### 4.12 Status Bar / Header
 
