@@ -73,11 +73,34 @@ Signal harus **kelihatan**. Ga ada pastel. User butuh tau langsung "ini bahaya" 
 | `--signal-safe-bg`    | `#E9F7EF`   | `#122B1E`  | Background chip/notif "aman"                          |
 | `--signal-safe-br`    | `#C9EBD8`   | `#1F4430`  | Border chip/notif "aman"                              |
 
-### 1.6 `[data-theme='dark']`
+### 1.6 Data Visualization Colors
 
-Dark mode bukan cuma invert warna — surface naik bertingkat dari canvas near-black (`#0A0A0B`) ke surface lebih terang, border lebih terang dari surface (bukan lebih gelap, biar tetap "ngangkat"), dan accent violet dinaikkan saturasinya biar tetap pop di atas gelap. Semua token dark ada di kolom "Hex (dark)" tabel §1.1–1.5 di atas, dan didefinisikan di selector `[data-theme='dark']` pada `tokens.css` — bukan `prefers-color-scheme` media query, karena app punya toggle tema manual.
+**Categorical palette** — 8 named category colors for spending breakdowns. Used consistently across Sankey, category sparkline, ranking bars. Never use accent (`#7C5CFF`) for data — it's reserved for interactive elements.
 
-### 1.7 Aturan Warna (Hard Rules)
+Token pattern: `--viz-cat-{category}` where category is: `makanan`, `transport`, `belanja`, `tagihan`, `hiburan`, `kesehatan`, `investasi`, `lainnya`.
+
+| Token                 | Hex (light) | Hex (dark) |
+| ---------------------- | ----------- | ---------- |
+| `--viz-cat-makanan`    | `#BD6E4F`   | `#E38A67`  |
+| `--viz-cat-transport`  | `#4E75AF`   | `#73A0E2`  |
+| `--viz-cat-belanja`    | `#955A89`   | `#C27EB3`  |
+| `--viz-cat-tagihan`    | `#008389`   | `#20ACB3`  |
+| `--viz-cat-hiburan`    | `#A8A06D`   | `#C3B97D`  |
+| `--viz-cat-kesehatan`  | `#6A9F90`   | `#7ABAA8`  |
+| `--viz-cat-investasi`  | `#2E728D`   | `#509DBE`  |
+| `--viz-cat-lainnya`    | `#828690`   | `#787A80`  |
+
+Helper: `getCategoryColor(categoryKey)` from `src/shared/utils/vizColors.ts` — maps category names (case-insensitive) to CSS vars, falls back to `--viz-cat-lainnya` for unmapped categories (e.g. `Pendidikan`). Use `VIZ_CAT_PALETTE` instead when you only have an index, not a category key.
+
+**Sequential palette** — 4-shade "Metric Blue" ramp for single-metric bar charts (monthly keluar/masuk). `--viz-seq-1` (most inactive) through `--viz-seq-4` (active/current). Deliberately NOT violet — avoids confusion with accent. Exposed as the `VIZ_SEQ` array in the same helper file.
+
+**Signal colors in charts** — `--signal-safe` and `--signal-caution` remain for semantic data: net positive/negative, surplus/deficit, "Sisa" node in Sankey, spiked/highlighted category in ranking. These are NOT part of the category palette and are never replaced by `getCategoryColor()`.
+
+### 1.7 `[data-theme='dark']`
+
+Dark mode bukan cuma invert warna — surface naik bertingkat dari canvas near-black (`#0A0A0B`) ke surface lebih terang, border lebih terang dari surface (bukan lebih gelap, biar tetap "ngangkat"), dan accent violet dinaikkan saturasinya biar tetap pop di atas gelap. Semua token dark ada di kolom "Hex (dark)" tabel §1.1–1.6 di atas, dan didefinisikan di selector `[data-theme='dark']` pada `tokens.css` — bukan `prefers-color-scheme` media query, karena app punya toggle tema manual.
+
+### 1.8 Aturan Warna (Hard Rules)
 
 - **Jangan pakai violet untuk signal.** Violet cuma untuk hal yang bisa ditekan.
 - **Jangan pakai signal untuk dekorasi.** Merah cuma keluar kalau memang ada masalah.
@@ -236,7 +259,7 @@ Pattern: `[module-label]` → `[hero-amount 38px atau big-amount 30px]` → `[he
 - Fill: `--ink-primary`
 - Marker target: triangle ke bawah `--ink-tertiary` di ujung kanan
 
-> **Kenapa netral, bukan violet?** Progress bar itu indikator data (berapa persen jatah harian yang udah kepake), bukan tombol — user gak nge-tap dia. `--accent` cuma buat yang bisa ditekan (lihat §1.7). Budget dan goal sama-sama neutral sekarang; bedanya cuma tebal-tipis sesuai hierarki visual (lihat `refactor/sisa-as-hero-section` — Jatah Harian sengaja jadi elemen sekunder).
+> **Kenapa netral, bukan violet?** Progress bar itu indikator data (berapa persen jatah harian yang udah kepake), bukan tombol — user gak nge-tap dia. `--accent` cuma buat yang bisa ditekan (lihat §1.8). Budget dan goal sama-sama neutral sekarang; bedanya cuma tebal-tipis sesuai hierarki visual (lihat `refactor/sisa-as-hero-section` — Jatah Harian sengaja jadi elemen sekunder).
 
 ### 4.5 Two-Column Stat Card
 

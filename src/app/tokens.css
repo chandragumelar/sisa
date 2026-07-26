@@ -46,6 +46,22 @@
   --signal-safe-bg: #e9f7ef;
   --signal-safe-br: #c9ebd8;
 
+  /* ── Data viz: categorical ────────────────────────── */
+  --viz-cat-makanan: #bd6e4f;
+  --viz-cat-transport: #4e75af;
+  --viz-cat-belanja: #955a89;
+  --viz-cat-tagihan: #008389;
+  --viz-cat-hiburan: #a8a06d;
+  --viz-cat-kesehatan: #6a9f90;
+  --viz-cat-investasi: #2e728d;
+  --viz-cat-lainnya: #828690;
+
+  /* ── Data viz: sequential (single-metric bars) ───── */
+  --viz-seq-1: #e0e9f6;
+  --viz-seq-2: #b2c6e2;
+  --viz-seq-3: #799aca;
+  --viz-seq-4: #2a61b1;
+
   /* ── Typography ───────────────────────────────────────── */
   --font-sans:
     -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, system-ui, sans-serif;
@@ -172,6 +188,22 @@
   --signal-safe: #3ecb82;
   --signal-safe-bg: #122b1e;
   --signal-safe-br: #1f4430;
+
+  /* ── Data viz: categorical ────────────────────────── */
+  --viz-cat-makanan: #e38a67;
+  --viz-cat-transport: #73a0e2;
+  --viz-cat-belanja: #c27eb3;
+  --viz-cat-tagihan: #20acb3;
+  --viz-cat-hiburan: #c3b97d;
+  --viz-cat-kesehatan: #7abaa8;
+  --viz-cat-investasi: #509dbe;
+  --viz-cat-lainnya: #787a80;
+
+  /* ── Data viz: sequential (single-metric bars) ───── */
+  --viz-seq-1: #202938;
+  --viz-seq-2: #32435d;
+  --viz-seq-3: #5072a6;
+  --viz-seq-4: #82b9ff;
 
   /* Shadow — flat, elevation via border */
   --shadow-card: none;

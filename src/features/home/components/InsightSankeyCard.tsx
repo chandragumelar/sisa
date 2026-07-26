@@ -6,6 +6,7 @@ import { getTransactionsByDateRange } from '@/db/transactions.repository'
 import { aggregateByCategory } from '@/features/insight/insight.utils'
 import { t } from '@/shared/strings/strings'
 import { getCategoryDisplayName } from '../../category/category-display'
+import { getCategoryColor } from '@/shared/utils/vizColors'
 import { formatCompactCurrency } from './sankey.utils'
 import homeStyles from '../HomePage.module.css'
 import styles from './InsightSankeyCard.module.css'
@@ -152,7 +153,7 @@ function SankeyChart({ rows, leftTotal, currency, mode, lang }: SankeyChartProps
           <path
             key={`ribbon-${row.name}-${row.isSisa}`}
             d={ribbonPath(leftX + NODE_WIDTH, rightX, leftSegments[i], rightNodes[i])}
-            fill={row.isSisa ? 'var(--signal-safe)' : 'var(--ink-tertiary)'}
+            fill={row.isSisa ? 'var(--signal-safe)' : getCategoryColor(row.name)}
             opacity={opacity}
           />
         )
@@ -167,7 +168,7 @@ function SankeyChart({ rows, leftTotal, currency, mode, lang }: SankeyChartProps
               y={node.yStart}
               width={NODE_WIDTH}
               height={Math.max(node.yEnd - node.yStart, 1)}
-              fill={row.isSisa ? 'var(--signal-safe)' : 'var(--ink-tertiary)'}
+              fill={row.isSisa ? 'var(--signal-safe)' : getCategoryColor(row.name)}
               rx="1.5"
             />
             <text
