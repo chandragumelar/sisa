@@ -8,6 +8,7 @@ import {
   calcSpentToday,
   calcYesterdayStats,
   needsPaydayConfirmation,
+  shouldShowTransisiBanner,
   isHariPertamaMode,
   calcPemasukanFromAvg,
 } from './home.utils'
@@ -410,6 +411,48 @@ describe('needsPaydayConfirmation', () => {
         makeSettings({ incomeType: 'freelance', lastPaydayConfirmed: null }),
       ),
     ).toBe(false)
+  })
+})
+
+// ─── shouldShowTransisiBanner ─────────────────────────────────────────────────
+
+describe('shouldShowTransisiBanner', () => {
+  // incomeDay=25. Jan 23 → today(23) < incomeDay(25) → payday Jan 25 → 2 days out (H-2 window).
+  const H2_MS = new Date('2024-01-23T12:00:00Z').getTime()
+
+  it('freelance → always false', () => {
+    expect(shouldShowTransisiBanner(H2_MS, makeSettings({ incomeType: 'freelance' }))).toBe(false)
+  })
+
+  it('outside H-2 window (>2 days to payday) → false', () => {
+    // NOW_MS = Jan 10, payday 25 → 15 days out
+    expect(shouldShowTransisiBanner(NOW_MS, makeSettings())).toBe(false)
+  })
+
+  it('within H-2 window, no confirmation → true', () => {
+    expect(shouldShowTransisiBanner(H2_MS, makeSettings({ lastPaydayConfirmed: null }))).toBe(true)
+  })
+
+  it('within H-2 window, old confirmation (previous period) → true', () => {
+    const oldConfirm = new Date('2023-12-25T12:00:00Z').getTime()
+    expect(shouldShowTransisiBanner(H2_MS, makeSettings({ lastPaydayConfirmed: oldConfirm }))).toBe(
+      true,
+    )
+  })
+
+  it('within H-2 window, confirmed today → false (banner dismisses)', () => {
+    // reproduces the reported bug: confirm with today's date must hide banner.
+    // Uses noon UTC (not midnight) to stay same-calendar-day across timezones.
+    const confirmedToday = new Date('2024-01-23T12:00:00Z').getTime()
+    expect(
+      shouldShowTransisiBanner(H2_MS, makeSettings({ lastPaydayConfirmed: confirmedToday })),
+    ).toBe(false)
+  })
+
+  it('H-1 (1 day before payday), no confirmation → true', () => {
+    // Jan 24 → today(24) < incomeDay(25) → payday Jan 25 → 1 day out
+    const h1Ms = new Date('2024-01-24T12:00:00Z').getTime()
+    expect(shouldShowTransisiBanner(h1Ms, makeSettings({ lastPaydayConfirmed: null }))).toBe(true)
   })
 })
 

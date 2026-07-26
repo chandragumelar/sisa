@@ -153,14 +153,17 @@ export function needsPaydayConfirmation(
 
 /**
  * True when the H-2 transition banner should appear.
- * Shows for tetap/mix users when payday is ≤2 days away and not yet confirmed for this payday.
+ * Shows for tetap/mix users when payday is ≤2 days away AND the current
+ * H-2 window has not yet been confirmed. Uses startOfDay(nowMs) as the
+ * confirmation baseline — confirming with today's date (the modal default)
+ * during the H-2 window dismisses the banner.
  */
 export function shouldShowTransisiBanner(nowMs: number, settings: Settings): boolean {
   if (settings.incomeType === 'freelance') return false
   const days = calcDaysUntilPayday(nowMs, settings)
   if (days > 2) return false
-  const nextPayday = getPaydayDate(nowMs, settings)
-  return (settings.lastPaydayConfirmed ?? 0) < nextPayday.getTime()
+  const windowStartMs = startOfDay(new Date(nowMs)).getTime()
+  return (settings.lastPaydayConfirmed ?? 0) < windowStartMs
 }
 
 /**
