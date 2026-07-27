@@ -439,20 +439,24 @@ describe('shouldShowTransisiBanner', () => {
 // ─── isHariPertamaMode ────────────────────────────────────────────────────────
 
 describe('isHariPertamaMode', () => {
-  it('lastPaydayConfirmed=null and income=0 → true', () => {
-    expect(isHariPertamaMode(null, 0)).toBe(true)
+  it('no income, no fixedIncome, no allocation → true (fresh install)', () => {
+    expect(isHariPertamaMode(0, null, false)).toBe(true)
   })
 
-  it('lastPaydayConfirmed=null but income>0 → false', () => {
-    expect(isHariPertamaMode(null, 100_000)).toBe(false)
+  it('has period income → false', () => {
+    expect(isHariPertamaMode(100_000, null, false)).toBe(false)
   })
 
-  it('lastPaydayConfirmed set and income=0 → false', () => {
-    expect(isHariPertamaMode(NOW_MS, 0)).toBe(false)
+  it('no income but has fixedIncome → false', () => {
+    expect(isHariPertamaMode(0, 5_000_000, false)).toBe(false)
   })
 
-  it('lastPaydayConfirmed set and income>0 → false', () => {
-    expect(isHariPertamaMode(NOW_MS, 500_000)).toBe(false)
+  it('no income, no fixedIncome, but has allocation → false', () => {
+    expect(isHariPertamaMode(0, null, true)).toBe(false)
+  })
+
+  it('fixedIncome = 0 is treated as no fixedIncome', () => {
+    expect(isHariPertamaMode(0, 0, false)).toBe(true)
   })
 })
 
