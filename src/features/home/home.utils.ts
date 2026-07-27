@@ -163,14 +163,16 @@ export function shouldShowTransisiBanner(nowMs: number, settings: Settings): boo
 }
 
 /**
- * True when user has never confirmed a payday and has no income transactions.
- * In this mode pemasukanPeriode should be set to totalSaldo instead.
+ * True when Sisa has no income signal yet, so budget must fall back to total
+ * balance. This is the very first period for a fresh install: no recorded
+ * period income, no declared fixed income, and no allocation set up yet.
  */
 export function isHariPertamaMode(
-  lastPaydayConfirmed: number | null,
   incomeFromPeriod: number,
+  fixedIncome: number | null,
+  hasAllocation: boolean,
 ): boolean {
-  return lastPaydayConfirmed == null && incomeFromPeriod === 0
+  return incomeFromPeriod === 0 && !fixedIncome && !hasAllocation
 }
 
 /**

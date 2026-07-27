@@ -132,7 +132,7 @@ export function AndaiPage() {
             }
             if (cancelled) return
 
-            const hariPertama = isHariPertamaMode(s.lastPaydayConfirmed, income)
+            const hariPertama = isHariPertamaMode(income, s.fixedIncome, allocation != null)
             let effectivePemasukan = income
             if (hariPertama) {
               effectivePemasukan = totalSaldo
