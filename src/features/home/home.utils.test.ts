@@ -324,40 +324,20 @@ describe('getPeriodStartDate', () => {
     )
     expect(d.getDate()).toBe(5)
   })
-})
 
-// ─── getPeriodStartDate — lastPaydayConfirmed override ────────────────────────
-
-describe('getPeriodStartDate — lastPaydayConfirmed', () => {
-  it('lastPaydayConfirmed within current calendar period → used as period start', () => {
-    // today=Jan 10, incomeDay=25 → calendarPeriodStart=Dec 25
-    // lastPaydayConfirmed=Jan 5 → Jan 5 >= Dec 25 → use Jan 5
+  it('lastPaydayConfirmed is ignored — period start stays calendar-based', () => {
+    // hari ini Jan 10, incomeDay 25 → calendar start = Dec 25 prev year.
+    // lastPaydayConfirmed di dalam periode kalender pun tidak lagi jadi anchor.
     const confirmedMs = new Date('2024-01-05T12:00:00Z').getTime()
-    const d = getPeriodStartDate(
+    const withConfirm = getPeriodStartDate(
       NOW_MS,
       makeSettings({ incomeDay: 25, lastPaydayConfirmed: confirmedMs }),
     )
-    expect(d.getDate()).toBe(5)
-    expect(d.getMonth()).toBe(0)
-    expect(d.getFullYear()).toBe(2024)
-  })
-
-  it('lastPaydayConfirmed from previous calendar period → falls back to calendar start', () => {
-    // today=Jan 10, incomeDay=25 → calendarPeriodStart=Dec 25
-    // lastPaydayConfirmed=Dec 1 → Dec 1 < Dec 25 → ignore, use Dec 25
-    const oldConfirm = new Date('2023-12-01T12:00:00Z').getTime()
-    const d = getPeriodStartDate(
+    const withoutConfirm = getPeriodStartDate(
       NOW_MS,
-      makeSettings({ incomeDay: 25, lastPaydayConfirmed: oldConfirm }),
+      makeSettings({ incomeDay: 25, lastPaydayConfirmed: null }),
     )
-    expect(d.getDate()).toBe(25)
-    expect(d.getMonth()).toBe(11) // December
-  })
-
-  it('lastPaydayConfirmed = null → uses calendar period start', () => {
-    const d = getPeriodStartDate(NOW_MS, makeSettings({ incomeDay: 25, lastPaydayConfirmed: null }))
-    expect(d.getDate()).toBe(25)
-    expect(d.getMonth()).toBe(11) // December
+    expect(withConfirm.getTime()).toBe(withoutConfirm.getTime())
   })
 })
 

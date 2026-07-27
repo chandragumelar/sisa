@@ -118,16 +118,12 @@ function getCalendarPeriodStartDate(nowMs: number, settings: Settings): Date {
 }
 
 /**
- * Returns the date the current pay period started.
- * When lastPaydayConfirmed is set and falls within the current calendar period,
- * it is used as the period start (salary may arrive a day or two after payday).
+ * Returns the date the current pay period started — always calendar-based.
+ * Period boundaries come solely from incomeDay/incomeFrequency; user salary
+ * confirmation is no longer used to anchor the period start.
  */
 export function getPeriodStartDate(nowMs: number, settings: Settings): Date {
-  const calStart = getCalendarPeriodStartDate(nowMs, settings)
-  if (settings.lastPaydayConfirmed != null && settings.lastPaydayConfirmed >= calStart.getTime()) {
-    return new Date(settings.lastPaydayConfirmed)
-  }
-  return calStart
+  return getCalendarPeriodStartDate(nowMs, settings)
 }
 
 /**
