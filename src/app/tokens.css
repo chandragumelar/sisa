@@ -81,6 +81,9 @@
   --shadow-card: none;
   --shadow-pill-accent: 0 10px 22px -9px rgba(124, 92, 255, 0.55);
   --shadow-sheet: 0 -20px 44px -22px rgba(20, 18, 22, 0.3);
+  /* Third intentional exception to "no box-shadow" — focus ring for text
+     inputs/selects. Recolors automatically in dark mode via --accent. */
+  --shadow-focus-ring: 0 0 0 3px color-mix(in srgb, var(--accent) 12%, transparent);
   --radius-xs: 6px;
   --radius-sm: 10px;
   --radius-card: 18px;
