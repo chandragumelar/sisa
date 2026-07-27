@@ -7,8 +7,7 @@ import {
   calcHariPeriode,
   calcSpentToday,
   calcYesterdayStats,
-  needsPaydayConfirmation,
-  shouldShowTransisiBanner,
+  needsFreelanceRelock,
   isHariPertamaMode,
   calcPemasukanFromAvg,
 } from './home.utils'
@@ -341,98 +340,31 @@ describe('getPeriodStartDate', () => {
   })
 })
 
-// ─── needsPaydayConfirmation ──────────────────────────────────────────────────
+// ─── needsFreelanceRelock ───────────────────────────────────────────────────
 
-describe('needsPaydayConfirmation', () => {
-  // NOW_MS = Jan 10 2024, incomeDay=25 → calendarPeriodStart = Dec 25
-
-  it('tetap with no confirmed payday this period → true', () => {
+describe('needsFreelanceRelock', () => {
+  it('tetap/mix → always false, regardless of lastPaydayConfirmed', () => {
     expect(
-      needsPaydayConfirmation(
+      needsFreelanceRelock(
         NOW_MS,
         makeSettings({ incomeType: 'tetap', lastPaydayConfirmed: null }),
       ),
-    ).toBe(true)
-  })
-
-  it('tetap with old confirmation (prev period) → true', () => {
-    const oldConfirm = new Date('2023-12-01T12:00:00Z').getTime()
+    ).toBe(false)
     expect(
-      needsPaydayConfirmation(
+      needsFreelanceRelock(
         NOW_MS,
-        makeSettings({ incomeType: 'tetap', lastPaydayConfirmed: oldConfirm }),
-      ),
-    ).toBe(true)
-  })
-
-  it('tetap with confirmation this period → false', () => {
-    const confirmedMs = new Date('2024-01-05T12:00:00Z').getTime()
-    expect(
-      needsPaydayConfirmation(
-        NOW_MS,
-        makeSettings({ incomeType: 'tetap', lastPaydayConfirmed: confirmedMs }),
+        makeSettings({ incomeType: 'mix', lastPaydayConfirmed: NOW_MS }),
       ),
     ).toBe(false)
   })
 
-  it('mix same as tetap — no confirmation → true', () => {
+  it('freelance, no allocation → false', () => {
     expect(
-      needsPaydayConfirmation(
-        NOW_MS,
-        makeSettings({ incomeType: 'mix', lastPaydayConfirmed: null }),
-      ),
-    ).toBe(true)
-  })
-
-  it('freelance → always false (no payday to confirm)', () => {
-    expect(
-      needsPaydayConfirmation(
+      needsFreelanceRelock(
         NOW_MS,
         makeSettings({ incomeType: 'freelance', lastPaydayConfirmed: null }),
       ),
     ).toBe(false)
-  })
-})
-
-// ─── shouldShowTransisiBanner ─────────────────────────────────────────────────
-
-describe('shouldShowTransisiBanner', () => {
-  // incomeDay=25. Jan 23 → today(23) < incomeDay(25) → payday Jan 25 → 2 days out (H-2 window).
-  const H2_MS = new Date('2024-01-23T12:00:00Z').getTime()
-
-  it('freelance → always false', () => {
-    expect(shouldShowTransisiBanner(H2_MS, makeSettings({ incomeType: 'freelance' }))).toBe(false)
-  })
-
-  it('outside H-2 window (>2 days to payday) → false', () => {
-    // NOW_MS = Jan 10, payday 25 → 15 days out
-    expect(shouldShowTransisiBanner(NOW_MS, makeSettings())).toBe(false)
-  })
-
-  it('within H-2 window, no confirmation → true', () => {
-    expect(shouldShowTransisiBanner(H2_MS, makeSettings({ lastPaydayConfirmed: null }))).toBe(true)
-  })
-
-  it('within H-2 window, old confirmation (previous period) → true', () => {
-    const oldConfirm = new Date('2023-12-25T12:00:00Z').getTime()
-    expect(shouldShowTransisiBanner(H2_MS, makeSettings({ lastPaydayConfirmed: oldConfirm }))).toBe(
-      true,
-    )
-  })
-
-  it('within H-2 window, confirmed today → false (banner dismisses)', () => {
-    // reproduces the reported bug: confirm with today's date must hide banner.
-    // Uses noon UTC (not midnight) to stay same-calendar-day across timezones.
-    const confirmedToday = new Date('2024-01-23T12:00:00Z').getTime()
-    expect(
-      shouldShowTransisiBanner(H2_MS, makeSettings({ lastPaydayConfirmed: confirmedToday })),
-    ).toBe(false)
-  })
-
-  it('H-1 (1 day before payday), no confirmation → true', () => {
-    // Jan 24 → today(24) < incomeDay(25) → payday Jan 25 → 1 day out
-    const h1Ms = new Date('2024-01-24T12:00:00Z').getTime()
-    expect(shouldShowTransisiBanner(h1Ms, makeSettings({ lastPaydayConfirmed: null }))).toBe(true)
   })
 })
 
@@ -569,14 +501,14 @@ describe('calcYesterdayStats', () => {
   })
 })
 
-// ─── needsPaydayConfirmation with allocation ──────────────────────────────────
+// ─── needsFreelanceRelock with allocation ──────────────────────────────────
 
-describe('needsPaydayConfirmation with allocation', () => {
+describe('needsFreelanceRelock with allocation', () => {
   const NOW = NOW_MS
   const baseFreelance = makeSettings({ incomeType: 'freelance', lastPaydayConfirmed: null })
 
   it('freelance: false when allocation is null', () => {
-    expect(needsPaydayConfirmation(NOW, baseFreelance, null)).toBe(false)
+    expect(needsFreelanceRelock(NOW, baseFreelance, null)).toBe(false)
   })
 
   it('freelance: false when now < periodEndDate', () => {
@@ -588,7 +520,7 @@ describe('needsPaydayConfirmation with allocation', () => {
       periodEndDate: NOW + 86_400_000,
       buatDipakai: 1_000_000,
     }
-    expect(needsPaydayConfirmation(NOW, baseFreelance, alloc)).toBe(false)
+    expect(needsFreelanceRelock(NOW, baseFreelance, alloc)).toBe(false)
   })
 
   it('freelance: true when now > periodEndDate', () => {
@@ -600,20 +532,7 @@ describe('needsPaydayConfirmation with allocation', () => {
       periodEndDate: NOW - 1,
       buatDipakai: 1_000_000,
     }
-    expect(needsPaydayConfirmation(NOW, baseFreelance, alloc)).toBe(true)
-  })
-
-  it('mix: follows getPaydayDate cycle, not periodEndDate', () => {
-    const mix = makeSettings({ incomeType: 'mix', incomeDay: 25, lastPaydayConfirmed: NOW })
-    const alloc: import('@/db/database').Allocation = {
-      id: 1,
-      jatahHarian: 100_000,
-      daysAtLock: 10,
-      lockedAt: 0,
-      periodEndDate: NOW - 1,
-      buatDipakai: 1_000_000,
-    }
-    expect(needsPaydayConfirmation(NOW, mix, alloc)).toBe(false)
+    expect(needsFreelanceRelock(NOW, baseFreelance, alloc)).toBe(true)
   })
 })
 

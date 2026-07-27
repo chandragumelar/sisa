@@ -81,7 +81,7 @@ export function calcDaysUntilPayday(
 
 /**
  * Calendar-only period start — never uses lastPaydayConfirmed.
- * Used internally and by needsPaydayConfirmation to detect unconfirmed periods.
+ * Used internally by getPeriodStartDate.
  */
 function getCalendarPeriodStartDate(nowMs: number, settings: Settings): Date {
   const now = new Date(nowMs)
@@ -127,39 +127,17 @@ export function getPeriodStartDate(nowMs: number, settings: Settings): Date {
 }
 
 /**
- * True when a tetap/mix user has entered a new calendar period but not yet
- * confirmed that their salary arrived.
- * For freelance: true when now > allocation.periodEndDate (period expired, relock needed).
+ * True when a freelance user's allocation period has expired and they need to
+ * relock a new operational budget. Only meaningful for freelance — fixed/mix
+ * users derive their period from the calendar and never need to relock here.
  */
-export function needsPaydayConfirmation(
+export function needsFreelanceRelock(
   nowMs: number,
   settings: Settings,
   allocation?: Allocation | null,
 ): boolean {
-  if (settings.incomeType === 'freelance') {
-    return (
-      allocation != null && allocation.periodEndDate != null && nowMs > allocation.periodEndDate
-    )
-  }
-  const calStart = getCalendarPeriodStartDate(nowMs, settings)
-  const confirmedThisPeriod =
-    settings.lastPaydayConfirmed != null && settings.lastPaydayConfirmed >= calStart.getTime()
-  return !confirmedThisPeriod
-}
-
-/**
- * True when the H-2 transition banner should appear.
- * Shows for tetap/mix users when payday is ≤2 days away AND the current
- * H-2 window has not yet been confirmed. Uses startOfDay(nowMs) as the
- * confirmation baseline — confirming with today's date (the modal default)
- * during the H-2 window dismisses the banner.
- */
-export function shouldShowTransisiBanner(nowMs: number, settings: Settings): boolean {
-  if (settings.incomeType === 'freelance') return false
-  const days = calcDaysUntilPayday(nowMs, settings)
-  if (days > 2) return false
-  const windowStartMs = startOfDay(new Date(nowMs)).getTime()
-  return (settings.lastPaydayConfirmed ?? 0) < windowStartMs
+  if (settings.incomeType !== 'freelance') return false
+  return allocation != null && allocation.periodEndDate != null && nowMs > allocation.periodEndDate
 }
 
 /**
