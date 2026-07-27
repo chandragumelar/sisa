@@ -108,16 +108,6 @@ export type StringKey =
   | 'ob.payConfirm.first_label'
   | 'ob.payConfirm.first_sub'
   | 'ob.payConfirm.next'
-  // home — transisi periode banner (H-2)
-  | 'home.transisi_heading'
-  | 'home.transisi_sub'
-  | 'home.transisi_btn'
-  | 'home.transisi_popup_heading'
-  | 'home.transisi_popup_body'
-  | 'home.transisi_popup_date_label'
-  | 'home.transisi_popup_nominal_label'
-  | 'home.transisi_popup_confirm'
-  | 'home.transisi_popup_cancel'
   // onboarding step langCurrency (language + main currency combined)
   | 'ob.langCurrency.currency_label'
   | 'ob.langCurrency.currency_placeholder'
@@ -400,14 +390,10 @@ export type StringKey =
   | 'home.income_label'
   | 'home.expense_label'
   | 'home.savings_label'
-  | 'home.payday_confirm_title'
-  | 'home.payday_confirm_sub'
-  | 'home.payday_confirm_yes'
-  | 'home.payday_confirm_no'
-  | 'home.payday_alokasi_tag'
-  | 'home.payday_alokasi_title'
-  | 'home.payday_alokasi_msg'
-  | 'home.payday_alokasi_cta'
+  | 'home.freelance_relock_tag'
+  | 'home.freelance_relock_title'
+  | 'home.freelance_relock_msg'
+  | 'home.freelance_relock_cta'
   // equiv line (shared)
   | 'equiv.approx'
   // wallets card — multi-currency
@@ -927,17 +913,6 @@ const id: StringDictionary = {
   'ob.payConfirm.first_sub': 'SISA pakai saldo sekarang sebagai patokan',
   'ob.payConfirm.next': 'Lanjut',
 
-  'home.transisi_heading': 'Gajian bentar lagi?',
-  'home.transisi_sub': 'Konfirmasi saat gaji masuk biar jatah harian periode baru bisa dihitung.',
-  'home.transisi_btn': 'Udah gajian',
-  'home.transisi_popup_heading': 'Mulai periode baru?',
-  'home.transisi_popup_body':
-    'Gaji bulan ini dianggap sudah masuk. Jatah harian dihitung ulang dari awal.',
-  'home.transisi_popup_date_label': 'Gajian tanggal',
-  'home.transisi_popup_nominal_label': 'Nominal gaji',
-  'home.transisi_popup_confirm': 'Ya, mulai periode baru',
-  'home.transisi_popup_cancel': 'Batal',
-
   'ob.langCurrency.currency_label': 'Mata Uang Utama',
   'ob.langCurrency.currency_placeholder': 'Pilih mata uang…',
   'ob.langCurrency.explainer':
@@ -1229,15 +1204,11 @@ const id: StringDictionary = {
   'home.income_label': 'Pemasukan',
   'home.expense_label': 'Pengeluaran',
   'home.savings_label': 'Tabungan',
-  'home.payday_confirm_title': 'Gaji udah masuk?',
-  'home.payday_confirm_sub': 'Kalau udah, SISA reset jatah harian dari sekarang.',
-  'home.payday_confirm_yes': 'Udah masuk',
-  'home.payday_confirm_no': 'Belum',
-  'home.payday_alokasi_tag': 'Gajian masuk?',
-  'home.payday_alokasi_title': 'Atur ulang alokasi lo',
-  'home.payday_alokasi_msg':
-    'Saldo lo kayaknya naik nih. Mau langsung tentuin jatah operasional baru?',
-  'home.payday_alokasi_cta': 'Atur alokasi →',
+  'home.freelance_relock_tag': 'Periode abis?',
+  'home.freelance_relock_title': 'Atur ulang alokasi lo',
+  'home.freelance_relock_msg':
+    'Periode alokasi lo udah lewat. Tentuin jatah operasional baru biar itungan harian akurat lagi.',
+  'home.freelance_relock_cta': 'Atur alokasi →',
 
   'equiv.approx': '≈ {equiv} · kurs {date}',
 
@@ -1809,17 +1780,6 @@ const en: StringDictionary = {
   'ob.payConfirm.first_sub': 'SISA uses your current balance as the baseline',
   'ob.payConfirm.next': 'Next',
 
-  'home.transisi_heading': 'Payday coming up?',
-  'home.transisi_sub': 'Confirm when your salary arrives so your new daily budget is accurate.',
-  'home.transisi_btn': 'Salary received',
-  'home.transisi_popup_heading': 'Start new period?',
-  'home.transisi_popup_body':
-    'Your salary is marked as received. Daily budget resets from the beginning.',
-  'home.transisi_popup_date_label': 'Payday date',
-  'home.transisi_popup_nominal_label': 'Salary amount',
-  'home.transisi_popup_confirm': 'Yes, start new period',
-  'home.transisi_popup_cancel': 'Cancel',
-
   'ob.langCurrency.currency_label': 'Main Currency',
   'ob.langCurrency.currency_placeholder': 'Choose currency…',
   'ob.langCurrency.explainer':
@@ -2108,15 +2068,11 @@ const en: StringDictionary = {
   'home.income_label': 'Income',
   'home.expense_label': 'Expense',
   'home.savings_label': 'Savings',
-  'home.payday_confirm_title': 'Did your salary arrive?',
-  'home.payday_confirm_sub': 'If yes, SISA resets your daily budget from now.',
-  'home.payday_confirm_yes': "Yes, it's in",
-  'home.payday_confirm_no': 'Not yet',
-  'home.payday_alokasi_tag': 'Payday?',
-  'home.payday_alokasi_title': 'Reset your allocation',
-  'home.payday_alokasi_msg':
-    'Looks like your balance just went up. Want to set your new operational budget now?',
-  'home.payday_alokasi_cta': 'Set allocation →',
+  'home.freelance_relock_tag': 'Period ended?',
+  'home.freelance_relock_title': 'Reset your allocation',
+  'home.freelance_relock_msg':
+    'Your allocation period has ended. Set a new operational budget so your daily numbers stay accurate.',
+  'home.freelance_relock_cta': 'Set allocation →',
 
   'equiv.approx': '≈ {equiv} · rate {date}',
 
