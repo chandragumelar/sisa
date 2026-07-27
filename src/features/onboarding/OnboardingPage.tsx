@@ -16,7 +16,6 @@ import { StepCardSlot } from './components/StepCardSlot'
 import { DockLangCurrency } from './components/docks/DockLangCurrency'
 import { DockLicense } from './components/docks/DockLicense'
 import { DockIncomeType } from './components/docks/DockIncomeType'
-import { DockPayConfirm } from './components/docks/DockPayConfirm'
 import { getBaseBotLines, CARD_STEPS } from './components/chatScript'
 import type { TranscriptEntry } from './components/chatTranscript.types'
 import {
@@ -32,10 +31,10 @@ import {
   getPrevStep,
   parseWalletBalance,
 } from './onboarding.utils'
-import { getPaydayDate, calcDaysUntilPayday } from '@/features/home/home.utils'
+import { calcDaysUntilPayday } from '@/features/home/home.utils'
 import { relock, calcBudgetPeriode, resolveBudgetView } from '@/shared/utils/budget.utils'
 import { t } from '@/shared/strings/strings'
-import type { IncomeFrequency, Language } from '@/db/database'
+import type { Language } from '@/db/database'
 
 function buildHandoffLines(lang: Language, view: HandoffView): string[] {
   const sisaFmt = formatCurrency(view.sisaUang, view.currency)
@@ -48,14 +47,6 @@ function buildHandoffLines(lang: Language, view: HandoffView): string[] {
       .replace('{jatah}', jatahFmt),
     t('ob.handoff.line4', lang),
   ]
-}
-
-function getPreviousPaydayMs(nextPaydayMs: number, frequency: IncomeFrequency): number {
-  const d = new Date(nextPaydayMs)
-  if (frequency === 'mingguan') d.setDate(d.getDate() - 7)
-  else if (frequency === '2mingguan') d.setDate(d.getDate() - 14)
-  else d.setMonth(d.getMonth() - 1)
-  return d.getTime()
 }
 
 export function OnboardingPage() {
@@ -318,24 +309,6 @@ export function OnboardingPage() {
     dock = (
       <DockIncomeType
         onNext={(incomeType, echo) => pushCompletedAndAdvance({ incomeType }, echo)}
-      />
-    )
-  } else if (step === 'payConfirm') {
-    dock = (
-      <DockPayConfirm
-        previousPaydayMs={getPreviousPaydayMs(
-          getPaydayDate(clock.now(), {
-            incomeType: data.incomeType ?? 'tetap',
-            incomeFrequency: data.incomeFrequency ?? 'bulanan',
-            incomeAnchorDate: data.incomeAnchorDate,
-            incomeDay: data.incomeDay,
-            weekendBehavior: 'tetap',
-          } as import('@/db/database').Settings).getTime(),
-          data.incomeFrequency ?? 'bulanan',
-        )}
-        onNext={(lastPaydayConfirmed, echo) =>
-          pushCompletedAndAdvance({ lastPaydayConfirmed }, echo)
-        }
       />
     )
   }

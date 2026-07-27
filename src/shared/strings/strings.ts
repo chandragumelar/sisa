@@ -100,14 +100,6 @@ export type StringKey =
   | 'ob.step4b.fixed_income_label_mix'
   | 'ob.step4b.fixed_income_hint'
   | 'ob.step4b.next'
-  // onboarding step payConfirm (3-option: preset / picker / first-time)
-  | 'ob.payConfirm.heading'
-  | 'ob.payConfirm.sub'
-  | 'ob.payConfirm.preset_prefix'
-  | 'ob.payConfirm.picker_label'
-  | 'ob.payConfirm.first_label'
-  | 'ob.payConfirm.first_sub'
-  | 'ob.payConfirm.next'
   // onboarding step langCurrency (language + main currency combined)
   | 'ob.langCurrency.currency_label'
   | 'ob.langCurrency.currency_placeholder'
@@ -148,7 +140,6 @@ export type StringKey =
   | 'ob.chat.echo_wallet'
   | 'ob.chat.echo_tagihan'
   | 'ob.chat.echo_tagihan_skip'
-  | 'ob.chat.echo_pay_first'
   | 'ob.chat.intro_income_detail'
   | 'ob.chat.intro_tagihan'
   | 'ob.chat.intro_wallet'
@@ -905,14 +896,6 @@ const id: StringDictionary = {
   'ob.step4b.fixed_income_hint': 'Disimpan lokal di device lo aja, bukan ke server.',
   'ob.step4b.next': 'Lanjut',
 
-  'ob.payConfirm.heading': 'Kapan terakhir lo nerima gaji?',
-  'ob.payConfirm.sub': 'Dari sini SISA bisa hitung jatah harian yang akurat.',
-  'ob.payConfirm.preset_prefix': 'Sekitar',
-  'ob.payConfirm.picker_label': 'Pilih tanggal lain',
-  'ob.payConfirm.first_label': 'Belum pernah, ini gajian pertama',
-  'ob.payConfirm.first_sub': 'SISA pakai saldo sekarang sebagai patokan',
-  'ob.payConfirm.next': 'Lanjut',
-
   'ob.langCurrency.currency_label': 'Mata Uang Utama',
   'ob.langCurrency.currency_placeholder': 'Pilih mata uang…',
   'ob.langCurrency.explainer':
@@ -953,7 +936,6 @@ const id: StringDictionary = {
   'ob.chat.echo_wallet': '{n} dompet',
   'ob.chat.echo_tagihan': '{n} tagihan',
   'ob.chat.echo_tagihan_skip': 'Lewati dulu',
-  'ob.chat.echo_pay_first': 'Pertama kali',
   'ob.chat.intro_income_detail': 'Sip, detailnya nih:',
   'ob.chat.intro_tagihan': 'Sekarang, tagihan rutin lo:',
   'ob.chat.intro_wallet': 'Terakhir dikit, dompet lo:',
@@ -1772,14 +1754,6 @@ const en: StringDictionary = {
   'ob.step4b.fixed_income_hint': 'Saved locally on your device only.',
   'ob.step4b.next': 'Next',
 
-  'ob.payConfirm.heading': 'When did you last get paid?',
-  'ob.payConfirm.sub': 'This helps SISA calculate your daily budget accurately.',
-  'ob.payConfirm.preset_prefix': 'Around',
-  'ob.payConfirm.picker_label': 'Choose a different date',
-  'ob.payConfirm.first_label': 'Never — this is my first payday',
-  'ob.payConfirm.first_sub': 'SISA uses your current balance as the baseline',
-  'ob.payConfirm.next': 'Next',
-
   'ob.langCurrency.currency_label': 'Main Currency',
   'ob.langCurrency.currency_placeholder': 'Choose currency…',
   'ob.langCurrency.explainer':
@@ -1820,7 +1794,6 @@ const en: StringDictionary = {
   'ob.chat.echo_wallet': '{n} wallets',
   'ob.chat.echo_tagihan': '{n} bills',
   'ob.chat.echo_tagihan_skip': 'Skip for now',
-  'ob.chat.echo_pay_first': 'First time',
   'ob.chat.intro_income_detail': "Cool, let's get the details:",
   'ob.chat.intro_tagihan': 'Now, your recurring bills:',
   'ob.chat.intro_wallet': 'Almost there, your wallets:',
