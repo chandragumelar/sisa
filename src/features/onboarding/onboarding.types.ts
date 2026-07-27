@@ -6,7 +6,6 @@ export type OnboardingStep =
   | 'license'
   | 'incomeType'
   | 'incomeDetail'
-  | 'payConfirm'
   | 'tagihan'
   | 'wallet'
   | 'alokasi'

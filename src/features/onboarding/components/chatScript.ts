@@ -24,8 +24,6 @@ export function getBaseBotLines(step: OnboardingStep, lang: Language): string[] 
       return [t('ob.step4a.heading', lang), t('ob.step4a.sub', lang)]
     case 'incomeDetail':
       return [t('ob.chat.intro_income_detail', lang)]
-    case 'payConfirm':
-      return [t('ob.payConfirm.heading', lang), t('ob.payConfirm.sub', lang)]
     case 'tagihan':
       return [t('ob.chat.intro_tagihan', lang)]
     case 'wallet':

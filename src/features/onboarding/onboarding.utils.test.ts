@@ -19,7 +19,6 @@ describe('getProgressCount', () => {
   it('incomeType → 3', () => expect(getProgressCount('incomeType')).toBe(3))
   it('incomeDetail → 3 (same dot as incomeType)', () =>
     expect(getProgressCount('incomeDetail')).toBe(3))
-  it('payConfirm → 3 (same dot)', () => expect(getProgressCount('payConfirm')).toBe(3))
   it('tagihan → 4', () => expect(getProgressCount('tagihan')).toBe(4))
   it('wallet → 4 (same dot as tagihan)', () => expect(getProgressCount('wallet')).toBe(4))
   it('alokasi → 5', () => expect(getProgressCount('alokasi')).toBe(5))
@@ -44,17 +43,14 @@ describe('getNextStep', () => {
   it('incomeType → incomeDetail', () => {
     expect(getNextStep('incomeType', 'tetap')).toBe('incomeDetail')
   })
-  it('incomeDetail + freelance → tagihan (skip payConfirm, currency already chosen)', () => {
+  it('incomeDetail + freelance → tagihan', () => {
     expect(getNextStep('incomeDetail', 'freelance')).toBe('tagihan')
   })
-  it('incomeDetail + tetap → payConfirm', () => {
-    expect(getNextStep('incomeDetail', 'tetap')).toBe('payConfirm')
+  it('incomeDetail + tetap → tagihan', () => {
+    expect(getNextStep('incomeDetail', 'tetap')).toBe('tagihan')
   })
-  it('incomeDetail + mix → payConfirm', () => {
-    expect(getNextStep('incomeDetail', 'mix')).toBe('payConfirm')
-  })
-  it('payConfirm → tagihan', () => {
-    expect(getNextStep('payConfirm', 'tetap')).toBe('tagihan')
+  it('incomeDetail + mix → tagihan', () => {
+    expect(getNextStep('incomeDetail', 'mix')).toBe('tagihan')
   })
   it('tagihan → wallet', () => {
     expect(getNextStep('tagihan', 'tetap')).toBe('wallet')
