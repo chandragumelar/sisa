@@ -127,8 +127,10 @@
 .bubble {
   max-width: 80%;
   padding: 12px 14px;
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.45;
+  letter-spacing: -0.1px;
+  text-wrap: pretty;
   font-family: var(--font-sans);
 }
 
@@ -136,7 +138,7 @@
   background: var(--canvas);
   border: 1px solid var(--border-soft);
   border-radius: 20px;
-  border-bottom-left-radius: 6px;
+  border-bottom-left-radius: 7px;
   color: var(--ink);
 }
 
@@ -144,7 +146,7 @@
   background: var(--surface-3);
   color: var(--ink-primary);
   border-radius: 20px;
-  border-bottom-right-radius: 6px;
+  border-bottom-right-radius: 7px;
 }
 
 .cardWrap {

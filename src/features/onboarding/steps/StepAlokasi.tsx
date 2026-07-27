@@ -4,6 +4,7 @@ import { AlokasiEditor } from '@/features/alokasi/AlokasiEditor'
 import { formatCurrency } from '@/shared/utils/formatCurrency'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
+import styles from './StepAlokasi.module.css'
 
 interface ItemAmount {
   name: string
@@ -39,24 +40,6 @@ function toInputDate(ms: number): string {
   const m = String(d.getMonth() + 1).padStart(2, '0')
   const day = String(d.getDate()).padStart(2, '0')
   return `${y}-${m}-${day}`
-}
-
-const breakdownRow: React.CSSProperties = {
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  padding: '2px 0 2px 12px',
-}
-
-const breakdownLabel: React.CSSProperties = {
-  fontSize: 12,
-  color: 'var(--ink-tertiary)',
-}
-
-const breakdownAmt: React.CSSProperties = {
-  fontSize: 12,
-  fontFamily: 'var(--font-mono)',
-  color: 'var(--ink-tertiary)',
 }
 
 export function StepAlokasi({
@@ -97,64 +80,29 @@ export function StepAlokasi({
       <h1 className="ob-heading">{t('ob.alokasi.heading', lang)}</h1>
 
       {/* Breakdown */}
-      <div className="ob-card" style={{ padding: '14px 16px' }}>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            padding: '3px 0',
-          }}
-        >
-          <span style={{ fontSize: 13, color: 'var(--ink-secondary)' }}>
-            {t('saldo.total', lang)}
-          </span>
-          <span
-            style={{
-              fontSize: 14,
-              fontWeight: 600,
-              fontFamily: 'var(--font-mono)',
-              color: 'var(--ink-primary)',
-            }}
-          >
-            {formatCurrency(totalSaldo, currency)}
-          </span>
+      <div className={styles.ledger}>
+        <div className={styles.ledgerRow}>
+          <span>{t('saldo.total', lang)}</span>
+          <span>{formatCurrency(totalSaldo, currency)}</span>
         </div>
         {primaryWallets.length > 0 &&
           primaryWallets.map((w) => (
-            <div key={w.name} style={breakdownRow}>
-              <span style={breakdownLabel}>{w.name}</span>
-              <span style={breakdownAmt}>{formatCurrency(w.amount, currency)}</span>
+            <div key={w.name} className={styles.ledgerRowDim}>
+              <span>{w.name}</span>
+              <span>{formatCurrency(w.amount, currency)}</span>
             </div>
           ))}
         {tagihanTotal > 0 && (
           <>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '3px 0',
-              }}
-            >
-              <span style={{ fontSize: 13, color: 'var(--ink-secondary)' }}>− Tagihan</span>
-              <span
-                style={{
-                  fontSize: 14,
-                  fontWeight: 600,
-                  fontFamily: 'var(--font-mono)',
-                  color: 'var(--signal-danger)',
-                }}
-              >
-                −{formatCurrency(tagihanTotal, currency)}
-              </span>
+            <div className={styles.ledgerRow}>
+              <span>− Tagihan</span>
+              <span className={styles.ledgerNumRed}>−{formatCurrency(tagihanTotal, currency)}</span>
             </div>
             {primaryTagihan.map((tg) => (
-              <div key={tg.name} style={breakdownRow}>
-                <span style={breakdownLabel}>{tg.name}</span>
+              <div key={tg.name} className={styles.ledgerRowDim}>
+                <span>{tg.name}</span>
                 <span
                   style={{
-                    ...breakdownAmt,
                     color: 'color-mix(in srgb, var(--signal-danger) 70%, var(--ink-tertiary))',
                   }}
                 >
@@ -164,28 +112,10 @@ export function StepAlokasi({
             ))}
           </>
         )}
-        <div style={{ height: 1, background: 'var(--border-hair)', margin: '8px 0' }} />
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            padding: '2px 0',
-          }}
-        >
-          <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--ink-primary)' }}>
-            = Bisa dialokasikan
-          </span>
-          <span
-            style={{
-              fontSize: 18,
-              fontWeight: 700,
-              fontFamily: 'var(--font-mono)',
-              color: 'var(--ink-primary)',
-            }}
-          >
-            {formatCurrency(bisaDialokasi, currency)}
-          </span>
+        <div className={styles.ledgerRule} />
+        <div className={styles.ledgerTotal}>
+          <span>= Bisa dialokasikan</span>
+          <span>{formatCurrency(bisaDialokasi, currency)}</span>
         </div>
       </div>
 
