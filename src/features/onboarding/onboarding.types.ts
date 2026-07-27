@@ -30,7 +30,7 @@ export interface OnboardingAccumulated {
   fixedIncome: string
   avgIncome: string
   avgIncomeBasis: IncomeFrequency
-  /** null = hari pertama (gaji belum pernah masuk), number = epoch ms of last confirmed payday */
+  /** @deprecated retained for back-compat; always null for new users. */
   lastPaydayConfirmed: number | null
   primaryCurrency: string | null
   wallets: WalletInput[]
