@@ -50,6 +50,7 @@
 }
 .selectChip:hover {
   border-color: var(--accent-br);
+  transform: translateY(-1px);
 }
 .selectChip:active {
   transform: scale(0.98);
@@ -77,6 +78,7 @@
 }
 .optionChip:hover {
   border-color: var(--accent-br);
+  transform: translateY(-1px);
 }
 .optionChip:active {
   transform: scale(0.98);
@@ -100,7 +102,7 @@
   display: block;
   font-size: var(--text-xs);
   color: var(--ink-tertiary);
-  margin-top: 2px;
+  margin-top: 3px;
   font-weight: 400;
 }
 
@@ -148,7 +150,9 @@
   }
   .chip:active,
   .selectChip:active,
-  .optionChip:active {
+  .optionChip:active,
+  .selectChip:hover,
+  .optionChip:hover {
     transform: none;
   }
 }

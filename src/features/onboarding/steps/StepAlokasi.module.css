@@ -1,0 +1,76 @@
+/* Breakdown ledger — replaces .ob-card + inline styles for the saldo/tagihan
+   breakdown card. Rows use nested selectors (first-child = key, last-child =
+   amount) so callers only need one class per row, not a class per span. */
+.ledger {
+  background: var(--canvas);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-input);
+  padding: 15px 16px;
+}
+
+/* color sits on the row (not the span rules below) so .ledgerNumRed — a
+   single class on the amount span — can override it via inheritance
+   instead of losing a specificity fight against `.ledgerRow > span`. */
+.ledgerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 5px 0;
+  font-size: 14px;
+  color: var(--ink-primary);
+}
+.ledgerRow > span:first-child {
+  color: var(--ink-secondary);
+}
+.ledgerRow > span:last-child {
+  font-weight: 600;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
+}
+
+/* Sub-line under a ledgerRow (wallet/tagihan name) — smaller and dimmer */
+.ledgerRowDim {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 2px 0 2px 12px;
+  font-size: 12.5px;
+  color: var(--ink-tertiary);
+}
+.ledgerRowDim > span:last-child {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
+}
+
+/* Modifier for a ledgerRow/ledgerRowDim amount that's a deduction */
+.ledgerNumRed {
+  color: var(--signal-danger);
+}
+
+.ledgerRule {
+  height: 1px;
+  background: var(--border-hair);
+  margin: 8px 0;
+}
+
+.ledgerTotal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2px 0;
+}
+.ledgerTotal > span:first-child {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-primary);
+}
+.ledgerTotal > span:last-child {
+  font-size: 17px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
+  color: var(--ink-primary);
+}
