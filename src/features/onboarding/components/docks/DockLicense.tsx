@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { ArrowUp } from 'lucide-react'
 import { activateLicense } from '@/features/license/license.utils'
 import { useClock } from '@/app/providers/useClock'
 import { useLanguage } from '@/app/providers/useLanguage'
@@ -39,32 +40,41 @@ export function DockLicense({ onBotSay, onNext }: Props) {
     if (e.key === 'Enter') void handleActivate()
   }
 
+  const ready = key.trim().length > 0 && !isLoading
+
   return (
     <div className={`${styles.stack} ${styles.dockPop}`}>
-      <input
-        className="ob-input ob-input-mono"
-        type="text"
-        placeholder={t('ob.step2.hint', lang)}
-        value={key}
-        onChange={(e) => setKey(e.target.value)}
-        onKeyDown={handleKeyDown}
-        autoComplete="off"
-        autoCorrect="off"
-        spellCheck={false}
-      />
-      <button
-        className="ob-primary-btn"
-        disabled={!key.trim() || isLoading}
-        onClick={() => void handleActivate()}
-      >
-        {isLoading ? t('ob.step2.verify', lang) : t('ob.step2.activate', lang)}
-      </button>
-      <button
-        className="ob-link"
-        onClick={() => window.open('https://pikaxustudio.gumroad.com/l/sisa-app', '_blank')}
-      >
-        {t('ob.step2.buy_cta', lang)}
-      </button>
+      <div className={styles.composer}>
+        <label className={styles.composerField}>
+          <input
+            className={styles.composerInput}
+            type="text"
+            placeholder={t('ob.step2.hint', lang)}
+            value={key}
+            onChange={(e) => setKey(e.target.value)}
+            onKeyDown={handleKeyDown}
+            autoComplete="off"
+            autoCorrect="off"
+            spellCheck={false}
+          />
+        </label>
+        <button
+          className={`${styles.sendBtn} ${ready ? styles.sendBtnReady : ''}`}
+          disabled={!ready}
+          aria-label={isLoading ? t('ob.step2.verify', lang) : t('ob.step2.activate', lang)}
+          onClick={() => void handleActivate()}
+        >
+          <ArrowUp size={19} strokeWidth={2.1} />
+        </button>
+      </div>
+      <div className={styles.linkRow}>
+        <button
+          className={styles.tlink}
+          onClick={() => window.open('https://pikaxustudio.gumroad.com/l/sisa-app', '_blank')}
+        >
+          {t('ob.step2.buy_cta', lang)}
+        </button>
+      </div>
     </div>
   )
 }
