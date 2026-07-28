@@ -21,6 +21,10 @@
     border-color 0.15s,
     background 0.15s;
 }
+.chip:hover {
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
 .chip:active {
   border-color: var(--accent);
   transform: scale(0.97);
@@ -151,6 +155,7 @@
   .chip:active,
   .selectChip:active,
   .optionChip:active,
+  .chip:hover,
   .selectChip:hover,
   .optionChip:hover {
     transform: none;
