@@ -465,7 +465,7 @@ select.ob-input {
   color: var(--accent);
   text-align: center;
   border: 1.5px dashed var(--accent-br);
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-input);
   margin-bottom: 10px;
   background: var(--accent-bg);
   cursor: pointer;
@@ -565,7 +565,7 @@ select.ob-input {
   gap: 7px;
   height: 52px;
   padding: 0 16px;
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-input);
   border: 1.5px dashed var(--accent-br);
   background: var(--accent-bg);
   font-size: var(--text-body);

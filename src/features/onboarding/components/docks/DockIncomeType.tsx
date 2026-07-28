@@ -26,6 +26,7 @@ export function DockIncomeType({ onNext }: Props) {
         >
           <span className={styles.optionLabel}>{t(opt.labelKey, lang)}</span>
           <span className={styles.optionSub}>{t(opt.subKey, lang)}</span>
+          <span className={styles.pie} />
         </button>
       ))}
     </div>

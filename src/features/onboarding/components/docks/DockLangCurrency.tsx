@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Search, ChevronDown } from 'lucide-react'
 import { useSetLanguage } from '@/app/providers/useLanguage'
 import { CurrencyPickerSheet } from '@/shared/components/CurrencyPickerSheet'
 import { t } from '@/shared/strings/strings'
@@ -57,10 +58,14 @@ export function DockLangCurrency({ onBotSay, onNext }: Props) {
 
   return (
     <div className={`${styles.stack} ${styles.dockPop}`}>
-      <button className={styles.selectChip} onClick={() => setSheetOpen(true)}>
-        {selectedCurrency
-          ? `${selectedCurrency.code} — ${selectedCurrency.name}`
-          : t('ob.langCurrency.currency_placeholder', selectedLang)}
+      <button className={styles.trigger} onClick={() => setSheetOpen(true)}>
+        <Search className={styles.triggerIcon} />
+        <span className={selectedCurrency ? styles.triggerText : styles.triggerPlaceholder}>
+          {selectedCurrency
+            ? `${selectedCurrency.code} — ${selectedCurrency.name}`
+            : t('ob.langCurrency.currency_placeholder', selectedLang)}
+        </span>
+        <ChevronDown className={styles.triggerIcon} />
       </button>
       {selectedCurrency && (
         <button className="ob-primary-btn" onClick={handleConfirm}>
