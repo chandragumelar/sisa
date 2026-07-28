@@ -81,7 +81,7 @@ export function calcDaysUntilPayday(
 
 /**
  * Calendar-only period start — never uses lastPaydayConfirmed.
- * Used internally and by needsPaydayConfirmation to detect unconfirmed periods.
+ * Used internally by getPeriodStartDate.
  */
 function getCalendarPeriodStartDate(nowMs: number, settings: Settings): Date {
   const now = new Date(nowMs)
@@ -118,60 +118,39 @@ function getCalendarPeriodStartDate(nowMs: number, settings: Settings): Date {
 }
 
 /**
- * Returns the date the current pay period started.
- * When lastPaydayConfirmed is set and falls within the current calendar period,
- * it is used as the period start (salary may arrive a day or two after payday).
+ * Returns the date the current pay period started — always calendar-based.
+ * Period boundaries come solely from incomeDay/incomeFrequency; user salary
+ * confirmation is no longer used to anchor the period start.
  */
 export function getPeriodStartDate(nowMs: number, settings: Settings): Date {
-  const calStart = getCalendarPeriodStartDate(nowMs, settings)
-  if (settings.lastPaydayConfirmed != null && settings.lastPaydayConfirmed >= calStart.getTime()) {
-    return new Date(settings.lastPaydayConfirmed)
-  }
-  return calStart
+  return getCalendarPeriodStartDate(nowMs, settings)
 }
 
 /**
- * True when a tetap/mix user has entered a new calendar period but not yet
- * confirmed that their salary arrived.
- * For freelance: true when now > allocation.periodEndDate (period expired, relock needed).
+ * True when a freelance user's allocation period has expired and they need to
+ * relock a new operational budget. Only meaningful for freelance — fixed/mix
+ * users derive their period from the calendar and never need to relock here.
  */
-export function needsPaydayConfirmation(
+export function needsFreelanceRelock(
   nowMs: number,
   settings: Settings,
   allocation?: Allocation | null,
 ): boolean {
-  if (settings.incomeType === 'freelance') {
-    return (
-      allocation != null && allocation.periodEndDate != null && nowMs > allocation.periodEndDate
-    )
-  }
-  const calStart = getCalendarPeriodStartDate(nowMs, settings)
-  const confirmedThisPeriod =
-    settings.lastPaydayConfirmed != null && settings.lastPaydayConfirmed >= calStart.getTime()
-  return !confirmedThisPeriod
+  if (settings.incomeType !== 'freelance') return false
+  return allocation != null && allocation.periodEndDate != null && nowMs > allocation.periodEndDate
 }
 
 /**
- * True when the H-2 transition banner should appear.
- * Shows for tetap/mix users when payday is ≤2 days away and not yet confirmed for this payday.
- */
-export function shouldShowTransisiBanner(nowMs: number, settings: Settings): boolean {
-  if (settings.incomeType === 'freelance') return false
-  const days = calcDaysUntilPayday(nowMs, settings)
-  if (days > 2) return false
-  const nextPayday = getPaydayDate(nowMs, settings)
-  return (settings.lastPaydayConfirmed ?? 0) < nextPayday.getTime()
-}
-
-/**
- * True when user has never confirmed a payday and has no income transactions.
- * In this mode pemasukanPeriode should be set to totalSaldo instead.
+ * True when Sisa has no income signal yet, so budget must fall back to total
+ * balance. This is the very first period for a fresh install: no recorded
+ * period income, no declared fixed income, and no allocation set up yet.
  */
 export function isHariPertamaMode(
-  lastPaydayConfirmed: number | null,
   incomeFromPeriod: number,
+  fixedIncome: number | null,
+  hasAllocation: boolean,
 ): boolean {
-  return lastPaydayConfirmed == null && incomeFromPeriod === 0
+  return incomeFromPeriod === 0 && !fixedIncome && !hasAllocation
 }
 
 /**

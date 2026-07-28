@@ -3,7 +3,7 @@ import { Settings2 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useNow } from '@/app/providers/useNow'
 import { useLanguage } from '@/app/providers/useLanguage'
-import { getSettings, patchSettings } from '@/db/settings.repository'
+import { getSettings } from '@/db/settings.repository'
 import { getAllWallets } from '@/db/wallets.repository'
 import {
   getActiveTagihan,
@@ -23,15 +23,13 @@ import {
   getPaydayDate,
   getPeriodStartDate,
   calcHariPeriode,
-  shouldShowTransisiBanner,
-  needsPaydayConfirmation,
+  needsFreelanceRelock,
   isHariPertamaMode,
   calcPemasukanFromAvg,
 } from './home.utils'
 import { calcUnpaidTagihanTotal, getTagihanUrgency } from './tagihan.utils'
 import { shouldShowBackupReminder, calcBackupUrgency } from './backup-reminder.utils'
 import { calcBudgetPeriode, type BudgetMode } from '@/shared/utils/budget.utils'
-import { CekDuluCard } from './components/CekDuluCard'
 import { SaldoModule } from './components/SaldoModule'
 import { MonthlyModule } from './components/MonthlyModule'
 import { TagihanModule } from './components/TagihanModule'
@@ -41,7 +39,6 @@ import { MarkPaidSheet } from './components/MarkPaidSheet'
 import { TagihanDetailSheet, UrgentTagihanSheet } from './components/TagihanDetailSheet'
 import { HistorySheet } from './components/HistorySheet'
 import { BackupCard } from './components/BackupCard'
-import { TransisiPeriodeBanner } from './components/TransisiPeriodeBanner'
 import { WalletEditSheet } from '@/features/wallet/WalletEditSheet'
 import { ProfilTagihanSheet } from '@/features/profil/ProfilTagihanSheet'
 import { ProfilWalletsSheet } from '@/features/profil/ProfilWalletsSheet'
@@ -71,7 +68,7 @@ interface HomeData {
   jatahHariIni: number
   spentToday: number
   spentSinceLock: number
-  // legacy fields for CekDuluCard and other consumers
+  // shared fields for BottomActionBar and other consumers
   sisaPeriode: number
   jatahHarian: number | null
   anggaranOperasional: number
@@ -159,7 +156,7 @@ function useHomeData(nowMs: number): HomeData & { isLoading: boolean } {
             }
             if (cancelled) return
 
-            const hariPertama = isHariPertamaMode(settings.lastPaydayConfirmed, income)
+            const hariPertama = isHariPertamaMode(income, settings.fixedIncome, allocation != null)
             let effectivePemasukan = income
             if (hariPertama) {
               effectivePemasukan = totalSaldoForCalc
@@ -294,16 +291,6 @@ export function HomePage() {
   const showBackupCard = shouldShowBackupReminder(settings.lastExportedAt, backupDismissedAt, nowMs)
   const backupUrgency = calcBackupUrgency(settings.lastExportedAt, nowMs)
 
-  const showTransisiBanner = shouldShowTransisiBanner(nowMs, settings)
-
-  async function handleTransisiConfirm(lastPaydayConfirmed: number, fixedIncome: number | null) {
-    await patchSettings({
-      lastPaydayConfirmed,
-      ...(fixedIncome !== null ? { fixedIncome } : {}),
-    })
-    refresh()
-  }
-
   function dismissToast() {
     setToast(null)
   }
@@ -364,18 +351,16 @@ export function HomePage() {
       periodEndDate: allocation?.periodEndDate ?? null,
     })
     await putAllocation(newAllocation)
-    if (
-      settings.incomeType !== 'freelance' &&
-      needsPaydayConfirmation(nowMs, settings, allocation)
-    ) {
-      await patchSettings({ lastPaydayConfirmed: nowMs })
-    }
     refresh()
   }
 
   const lewatTempoCount = tagihan.filter(
     (tg) => tg.isActive && getTagihanUrgency(tg, nowMs) === 'lewat-tempo',
   ).length
+
+  const hasMonthlyActivity =
+    Object.values(monthlyIncomeByCurrency).some((v) => v > 0) ||
+    Object.values(monthlyExpenseByCurrency).some((v) => v > 0)
 
   return (
     <div className={styles.shell}>
@@ -416,51 +401,22 @@ export function HomePage() {
           />
         )}
 
-        {/* Transisi periode banner (H-2) */}
-        {showTransisiBanner && (
-          <TransisiPeriodeBanner
-            currency={currency}
-            defaultNominal={settings.fixedIncome}
-            nowMs={nowMs}
-            onConfirm={handleTransisiConfirm}
-          />
-        )}
-
-        {/* Payday alokasi banner — shown when alokasi model active + payday unconfirmed */}
-        {!showTransisiBanner &&
-          allocation != null &&
-          needsPaydayConfirmation(nowMs, settings, allocation) && (
-            <div className={styles.paydayAlokasiCard}>
-              <div className={styles.paydayAlokasiBody}>
-                <p className={styles.paydayAlokasiTag}>{t('home.payday_alokasi_tag', lang)}</p>
-                <p className={styles.paydayAlokasiTitle}>{t('home.payday_alokasi_title', lang)}</p>
-                <p className={styles.paydayAlokasiMsg}>{t('home.payday_alokasi_msg', lang)}</p>
-                <button
-                  className={styles.paydayAlokasiCta}
-                  onClick={() => setAlokasiSheetOpen(true)}
-                >
-                  {t('home.payday_alokasi_cta', lang)}
-                </button>
-              </div>
+        {/* Freelance relock card — period expired, prompt user to set a new budget */}
+        {needsFreelanceRelock(nowMs, settings, allocation) && (
+          <div className={styles.paydayAlokasiCard}>
+            <div className={styles.paydayAlokasiBody}>
+              <p className={styles.paydayAlokasiTag}>{t('home.freelance_relock_tag', lang)}</p>
+              <p className={styles.paydayAlokasiTitle}>{t('home.freelance_relock_title', lang)}</p>
+              <p className={styles.paydayAlokasiMsg}>{t('home.freelance_relock_msg', lang)}</p>
+              <button className={styles.paydayAlokasiCta} onClick={() => setAlokasiSheetOpen(true)}>
+                {t('home.freelance_relock_cta', lang)}
+              </button>
             </div>
-          )}
+          </div>
+        )}
 
         {/* Cards */}
         <div className={styles.cards}>
-          <CekDuluCard
-            currency={currency}
-            walletCount={wallets.filter((w) => w.currency === currency).length}
-            tagihanCount={tagihan.length}
-            sisa={sisaPeriode}
-            unpaidTagihanTotal={unpaidTagihanTotal}
-            onCekDulu={(amount) =>
-              navigate('/cek-dulu', { state: { initialAmount: amount }, viewTransition: true })
-            }
-            onAndai={() => navigate('/andai', { viewTransition: true })}
-            onAddTagihan={() => setTagihanSheetOpen(true)}
-            onAddWallet={() => setWalletSheetOpen(true)}
-          />
-
           <SaldoModule
             currency={currency}
             sisaUang={sisaUang}
@@ -491,12 +447,14 @@ export function HomePage() {
             />
           )}
 
-          <MonthlyModule
-            incomeByCurrency={monthlyIncomeByCurrency}
-            expenseByCurrency={monthlyExpenseByCurrency}
-            primaryCurrency={currency}
-            onHistoryTap={() => setHistoryOpen(true)}
-          />
+          {hasMonthlyActivity && (
+            <MonthlyModule
+              incomeByCurrency={monthlyIncomeByCurrency}
+              expenseByCurrency={monthlyExpenseByCurrency}
+              primaryCurrency={currency}
+              onHistoryTap={() => setHistoryOpen(true)}
+            />
+          )}
 
           <WalletsCard
             wallets={wallets}
@@ -518,7 +476,20 @@ export function HomePage() {
         </div>
       </main>
 
-      <BottomActionBar onCatat={() => setQuickLogOpen(true)} />
+      <BottomActionBar
+        onCatat={() => setQuickLogOpen(true)}
+        currency={currency}
+        walletCount={wallets.filter((w) => w.currency === currency).length}
+        tagihanCount={tagihan.length}
+        sisa={sisaPeriode}
+        unpaidTagihanTotal={unpaidTagihanTotal}
+        onCekDulu={(amount) =>
+          navigate('/cek-dulu', { state: { initialAmount: amount }, viewTransition: true })
+        }
+        onAndai={() => navigate('/andai', { viewTransition: true })}
+        onAddTagihan={() => setTagihanSheetOpen(true)}
+        onAddWallet={() => setWalletSheetOpen(true)}
+      />
 
       {/* Toast */}
       {toast && (

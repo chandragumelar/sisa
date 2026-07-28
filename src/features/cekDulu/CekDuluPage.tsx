@@ -158,7 +158,7 @@ export function CekDuluPage() {
             }
             if (cancelled) return
 
-            const hariPertama = isHariPertamaMode(settings.lastPaydayConfirmed, income)
+            const hariPertama = isHariPertamaMode(income, settings.fixedIncome, allocation != null)
             let effectivePemasukan = income
             if (hariPertama) {
               effectivePemasukan = totalSaldo

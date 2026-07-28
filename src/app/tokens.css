@@ -21,6 +21,13 @@
   --border-soft: #d8d5e3;
 
   /* ── Accent — Electric Violet ─────────────────────────── */
+  /* --accent marks ACTION — button, link, FAB, active/selected state on
+     something tappable. Never a progress bar, chart node/line, badge, or
+     any other data element — those get a neutral ink shade or --heat-*.
+     One exception: currency-symbol prefixes (.heroPrefix in
+     SaldoModule.module.css, .ob-input-prefix in onboarding/step.css) —
+     not action, not data, a deliberate brand signature at the app's most
+     important nominal-value moments. See docs/design_system.md §1.7. */
   --accent: #7c5cff;
   --accent-hover: #6a47f5;
   --accent-dim: #6a47f5;
@@ -39,14 +46,44 @@
   --signal-safe-bg: #e9f7ef;
   --signal-safe-br: #c9ebd8;
 
+  /* ── Data viz: categorical ────────────────────────── */
+  --viz-cat-makanan: #bd6e4f;
+  --viz-cat-transport: #4e75af;
+  --viz-cat-belanja: #955a89;
+  --viz-cat-tagihan: #008389;
+  --viz-cat-hiburan: #a8a06d;
+  --viz-cat-kesehatan: #6a9f90;
+  --viz-cat-investasi: #2e728d;
+  --viz-cat-lainnya: #828690;
+
+  /* ── Data viz: sequential (single-metric bars) ───── */
+  --viz-seq-1: #e0e9f6;
+  --viz-seq-2: #b2c6e2;
+  --viz-seq-3: #799aca;
+  --viz-seq-4: #2a61b1;
+
   /* ── Typography ───────────────────────────────────────── */
   --font-sans:
     -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, system-ui, sans-serif;
-  /* Nominal uang pakai SF Pro + tabular figures, bukan monospace */
-  --font-mono: var(--font-sans);
+  --font-mono:
+    ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+
+  /* ── Type scale ───────────────────────────────────────── */
+  --text-hero-xl: clamp(44px, 13vw, 56px);
+  --text-hero: 40px;
+  --text-title: 24px;
+  --text-lead: 17px;
+  --text-body: 14px;
+  --text-sm: 13px;
+  --text-xs: 11px;
 
   /* ── Shadow + Radius + Spacing ────────────────────────── */
   --shadow-card: none;
+  --shadow-pill-accent: 0 10px 22px -9px rgba(124, 92, 255, 0.55);
+  --shadow-sheet: 0 -20px 44px -22px rgba(20, 18, 22, 0.3);
+  /* Third intentional exception to "no box-shadow" — focus ring for text
+     inputs/selects. Recolors automatically in dark mode via --accent. */
+  --shadow-focus-ring: 0 0 0 3px color-mix(in srgb, var(--accent) 12%, transparent);
   --radius-xs: 6px;
   --radius-sm: 10px;
   --radius-card: 18px;
@@ -79,7 +116,9 @@
   --heat-2: #c4b5fd;
   --heat-3: #a78bfa;
   --heat-4: #8b5cf6;
-  --heat-5: var(--accent);
+  /* Continues the heat-1..4 HSL progression (hue +3-4, sat ~88%, light -9)
+     rather than borrowing --accent — heatmap is a data scale, not a button. */
+  --heat-5: #7831f2;
 
   /* Verdict aliases (used by CekDulu + existing CSS) */
   --aman-bg: #e9f7ef;
@@ -92,6 +131,31 @@
   --bahaya-fg: #8f231e;
   --bahaya-br: #c8362f;
 }
+
+/* ============================================================
+   Home card treatment — default + 1 exception
+
+   Default (all 7 home cards, including Sisa — SaldoModule.module.css
+   `.card`, unless noted below):
+     background: var(--surface); border: 1px solid var(--border-hair);
+     border-radius: var(--radius-card); box-shadow: var(--shadow-card);
+     padding: var(--pad-card);
+
+   This is not a taxonomy to pick from when adding a card — the answer
+   is almost always the default. Sisa tried standing out via card-level
+   treatment (gradient background, no border, extra padding) across
+   several iterations; all of them either didn't read in light mode or
+   made the card feel empty. It reads as a normal card now — hierarchy
+   comes from internal type scale (see SaldoModule.module.css `.heroNum`),
+   not from the container.
+
+   Exception — Cek Dulu card (CekDuluCard.module.css `.card`):
+     border: 1px solid var(--accent-br). It's the only card you tap —
+     the border marks it as an action. Deliberately no accent
+     background: giving the one actionable card a filled background
+     would out-compete the Sisa number for attention, which is backwards
+     for what this product is about.
+   ============================================================ */
 
 [data-theme='dark'] {
   /* Surfaces — naik dari canvas near-black ke surface lebih terang */
@@ -128,8 +192,26 @@
   --signal-safe-bg: #122b1e;
   --signal-safe-br: #1f4430;
 
+  /* ── Data viz: categorical ────────────────────────── */
+  --viz-cat-makanan: #e38a67;
+  --viz-cat-transport: #73a0e2;
+  --viz-cat-belanja: #c27eb3;
+  --viz-cat-tagihan: #20acb3;
+  --viz-cat-hiburan: #c3b97d;
+  --viz-cat-kesehatan: #7abaa8;
+  --viz-cat-investasi: #509dbe;
+  --viz-cat-lainnya: #787a80;
+
+  /* ── Data viz: sequential (single-metric bars) ───── */
+  --viz-seq-1: #202938;
+  --viz-seq-2: #32435d;
+  --viz-seq-3: #5072a6;
+  --viz-seq-4: #82b9ff;
+
   /* Shadow — flat, elevation via border */
   --shadow-card: none;
+  --shadow-pill-accent: 0 10px 22px -9px rgba(139, 92, 246, 0.5);
+  --shadow-sheet: 0 -20px 44px -22px rgba(0, 0, 0, 0.5);
 
   /* Heat — dari violet redup ke terang */
   --heat-0: var(--surface-3);

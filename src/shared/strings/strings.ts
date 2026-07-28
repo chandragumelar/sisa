@@ -100,24 +100,6 @@ export type StringKey =
   | 'ob.step4b.fixed_income_label_mix'
   | 'ob.step4b.fixed_income_hint'
   | 'ob.step4b.next'
-  // onboarding step payConfirm (3-option: preset / picker / first-time)
-  | 'ob.payConfirm.heading'
-  | 'ob.payConfirm.sub'
-  | 'ob.payConfirm.preset_prefix'
-  | 'ob.payConfirm.picker_label'
-  | 'ob.payConfirm.first_label'
-  | 'ob.payConfirm.first_sub'
-  | 'ob.payConfirm.next'
-  // home — transisi periode banner (H-2)
-  | 'home.transisi_heading'
-  | 'home.transisi_sub'
-  | 'home.transisi_btn'
-  | 'home.transisi_popup_heading'
-  | 'home.transisi_popup_body'
-  | 'home.transisi_popup_date_label'
-  | 'home.transisi_popup_nominal_label'
-  | 'home.transisi_popup_confirm'
-  | 'home.transisi_popup_cancel'
   // onboarding step langCurrency (language + main currency combined)
   | 'ob.langCurrency.currency_label'
   | 'ob.langCurrency.currency_placeholder'
@@ -158,11 +140,18 @@ export type StringKey =
   | 'ob.chat.echo_wallet'
   | 'ob.chat.echo_tagihan'
   | 'ob.chat.echo_tagihan_skip'
-  | 'ob.chat.echo_pay_first'
   | 'ob.chat.intro_income_detail'
   | 'ob.chat.intro_tagihan'
   | 'ob.chat.intro_wallet'
   | 'ob.chat.intro_alokasi'
+  // onboarding handoff (closing step, explains the numbers before navigating home)
+  | 'ob.handoff.line1'
+  | 'ob.handoff.line2'
+  | 'ob.handoff.line3'
+  | 'ob.handoff.line4'
+  | 'ob.handoff.sisa_label'
+  | 'ob.handoff.jatah_label'
+  | 'ob.handoff.cta'
   // currency picker
   | 'currency_picker.search'
   | 'currency_picker.popular'
@@ -302,7 +291,13 @@ export type StringKey =
   | 'actions.andai_aria'
   | 'actions.andai_label'
   | 'actions.log_full_label'
+  | 'bar.pill_empty'
+  | 'bar.pill_label'
+  | 'bar.andai_cta'
+  | 'bar.insight_label'
+  | 'bar.catat_label'
   // decision hero card
+  | 'decision.heading'
   | 'decision.heading_line1'
   | 'decision.heading_line2'
   | 'decision.input_placeholder'
@@ -386,14 +381,10 @@ export type StringKey =
   | 'home.income_label'
   | 'home.expense_label'
   | 'home.savings_label'
-  | 'home.payday_confirm_title'
-  | 'home.payday_confirm_sub'
-  | 'home.payday_confirm_yes'
-  | 'home.payday_confirm_no'
-  | 'home.payday_alokasi_tag'
-  | 'home.payday_alokasi_title'
-  | 'home.payday_alokasi_msg'
-  | 'home.payday_alokasi_cta'
+  | 'home.freelance_relock_tag'
+  | 'home.freelance_relock_title'
+  | 'home.freelance_relock_msg'
+  | 'home.freelance_relock_cta'
   // equiv line (shared)
   | 'equiv.approx'
   // wallets card — multi-currency
@@ -905,25 +896,6 @@ const id: StringDictionary = {
   'ob.step4b.fixed_income_hint': 'Disimpan lokal di device lo aja, bukan ke server.',
   'ob.step4b.next': 'Lanjut',
 
-  'ob.payConfirm.heading': 'Kapan terakhir lo nerima gaji?',
-  'ob.payConfirm.sub': 'Dari sini SISA bisa hitung jatah harian yang akurat.',
-  'ob.payConfirm.preset_prefix': 'Sekitar',
-  'ob.payConfirm.picker_label': 'Pilih tanggal lain',
-  'ob.payConfirm.first_label': 'Belum pernah, ini gajian pertama',
-  'ob.payConfirm.first_sub': 'SISA pakai saldo sekarang sebagai patokan',
-  'ob.payConfirm.next': 'Lanjut',
-
-  'home.transisi_heading': 'Gajian bentar lagi?',
-  'home.transisi_sub': 'Konfirmasi saat gaji masuk biar jatah harian periode baru bisa dihitung.',
-  'home.transisi_btn': 'Udah gajian',
-  'home.transisi_popup_heading': 'Mulai periode baru?',
-  'home.transisi_popup_body':
-    'Gaji bulan ini dianggap sudah masuk. Jatah harian dihitung ulang dari awal.',
-  'home.transisi_popup_date_label': 'Gajian tanggal',
-  'home.transisi_popup_nominal_label': 'Nominal gaji',
-  'home.transisi_popup_confirm': 'Ya, mulai periode baru',
-  'home.transisi_popup_cancel': 'Batal',
-
   'ob.langCurrency.currency_label': 'Mata Uang Utama',
   'ob.langCurrency.currency_placeholder': 'Pilih mata uang…',
   'ob.langCurrency.explainer':
@@ -964,11 +936,19 @@ const id: StringDictionary = {
   'ob.chat.echo_wallet': '{n} dompet',
   'ob.chat.echo_tagihan': '{n} tagihan',
   'ob.chat.echo_tagihan_skip': 'Lewati dulu',
-  'ob.chat.echo_pay_first': 'Pertama kali',
   'ob.chat.intro_income_detail': 'Sip, detailnya nih:',
   'ob.chat.intro_tagihan': 'Sekarang, tagihan rutin lo:',
   'ob.chat.intro_wallet': 'Terakhir dikit, dompet lo:',
   'ob.chat.intro_alokasi': 'Oke, terakhir — yuk atur duitnya:',
+
+  'ob.handoff.line1': 'Udah, semua kehitung.',
+  'ob.handoff.line2':
+    'Sisa lo {sisa}. Itu duit yang udah dipotong tagihan sama uang yang lo tahan.',
+  'ob.handoff.line3': 'Dibagi {hari} hari sampai gajian, aman jajan {jatah} per hari.',
+  'ob.handoff.line4': 'Dari sini, tinggal catat tiap keluar-masuk duit — sisanya lo lihat di sini.',
+  'ob.handoff.sisa_label': 'Sisa kamu',
+  'ob.handoff.jatah_label': 'Aman per hari',
+  'ob.handoff.cta': 'Gas, buka Sisa',
 
   'currency_picker.search': 'pilih mata uang…',
   'currency_picker.popular': 'Populer',
@@ -1115,7 +1095,13 @@ const id: StringDictionary = {
   'actions.andai_aria': 'Andai',
   'actions.andai_label': 'Andai',
   'actions.log_full_label': 'Catat pengeluaran / pemasukan',
+  'bar.pill_empty': 'tambah wallet dulu',
+  'bar.pill_label': 'aman beli?',
+  'bar.andai_cta': 'Buka Andai →',
+  'bar.insight_label': 'Insight',
+  'bar.catat_label': 'Catat',
 
+  'decision.heading': 'Aman beli sekarang?',
   'decision.heading_line1': 'Aman beli',
   'decision.heading_line2': 'sekarang?',
   'decision.input_placeholder': 'Berapa harganya?',
@@ -1200,15 +1186,11 @@ const id: StringDictionary = {
   'home.income_label': 'Pemasukan',
   'home.expense_label': 'Pengeluaran',
   'home.savings_label': 'Tabungan',
-  'home.payday_confirm_title': 'Gaji udah masuk?',
-  'home.payday_confirm_sub': 'Kalau udah, SISA reset jatah harian dari sekarang.',
-  'home.payday_confirm_yes': 'Udah masuk',
-  'home.payday_confirm_no': 'Belum',
-  'home.payday_alokasi_tag': 'Gajian masuk?',
-  'home.payday_alokasi_title': 'Atur ulang alokasi lo',
-  'home.payday_alokasi_msg':
-    'Saldo lo kayaknya naik nih. Mau langsung tentuin jatah operasional baru?',
-  'home.payday_alokasi_cta': 'Atur alokasi →',
+  'home.freelance_relock_tag': 'Periode abis?',
+  'home.freelance_relock_title': 'Atur ulang alokasi lo',
+  'home.freelance_relock_msg':
+    'Periode alokasi lo udah lewat. Tentuin jatah operasional baru biar itungan harian akurat lagi.',
+  'home.freelance_relock_cta': 'Atur alokasi →',
 
   'equiv.approx': '≈ {equiv} · kurs {date}',
 
@@ -1555,7 +1537,7 @@ const id: StringDictionary = {
   'home.insight_wd_weekend': 'Akhir pekan',
   'home.insight_card_label': 'INSIGHT',
   'home.insight_card_cta': 'Lihat pola lainnya',
-  'home.sankey_title': 'Aliran pengeluaran {cur}mu',
+  'home.sankey_title': 'Aliran pengeluaran',
   'home.sankey_breakdown': 'pengeluaran {out} + sisa uang {left} = {total}',
   'home.sankey_breakdown_overspend': 'keluar {out}',
   'home.sankey_toggle_nominal': 'Nominal',
@@ -1593,11 +1575,11 @@ const id: StringDictionary = {
     'Bantalan lo tinggal kurang dari sehari jatah. Habis itu nggak ada lagi yang nahan.',
   'home.jatah_defisit_badge': 'DEFISIT',
   'home.jatah_defisit_msg': 'Nggak ada lagi bantalan. Tiap pengeluaran dari sini bikin lo minus.',
-  'home.sisa_uang_dynamic': 'SISA {cur}MU',
-  'home.jatah_harian_dynamic': 'Jatah Harian {cur}mu',
+  'home.sisa_uang_dynamic': 'Sisa',
+  'home.jatah_harian_dynamic': 'Jatah harian',
   'home.jatah_harian_tooltip':
     'Jatah harian itu batas aman uang yang bisa kamu pakai hari ini biar nggak kehabisan sebelum gajian.\n\nDengan pegang satu angka ini, kamu nggak perlu ngitung tiap pengeluaran — cukup pastiin nggak lewat dari jatah, sisa uangmu otomatis aman sampai akhir periode.\n\nHitungannya:\nSisa uangmu (yang aman dipakai)\n÷ Sisa hari sampai gajian\n= Jatah harian\n\nKalau hari ini kamu pakai kurang dari jatah, sisanya nambah ke jatah besok. Kalau lewat, jatah besok otomatis nyusut.',
-  'cek.card_title_dynamic': 'Cek Dulu {cur}mu',
+  'cek.card_title_dynamic': 'Cek dulu',
 
   // insight
   'insight.back_aria': 'Kembali',
@@ -1772,25 +1754,6 @@ const en: StringDictionary = {
   'ob.step4b.fixed_income_hint': 'Saved locally on your device only.',
   'ob.step4b.next': 'Next',
 
-  'ob.payConfirm.heading': 'When did you last get paid?',
-  'ob.payConfirm.sub': 'This helps SISA calculate your daily budget accurately.',
-  'ob.payConfirm.preset_prefix': 'Around',
-  'ob.payConfirm.picker_label': 'Choose a different date',
-  'ob.payConfirm.first_label': 'Never — this is my first payday',
-  'ob.payConfirm.first_sub': 'SISA uses your current balance as the baseline',
-  'ob.payConfirm.next': 'Next',
-
-  'home.transisi_heading': 'Payday coming up?',
-  'home.transisi_sub': 'Confirm when your salary arrives so your new daily budget is accurate.',
-  'home.transisi_btn': 'Salary received',
-  'home.transisi_popup_heading': 'Start new period?',
-  'home.transisi_popup_body':
-    'Your salary is marked as received. Daily budget resets from the beginning.',
-  'home.transisi_popup_date_label': 'Payday date',
-  'home.transisi_popup_nominal_label': 'Salary amount',
-  'home.transisi_popup_confirm': 'Yes, start new period',
-  'home.transisi_popup_cancel': 'Cancel',
-
   'ob.langCurrency.currency_label': 'Main Currency',
   'ob.langCurrency.currency_placeholder': 'Choose currency…',
   'ob.langCurrency.explainer':
@@ -1831,11 +1794,18 @@ const en: StringDictionary = {
   'ob.chat.echo_wallet': '{n} wallets',
   'ob.chat.echo_tagihan': '{n} bills',
   'ob.chat.echo_tagihan_skip': 'Skip for now',
-  'ob.chat.echo_pay_first': 'First time',
   'ob.chat.intro_income_detail': "Cool, let's get the details:",
   'ob.chat.intro_tagihan': 'Now, your recurring bills:',
   'ob.chat.intro_wallet': 'Almost there, your wallets:',
   'ob.chat.intro_alokasi': "Alright, last one — let's sort your money:",
+
+  'ob.handoff.line1': "Done, everything's counted.",
+  'ob.handoff.line2': "Your Sisa is {sisa} — that's after bills and money you're holding back.",
+  'ob.handoff.line3': "Split across {hari} days to payday, that's {jatah} safe to spend a day.",
+  'ob.handoff.line4': "From here, just log what comes in and out — you'll see it all right here.",
+  'ob.handoff.sisa_label': 'Your remaining',
+  'ob.handoff.jatah_label': 'Safe per day',
+  'ob.handoff.cta': "Let's go",
 
   'currency_picker.search': 'search currency…',
   'currency_picker.popular': 'Popular',
@@ -1980,7 +1950,13 @@ const en: StringDictionary = {
   'actions.andai_aria': 'What If',
   'actions.andai_label': 'What If',
   'actions.log_full_label': 'Log expense / income',
+  'bar.pill_empty': 'add wallet first',
+  'bar.pill_label': 'safe to buy?',
+  'bar.andai_cta': 'Open Andai →',
+  'bar.insight_label': 'Insight',
+  'bar.catat_label': 'Log',
 
+  'decision.heading': 'Safe to buy now?',
   'decision.heading_line1': 'Safe to',
   'decision.heading_line2': 'buy now?',
   'decision.input_placeholder': 'How much is it?',
@@ -2065,15 +2041,11 @@ const en: StringDictionary = {
   'home.income_label': 'Income',
   'home.expense_label': 'Expense',
   'home.savings_label': 'Savings',
-  'home.payday_confirm_title': 'Did your salary arrive?',
-  'home.payday_confirm_sub': 'If yes, SISA resets your daily budget from now.',
-  'home.payday_confirm_yes': "Yes, it's in",
-  'home.payday_confirm_no': 'Not yet',
-  'home.payday_alokasi_tag': 'Payday?',
-  'home.payday_alokasi_title': 'Reset your allocation',
-  'home.payday_alokasi_msg':
-    'Looks like your balance just went up. Want to set your new operational budget now?',
-  'home.payday_alokasi_cta': 'Set allocation →',
+  'home.freelance_relock_tag': 'Period ended?',
+  'home.freelance_relock_title': 'Reset your allocation',
+  'home.freelance_relock_msg':
+    'Your allocation period has ended. Set a new operational budget so your daily numbers stay accurate.',
+  'home.freelance_relock_cta': 'Set allocation →',
 
   'equiv.approx': '≈ {equiv} · rate {date}',
 
@@ -2414,7 +2386,7 @@ const en: StringDictionary = {
   'home.insight_wd_weekend': 'Weekend',
   'home.insight_card_label': 'INSIGHTS',
   'home.insight_card_cta': 'See more insights',
-  'home.sankey_title': 'Your {cur} spending flow',
+  'home.sankey_title': 'Spending flow',
   'home.sankey_breakdown': 'spent {out} + money left {left} = {total}',
   'home.sankey_breakdown_overspend': 'spent {out}',
   'home.sankey_toggle_nominal': 'Amount',
@@ -2452,11 +2424,11 @@ const en: StringDictionary = {
     "Your reserve has less than a day's allowance left. Once it's gone, there's nothing left to catch you.",
   'home.jatah_defisit_badge': 'DEFICIT',
   'home.jatah_defisit_msg': "There's no reserve left. Every expense from here pushes you negative.",
-  'home.sisa_uang_dynamic': 'YOUR {cur} LEFT',
-  'home.jatah_harian_dynamic': 'Your {cur} Daily Budget',
+  'home.sisa_uang_dynamic': 'Remaining',
+  'home.jatah_harian_dynamic': 'Daily budget',
   'home.jatah_harian_tooltip':
     "Your daily budget is the safe amount you can spend today so you don't run out before payday.\n\nBy tracking just this one number, you don't have to log every expense — just stay under it and your money stays safe through the end of the period.\n\nHow it's calculated:\nYour money left (safe to spend)\n÷ Days remaining until payday\n= Daily budget\n\nSpend less than your budget today and the rest rolls into tomorrow. Go over, and tomorrow's budget shrinks automatically.",
-  'cek.card_title_dynamic': 'Check Your {cur} First',
+  'cek.card_title_dynamic': 'Check first',
 
   // insight
   'insight.back_aria': 'Back',

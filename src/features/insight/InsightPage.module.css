@@ -377,7 +377,7 @@
   transform: translateY(-50%);
   height: 6px;
   border-radius: var(--radius-xs);
-  background: var(--accent);
+  background: var(--ink-tertiary);
   transition: width 0.3s ease;
 }
 
@@ -484,7 +484,7 @@
   width: 10px;
   height: 6px;
   border-radius: 2px;
-  background: var(--accent);
+  background: var(--ink-tertiary);
   flex-shrink: 0;
 }
 
@@ -590,7 +590,7 @@
   position: relative;
   height: 4px;
   top: 2px;
-  background: var(--accent-br);
+  background: var(--border-soft);
   border-radius: 2px;
 }
 
@@ -602,7 +602,7 @@
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: var(--accent);
+  background: var(--ink-tertiary);
 }
 
 .txSectionLabel {

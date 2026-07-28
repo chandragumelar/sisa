@@ -7,7 +7,6 @@
 /* ── Card base ───────────────────────────────────────────── */
 .card {
   background: var(--surface);
-  background: linear-gradient(160deg, var(--accent-bg) 0%, var(--surface) 60%);
   border: 1px solid var(--border-hair);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-card);
@@ -27,26 +26,21 @@
   margin-bottom: 12px;
 }
 
-.headerDivider {
-  height: 1px;
-  background: var(--border-hair);
-  margin: 0 calc(var(--pad-card) * -1) 12px;
-}
-
 .label {
-  font-size: 10px;
+  font-size: var(--text-xs);
   font-weight: 700;
-  letter-spacing: 1.1px;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ink-tertiary);
   font-family: var(--font-sans);
 }
 
 .paydayPill {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 5px;
   padding: 4px 10px 4px 8px;
+  margin: 8px 0 10px;
   border: 1px solid var(--border-hair);
   border-radius: var(--radius-pill);
   font-size: 11px;
@@ -105,13 +99,25 @@
 
 .heroNum {
   font-family: var(--font-mono);
-  font-size: 32px;
-  font-weight: 700;
+  font-size: var(--text-hero-xl);
+  font-weight: 800;
   color: var(--ink-primary);
-  letter-spacing: -1px;
+  letter-spacing: -0.02em;
   line-height: 1.05;
   font-feature-settings: 'tnum', 'lnum';
   margin-bottom: 6px;
+}
+
+/* Exception to "--accent = action only" (tokens.css) — currency-symbol
+   prefix, not a button or data. Deliberate brand signature at the app's
+   most important number. Same exception applies to .ob-input-prefix
+   in onboarding/step.css. */
+.heroPrefix {
+  display: block;
+  color: var(--accent);
+  font-size: 0.95em;
+  font-weight: 800;
+  line-height: 1;
 }
 
 .heroUnit {
@@ -189,14 +195,13 @@
 }
 
 .expandChevron {
-  font-size: 10px;
+  flex-shrink: 0;
   opacity: 0.5;
 }
 
 /* ── Rincian (expanded formula) ──────────────────────────── */
 .rincian {
-  border-top: 1px solid var(--border-soft);
-  padding-top: 12px;
+  padding-top: 20px;
   margin-top: 4px;
   display: flex;
   flex-direction: column;

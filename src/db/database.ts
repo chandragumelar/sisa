@@ -99,7 +99,13 @@ export interface Settings {
   weekendBehavior: WeekendBehavior // weekend payday shift behavior
   onboardingCompleted: boolean
   lastExportedAt: number | null // epoch ms; drives backup reminder cadence
-  lastPaydayConfirmed: number | null // epoch ms of last confirmed payday; null = hari pertama
+  /**
+   * @deprecated Tidak lagi dipakai sebagai logika sejak periode dihitung
+   * murni dari kalender (incomeDay/incomeFrequency). Kolom dipertahankan untuk
+   * kompatibilitas data user lama & backup — jangan baca/tulis sebagai sinyal.
+   * Aman dihapus hanya lewat migrasi terencana di masa depan.
+   */
+  lastPaydayConfirmed: number | null // epoch ms; deprecated, retained for back-compat
   avgIncome: number | null // freelance/mix: estimated income per avgIncomeBasis period
   avgIncomeBasis: IncomeFrequency | null // period basis for avgIncome
   fixedIncome: number | null // tetap/mix: nominal salary per period; used as pemasukanPeriode fallback

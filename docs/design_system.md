@@ -51,7 +51,7 @@ Violet sengaja occupy hue yang ga disentuh signal apapun (merah/amber/hijau). In
 
 | Token            | Hex (light) | Hex (dark) | Pakai untuk                                     |
 | ---------------- | ----------- | ---------- | -------------------------------------------------- |
-| `--accent`       | `#7C5CFF`   | `#8B5CF6`  | CTA utama (Cek Dulu), progress bar budget, link |
+| `--accent`       | `#7C5CFF`   | `#8B5CF6`  | CTA utama (Cek Dulu), link, elemen yang bisa ditap |
 | `--accent-hover` | `#6A47F5`   | `#9E75FF`  | Hover/pressed state                             |
 | `--accent-bg`    | `#F1EEFF`   | `#1E1830`  | Background subtle untuk info chip / hint        |
 | `--accent-br`    | `#D9D0FF`   | `#3A2E5C`  | Border accent, underline decoration link        |
@@ -73,16 +73,41 @@ Signal harus **kelihatan**. Ga ada pastel. User butuh tau langsung "ini bahaya" 
 | `--signal-safe-bg`    | `#E9F7EF`   | `#122B1E`  | Background chip/notif "aman"                          |
 | `--signal-safe-br`    | `#C9EBD8`   | `#1F4430`  | Border chip/notif "aman"                              |
 
-### 1.6 `[data-theme='dark']`
+### 1.6 Data Visualization Colors
 
-Dark mode bukan cuma invert warna — surface naik bertingkat dari canvas near-black (`#0A0A0B`) ke surface lebih terang, border lebih terang dari surface (bukan lebih gelap, biar tetap "ngangkat"), dan accent violet dinaikkan saturasinya biar tetap pop di atas gelap. Semua token dark ada di kolom "Hex (dark)" tabel §1.1–1.5 di atas, dan didefinisikan di selector `[data-theme='dark']` pada `tokens.css` — bukan `prefers-color-scheme` media query, karena app punya toggle tema manual.
+**Categorical palette** — 8 named category colors for spending breakdowns. Used consistently across Sankey, category sparkline, ranking bars. Never use accent (`#7C5CFF`) for data — it's reserved for interactive elements.
 
-### 1.7 Aturan Warna (Hard Rules)
+Token pattern: `--viz-cat-{category}` where category is: `makanan`, `transport`, `belanja`, `tagihan`, `hiburan`, `kesehatan`, `investasi`, `lainnya`.
+
+| Token                 | Hex (light) | Hex (dark) |
+| ---------------------- | ----------- | ---------- |
+| `--viz-cat-makanan`    | `#BD6E4F`   | `#E38A67`  |
+| `--viz-cat-transport`  | `#4E75AF`   | `#73A0E2`  |
+| `--viz-cat-belanja`    | `#955A89`   | `#C27EB3`  |
+| `--viz-cat-tagihan`    | `#008389`   | `#20ACB3`  |
+| `--viz-cat-hiburan`    | `#A8A06D`   | `#C3B97D`  |
+| `--viz-cat-kesehatan`  | `#6A9F90`   | `#7ABAA8`  |
+| `--viz-cat-investasi`  | `#2E728D`   | `#509DBE`  |
+| `--viz-cat-lainnya`    | `#828690`   | `#787A80`  |
+
+Helper: `getCategoryColor(categoryKey)` from `src/shared/utils/vizColors.ts` — maps category names (case-insensitive) to CSS vars, falls back to `--viz-cat-lainnya` for unmapped categories (e.g. `Pendidikan`). Use `VIZ_CAT_PALETTE` instead when you only have an index, not a category key.
+
+**Sequential palette** — 4-shade "Metric Blue" ramp for single-metric bar charts (monthly keluar/masuk). `--viz-seq-1` (most inactive) through `--viz-seq-4` (active/current). Deliberately NOT violet — avoids confusion with accent. Exposed as the `VIZ_SEQ` array in the same helper file.
+
+**Signal colors in charts** — `--signal-safe` and `--signal-caution` remain for semantic data: net positive/negative, surplus/deficit, "Sisa" node in Sankey, spiked/highlighted category in ranking. These are NOT part of the category palette and are never replaced by `getCategoryColor()`.
+
+### 1.7 `[data-theme='dark']`
+
+Dark mode bukan cuma invert warna — surface naik bertingkat dari canvas near-black (`#0A0A0B`) ke surface lebih terang, border lebih terang dari surface (bukan lebih gelap, biar tetap "ngangkat"), dan accent violet dinaikkan saturasinya biar tetap pop di atas gelap. Semua token dark ada di kolom "Hex (dark)" tabel §1.1–1.6 di atas, dan didefinisikan di selector `[data-theme='dark']` pada `tokens.css` — bukan `prefers-color-scheme` media query, karena app punya toggle tema manual.
+
+### 1.8 Aturan Warna (Hard Rules)
 
 - **Jangan pakai violet untuk signal.** Violet cuma untuk hal yang bisa ditekan.
 - **Jangan pakai signal untuk dekorasi.** Merah cuma keluar kalau memang ada masalah.
 - **Jangan campur signal di satu komponen.** Satu card = satu mood. Notif merah ya merah semua, bukan merah + amber.
 - **Hijau jarang muncul.** Hijau itu hadiah, bukan default. Default-nya neutral ink.
+- **`--accent` = tindakan, titik.** Kalau user gak bisa nge-tap elemennya, itu bukan tempat buat violet — progress bar, node chart, dot data, ujung skala heatmap semua pakai neutral ink atau `--heat-*`, bukan `--accent`. Refactor `refactor/accent-semantics` nyeberangin ini dari 130+ pemakaian yang campur aduk jadi satu aturan.
+- **Satu pengecualian: prefix simbol mata uang.** `.heroPrefix` (angka Sisa, `SaldoModule.module.css`) dan `.ob-input-prefix` (badge "Rp" di input nominal onboarding, `step.css`) tetap violet — bukan tindakan, bukan data, tapi signature brand yang disengaja di titik-titik nominal uang paling penting. Ditulis juga sebagai komentar persis di kedua selektor itu.
 
 ---
 
@@ -224,17 +249,17 @@ Pattern: `[module-label]` → `[hero-amount 38px atau big-amount 30px]` → `[he
 
 **Bar Tebal (hero, untuk Budget Hari Ini):**
 
-- Height `22px`, background `--surface-2`, radius `var(--radius-pill)`
-- Fill: `--accent` (violet), radius `var(--radius-pill)` di kiri (sudut kanan flat — bar belum penuh)
+- Height `4px`, background `--border-hair`, radius `var(--radius-pill)`
+- Fill: gradient neutral `--border-soft` → `--ink-tertiary`, radius `var(--radius-pill)` di kiri (sudut kanan flat — bar belum penuh)
 - Footer 2-kolom: kiri "terpakai", kanan "sisa hari ini" (`--ink-primary` bold)
 
 **Bar Tipis (Goal):**
 
 - Height `3px`, background `--border-hair`, radius `2px`
-- Fill: `--ink-primary` (bukan violet — goal pakai neutral karena violet sudah "milik" budget)
+- Fill: `--ink-primary`
 - Marker target: triangle ke bawah `--ink-tertiary` di ujung kanan
 
-> **Kenapa beda warna fill?** Violet = "duit lo yang bisa ditekan/dipakai sekarang" (budget aktif). Hitam = "progress menabung" (goal jangka panjang). Pembedaan semantik, bukan estetik.
+> **Kenapa netral, bukan violet?** Progress bar itu indikator data (berapa persen jatah harian yang udah kepake), bukan tombol — user gak nge-tap dia. `--accent` cuma buat yang bisa ditekan (lihat §1.8). Budget dan goal sama-sama neutral sekarang; bedanya cuma tebal-tipis sesuai hierarki visual (lihat `refactor/sisa-as-hero-section` — Jatah Harian sengaja jadi elemen sekunder).
 
 ### 4.5 Two-Column Stat Card
 
@@ -335,22 +360,55 @@ terakhir dicatat: Kopi −Rp 18rb · 2 jam lalu        semua catatan ›
 - Amount keluar pakai **mono** `--signal-danger` 500 dengan prefix `−`
 - "semua catatan ›" `--accent` dengan underline `--accent-br` (decoration warna lembut, biar ga "loud")
 
-### 4.11 Bottom Action Bar (Fixed)
+### 4.11 Priority Weight Bar (Fixed)
+
+Three buttons, visual weight scaled by usage frequency — not three equal slots. No input or number visible in the collapsed bar; the input only appears inside the expand sheet.
 
 ```
-┌────┐  ┌──────────────────────┐  ┌────┐
-│ +  │  │     Cek Dulu         │  │ ⋮  │
-│Catat│  │ aman ga gue beli ini?│  │Andai│
-└────┘  └──────────────────────┘  └────┘
+┌───────────────────────────────────────────────────┐
+│ [↗]   [🔍 Cek Dulu]         [  + Catat         ] │
+│ ghost   outline pill          solid accent flex:1  │
+└───────────────────────────────────────────────────┘
 ```
 
-- Position absolute, `bottom: 12px`, `left/right: 12px`, gap `8px`
-- **Cek Dulu (CTA utama):** flex 1, bg `--accent`, text white, radius `var(--radius-button)`
-  - Label 17px 600, sub `#C5D0F7` 10px (subtle violet-tint di atas accent — bukan putih buram)
-- **Catat & Andai (CTA sekunder):** width `64px` fixed, bg `--surface`, text `--ink-primary`, radius `var(--radius-button)`
-  - Icon stroke 1.5px, label 10px 500
+- Sticky bottom, `background: --canvas`, `border-top: 1px solid --border-hair`
+- Padding `14px 14px calc(20px + safe-area-inset-bottom)`, flex row, `align-items: center`, gap `8px`
+- **Insight (ghost, smallest):** `34×34px`, radius `12px`, no bg/border, icon `TrendingUp` 18px stroke 2, `--ink-tertiary`. Icon only, no label.
+- **Cek Dulu (outline pill, medium):** height `48px`, padding `0 15px`, radius `14px`, border `1.5px solid --border-soft`, bg `--canvas`, color `--ink-secondary`. Icon `Search` 15px + label, gap `7px`.
+  - **State 0 (empty):** border `--border-hair`, color `--ink-tertiary`, `opacity: 0.5` → tap adds wallet
+  - **State 1 (partial):** border `--signal-caution` + 6px caution dot top-right → tap adds missing item
+  - **State 2 (full):** border `--border-soft` (default) → tap toggles expand sheet
+  - **Active (sheet open):** border + color `--accent`
+- **Catat (solid, dominant):** `flex: 1` — biggest element in the bar, height `48px`, radius `14px`, bg `--accent`, color white, icon `Plus` 17px + label, `box-shadow: --shadow-pill-accent`, haptic on tap.
 
-> **Hierarchy intentional:** Cek Dulu paling lebar + paling warna karena ini **flagship action** ("aman ga gue beli ini?"). Catat di kiri karena urutan natural (catat dulu → cek → andai). Andai di kanan karena ini **explorasi**, bukan keputusan utama.
+**Expand sheet (Cek Dulu tap, state 2 only) — bottom sheet, not in-place:**
+
+```
+┌───────────────────────────────────────────┐
+│                   ──                       │ ← handle
+│  [ Cek Dulu ]  [ Andai ]   ← segmented tab │
+│  ┌───────────────────────────────────┐     │
+│  │ Rp  Berapa harganya?               │     │
+│  └───────────────────────────────────┘     │
+│  ┌───────────────────────────────────┐     │
+│  │         Cek sekarang               │     │
+│  └───────────────────────────────────┘     │
+└───────────────────────────────────────────┘
+```
+
+- `position: absolute`, `bottom: 0`, full-width, `background: --canvas`, radius `24px 24px 0 0`, `box-shadow: --shadow-sheet`
+- Handle bar `36×4px`, radius pill, `--border-soft`, centered
+- Segmented tab: bg `--surface-2`, border `1px solid --border-hair`, pill radius, active tab bg `--accent` + white text
+- **Cek Dulu tab:** currency-prefixed numeric input (auto-focused on open) + full-width accent "Cek sekarang" button
+- **Andai tab:** single accent button "Buka Andai →" navigating to `/andai`
+- Backdrop `rgba(20, 18, 22, 0.35)` fixed behind sheet — tap closes
+- Bar behind the sheet stays visible but dimmed (`opacity: 0.4`, `pointer-events: none`); Cek Dulu button shows its active (accent) state
+
+**Shadow tokens:** `--shadow-pill-accent` on Catat, `--shadow-sheet` on the expand sheet — the only two non-`none` shadows in the system, both intentional elevation for the primary action and the modal-like sheet. Every other surface stays flat (elevation via border).
+
+**Animation:** backdrop fades in `150ms ease-out`; sheet slides up `transform: translateY(100%) → translateY(0)`, `200ms ease-out`. No spring bounce (per §6).
+
+> **Hierarchy intentional:** Catat is the dominant, most-used action — solid, flex:1, only elevated bar button. Cek Dulu is medium-frequency — visible outline pill, no numbers shown until tapped. Insight is lowest-frequency — icon-only ghost button, no label needed once learned.
 
 ### 4.12 Status Bar / Header
 

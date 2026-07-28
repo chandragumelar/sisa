@@ -4,6 +4,7 @@ import { formatCurrency } from '@/shared/utils/formatCurrency'
 import { t } from '@/shared/strings/strings'
 import { formatMonthShort } from './insight.utils'
 import type { MonthBar, ChartMetric } from './insight.utils'
+import { VIZ_SEQ } from '@/shared/utils/vizColors'
 import styles from './InsightPage.module.css'
 
 interface Props {
@@ -77,9 +78,9 @@ function BarChart({
 
   function barFill(i: number, val: number, isTick: boolean): string {
     if (isTick) return 'var(--border-hair)'
-    if (i !== n - 1) return 'var(--border-hair)'
-    if (metric !== 'net') return 'var(--accent)'
-    return val >= 0 ? 'var(--signal-safe)' : 'var(--signal-caution)'
+    if (metric === 'net') return val >= 0 ? 'var(--signal-safe)' : 'var(--signal-caution)'
+    const seqIndex = Math.min(3, Math.floor((i / Math.max(n - 1, 1)) * 4))
+    return VIZ_SEQ[seqIndex]
   }
 
   const labelIndices = new Set<number>([0, n - 1])
@@ -110,6 +111,7 @@ function BarChart({
             width={BAR_W}
             height={height}
             fill={isInactive ? 'var(--border-hair)' : barFill(i, val, isTick)}
+            opacity={metric === 'net' && i !== n - 1 ? 0.4 : 1}
             stroke={sel ? 'var(--accent)' : undefined}
             strokeWidth={sel ? 1.5 : undefined}
             rx={BAR_RX}

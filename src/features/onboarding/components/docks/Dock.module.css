@@ -1,17 +1,23 @@
+/* ══ Choice = ghost user-bubble (archetype A) ══
+   Neutral by default (reads like a plain user bubble); accent tint is a
+   hover/press affordance only, never a resting state — these are unselected
+   options, not chips that look pre-picked. */
 .chipRow {
   display: flex;
-  gap: 10px;
+  gap: 9px;
+  justify-content: flex-end;
 }
 
 .chip {
   flex: 1;
-  background: var(--surface);
-  border: 1px solid var(--accent-bg);
-  border-radius: var(--radius-bubble);
-  padding: 12px 14px;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--accent);
+  background: var(--surface-3);
+  border: 1.5px solid var(--border-soft);
+  border-radius: var(--radius-bubble) var(--radius-bubble) var(--radius-xs) var(--radius-bubble);
+  padding: 14px 16px;
+  font-size: 15.5px;
+  font-weight: 600;
+  color: var(--ink-primary);
+  text-align: center;
   cursor: pointer;
   font-family: var(--font-sans);
   transition:
@@ -19,10 +25,13 @@
     border-color 0.15s,
     background 0.15s;
 }
-.chip:active {
-  border-color: var(--accent);
+.chip:hover {
+  border-color: var(--accent-br);
   background: var(--accent-bg);
-  transform: scale(0.97);
+  transform: translateY(-1px);
+}
+.chip:active {
+  transform: scale(0.985);
 }
 
 .stack {
@@ -31,24 +40,44 @@
   gap: 10px;
 }
 
-.selectChip {
-  background: var(--surface);
-  border: 1px solid var(--border-soft);
-  border-radius: var(--radius-bubble);
-  padding: 12px 14px;
-  font-size: 14px;
-  color: var(--ink-primary);
+/* ══ Trigger field — opens a sheet, looks like the composer pill but the
+   whole row is tappable (archetype C) ══ */
+.trigger {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface-2);
+  border: 1.5px solid var(--border-hair);
+  border-radius: var(--radius-pill);
+  padding: 0 18px;
+  height: 52px;
   cursor: pointer;
   width: 100%;
-  text-align: left;
   font-family: var(--font-sans);
-  transition:
-    transform var(--motion-pop),
-    border-color 0.15s,
-    background 0.15s;
+  transition: 0.16s;
 }
-.selectChip:active {
-  transform: scale(0.98);
+.trigger:hover {
+  border-color: var(--accent-br);
+  background: var(--accent-bg);
+}
+.triggerIcon {
+  width: 18px;
+  height: 18px;
+  color: var(--ink-tertiary);
+  flex-shrink: 0;
+}
+.triggerText {
+  flex: 1;
+  text-align: left;
+  font-size: 15px;
+  color: var(--ink-primary);
+  font-weight: 500;
+}
+.triggerPlaceholder {
+  flex: 1;
+  text-align: left;
+  font-size: 15px;
+  color: var(--ink-tertiary);
 }
 
 .chipColumn {
@@ -57,11 +86,13 @@
   gap: 8px;
 }
 
+/* ══ Choice = ghost user-bubble, single column with pie mark (archetype A) ══ */
 .optionChip {
-  background: var(--surface);
-  border: 1px solid var(--border-soft);
-  border-radius: var(--radius-bubble);
-  padding: 14px 16px;
+  position: relative;
+  background: var(--surface-3);
+  border: 1.5px solid var(--border-soft);
+  border-radius: var(--radius-bubble) var(--radius-bubble) var(--radius-xs) var(--radius-bubble);
+  padding: 13px 46px 13px 17px;
   cursor: pointer;
   width: 100%;
   text-align: left;
@@ -71,18 +102,40 @@
     border-color 0.15s,
     background 0.15s;
 }
+.optionChip:hover {
+  border-color: var(--accent-br);
+  background: var(--accent-bg);
+  transform: translateY(-1px);
+}
+.optionChip:hover .pie {
+  opacity: 1;
+}
 .optionChip:active {
-  transform: scale(0.98);
+  transform: scale(0.985);
 }
 .optionChipSelected {
   border-color: var(--accent);
   background: var(--accent-bg);
-  box-shadow: 0 0 0 0.5px var(--accent);
+}
+
+/* Pie mark — echoes the bot avatar's conic-gradient face, standing in for
+   an unchecked radio without literally drawing a radio. */
+.pie {
+  position: absolute;
+  right: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: conic-gradient(from -8deg, var(--accent-bg) 0 88deg, var(--accent) 88deg 360deg);
+  opacity: 0.5;
+  transition: opacity 0.16s;
 }
 
 .optionLabel {
   display: block;
-  font-size: 14px;
+  font-size: var(--text-body);
   font-weight: 600;
   color: var(--ink-primary);
 }
@@ -92,10 +145,101 @@
 
 .optionSub {
   display: block;
-  font-size: 11px;
-  color: var(--ink-secondary);
-  margin-top: 2px;
+  font-size: var(--text-xs);
+  color: var(--ink-tertiary);
+  margin-top: 3px;
   font-weight: 400;
+}
+
+/* ══ Composer = docked input pill + circular send (archetype B) ══ */
+.composer {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.composerField {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  background: var(--surface-2);
+  border: 1.5px solid var(--border-hair);
+  border-radius: var(--radius-pill);
+  padding: 0 6px 0 18px;
+  height: 52px;
+  transition: 0.16s;
+}
+.composerField:focus-within {
+  border-color: var(--accent);
+  background: var(--canvas);
+  box-shadow: var(--shadow-focus-ring);
+}
+
+.composerInput {
+  flex: 1;
+  border: none;
+  background: none;
+  outline: none;
+  font-family: var(--font-mono);
+  font-size: 15px;
+  color: var(--ink-primary);
+  letter-spacing: 0.3px;
+  min-width: 0;
+}
+.composerInput::placeholder {
+  color: var(--ink-tertiary);
+  font-family: var(--font-mono);
+}
+
+.sendBtn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  flex-shrink: 0;
+  background: var(--accent);
+  opacity: 0.4;
+  color: var(--accent-text);
+  cursor: not-allowed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.18s;
+}
+.sendBtnReady {
+  opacity: 1;
+  cursor: pointer;
+  box-shadow: var(--shadow-pill-accent);
+}
+.sendBtnReady:hover {
+  background: var(--accent-hover);
+}
+.sendBtnReady:active {
+  transform: scale(0.92);
+}
+
+.linkRow {
+  display: flex;
+  justify-content: center;
+  padding-top: 2px;
+}
+
+.tlink {
+  background: none;
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 13.5px;
+  color: var(--accent);
+  cursor: pointer;
+  text-underline-offset: 3px;
+  text-decoration: underline;
+  text-decoration-color: var(--accent-br);
+  font-weight: 500;
+  min-height: 44px;
+}
+.tlink:hover {
+  text-decoration-color: var(--accent);
 }
 
 .dockPop {
@@ -134,5 +278,18 @@
 @media (prefers-reduced-motion: reduce) {
   .dockPop > * {
     animation: none;
+  }
+  .chip,
+  .trigger,
+  .optionChip,
+  .sendBtnReady {
+    transition: none;
+  }
+  .chip:active,
+  .optionChip:active,
+  .chip:hover,
+  .optionChip:hover,
+  .sendBtnReady:active {
+    transform: none;
   }
 }

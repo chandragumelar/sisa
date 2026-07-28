@@ -3,7 +3,7 @@ import type { OnboardingStep, WalletInput } from './onboarding.types'
 
 export function getPrevStep(
   current: OnboardingStep,
-  incomeType: IncomeType | null,
+  _incomeType: IncomeType | null,
 ): OnboardingStep | null {
   switch (current) {
     case 'langCurrency':
@@ -14,14 +14,14 @@ export function getPrevStep(
       return 'license'
     case 'incomeDetail':
       return 'incomeType'
-    case 'payConfirm':
-      return 'incomeDetail'
     case 'tagihan':
-      return incomeType === 'freelance' ? 'incomeDetail' : 'payConfirm'
+      return 'incomeDetail'
     case 'wallet':
       return 'tagihan'
     case 'alokasi':
       return 'wallet'
+    case 'handoff':
+      return null
   }
 }
 
@@ -32,10 +32,10 @@ const STEP_PROGRESS: Record<OnboardingStep, number> = {
   license: 2,
   incomeType: 3,
   incomeDetail: 3,
-  payConfirm: 3,
   tagihan: 4,
   wallet: 4,
   alokasi: 5,
+  handoff: 5,
 }
 
 export function getProgressCount(step: OnboardingStep): number {
@@ -44,7 +44,7 @@ export function getProgressCount(step: OnboardingStep): number {
 
 export function getNextStep(
   current: OnboardingStep,
-  incomeType: IncomeType | null,
+  _incomeType: IncomeType | null,
 ): OnboardingStep | 'done' {
   switch (current) {
     case 'langCurrency':
@@ -54,14 +54,14 @@ export function getNextStep(
     case 'incomeType':
       return 'incomeDetail'
     case 'incomeDetail':
-      return incomeType === 'freelance' ? 'tagihan' : 'payConfirm'
-    case 'payConfirm':
       return 'tagihan'
     case 'tagihan':
       return 'wallet'
     case 'wallet':
       return 'alokasi'
     case 'alokasi':
+      return 'handoff'
+    case 'handoff':
       return 'done'
   }
 }

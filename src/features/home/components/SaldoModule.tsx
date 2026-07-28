@@ -1,13 +1,31 @@
 import { useState } from 'react'
 import type { ReactNode } from 'react'
-import { Info, Clock, Lock } from 'lucide-react'
+import { Info, Clock, Lock, ChevronDown, ChevronUp } from 'lucide-react'
 import type { BudgetMode } from '@/shared/utils/budget.utils'
-import { formatCurrency } from '@/shared/utils/formatCurrency'
+import { formatCurrency, getCurrencySymbol } from '@/shared/utils/formatCurrency'
 import { useLanguage } from '@/app/providers/useLanguage'
 import { t } from '@/shared/strings/strings'
-import { getCurrencyLabel } from '@/constants/currencies'
 import { BottomSheet } from '@/shared/components/BottomSheet'
 import styles from './SaldoModule.module.css'
+
+const RINCIAN_COLLAPSED_KEY = 'sisa:saldoRincianCollapsed'
+
+/** Splits formatCurrency's own output on its own currency symbol — never
+ * assumes prefix length/position, since IDR ("Rp 500.000") and AUD
+ * ("AU$500.000") differ on both counts. */
+function HeroAmount({ amount, currency }: { amount: number; currency: string }) {
+  const formatted = formatCurrency(amount, currency)
+  const symbol = getCurrencySymbol(currency)
+  const numberPart = formatted.replace(symbol, '').trim()
+  return (
+    <div className={styles.heroNum} aria-label={formatted}>
+      <span className={styles.heroPrefix} aria-hidden="true">
+        {symbol}
+      </span>
+      <span aria-hidden="true">{numberPart}</span>
+    </div>
+  )
+}
 
 interface Props {
   currency: string
@@ -39,15 +57,35 @@ export function SaldoModule({
   onEditAlokasi,
 }: Props) {
   const lang = useLanguage()
-  const [expanded, setExpanded] = useState(false)
+  const [expanded, setExpanded] = useState(() => {
+    try {
+      return localStorage.getItem(RINCIAN_COLLAPSED_KEY) !== '1'
+    } catch {
+      return true
+    }
+  })
   const [tooltipOpen, setTooltipOpen] = useState(false)
-
-  const curLabel = getCurrencyLabel(currency, lang)
 
   const nextPaydayDate = new Date(nextPaydayMs)
   const paydayLabel = `${nextPaydayDate.getDate()} ${nextPaydayDate.toLocaleString(lang === 'en' ? 'en-US' : 'id-ID', { month: 'short' })} ${nextPaydayDate.getFullYear()}`
 
   const cadanganState = sisaUang > 0 ? 'aman' : mengendap > 0 ? 'makan-cadangan' : 'cadangan-habis'
+
+  function toggleExpanded() {
+    setExpanded((v) => {
+      const next = !v
+      try {
+        if (next) {
+          localStorage.removeItem(RINCIAN_COLLAPSED_KEY)
+        } else {
+          localStorage.setItem(RINCIAN_COLLAPSED_KEY, '1')
+        }
+      } catch {
+        // storage unavailable — state tetap jalan untuk sesi ini
+      }
+      return next
+    })
+  }
 
   return (
     <>
@@ -58,9 +96,7 @@ export function SaldoModule({
         >
           <div className={styles.headerRow}>
             <div className={styles.heroLabelRow}>
-              <span className={styles.label}>
-                {t('home.sisa_uang_dynamic', lang).replace('{cur}', curLabel)}
-              </span>
+              <span className={styles.label}>{t('home.sisa_uang_dynamic', lang)}</span>
               <button
                 className={styles.tooltipBtn}
                 onClick={() => setTooltipOpen(true)}
@@ -75,20 +111,8 @@ export function SaldoModule({
               <span className={styles.badgeHariTerakhir}>
                 {t('saldo.mode_hariterakhir_badge', lang)}
               </span>
-            ) : (
-              <div className={styles.paydayPill}>
-                <Clock size={11} strokeWidth={1.75} />
-                <span>
-                  {(daysUntilPayday === 1
-                    ? t('home.day_to_payday', lang)
-                    : t('home.days_to_payday', lang)
-                  ).replace('{n}', String(daysUntilPayday))}
-                </span>
-              </div>
-            )}
+            ) : null}
           </div>
-
-          <div className={styles.headerDivider} />
 
           {/* Mode: Bertahan */}
           {mode === 'bertahan' && (
@@ -117,7 +141,7 @@ export function SaldoModule({
               <div className={styles.heroSublabel}>
                 {t('saldo.mode_hariterakhir_sub_label', lang)}
               </div>
-              <div className={styles.heroNum}>{formatCurrency(sisaUang, currency)}</div>
+              <HeroAmount amount={sisaUang} currency={currency} />
               <p className={styles.hariterakhirNote}>{t('saldo.mode_hariterakhir_note', lang)}</p>
             </>
           )}
@@ -125,7 +149,16 @@ export function SaldoModule({
           {/* Mode: Normal */}
           {mode === 'normal' && (
             <>
-              <div className={styles.heroNum}>{formatCurrency(sisaUang, currency)}</div>
+              <HeroAmount amount={sisaUang} currency={currency} />
+              <div className={styles.paydayPill}>
+                <Clock size={11} strokeWidth={1.75} />
+                <span>
+                  {(daysUntilPayday === 1
+                    ? t('home.day_to_payday', lang)
+                    : t('home.days_to_payday', lang)
+                  ).replace('{n}', String(daysUntilPayday))}
+                </span>
+              </div>
               {conditionLabel && (
                 <span
                   className={styles.conditionBadge}
@@ -145,10 +178,18 @@ export function SaldoModule({
               {cadanganState === 'cadangan-habis' && (
                 <p className={styles.cadanganHabis}>{t('saldo.cadangan_habis', lang)}</p>
               )}
-              <button className={styles.expandBtn} onClick={() => setExpanded((v) => !v)}>
-                <span className={styles.expandChevron}>{expanded ? '∧' : '∨'}</span>
+              <button className={styles.expandBtn} onClick={toggleExpanded}>
+                {expanded ? (
+                  <ChevronUp size={12} strokeWidth={1.75} className={styles.expandChevron} />
+                ) : (
+                  <ChevronDown size={12} strokeWidth={1.75} className={styles.expandChevron} />
+                )}
                 {expanded ? t('home.expand_hide', lang) : t('home.expand_show', lang)}
-                <span className={styles.expandChevron}>{expanded ? '∧' : '∨'}</span>
+                {expanded ? (
+                  <ChevronUp size={12} strokeWidth={1.75} className={styles.expandChevron} />
+                ) : (
+                  <ChevronDown size={12} strokeWidth={1.75} className={styles.expandChevron} />
+                )}
               </button>
 
               {expanded && (

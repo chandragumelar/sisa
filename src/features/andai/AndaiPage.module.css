@@ -130,7 +130,7 @@
 }
 
 .stackAccent {
-  color: var(--accent);
+  color: var(--ink-tertiary);
 }
 
 /* ── Stack items ── */

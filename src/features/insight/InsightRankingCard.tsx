@@ -3,6 +3,7 @@ import { formatCurrency } from '@/shared/utils/formatCurrency'
 import { t } from '@/shared/strings/strings'
 import { getCategoryDisplayName } from '../category/category-display'
 import type { CategoryRow } from './insight.utils'
+import { getCategoryColor } from '@/shared/utils/vizColors'
 import styles from './InsightPage.module.css'
 
 interface Props {
@@ -60,7 +61,7 @@ export function InsightRankingCard({ rows, prevMonthLong, currency, lang }: Prop
 
         const nowPct = (row.amount / maxScale) * 100
         const prevPct = (row.prevAmount / maxScale) * 100
-        const nowColor = row.highlighted ? 'var(--signal-caution)' : 'var(--accent)'
+        const nowColor = row.highlighted ? 'var(--signal-caution)' : getCategoryColor(row.name)
 
         let deltaText = '—'
         let deltaClass = styles.deltaMute

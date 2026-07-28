@@ -6,10 +6,10 @@ export type OnboardingStep =
   | 'license'
   | 'incomeType'
   | 'incomeDetail'
-  | 'payConfirm'
   | 'tagihan'
   | 'wallet'
   | 'alokasi'
+  | 'handoff'
 
 export interface WalletInput {
   id: string
@@ -30,13 +30,20 @@ export interface OnboardingAccumulated {
   fixedIncome: string
   avgIncome: string
   avgIncomeBasis: IncomeFrequency
-  /** null = hari pertama (gaji belum pernah masuk), number = epoch ms of last confirmed payday */
+  /** @deprecated retained for back-compat; always null for new users. */
   lastPaydayConfirmed: number | null
   primaryCurrency: string | null
   wallets: WalletInput[]
   tagihanInputs: FormState[]
   operasionalBudget: number | null
   periodEndDate: number | null
+}
+
+export interface HandoffView {
+  sisaUang: number
+  jatahHariIni: number
+  currency: string
+  sisaHari: number
 }
 
 export const INITIAL_ACCUMULATED: OnboardingAccumulated = {

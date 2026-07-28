@@ -59,7 +59,7 @@
 .fieldInput:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 1px var(--accent);
+  box-shadow: var(--shadow-focus-ring);
 }
 
 /* Segmented toggle */
@@ -67,16 +67,16 @@
   display: flex;
   background: var(--surface-2);
   border: 1px solid var(--border-hair);
-  border-radius: var(--radius-button);
-  padding: 2px;
-  gap: 2px;
+  border-radius: var(--radius-pill);
+  padding: 3px;
+  gap: 3px;
 }
 
 .seg {
   flex: 1;
-  padding: 6px 8px;
+  padding: 9px 8px;
   border-radius: var(--radius-pill);
-  font-size: 12px;
+  font-size: 13.5px;
   font-weight: 600;
   font-family: var(--font-sans);
   background: none;
@@ -85,10 +85,21 @@
   color: var(--ink-tertiary);
 }
 
+/* --shadow-card is `none` by design (border-based elevation everywhere
+   else), but a segmented control's active pill needs to visibly lift off
+   its track — this is the one deliberate exception. Dark mode needs its
+   own surface: --canvas is the *lightest* surface in light mode (correct,
+   pill pops white off the --surface-2 track) but the *darkest* in dark
+   mode (surfaces get lighter as they elevate there), so --canvas would
+   read as a recessed hole instead of a raised pill — --surface-3 is the
+   dark-mode equivalent of "lighter than the --surface-2 track". */
 .segActive {
-  background: var(--surface);
+  background: var(--canvas);
   color: var(--ink-primary);
-  box-shadow: var(--shadow-card);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+:global([data-theme='dark']) .segActive {
+  background: var(--surface-3);
 }
 
 /* Amount row */
@@ -103,7 +114,7 @@
 
 .amountRow:focus-within {
   border-color: var(--accent);
-  box-shadow: 0 0 0 1px var(--accent);
+  box-shadow: var(--shadow-focus-ring);
 }
 
 .amountPrefix {
@@ -119,13 +130,13 @@
   font-size: 13px;
   font-weight: 600;
   font-family: var(--font-mono);
-  color: var(--ink-primary);
-  background-color: var(--surface);
+  color: var(--accent-hover);
+  background-color: var(--accent-bg);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23565C66' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 8px center;
   border: none;
-  border-right: 1px solid var(--border-hair);
+  border-right: 1px solid var(--accent-br);
   outline: none;
   cursor: pointer;
   flex-shrink: 0;
@@ -134,7 +145,7 @@
 }
 
 .amountCurrency:hover {
-  background-color: var(--surface-2);
+  background-color: color-mix(in srgb, var(--accent-bg) 70%, var(--accent) 10%);
 }
 
 .amountCurrency:focus-visible {

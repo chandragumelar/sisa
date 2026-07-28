@@ -5,7 +5,7 @@
 
 .ob-heading {
   font-family: var(--font-sans);
-  font-size: 16px;
+  font-size: var(--text-lead);
   font-weight: 700;
   letter-spacing: -0.2px;
   line-height: 1.15;
@@ -14,7 +14,7 @@
 }
 
 .ob-subheading {
-  font-size: 13px;
+  font-size: var(--text-sm);
   font-weight: 400;
   color: var(--ink-tertiary);
   line-height: 1.5;
@@ -32,14 +32,15 @@
   background: var(--accent);
   color: var(--accent-text);
   border: none;
-  border-radius: var(--radius-bubble);
+  border-radius: var(--radius-button);
   padding: 14px 18px;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: -0.01em;
   cursor: pointer;
   font-family: var(--font-sans);
   text-align: center;
+  box-shadow: var(--shadow-pill-accent);
   transition:
     background 0.15s,
     transform var(--motion-pop);
@@ -47,6 +48,7 @@
 .ob-primary-btn:disabled {
   opacity: 0.38;
   cursor: not-allowed;
+  box-shadow: none;
 }
 .ob-primary-btn:active:not(:disabled) {
   background: var(--accent-hover);
@@ -56,15 +58,26 @@
 /* Ghost / secondary button */
 .ob-ghost-btn {
   width: 100%;
-  background: var(--surface);
+  background: var(--surface-2);
   color: var(--ink-primary);
-  border: 1px solid var(--border-soft);
-  border-radius: var(--radius-bubble);
+  border: 1.5px solid var(--border-soft);
+  border-radius: var(--radius-button);
   padding: 14px 18px;
   font-size: 15px;
   font-weight: 500;
   cursor: pointer;
   font-family: var(--font-sans);
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    transform var(--motion-pop);
+}
+.ob-ghost-btn:hover {
+  border-color: var(--accent-br);
+}
+.ob-ghost-btn:active {
+  background: var(--surface-3);
+  transform: scale(0.98);
 }
 
 /* Side-by-side button row */
@@ -78,7 +91,7 @@
 
 /* Skip link */
 .ob-skip {
-  font-size: 13px;
+  font-size: var(--text-sm);
   color: var(--ink-tertiary);
   text-align: center;
   padding-top: 10px;
@@ -87,11 +100,15 @@
   cursor: pointer;
   width: 100%;
   font-family: var(--font-sans);
+  transition: color 0.15s;
+}
+.ob-skip:hover {
+  color: var(--ink-secondary);
 }
 
 /* Underlined text link */
 .ob-link {
-  font-size: 13px;
+  font-size: var(--text-sm);
   color: var(--ink-secondary);
   text-align: center;
   padding-top: 12px;
@@ -106,14 +123,20 @@
   text-decoration: underline;
   text-decoration-color: var(--border-hair);
   font-family: var(--font-sans);
+  transition: color 0.15s;
+}
+.ob-link:hover {
+  color: var(--ink-primary);
 }
 
-/* Selectable option card */
+/* Selectable option card — asymmetric corner echoes the chat bubble tail
+   (see ChatShell .bubbleUser), so the choice reads as "this becomes your
+   reply" rather than a generic form control. */
 .ob-option {
-  background: var(--surface);
-  border: 1px solid var(--border-soft);
-  border-radius: var(--radius-bubble);
-  padding: 16px 18px;
+  background: var(--surface-3);
+  border: 1.5px solid var(--border-soft);
+  border-radius: var(--radius-bubble) var(--radius-bubble) var(--radius-xs) var(--radius-bubble);
+  padding: 13px 17px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -128,13 +151,17 @@
     border-color 0.15s,
     background 0.15s;
 }
+.ob-option:hover {
+  border-color: var(--accent-br);
+  background: var(--accent-bg);
+  transform: translateY(-1px);
+}
 .ob-option:active {
-  transform: scale(0.98);
+  transform: scale(0.985);
 }
 .ob-option-selected {
   border-color: var(--accent);
   background: var(--accent-bg);
-  box-shadow: 0 0 0 0.5px var(--accent);
 }
 
 /* Custom radio dot */
@@ -191,7 +218,7 @@
   margin-bottom: 14px;
 }
 .ob-field-label {
-  font-size: 13px;
+  font-size: var(--text-sm);
   font-weight: 600;
   color: var(--ink-secondary);
   margin-bottom: 8px;
@@ -202,7 +229,7 @@
 /* Plain text / mono input */
 .ob-input {
   background: var(--surface-2);
-  border: 1px solid var(--border-hair);
+  border: 1.5px solid var(--border-hair);
   border-radius: var(--radius-input);
   height: 52px;
   padding: 0 14px;
@@ -213,11 +240,14 @@
   font-family: var(--font-sans);
   display: block;
   box-sizing: border-box;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
 }
 .ob-input:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 1px var(--accent);
+  box-shadow: var(--shadow-focus-ring);
 }
 .ob-input-mono {
   font-family: var(--font-mono);
@@ -241,18 +271,24 @@ select.ob-input {
   align-items: center;
   height: 56px;
   background: var(--surface-2);
-  border: 1px solid var(--border-hair);
+  border: 1.5px solid var(--border-hair);
   border-radius: var(--radius-input);
   overflow: hidden;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
 }
 .ob-input-row:focus-within {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 12%, transparent);
+  box-shadow: var(--shadow-focus-ring);
 }
 /* Two stacked rows in the same field (e.g. wallet name + balance) need a gap */
 .ob-input-row + .ob-input-row {
   margin-top: 8px;
 }
+/* Exception to "--accent = action only" (tokens.css) — currency-symbol
+   prefix badge, not a button or data. Same exception as .heroPrefix
+   in SaldoModule.module.css. */
 .ob-input-prefix {
   width: 30px;
   height: 30px;
@@ -305,10 +341,10 @@ select.ob-input {
 /* Select / picker trigger */
 .ob-select-trigger {
   background: var(--surface-2);
-  border: 1px solid var(--border-hair);
+  border: 1.5px solid var(--border-hair);
   border-radius: var(--radius-button);
   padding: 12px;
-  font-size: 14px;
+  font-size: var(--text-body);
   color: var(--ink-primary);
   display: flex;
   align-items: center;
@@ -317,11 +353,17 @@ select.ob-input {
   cursor: pointer;
   width: 100%;
   font-family: var(--font-sans);
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+.ob-select-trigger:hover {
+  border-color: var(--border-soft);
 }
 .ob-select-trigger:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 1px var(--accent);
+  box-shadow: var(--shadow-focus-ring);
 }
 .ob-select-placeholder {
   color: var(--ink-tertiary);
@@ -342,7 +384,7 @@ select.ob-input {
 
 /* Inline error */
 .ob-error {
-  font-size: 11px;
+  font-size: var(--text-xs);
   color: var(--signal-danger);
   margin-top: 6px;
   line-height: 1.4;
@@ -363,9 +405,12 @@ select.ob-input {
   cursor: pointer;
   background: var(--surface);
   border: 1.5px solid var(--border-soft);
-  box-shadow: 0 1px 2px color-mix(in srgb, var(--ink-primary) 6%, transparent);
   color: var(--ink-primary);
   font-weight: 700;
+  transition:
+    color 0.15s,
+    background 0.15s,
+    border-color 0.15s;
 }
 .ob-currency-btn::after {
   content: '';
@@ -378,6 +423,7 @@ select.ob-input {
 }
 .ob-currency-btn:hover {
   color: var(--accent);
+  border-color: var(--accent-br);
 }
 .ob-currency-btn:active {
   background: var(--accent-bg);
@@ -389,7 +435,7 @@ select.ob-input {
   width: 28px;
   height: 28px;
   background: none;
-  border: 1px solid var(--border-hair);
+  border: 1.5px solid var(--border-hair);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -399,6 +445,9 @@ select.ob-input {
   cursor: pointer;
   line-height: 1;
   font-family: var(--font-sans);
+  transition:
+    color 0.15s,
+    border-color 0.15s;
 }
 .ob-remove-btn:hover {
   color: var(--signal-danger);
@@ -411,17 +460,28 @@ select.ob-input {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+  font-size: var(--text-body);
   font-weight: 600;
   color: var(--accent);
   text-align: center;
   border: 1.5px dashed var(--accent-br);
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-input);
   margin-bottom: 10px;
   background: var(--accent-bg);
   cursor: pointer;
   width: 100%;
+  transition:
+    border-color 0.15s,
+    transform var(--motion-pop);
   font-family: var(--font-sans);
+}
+.ob-add-line:hover {
+  border-color: var(--accent);
+  border-style: solid;
+  background: color-mix(in srgb, var(--accent-bg) 70%, var(--accent) 10%);
+}
+.ob-add-line:active {
+  transform: scale(0.98);
 }
 
 /* ── StepTagihan / StepAlokasi helpers ────────────────── */
@@ -435,7 +495,7 @@ select.ob-input {
 .ob-card {
   background: var(--surface-2);
   border: 1px solid var(--border-soft);
-  border-radius: 16px;
+  border-radius: var(--radius-card);
   padding: 13px 14px;
   box-shadow: var(--shadow-card);
   overflow: hidden;
@@ -446,7 +506,7 @@ select.ob-input {
 }
 
 .ob-label {
-  font-size: 13px;
+  font-size: var(--text-sm);
   font-weight: 600;
   color: var(--ink-secondary);
   font-family: var(--font-sans);
@@ -454,26 +514,44 @@ select.ob-input {
 
 .ob-btn-primary {
   background: var(--accent);
-  color: #fff;
+  color: var(--accent-text);
   border: none;
   border-radius: var(--radius-sm);
   padding: 12px 16px;
-  font-size: 14px;
+  font-size: var(--text-body);
   font-weight: 600;
   cursor: pointer;
   font-family: var(--font-sans);
+  transition:
+    background 0.15s,
+    transform var(--motion-pop);
+}
+.ob-btn-primary:active {
+  background: var(--accent-hover);
+  transform: scale(0.98);
 }
 
 .ob-btn-ghost {
-  background: var(--surface);
+  background: var(--surface-2);
   color: var(--ink-secondary);
-  border: 1px solid var(--border-hair);
+  border: 1.5px solid var(--border-hair);
   border-radius: var(--radius-sm);
   padding: 11px 16px;
-  font-size: 14px;
+  font-size: var(--text-body);
   font-weight: 600;
   cursor: pointer;
   font-family: var(--font-sans);
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    transform var(--motion-pop);
+}
+.ob-btn-ghost:hover {
+  border-color: var(--accent-br);
+}
+.ob-btn-ghost:active {
+  background: var(--surface-3);
+  transform: scale(0.98);
 }
 
 .ob-btn-full {
@@ -487,15 +565,26 @@ select.ob-input {
   gap: 7px;
   height: 52px;
   padding: 0 16px;
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-input);
   border: 1.5px dashed var(--accent-br);
   background: var(--accent-bg);
-  font-size: 14px;
+  font-size: var(--text-body);
   font-weight: 500;
   color: var(--accent);
   cursor: pointer;
   font-family: var(--font-sans);
   width: 100%;
+  transition:
+    border-color 0.15s,
+    transform var(--motion-pop);
+}
+.ob-add-dashed:hover {
+  border-color: var(--accent);
+  border-style: solid;
+  background: color-mix(in srgb, var(--accent-bg) 70%, var(--accent) 10%);
+}
+.ob-add-dashed:active {
+  transform: scale(0.98);
 }
 
 .ob-footer {
@@ -511,7 +600,7 @@ select.ob-input {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 13px;
+  font-size: var(--text-sm);
   color: var(--ink-secondary);
 }
 
@@ -530,9 +619,31 @@ select.ob-input {
 
 /* Long explanatory paragraph (awam copy) */
 .ob-explainer {
-  font-size: 13px;
+  font-size: var(--text-sm);
   color: var(--ink-tertiary);
   line-height: 1.6;
   margin-top: 10px;
   margin-bottom: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ob-primary-btn,
+  .ob-ghost-btn,
+  .ob-option,
+  .ob-btn-primary,
+  .ob-btn-ghost,
+  .ob-add-line,
+  .ob-add-dashed {
+    transition: none;
+  }
+  .ob-primary-btn:active:not(:disabled),
+  .ob-ghost-btn:active,
+  .ob-option:active,
+  .ob-btn-primary:active,
+  .ob-btn-ghost:active,
+  .ob-add-line:active,
+  .ob-add-dashed:active,
+  .ob-option:hover {
+    transform: none;
+  }
 }

@@ -7,6 +7,7 @@ import { BottomSheet } from '@/shared/components/BottomSheet'
 import { getCategoryDisplayName } from '../category/category-display'
 import type { CategoryRow, CategoryMonthBar } from './insight.utils'
 import { formatMonthShort } from './insight.utils'
+import { getCategoryColor } from '@/shared/utils/vizColors'
 import styles from './InsightPage.module.css'
 
 const STEP = 32
@@ -83,6 +84,7 @@ export function InsightCategoryCard({
   }
 
   const row = rows.find((r) => r.name === selected) ?? rows[0]
+  const categoryColor = getCategoryColor(row.name)
 
   let deltaText = ''
   let deltaClass = styles.deltaMute
@@ -146,8 +148,8 @@ export function InsightCategoryCard({
         <svg viewBox={`0 0 ${svgW} ${SVG_H}`} width="100%" height={SVG_H} role="img">
           <defs>
             <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.18" />
-              <stop offset="100%" stopColor="var(--accent)" stopOpacity="0" />
+              <stop offset="0%" stopColor={categoryColor} stopOpacity="0.18" />
+              <stop offset="100%" stopColor={categoryColor} stopOpacity="0" />
             </linearGradient>
           </defs>
 
@@ -161,7 +163,7 @@ export function InsightCategoryCard({
           />
 
           <path d={areaPath} fill={`url(#${gradientId})`} stroke="none" />
-          <path d={linePath} fill="none" stroke="var(--accent)" strokeWidth={2} />
+          <path d={linePath} fill="none" stroke={categoryColor} strokeWidth={2} />
 
           {points.map((p, i) => {
             const isLast = i === lastIdx
@@ -174,7 +176,7 @@ export function InsightCategoryCard({
                   cx={p.x}
                   cy={p.y}
                   r={4}
-                  fill="var(--accent)"
+                  fill={categoryColor}
                   stroke="var(--surface)"
                   strokeWidth={2}
                 />

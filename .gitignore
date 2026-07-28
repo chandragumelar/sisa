@@ -27,3 +27,12 @@ licenses.log
 
 # Test coverage
 coverage/
+
+# Deployment
+.vercel/
+
+# Supabase local
+supabase/.temp/
+
+# Claude Code (local)
+.claude/
