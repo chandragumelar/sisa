@@ -145,6 +145,7 @@
 .bubbleUser {
   background: var(--surface-3);
   color: var(--ink-primary);
+  font-weight: 500;
   border-radius: 20px;
   border-bottom-right-radius: 7px;
 }
